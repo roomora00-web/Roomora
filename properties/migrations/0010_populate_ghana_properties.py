@@ -323,68 +323,42 @@ def create_physical_rooms(property_obj, room_type, room_type_data, Room):
 
 
 def create_property_images(property_obj, PropertyImage):
-    """Create unique images for each property using Unsplash source URLs"""
-    image_types = ['EXTERIOR', 'INTERIOR', 'ROOM', 'KITCHEN', 'BATHROOM', 'AMENITY']
-    keywords = get_image_keywords(property_obj)
+    """Create unique images for each property using Unsplash photo IDs"""
+    # Working Unsplash photo IDs for different property types
+    photo_ids = [
+        'photo-1522708323590-d24dbb6b0267',  # Modern apartment
+        'photo-1502672260266-1c1ef2d93688',  # Building exterior
+        'photo-1560448204-e02f11c3d0e2',  # Interior room
+        'photo-1554995207-c18c203602cb',  # Kitchen
+        'photo-1584622650111-993a426fbf0a',  # Bathroom
+        'photo-1560185007-cde436f6a4d0',  # Amenities
+        'photo-1595526114035-0d45ed16cfbf',  # Hostel room
+        'photo-1522771739844-6a9f6d5f14af',  # Student housing
+        'photo-1493809842364-78817add7ffb',  # Modern building
+        'photo-1484154218962-a197022b5858',  # Residential
+        'photo-1512917774080-9991f1c4c750',  # Apartment complex
+        'photo-1567681812100-5bfe18c7b729',  # City housing
+    ]
     
-    for i, image_type in enumerate(image_types[:4]):  # At least 4 images
-        keyword = keywords[i % len(keywords)]
-        unique_id = f"{property_obj.property_code}_{i}"
-        image_url = f"https://source.unsplash.com/800x600/?{keyword}&sig={unique_id}"
+    image_types = ['EXTERIOR', 'INTERIOR', 'ROOM', 'KITCHEN']
+    
+    # Use property code to select different photos for each property
+    start_index = hash(property_obj.property_code) % len(photo_ids)
+    
+    for i, image_type in enumerate(image_types):
+        photo_id = photo_ids[(start_index + i) % len(photo_ids)]
+        image_url = f"https://images.unsplash.com/photo-{photo_id}?w=800&h=600&fit=crop"
         
         PropertyImage.objects.create(
             accommodation_property=property_obj,
             image=image_url,
             image_type=image_type,
-            caption=f'{image_type} view of {property_obj.title} - {keyword}',
+            caption=f'{image_type} view of {property_obj.title}',
             is_primary=(i == 0),
             order=i
         )
 
 
-def get_image_keywords(property_obj):
-    """Generate relevant image keywords based on property type and region"""
-    property_type = property_obj.property_type.lower()
-    region = property_obj.region.lower()
-    
-    type_keywords = {
-        'hostel': ['ghana-hostel', 'student-dormitory', 'shared-room', 'bunk-bed'],
-        'apartment': ['ghana-apartment', 'modern-apartment', 'luxury-apartment', 'city-apartment'],
-        'student_apartment': ['student-housing', 'student-apartment', 'campus-housing', 'dorm-room'],
-        'flat': ['ghana-flat', 'apartment-flat', 'residential-flat'],
-        'compound_house': ['ghana-compound-house', 'african-house', 'family-home'],
-        'townhouse': ['ghana-townhouse', 'modern-townhouse'],
-        'duplex': ['ghana-duplex', 'luxury-duplex'],
-        'villa': ['ghana-villa', 'luxury-villa', 'estate-home'],
-        'studio': ['studio-apartment', 'small-apartment', 'compact-living'],
-    }
-    
-    region_keywords = {
-        'ashanti': ['kumasi', 'ashanti-region', 'ghana-city'],
-        'brong-ahafo': ['sunyani', 'brong-ahafo', 'ghana-town'],
-        'central': ['cape-coast', 'central-region', 'ghana-coast'],
-        'eastern': ['koforidua', 'eastern-region', 'ghana-hills'],
-        'greater accra': ['accra', 'ghana-capital', 'modern-africa'],
-        'northern': ['tamale', 'northern-ghana', 'savanna'],
-        'upper east': ['bolgatanga', 'upper-east-ghana'],
-        'upper west': ['wa', 'upper-west-ghana'],
-        'volta': ['ho', 'volta-region', 'ghana-lake'],
-        'western': ['takoradi', 'western-ghana', 'ghana-harbour'],
-        'ahafo': ['mim', 'ahafo-region'],
-        'bono east': ['techiman', 'bono-east'],
-        'north east': ['nalerigu', 'north-east-ghana'],
-        'oti': ['dambai', 'oti-region'],
-        'savannah': ['damongo', 'savannah-ghana'],
-        'western north': ['sefwi-wiawso', 'western-north'],
-    }
-    
-    type_list = type_keywords.get(property_type, ['ghana-housing', 'african-home'])
-    region_list = region_keywords.get(region, ['ghana', 'africa'])
-    
-    combined = type_list + region_list
-    combined.extend(['building', 'architecture', 'real-estate'])
-    
-    return combined[:6]
 
 
 def create_premium_reviews(property_obj, admin_user, User, Review):
