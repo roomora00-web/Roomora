@@ -168,7 +168,7 @@ def populate_ghana_properties(apps, schema_editor):
             )
         
         # Create property images
-        create_property_images(property_obj)
+        create_property_images(property_obj, PropertyImage)
         
         # Create premium reviews for featured properties
         if prop_data.get('is_premium', False):
@@ -322,7 +322,7 @@ def create_physical_rooms(property_obj, room_type, room_type_data, Room):
             existing_numbers.add(room_number)
 
 
-def create_property_images(property_obj):
+def create_property_images(property_obj, PropertyImage):
     """Create unique images for each property using Unsplash source URLs"""
     image_types = ['EXTERIOR', 'INTERIOR', 'ROOM', 'KITCHEN', 'BATHROOM', 'AMENITY']
     keywords = get_image_keywords(property_obj)
