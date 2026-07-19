@@ -639,144 +639,179 @@
     </header>
 
 
-    <!-- Content Workspace -->
-    <div class="hero-content-workspace" style="
+    <!-- Hero Content — Positioned at bottom-left of the background image -->
+    <div style="
         position: absolute;
         z-index: 10;
-        bottom: 120px;
         left: 0;
         right: 0;
+        bottom: 116px;
         padding: 0 5%;
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
+        gap: 24px;
     ">
-        <!-- Left: Big Typography -->
-        <div class="animate-fade-up delay-100" style="flex: 1; max-width: 75%;">
-            <h1 style="
-                font-family: 'Plus Jakarta Sans', sans-serif;
-                font-size: clamp(4.5rem, 10vw, 12rem);
-                line-height: 0.88;
-                margin: 0 0 40px 0;
-                font-weight: 800;
-                letter-spacing: -0.03em;
+        <!-- Left: Headline + Tagline + CTA -->
+        <div class="animate-fade-up delay-100" style="flex: 1; max-width: 700px;">
+
+            <!-- Small eyebrow label -->
+            <div style="
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(255,255,255,0.18);
+                border: 1px solid rgba(255,255,255,0.35);
+                backdrop-filter: blur(8px);
+                border-radius: 30px;
+                padding: 7px 18px;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 1.5px;
                 text-transform: uppercase;
                 color: #FFFFFF;
-                text-shadow: 0 4px 24px rgba(0,0,0,0.4);
+                margin-bottom: 20px;
             ">
-                Perfect<br>
-                <span style="padding-left: clamp(30px, 15vw, 240px);">Home</span>
+                <span style="width:7px;height:7px;background:#4ade80;border-radius:50%;display:inline-block;"></span>
+                500+ Verified Listings Across Ghana
+            </div>
+
+            <!-- Main headline — reduced, project-relevant -->
+            <h1 style="
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                font-size: clamp(2.4rem, 5vw, 5rem);
+                line-height: 1.05;
+                margin: 0 0 20px 0;
+                font-weight: 800;
+                letter-spacing: -0.03em;
+                color: #FFFFFF;
+                text-shadow: 0 3px 20px rgba(0,0,0,0.5);
+            ">
+                Find Your Perfect<br>Space &amp; Compatible<br>Roommate
             </h1>
 
-            <div class="animate-fade-up delay-200" style="display: flex; align-items: flex-end; gap: 48px; flex-wrap: wrap;">
-                <div>
-                    <p style="font-size: clamp(0.9rem, 1.5vw, 1.25rem); font-weight: 300; line-height: 1.4; color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 2px; margin: 0 0 32px 0;">
-                        Where Tranquility Meets<br>Modern Living
-                    </p>
-                    <a href="{% url 'landing:properties' %}" style="
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 10px;
-                        background: #FFFFFF;
-                        color: #000000;
-                        padding: 16px 40px;
-                        border-radius: 40px;
-                        font-weight: 700;
-                        text-decoration: none;
-                        font-size: 13px;
-                        letter-spacing: 1.5px;
-                        text-transform: uppercase;
-                        transition: transform 0.2s, box-shadow 0.2s;
-                        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-                    ">
-                        Explore Listings
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </a>
-                </div>
+            <!-- Subtext -->
+            <p style="
+                font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+                font-weight: 400;
+                line-height: 1.6;
+                color: rgba(255,255,255,0.82);
+                margin: 0 0 32px 0;
+                max-width: 480px;
+            ">
+                Browse verified student hostels &amp; apartments in Ghana — matched to your budget and lifestyle.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center;">
+                <a href="{% url 'landing:properties' %}" style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 10px;
+                    background: #111111;
+                    color: #F5F5F5;
+                    padding: 15px 36px;
+                    border-radius: 40px;
+                    font-weight: 700;
+                    text-decoration: none;
+                    font-size: 14px;
+                    letter-spacing: 0.5px;
+                    transition: transform 0.2s, box-shadow 0.2s;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+                ">
+                    Explore Listings
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="{% url 'landing:properties' %}" style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 10px;
+                    background: rgba(255,255,255,0.18);
+                    border: 1.5px solid rgba(255,255,255,0.5);
+                    backdrop-filter: blur(10px);
+                    color: #FFFFFF;
+                    padding: 15px 32px;
+                    border-radius: 40px;
+                    font-weight: 600;
+                    text-decoration: none;
+                    font-size: 14px;
+                    transition: background 0.2s;
+                ">
+                    Find a Roommate
+                </a>
             </div>
         </div>
 
-        <!-- Right: Floating +300 Stats Card -->
+        <!-- Right: Floating Stats Card -->
         <div class="hide-on-mobile animate-fade-up delay-300" style="
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            color: #111111;
-            padding: 28px 32px;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 28px;
             border-radius: 24px;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            width: 260px;
+            width: 240px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.25);
             flex-shrink: 0;
-            margin-left: 32px;
         ">
-            <h3 style="font-size: 3rem; font-weight: 700; margin: 0; line-height: 1; color: #111111;">+300</h3>
-            <p style="font-size: 0.9rem; color: #555555; margin: 0; line-height: 1.4; font-weight: 500;">customers love our<br>service, always</p>
-            <div style="display: flex; margin-top: 8px;">
-                <img src="https://i.pravatar.cc/100?img=4" style="width: 44px; height: 44px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
-                <img src="https://i.pravatar.cc/100?img=5" style="width: 44px; height: 44px; border-radius: 50%; border: 3px solid #fff; margin-left: -14px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
-                <img src="https://i.pravatar.cc/100?img=6" style="width: 44px; height: 44px; border-radius: 50%; border: 3px solid #fff; margin-left: -14px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
+            <h3 style="font-size: 2.6rem; font-weight: 800; margin: 0; line-height: 1; color: #111111;">+300</h3>
+            <p style="font-size: 0.88rem; color: #555; margin: 0; line-height: 1.5; font-weight: 500;">students found their<br>perfect space with us</p>
+            <div style="display: flex; margin-top: 6px;">
+                <img src="https://i.pravatar.cc/100?img=4" style="width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
+                <img src="https://i.pravatar.cc/100?img=5" style="width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; margin-left: -12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
+                <img src="https://i.pravatar.cc/100?img=6" style="width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; margin-left: -12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
+                <div style="width:40px;height:40px;border-radius:50%;border:3px solid #fff;margin-left:-12px;background:#111;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#F5F5F5;">+99</div>
             </div>
         </div>
     </div>
 
     <!-- Anchored Search Widget -->
-    <form action="{% url 'landing:properties' %}" method="GET" class="anchored-search-widget-bar animate-fade-up delay-300"
+    <form action="{% url 'landing:properties' %}" method="GET" class="anchored-search-widget-bar animate-fade-up delay-400"
         style="position: absolute; z-index: 10;">
         <div class="search-field-pill-box">
-            <label
-                style="font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase;">Category</label>
-            <select name="property_type"
-                style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
+            <label style="font-size: 10px; color: #6B7280; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Category</label>
+            <select name="property_type" style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
                 <option value="">All Types</option>
                 {% for value, label in property_types %}
                 <option value="{{ value }}">{{ label }}</option>
                 {% endfor %}
             </select>
         </div>
-
         <div class="search-field-pill-box">
-            <label
-                style="font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase;">Location</label>
-            <select name="location"
-                style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
+            <label style="font-size: 10px; color: #6B7280; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Location</label>
+            <select name="location" style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
                 <option value="">Any Location</option>
                 {% for city in cities %}
                 <option value="{{ city }}">{{ city }}</option>
                 {% endfor %}
             </select>
         </div>
-
         <div class="search-field-pill-box">
-            <label
-                style="font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase;">Accommodation</label>
-            <select name="accommodation_type"
-                style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
+            <label style="font-size: 10px; color: #6B7280; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Accommodation</label>
+            <select name="accommodation_type" style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
                 <option value="">Any Setup</option>
                 {% for value, label in room_occupancy_types %}
                 <option value="{{ value }}">{{ label }}</option>
                 {% endfor %}
             </select>
         </div>
-
         <div class="search-field-pill-box">
-            <label style="font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase;">Price Range</label>
-            <select name="price_range"
-                style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
+            <label style="font-size: 10px; color: #6B7280; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Price Range</label>
+            <select name="price_range" style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
                 <option value="">Any Price</option>
                 {% for range in price_ranges %}
                 <option value="{{ range.min }}-{{ range.max }}">{{ range.label }}</option>
                 {% endfor %}
             </select>
         </div>
-
         <button type="submit" class="btn-search-execute-black">Search Now</button>
     </form>
 </div>
 
 <!-- Features & Stats Showcase Section -->
+
 <section class="features-showcase-section">
     <div class="showcase-container">
         

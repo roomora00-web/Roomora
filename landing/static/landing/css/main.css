@@ -415,8 +415,8 @@ body {
     justify-content: center;
     gap: 8px;
     width: 100%;
-    background: var(--pure-white);
-    color: var(--pure-black);
+    background: #111111;
+    color: #F5F5F5;
     text-decoration: none;
     padding: 16px;
     border-radius: 16px;
@@ -425,7 +425,7 @@ body {
 }
 
 .floating-btn:hover {
-    background: #DDDDDD;
+    background: #2D2D2D;
 }
 
 .showcase-content {
@@ -438,8 +438,8 @@ body {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--pure-black);
-    background: var(--pure-white);
+    color: #F5F5F5;
+    background: #111111;
     padding: 8px 16px;
     border-radius: 20px;
     align-self: flex-start;
@@ -469,8 +469,8 @@ body {
 }
 
 .btn-primary-solid {
-    background: var(--pure-white);
-    color: var(--pure-black);
+    background: #111111;
+    color: #F5F5F5;
     text-decoration: none;
     padding: 16px 32px;
     border-radius: 30px;
@@ -479,13 +479,13 @@ body {
 }
 
 .btn-primary-solid:hover {
-    background: #DDDDDD;
+    background: #2D2D2D;
 }
 
 .btn-video-outline {
     background: transparent;
-    border: 1px solid var(--border-light);
-    color: var(--pure-white);
+    border: 1px solid rgba(0,0,0,0.2);
+    color: #111111;
     padding: 16px 32px 16px 24px;
     border-radius: 30px;
     font-weight: 600;
@@ -497,15 +497,15 @@ body {
 }
 
 .btn-video-outline:hover {
-    border-color: var(--pure-white);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: #111111;
+    background: rgba(0, 0, 0, 0.05);
 }
 
 .play-icon {
     width: 24px;
     height: 24px;
-    background: var(--pure-white);
-    color: var(--pure-black);
+    background: #111111;
+    color: #F5F5F5;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -656,8 +656,8 @@ body {
 }
 
 .map-cta-btn:hover {
-    background: #CCCCCC;
-    box-shadow: 0 0 24px var(--accent-glow);
+    background: #333333;
+    box-shadow: none;
 }
 
 .map-cta-group {
@@ -668,21 +668,21 @@ body {
 }
 
 .map-btn-primary {
-    background: var(--accent);
-    color: #FFFFFF;
+    background: #111111;
+    color: #F5F5F5;
 }
 
 .map-btn-secondary {
     background: transparent;
-    color: var(--pure-white);
-    border: 1px solid var(--border-light);
+    color: #111111;
+    border: 1px solid rgba(0,0,0,0.2);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .map-btn-secondary:hover {
-    background: rgba(255,255,255,0.05);
+    background: rgba(0,0,0,0.05);
     box-shadow: none;
 }
 
@@ -749,13 +749,13 @@ body {
 }
 
 .all-properties-btn {
-    background: var(--accent);
+    background: #111111;
     border: none;
     border-radius: 20px;
     padding: 10px 20px;
     font-size: 14px;
     font-weight: 500;
-    color: #000000;
+    color: #F5F5F5;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -764,12 +764,12 @@ body {
 }
 
 .all-properties-btn:hover {
-    background: #CCCCCC;
-    box-shadow: 0 0 20px var(--accent-glow);
+    background: #333333;
+    box-shadow: none;
 }
 
 .all-properties-btn:hover svg {
-    stroke: #000000;
+    stroke: #F5F5F5;
 }
 
 /* Rentals Grid */
@@ -1334,8 +1334,8 @@ body {
 }
 
 .arrow-overlay-btn:hover {
-    background: var(--primary-dark);
-    color: var(--pure-white);
+    background: #111111;
+    color: #F5F5F5;
 }
 
 .label-pill {
