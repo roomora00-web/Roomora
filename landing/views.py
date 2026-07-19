@@ -12,23 +12,32 @@ class HomeView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Fetch featured/popular hostels
-        context['category_hostels'] = Property.objects.filter(
-            status='APPROVED', is_available=True, property_type='HOSTEL'
-        ).prefetch_related('images', 'room_types__pricing_models')[:6]
-        
-        # Fetch featured/popular apartments
-        context['category_apartments'] = Property.objects.filter(
-            status='APPROVED', is_available=True, property_type='APARTMENT'
-        ).prefetch_related('images', 'unit_types__pricing_models')[:6]
-        
-        # Fetch premium/featured listings
-        premium_listings = Property.objects.filter(
-            status='APPROVED', is_available=True, is_featured=True
-        ).prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models')
-        
-        context['premium_listings'] = premium_listings[:6]
-        context['featured_property'] = premium_listings.first()
+        try:
+            # Fetch featured/popular hostels
+            context['category_hostels'] = Property.objects.filter(
+                status='APPROVED', is_available=True, property_type='HOSTEL'
+            ).prefetch_related('images', 'room_types__pricing_models')[:6]
+
+            # Fetch featured/popular apartments
+            context['category_apartments'] = Property.objects.filter(
+                status='APPROVED', is_available=True, property_type='APARTMENT'
+            ).prefetch_related('images', 'unit_types__pricing_models')[:6]
+
+            # Fetch premium/featured listings
+            premium_listings = Property.objects.filter(
+                status='APPROVED', is_available=True, is_featured=True
+            ).prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models')
+
+            context['premium_listings'] = premium_listings[:6]
+            context['featured_property'] = premium_listings.first()
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error fetching properties: {e}")
+            context['category_hostels'] = []
+            context['category_apartments'] = []
+            context['premium_listings'] = []
+            context['featured_property'] = None
         
         # Search Widget Data
         context['property_types'] = Property.PROPERTY_TYPE_CHOICES
@@ -48,39 +57,45 @@ class HomeView(TemplateView):
         ]
         
         # Prepare map properties (first 20 to avoid slowing down homepage too much, or all featured)
-        map_properties = []
-        for prop in Property.objects.filter(status='APPROVED', is_available=True).exclude(latitude__isnull=True).exclude(longitude__isnull=True)[:20]:
-            if prop.images.exists():
-                img_field = prop.images.first().image
-                img_url = str(img_field) if str(img_field).startswith('http') else img_field.url
-            else:
-                img_url = '/static/images/placeholder.jpg'
-            price = 0
-            if prop.property_type == 'HOSTEL' and prop.room_types.exists():
-                rt = prop.room_types.first()
-                pm = rt.pricing_models.first()
-                if pm: 
-                    price = pm.monthly_price or pm.semester_price or pm.yearly_price or 0
-            elif prop.property_type == 'APARTMENT' and prop.unit_types.exists():
-                ut = prop.unit_types.first()
-                pm = ut.pricing_models.first()
-                if pm: 
-                    price = pm.monthly_price or pm.semester_price or pm.yearly_price or 0
-                
-            map_properties.append({
-                'id': prop.id,
-                'title': prop.title,
-                'lat': float(prop.latitude),
-                'lng': float(prop.longitude),
-                'price': float(price) if price else 0,
-                'image': img_url,
-                'available_slots': 4 if prop.is_available else 0,
-                'type': prop.get_property_type_display(),
-                'is_verified': prop.is_verified,
-                'address': f"{prop.city}, {prop.region}"
-            })
-            
-        context['map_properties_json'] = json.dumps(map_properties)
+        try:
+            map_properties = []
+            for prop in Property.objects.filter(status='APPROVED', is_available=True).exclude(latitude__isnull=True).exclude(longitude__isnull=True)[:20]:
+                if prop.images.exists():
+                    img_field = prop.images.first().image
+                    img_url = str(img_field) if str(img_field).startswith('http') else img_field.url
+                else:
+                    img_url = '/static/images/placeholder.jpg'
+                price = 0
+                if prop.property_type == 'HOSTEL' and prop.room_types.exists():
+                    rt = prop.room_types.first()
+                    pm = rt.pricing_models.first()
+                    if pm:
+                        price = pm.monthly_price or pm.semester_price or pm.yearly_price or 0
+                elif prop.property_type == 'APARTMENT' and prop.unit_types.exists():
+                    ut = prop.unit_types.first()
+                    pm = ut.pricing_models.first()
+                    if pm:
+                        price = pm.monthly_price or pm.semester_price or pm.yearly_price or 0
+
+                map_properties.append({
+                    'id': prop.id,
+                    'title': prop.title,
+                    'lat': float(prop.latitude),
+                    'lng': float(prop.longitude),
+                    'price': float(price) if price else 0,
+                    'image': img_url,
+                    'available_slots': 4 if prop.is_available else 0,
+                    'type': prop.get_property_type_display(),
+                    'is_verified': prop.is_verified,
+                    'address': f"{prop.city}, {prop.region}"
+                })
+
+            context['map_properties_json'] = json.dumps(map_properties)
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error preparing map properties: {e}")
+            context['map_properties_json'] = json.dumps([])
         
         return context
 
