@@ -50,7 +50,11 @@ class HomeView(TemplateView):
         # Prepare map properties (first 20 to avoid slowing down homepage too much, or all featured)
         map_properties = []
         for prop in Property.objects.filter(status='APPROVED', is_available=True).exclude(latitude__isnull=True).exclude(longitude__isnull=True)[:20]:
-            img_url = prop.images.first().image.url if prop.images.exists() else '/static/images/placeholder.jpg'
+            if prop.images.exists():
+                img_field = prop.images.first().image
+                img_url = str(img_field) if str(img_field).startswith('http') else img_field.url
+            else:
+                img_url = '/static/images/placeholder.jpg'
             price = 0
             if prop.property_type == 'HOSTEL' and prop.room_types.exists():
                 rt = prop.room_types.first()
@@ -237,7 +241,11 @@ class PropertiesView(TemplateView):
                         price = f"GH₵ {unit_pricing.monthly_price or unit_pricing.yearly_price}/mo"
                         
                 # get image
-                img_url = prop.images.first().image.url if prop.images.first() else "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop"
+                if prop.images.first():
+                    img_field = prop.images.first().image
+                    img_url = str(img_field) if str(img_field).startswith('http') else img_field.url
+                else:
+                    img_url = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop"
                 
                 map_properties.append({
                     'id': prop.id,
@@ -427,7 +435,11 @@ class PropertyMapView(TemplateView):
                     price = f"GH₵ {unit_pricing.monthly_price or unit_pricing.yearly_price}/mo"
                     
             # get image
-            img_url = prop.images.first().image.url if prop.images.first() else "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop"
+            if prop.images.first():
+                img_field = prop.images.first().image
+                img_url = str(img_field) if str(img_field).startswith('http') else img_field.url
+            else:
+                img_url = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop"
 
             property_dict = {
                 'id': prop.id,
