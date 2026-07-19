@@ -27,8 +27,8 @@ def update_image_urls(apps, schema_editor):
     all_images = PropertyImage.objects.all()
     
     for image in all_images:
-        # Check if the image has a broken source.unsplash.com URL
-        if 'source.unsplash.com' in image.image:
+        # Check if the image has a broken source.unsplash.com URL using image.name (string field)
+        if image.name and 'source.unsplash.com' in image.name:
             # Generate a new working URL based on the property code
             property_code = image.accommodation_property.property_code if image.accommodation_property else 'DEFAULT'
             start_index = hash(property_code) % len(photo_ids)
@@ -38,7 +38,7 @@ def update_image_urls(apps, schema_editor):
             photo_id = photo_ids[photo_index]
             
             # Update to working URL format
-            image.image = f"https://images.unsplash.com/photo-{photo_id}?w=800&h=600&fit=crop"
+            image.name = f"https://images.unsplash.com/photo-{photo_id}?w=800&h=600&fit=crop"
             image.save()
 
 
