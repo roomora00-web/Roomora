@@ -1,0 +1,4659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Western North Executive Suites — StayMatch
+</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="icon" href="/static/landing/images/logo-black.png" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="/static/landing/css/main.css">
+    <style>
+        /* Fallback critical styling if main.css fails to load */
+        body { background: #080808; color: #F8FAFC; font-family: 'Plus Jakarta Sans', Inter, sans-serif; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .btn { display: inline-block; padding: 8px 12px; border-radius: 8px; text-decoration: none; }
+    </style>
+    
+<style>
+/* Anti-FOUC: Hide body until CSS loads */
+body { opacity: 0; }
+body.loaded { opacity: 1; transition: opacity 0.2s ease-in; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<style>
+/* ===============================================================
+   DESIGN TOKENS — premium dark glassmorphic B&W theme
+   =============================================================== */
+:root {
+  --accent:        #FFFFFF; /* White for B&W theme */
+  --accent-hover:  #E2E8F0;
+  --charcoal:      #FFFFFF;
+  --dark:          #F8FAFC;
+  --mid:           #CBD5E1;
+  --muted:         #94A3B8; /* Improved contrast */
+  --border:        rgba(255, 255, 255, 0.08);
+  --border-light:  rgba(255, 255, 255, 0.04);
+  --surface:       rgba(255, 255, 255, 0.05); /* Glass container */
+  --canvas:        #121212; /* Dark backdrop */
+  
+  /* B&W availability tags */
+  --status-avail-bg: #FFFFFF;
+  --status-avail-color: #000000;
+  --status-low-bg: transparent;
+  --status-low-border: #FFFFFF;
+  --status-low-color: #FFFFFF;
+  --status-full-bg: rgba(255, 255, 255, 0.05);
+  --status-full-color: #64748B;
+
+  --shadow-sm:     none;
+  --shadow-md:     none;
+  --shadow-lg:     none;
+  --radius-sm:     8px;
+  --radius-md:     12px;
+  --radius-lg:     16px;
+  --radius-xl:     24px;
+  --font:          'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--canvas);
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+/* Glass panel utility */
+.glass-panel-base {
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+}
+
+/* App Workspace Wrapper */
+.app-workspace-wrapper {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 56px 48px;
+  background: var(--canvas);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Custom Header Styling (Responsive & Dark Mode) */
+.prop-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0;
+  margin-bottom: 24px;
+  width: 100%;
+}
+.prop-navbar-brand a { display: block; }
+.prop-logo-img {
+  height: 200px;
+  width: auto;
+  max-width: none;
+  display: block;
+  object-fit: contain;
+  margin: -50px 0 -80px -40px;
+  transform: scale(1.2);
+  transform-origin: left center;
+}
+.prop-center-nav {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 100px;
+  padding: 6px;
+  display: flex;
+  gap: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.prop-nav-link {
+  text-decoration: none;
+  font-size: 14px;
+  color: #FFFFFF;
+  font-weight: 500;
+  padding: 8px 20px;
+  border-radius: 100px;
+  transition: all 0.2s ease;
+}
+.prop-nav-link:hover { color: rgba(255, 255, 255, 0.8); }
+.prop-nav-link.is-active {
+  background: #FFFFFF;
+  color: #000000;
+  font-weight: 600;
+}
+.prop-right-panel {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 6px 6px 20px;
+  border-radius: 100px;
+}
+.prop-auth-link {
+  color: #FFFFFF;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+.prop-auth-link:hover { color: rgba(255, 255, 255, 0.8); }
+.prop-auth-btn {
+  background: #FFFFFF;
+  color: #000000;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.prop-auth-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
+}
+.prop-mobile-menu-btn {
+  display: none;
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+.prop-mobile-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Page canvas */
+.pd-canvas {
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.pd-inner-nav {
+  position: sticky;
+  top: 16px;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  margin: 8px 0 24px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 999px;
+  background: rgba(7, 10, 16, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.pd-inner-nav-link {
+  text-decoration: none;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.pd-inner-nav-link:hover,
+.pd-inner-nav-link.active {
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+}
+
+/* Breadcrumbs */
+.pd-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.pd-breadcrumb a { color: var(--muted); text-decoration: none; }
+.pd-breadcrumb a:hover { color: var(--accent); }
+.pd-breadcrumb .sep { color: var(--border); }
+.pd-breadcrumb .current { color: var(--dark); font-weight: 600; }
+
+/* Title block */
+.pd-title-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 30px 32px;
+  margin-bottom: 26px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 30px;
+  background: var(--canvas) !important;
+  background-image: none !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.28);
+}
+.pd-title-left {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.pd-title-left h1 {
+  font-size: 36px;
+  font-weight: 900;
+  color: #FFFFFF;
+  line-height: 1.06;
+  margin-bottom: 10px;
+  letter-spacing: -0.04em;
+}
+.pd-title-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #B8C2D6;
+  margin-bottom: 12px;
+}
+.pd-hero-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.pd-hero-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: #E2E8F0;
+  font-size: 12px;
+  font-weight: 700;
+}
+.pd-verified-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.pd-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 22px;
+}
+.pd-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,0.06);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,0.10);
+}
+.pd-stars-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #C1C9DD;
+  margin-top: 12px;
+}
+.pd-stars { display: flex; gap: 2px; }
+.pd-star { color: rgba(255,255,255,0.2); font-size: 16px; }
+.pd-star.filled { color: #FFFFFF; }
+.pd-reviews-link { color: #FFFFFF; text-decoration: none; font-weight: 600; }
+.pd-reviews-link:hover { text-decoration: underline; }
+.pd-quick-actions { display: flex; gap: 10px; flex-shrink: 0; margin-top: 16px; }
+.pd-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 30px;
+  background: rgba(255,255,255,0.06);
+  font-size: 13px;
+  font-weight: 600;
+  color: #F8FAFC;
+  cursor: pointer;
+  transition: all .2s;
+}
+.pd-action-btn:hover {
+  border-color: #FFFFFF;
+  background: #FFFFFF;
+  color: #000000;
+}
+.pd-action-btn.save-active { background: #FFFFFF; color: #000000; border-color: #FFFFFF; }
+
+/* Bento Gallery */
+.pd-gallery-bento {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  grid-template-rows: 280px 200px;
+  gap: 8px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+.pd-at-glance {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+.pd-glance-card {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.pd-glance-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8F9BB3;
+}
+.pd-glance-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-top: 4px;
+}
+.pd-story-card {
+  margin-top: 20px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.pd-story-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 8px;
+}
+.pd-story-card p {
+  font-size: 14px;
+  color: #CBD5E1;
+  line-height: 1.7;
+  margin: 0;
+}
+.pd-section-shell {
+  background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025));
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.16);
+}
+.pd-section-intro {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.pd-section-intro h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 6px;
+}
+.pd-section-intro p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 640px;
+}
+.pd-summary-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.pd-summary-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 16px;
+}
+.pd-summary-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 18px;
+}
+.pd-summary-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.pd-booking-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 16px 0 18px;
+}
+.pd-book-step {
+  padding: 10px 8px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.pd-book-step strong {
+  display: block;
+  color: #FFFFFF;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+.pd-trust-banner {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 8px 0 32px;
+}
+.pd-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.pd-trust-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+.pd-trust-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.pd-trust-desc {
+  font-size: 13px;
+  color: #E2E8F0;
+  margin-top: 2px;
+}
+.pd-bento-main {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  position: relative;
+  overflow: hidden;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+.pd-bento-main img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.pd-bento-main:hover img { transform: scale(1.02); }
+.pd-bento-side {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+.mobile-only-thumb { display: none; }
+.pd-bento-side img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.pd-bento-side:hover img { transform: scale(1.02); }
+.pd-bento-side.has-more::after {
+  content: attr(data-more);
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font);
+}
+.pd-gallery-badge {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all .2s;
+  z-index: 2;
+}
+.pd-gallery-badge:hover { background: #FFFFFF; color: #000000; border-color: #FFFFFF; }
+
+/* Lightbox Modal */
+.pd-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.95);
+  z-index: 99999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.pd-lightbox.open { display: flex; }
+.pd-lightbox-img { max-width: 90vw; max-height: 80vh; object-fit: contain; border-radius: var(--radius-md); }
+.pd-lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+}
+.pd-lightbox-close:hover { background: rgba(255,255,255,.2); }
+.pd-lightbox-caption {
+  position: absolute;
+  bottom: 60px;
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  max-width: 80%;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.pd-lightbox-counter { color: var(--mid); font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+.pd-lightbox-nav { display: flex; gap: 16px; margin-top: 20px; }
+.pd-lightbox-nav button {
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+}
+.pd-lightbox-nav button:hover { background: rgba(255,255,255,.2); }
+
+/* Trust Banner */
+.pd-trust-banner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+.pd-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  background: var(--surface);
+  transition: background .15s;
+}
+.pd-trust-item:hover { background: rgba(255,255,255,0.06); }
+.pd-trust-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #FFFFFF;
+}
+.pd-trust-label { font-size: 12px; font-weight: 700; color: #FFFFFF; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+.pd-trust-desc { font-size: 12px; color: var(--muted); line-height: 1.3; }
+
+/* Sticky nav */
+.pd-inner-nav {
+  position: sticky;
+  top: 16px;
+  z-index: 90;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  margin: 0 0 28px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 999px;
+  background: rgba(7, 10, 16, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.pd-inner-nav-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+.pd-inner-nav-link:hover,
+.pd-inner-nav-link.active {
+  color: #FFFFFF;
+  background: rgba(255,255,255,0.1);
+}
+
+/* Workspace */
+.pd-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
+  gap: 40px;
+  align-items: start;
+}
+.pd-left section {
+  position: relative;
+}
+.pd-left { display: flex; flex-direction: column; gap: 48px; }
+.pd-right { position: sticky; top: 100px; }
+
+.pd-section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 12px;
+}
+.pd-section-title svg { color: #FFFFFF; }
+
+.pd-description p { font-size: 15px; color: #CBD5E1; line-height: 1.8; margin-bottom: 16px; }
+.pd-description p:last-child { margin-bottom: 0; }
+
+/* Key Facts */
+.pd-key-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+.pd-fact-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+.pd-fact-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.07);
+}
+.pd-section-subtitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--charcoal);
+  margin-bottom: 16px;
+}
+.pd-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.pd-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.pd-detail-key {
+  font-size: 13px;
+  color: var(--muted);
+}
+.pd-detail-value {
+  font-size: 14px;
+  color: var(--charcoal);
+  font-weight: 600;
+  line-height: 1.5;
+}
+.pd-suitable-for {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.pd-suitable-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pd-suitable-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.05);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+}
+.pd-highlights {
+  display: grid;
+  gap: 12px;
+}
+.pd-highlight-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.pd-highlight-icon {
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.08);
+}
+.pd-highlight-item span {
+  color: var(--charcoal);
+  line-height: 1.6;
+}
+.pd-fact-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.pd-fact-value { font-size: 15px; font-weight: 600; color: #FFFFFF; }
+
+/* Highlights */
+.pd-highlights { display: flex; flex-direction: column; gap: 12px; }
+.pd-highlight-item { display: flex; align-items: center; gap: 14px; font-size: 14px; color: #E2E8F0; }
+.pd-highlight-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+
+/* Room Cards */
+.pd-room-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+@media (max-width: 1024px) {
+  .pd-room-cards { grid-template-columns: 1fr; }
+}
+
+.pd-room-card {
+  background: var(--canvas) !important;
+  background-image: none !important;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 16px 38px rgba(0,0,0,0.26);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.pd-room-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.18);
+  box-shadow: 0 20px 44px rgba(0,0,0,0.32);
+}
+.pd-room-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 18px 14px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.pd-room-card-title { font-size: 20px; font-weight: 800; color: #FFFFFF; line-height: 1.1; }
+.pd-room-card-subtitle { font-size: 13px; color: #BCC5D4; margin-top: 6px; }
+.pd-room-card-header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+
+/* Availability badges styled strictly B&W */
+.pd-avail-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.pd-room-card-body { padding: 16px 18px; display: grid; gap: 16px; }
+.pd-room-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 900px) {
+  .pd-room-grid { grid-template-columns: 1fr; }
+}
+.pd-room-details-col h4, .pd-room-pricing-col h4 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .45px;
+  color: #9CA3AF;
+  margin-bottom: 14px;
+}
+.pd-room-details-col { display: flex; flex-direction: column; gap: 10px; }
+.pd-room-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #D1D9EB;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.pd-room-feature svg { color: #FFFFFF; flex-shrink: 0; }
+.pd-room-pricing-col { display: flex; flex-direction: column; gap: 18px; }
+.pd-price-block {
+  position: relative;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 22px;
+  padding: 16px 16px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+.pd-price-block::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  width: 64px;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+}
+.pd-price-hero { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.pd-price-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pd-price-pill {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #FFFFFF;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 999px;
+  padding: 6px 12px;
+}
+.pd-price-subtle { font-size: 12px; color: #B2C1DC; }
+.pd-price-main { font-size: 32px; font-weight: 900; color: #FFFFFF; letter-spacing: -0.04em; line-height: 1.05; }
+.pd-price-sub { font-size: 13px; color: #D1DAEC; }
+.pd-price-note { font-size: 12px; color: #A8B3C9; margin-top: 10px; line-height: 1.5; }
+.pd-price-breakdown { display: grid; gap: 8px; margin-top: 12px; }
+.pd-price-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-size: 13px;
+}
+.pd-price-option:last-child { border-bottom: none; }
+.price-label { color: #CBD5E0; }
+.price-val { font-weight: 800; color: #FFFFFF; font-size: 17px; }
+.pd-price-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.10); color: #A0AEC0; font-size: 13px; }
+.pd-room-card-footer {
+  padding: 24px 28px 28px;
+  display: grid;
+  gap: 18px;
+}
+.pd-slots-info { font-size: 14px; color: #CBD5E1; }
+.pd-house-rules-ack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.pd-ack-label { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+.pd-ack-check { width: 18px; height: 18px; accent-color: #FFFFFF; cursor: pointer; }
+.pd-ack-text { font-size: 13px; color: #CBD5E1; line-height: 1.6; }
+.pd-ack-link { color: #FFFFFF; text-decoration: underline; }
+.pd-book-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95));
+  color: #08101C;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(255,255,255,0.22);
+  cursor: pointer;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.14);
+}
+.pd-book-btn:hover {
+  transform: translateY(-1px);
+  background: #F8FAFC;
+  border-color: rgba(255,255,255,0.30);
+}
+.pd-book-btn--disabled {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.55);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: none;
+  pointer-events: none;
+}
+.pd-book-btn--active {
+  background: #FFFFFF;
+  color: #08101C;
+  border-color: rgba(255,255,255,0.26);
+}
+.pd-book-btn--full {
+  background: rgba(255,255,255,0.10);
+  color: #A0AEC0;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+/* Compare button */
+.pd-compare-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 12px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all .2s;
+}
+.pd-compare-btn:hover { background: #FFFFFF; color: #000000; border-color: #FFFFFF; }
+.pd-comparison-table {
+  display: none;
+  margin-top: 16px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.pd-comparison-table.open { display: block; }
+.pd-comparison-table table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.pd-comparison-table th {
+  background: rgba(255,255,255,0.02);
+  padding: 14px 18px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  border-bottom: 1px solid var(--border);
+}
+.pd-comparison-table td { padding: 14px 18px; border-bottom: 1px solid var(--border-light); color: #E2E8F0; }
+.pd-comparison-table tr:last-child td { border-bottom: none; }
+
+/* Amenities Grid */
+.pd-amenities-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.pd-amenity-group {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+.pd-amenity-group:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.07);
+}
+.pd-amenity-group-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-light);
+}
+.pd-amenity-group-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+.pd-amenity-group-title { font-size: 16px; font-weight: 700; color: #FFFFFF; }
+.pd-amenity-item { display: flex; align-items: center; gap: 12px; font-size: 13.5px; color: #CBD5E1; padding: 6px 0; }
+.pd-amenity-status {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+}
+.pd-amenity-status.yes { background: rgba(255,255,255,0.15); color: #FFFFFF; }
+.pd-amenity-status.warn { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #FFFFFF; }
+.pd-amenity-status.no { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+
+/* Proximity / Maps */
+.pd-map-frame {
+  width: 100%;
+  height: 400px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: rgba(0,0,0,0.5);
+}
+.pd-proximity-list { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+.pd-proximity-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+}
+.pd-proximity-left { display: flex; align-items: center; gap: 12px; color: #FFFFFF; font-weight: 500; }
+.pd-proximity-left svg { color: #FFFFFF; }
+.pd-proximity-dist {
+  font-size: 12px;
+  color: #FFFFFF;
+  font-weight: 600;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--border);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.pd-proximity-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.pd-proximity-table thead { background: rgba(255,255,255,0.02); }
+.pd-proximity-table th {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.pd-proximity-table td { padding: 14px 18px; font-size: 14px; color: #CBD5E1; border-bottom: 1px solid var(--border-light); }
+.pd-proximity-table tr:last-child td { border-bottom: none; }
+.pd-proximity-table tr:hover { background: rgba(255,255,255,0.02); }
+
+/* Reviews */
+.pd-reviews-summary {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 28px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.pd-rating-big { text-align: center; }
+.pd-rating-score { font-size: 56px; font-weight: 800; color: #FFFFFF; line-height: 1; }
+.pd-rating-out { font-size: 14px; color: var(--muted); margin-top: 6px; }
+.pd-rating-stars-big { display: flex; justify-content: center; gap: 3px; margin: 12px 0 6px; }
+.pd-rating-stars-big .pd-star { font-size: 20px; }
+.pd-rating-bars { display: flex; flex-direction: column; gap: 8px; }
+.pd-bar-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); }
+.pd-bar-label { width: 40px; text-align: right; font-weight: 600; }
+.pd-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-light); }
+.pd-bar-fill { height: 100%; background: #FFFFFF; border-radius: 4px; transition: width .6s ease; }
+.pd-bar-count { width: 24px; }
+
+.pd-review-cards { display: flex; flex-direction: column; gap: 16px; }
+.pd-review-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+.pd-review-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.pd-reviewer-info { display: flex; align-items: center; gap: 12px; }
+.pd-reviewer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.pd-reviewer-name { font-weight: 700; font-size: 14px; color: #FFFFFF; }
+.pd-reviewer-meta { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+.pd-verified-guest { display: inline-flex; align-items: center; gap: 4px; color: #FFFFFF; font-weight: 600; }
+.pd-review-rating { display: flex; gap: 2px; }
+.pd-review-title { font-size: 15px; font-weight: 700; color: #FFFFFF; margin-bottom: 6px; }
+.pd-review-content { font-size: 14px; color: #CBD5E1; line-height: 1.7; }
+.pd-review-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-light); }
+.pd-helpful-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+}
+.pd-helpful-btn:hover { border-color: #FFFFFF; color: #FFFFFF; background: rgba(255,255,255,0.05); }
+
+/* Roommate Matching */
+.pd-roommate-banner {
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+}
+.pd-roommate-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+.pd-roommate-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.06);
+  color: #FFFFFF;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.pd-roommate-title { font-size: 18px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px; }
+.pd-roommate-sub { font-size: 13px; color: var(--muted); }
+.pd-compat-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 6px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 20px;
+}
+.pd-matching-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.pd-step { text-align: center; padding: 14px; background: rgba(255,255,255,0.02); border-radius: var(--radius-md); border: 1px solid var(--border); }
+.pd-step-num {
+  width: 28px;
+  height: 28px;
+  background: #FFFFFF;
+  color: #000000;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+}
+.pd-step p { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
+/* Sticky Booking Card */
+.pd-booking-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 22px 45px rgba(0,0,0,0.22);
+  position: sticky;
+  top: 24px;
+}
+.pd-booking-property-name { font-size: 18px; font-weight: 700; color: #FFFFFF; margin-bottom: 6px; }
+.pd-booking-location { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 4px; margin-bottom: 18px; }
+.pd-booking-price-display { padding: 18px 0; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 18px; }
+.pd-price-from { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+.pd-price-main { font-size: 34px; font-weight: 800; color: #FFFFFF; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.pd-price-main span { font-size: 14px; font-weight: 400; color: var(--muted); }
+.pd-included-section { margin-bottom: 16px; }
+.pd-included-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 12px; }
+.pd-included-item { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #E2E8F0; margin-bottom: 6px; }
+.pd-included-item .yes { color: #FFFFFF; }
+.pd-included-item .no { color: var(--muted); }
+
+.pd-cancellation-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 14px; margin-bottom: 20px; }
+.pd-cancellation-title { font-size: 12.5px; font-weight: 700; color: #FFFFFF; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.pd-cancellation-box p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.pd-book-main-btn {
+  display: block;
+  width: 100%;
+  background: #FFFFFF;
+  color: #000000;
+  border: none;
+  border-radius: 30px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: all .2s;
+  margin-bottom: 12px;
+  font-family: var(--font);
+}
+.pd-book-main-btn:hover { background: #E2E8F0; transform: translateY(-1px); }
+.pd-book-main-btn.waitlist { background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: #FFFFFF; }
+.pd-book-main-btn.login-gate { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #FFFFFF; }
+
+.pd-secondary-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pd-secondary-btn {
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 10px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: all .2s;
+  display: block;
+}
+.pd-secondary-btn:hover { border-color: #FFFFFF; background: rgba(255,255,255,0.05); }
+
+.pd-sidebar-stats { display: flex; justify-content: space-between; padding: 14px 0 20px; font-size: 12px; color: var(--muted); }
+.pd-sidebar-stat { display: flex; align-items: center; gap: 4px; font-weight: 600; }
+
+/* Contact Section */
+.pd-contact-section {
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  margin-top: 48px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.16);
+}
+.pd-contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+.pd-contact-info-block h3 { font-size: 18px; font-weight: 700; color: #FFFFFF; margin-bottom: 6px; }
+.pd-contact-info-block p { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.pd-contact-detail { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #E2E8F0; margin-bottom: 12px; }
+.pd-contact-detail svg { color: #FFFFFF; flex-shrink: 0; }
+.pd-contact-actions { display: flex; flex-direction: column; gap: 10px; }
+.pd-contact-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .2s;
+  border: none;
+  font-family: var(--font);
+}
+.pd-contact-btn.primary { background: #FFFFFF; color: #000000; }
+.pd-contact-btn.primary:hover { background: #E2E8F0; }
+.pd-contact-btn.outline { background: transparent; border: 1px solid var(--border); color: #FFFFFF; }
+.pd-contact-btn.outline:hover { border-color: #FFFFFF; background: rgba(255,255,255,0.05); }
+
+/* Modals (Visits/Selection) */
+.pd-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 99998;
+  align-items: center;
+  justify-content: center;
+}
+.pd-modal-overlay.open { display: flex; }
+.pd-modal {
+  background: var(--canvas);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  width: 480px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.pd-modal h3 { font-size: 22px; font-weight: 700; color: #FFFFFF; margin-bottom: 6px; }
+.pd-modal-sub { font-size: 13.5px; color: var(--muted); margin-bottom: 24px; }
+.pd-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+}
+.pd-form-group { margin-bottom: 16px; }
+.pd-form-label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+.pd-form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: var(--font);
+  color: #FFFFFF;
+  background: rgba(0,0,0,0.2);
+  transition: border-color .2s;
+  outline: none;
+}
+.pd-form-input:focus { border-color: #FFFFFF; }
+.pd-form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Related section */
+.pd-related-section { margin-top: 56px; padding-top: 40px; border-top: 1px solid var(--border-light); }
+.pd-related-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.pd-related-header h2 { font-size: 22px; font-weight: 700; color: #FFFFFF; }
+.pd-see-all { font-size: 14px; font-weight: 600; color: #FFFFFF; text-decoration: none; }
+.pd-see-all:hover { text-decoration: underline; }
+.pd-related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.pd-rec-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow .2s, transform .2s;
+  display: block;
+}
+.pd-rec-card:hover { transform: translateY(-3px); border-color: #FFFFFF; }
+.pd-rec-img { width: 100%; height: 180px; object-fit: cover; }
+.pd-rec-body { padding: 18px; }
+.pd-rec-price-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.pd-rec-price { font-size: 18px; font-weight: 800; color: #FFFFFF; font-variant-numeric: tabular-nums; }
+.pd-rec-price span { font-size: 12px; font-weight: 400; color: var(--muted); }
+.pd-rec-title { font-size: 15px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px; }
+.pd-rec-addr { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.pd-rec-specs { display: flex; gap: 12px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border-light); padding-top: 12px; }
+.pd-rec-spec { display: flex; align-items: center; gap: 4px; }
+.pd-rec-spec svg { color: #FFFFFF; }
+.pd-view-btn { font-size: 11px; font-weight: 700; border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; color: #FFFFFF; transition: all .2s; }
+.pd-rec-card:hover .pd-view-btn { background: #FFFFFF; color: #000000; border-color: #FFFFFF; }
+
+/* Toast */
+.pd-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #FFFFFF;
+  color: #000000;
+  padding: 14px 24px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  z-index: 99997;
+  transition: transform .3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.pd-toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Animation Classes */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Sidebar stat icon alignment */
+.pd-sidebar-stat svg { width:14px; height:14px; flex-shrink:0; }
+
+/* Responsive viewports */
+@media (max-width: 1024px) {
+  .pd-workspace { grid-template-columns: 1fr; }
+  .pd-right { position: relative; top: 0; }
+  .pd-booking-card { padding: 24px; }
+  .pd-key-facts { grid-template-columns: repeat(2, 1fr); }
+  .pd-amenities-grid { grid-template-columns: 1fr; }
+  .pd-reviews-summary { grid-template-columns: 1fr; }
+  .pd-contact-grid { grid-template-columns: 1fr; }
+  .pd-related-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .app-workspace-wrapper { padding: 0 24px 32px; }
+  .pd-canvas { padding: 0 0 48px; }
+  .pd-title-block { flex-direction: column; gap: 12px; }
+  
+  /* Convert Gallery to Swipeable Carousel */
+  .pd-gallery-bento { 
+    display: flex !important; 
+    overflow-x: auto !important; 
+    scroll-snap-type: x mandatory !important; 
+    -webkit-overflow-scrolling: touch !important; 
+    grid-template-columns: unset !important; 
+    grid-template-rows: unset !important; 
+    gap: 12px !important; 
+    margin: 0 -24px 24px -24px !important; 
+    padding: 0 24px !important; 
+    border-radius: 0 !important;
+  }
+  .pd-gallery-bento::-webkit-scrollbar { display: none; }
+  .pd-bento-main, .pd-bento-side { 
+    flex: 0 0 85% !important;
+    display: block !important;
+    height: 300px !important; 
+    scroll-snap-align: center !important; 
+    border-radius: var(--radius-xl) !important; 
+  }
+  .mobile-only-thumb { display: block !important; }
+  
+  .pd-trust-banner { grid-template-columns: 1fr 1fr; }
+  .pd-room-grid { grid-template-columns: 1fr; gap: 20px; }
+  .pd-matching-steps { grid-template-columns: repeat(2, 1fr); }
+  .pd-summary-grid { grid-template-columns: 1fr; }
+  .pd-booking-steps { grid-template-columns: 1fr; }
+}
+@media (max-width: 540px) {
+  .pd-related-grid { grid-template-columns: 1fr; }
+  .pd-key-facts { grid-template-columns: 1fr; }
+  .pd-secondary-actions { grid-template-columns: 1fr; }
+  .pd-trust-banner { grid-template-columns: 1fr; }
+}
+
+.scroll-animate {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.scroll-animate.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===============================================================
+   MOBILE APP RESPONSIVE & BUTTON CONTRAST OVERRIDES
+   =============================================================== */
+.pd-book-main-btn {
+  color: #000000 !important;
+}
+.pd-book-btn--active {
+  color: #000000 !important;
+}
+.pd-contact-btn.primary {
+  color: #000000 !important;
+}
+#bookingModalSidebar button[type="submit"] {
+  color: #000000 !important;
+}
+.pd-action-btn:hover {
+  color: #000000 !important;
+}
+.pd-action-btn.save-active {
+  color: #000000 !important;
+}
+.pd-secondary-btn.save-active {
+  background: #FFFFFF !important;
+  color: #000000 !important;
+  border-color: #FFFFFF !important;
+}
+
+/* Mobile Sticky Action Bar */
+.mobile-sticky-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px 24px;
+  z-index: 999;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+}
+.mobile-sticky-bar-price {
+  display: flex;
+  flex-direction: column;
+}
+.mobile-sticky-bar-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.mobile-sticky-bar-val {
+  font-size: 20px;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+.mobile-sticky-bar-val span {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  /* Title layout on mobile */
+  .pd-title-block {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  .pd-quick-actions {
+    align-self: flex-start !important;
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  .pd-quick-actions button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Map actions row on mobile */
+  .pd-map-actions-row {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+  .pd-map-actions-row a, .pd-map-actions-row button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Table responsiveness wrapper */
+  .pd-proximity-table-wrapper, .pd-compare-table-wrapper {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .mobile-sticky-bar {
+    display: flex;
+  }
+  .app-workspace-wrapper {
+    padding-bottom: 120px !important;
+  }
+  
+  /* Convert modals into mobile bottom sheets */
+  .pd-modal, .bcm-modal, .hrm-modal-container, .rsm-modal-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 24px 24px 0 0 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    max-height: 85vh !important;
+    margin: 0 !important;
+    border-bottom: none !important;
+    animation: slideUpMobile 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  }
+  .pd-modal-overlay, .bcm-overlay, .hrm-overlay, .bm-overlay {
+    align-items: flex-end !important;
+  }
+  
+
+}
+
+@keyframes slideUpMobile {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.pd-map-actions-row button:hover, 
+.pd-map-actions-row a[style*="background:var(--surface)"]:hover,
+.pd-map-actions-row a[href*="/properties/map"]:hover {
+  background: #FFFFFF !important;
+  color: #000000 !important;
+  border-color: #FFFFFF !important;
+}
+
+/* ===============================================================
+   WHITE BUTTON CONTRAST AND EXTRA MOBILE OPTIMIZATIONS
+   =============================================================== */
+.pd-btn-white {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: #FFFFFF !important;
+  color: #000000 !important;
+  border-radius: 30px !important;
+  text-decoration: none !important;
+  font-weight: 700 !important;
+  transition: all 0.2s ease !important;
+  border: none !important;
+  cursor: pointer !important;
+}
+.pd-btn-white:hover {
+  background: #E2E8F0 !important;
+  color: #000000 !important;
+}
+
+/* Proximity table scroll wrapping */
+.pd-proximity-table-wrapper {
+  width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+@media (max-width: 768px) {
+  .app-workspace-wrapper {
+    padding: 0 12px 100px !important; /* Smaller side margins, space for sticky bar */
+  }
+  .pd-gallery-bento {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+  }
+  .pd-title-left h1 {
+    font-size: 22px !important;
+  }
+  .pd-section-title {
+    font-size: 18px !important;
+  }
+  
+  /* Make lists and grids look outstanding and tidy on mobile */
+  .pd-key-facts {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .pd-room-card {
+    padding: 16px !important;
+    gap: 16px !important;
+  }
+  .pd-room-card-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+  .pd-room-card-header > div:last-child {
+    text-align: left !important;
+  }
+}
+
+/* Mobile Navbar Fix */
+@media (max-width: 768px) {
+  .prop-navbar {
+    padding: 16px 0 !important;
+  }
+  .prop-logo-img {
+    height: 120px !important;
+    margin: -30px 0 -50px -20px !important;
+    transform: scale(1) !important;
+  }
+  .hero-logo-img {
+    height: 120px !important;
+    margin: -30px 0 -50px -20px !important;
+    transform: scale(1) !important;
+  }
+  .prop-center-nav {
+    display: none !important;
+  }
+  .prop-right-panel {
+    display: none !important;
+  }
+  .prop-mobile-menu-btn {
+    display: flex !important;
+  }
+  .app-workspace-wrapper {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* Final dark theme override for property detail page panels */
+.pd-title-block,
+.pd-room-card,
+.pd-price-block,
+.pd-story-card,
+.pd-section-shell,
+.pd-glance-card,
+.pd-house-rules-ack,
+.pd-room-card-footer,
+.pd-room-card-header,
+.pd-room-card-body {
+  background: var(--canvas) !important;
+  background-image: none !important;
+  border-color: rgba(255,255,255,0.10) !important;
+}
+.pd-price-block {
+  background: rgba(255,255,255,0.04) !important;
+}
+.pd-room-card-header {
+  background: rgba(255,255,255,0.03) !important;
+}
+.pd-hero-chip {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.10) !important;
+}
+.pd-room-cards {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  width: 100% !important;
+}
+@media (max-width: 1024px) {
+  .pd-room-cards { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 768px) {
+  .pd-title-block { padding: 24px 20px !important; }
+  .pd-room-card {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .pd-room-card-body { padding: 16px !important; }
+  .pd-room-card-footer { padding: 18px 20px 20px !important; }
+  .pd-room-card-header { padding: 16px 16px 14px !important; }
+}
+  </style>
+
+
+  <style>
+  /* Strong inline-style override limited to property detail canvas only */
+  .pd-canvas [style*="linear-gradient"],
+  .pd-canvas [style*="background-image"],
+  .pd-canvas [style*="background:linear-gradient"],
+  .pd-canvas [style*="background: linear-gradient"],
+  [style*="linear-gradient"],
+  [style*="background-image"],
+  [style*="background:linear-gradient"],
+  [style*="background: linear-gradient"] {
+    background-image: none !important;
+    background: var(--canvas) !important;
+    border-color: rgba(255,255,255,0.10) !important;
+  }
+
+  /* Extra mobile enforcement to keep cards full-width and stacked */
+  @media (max-width: 768px) {
+    .pd-canvas {
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+    }
+    .pd-title-block {
+      width: 100% !important;
+      padding: 20px !important;
+      box-shadow: none !important;
+      border-radius: 18px !important;
+    }
+    .pd-room-cards { grid-template-columns: 1fr !important; gap: 12px !important; }
+    .pd-room-card { margin: 0 !important; width: 100% !important; }
+  }
+
+  </style>
+
+
+
+
+
+</head>
+<body>
+    
+<div class="app-workspace-wrapper">
+<!-- ═══════════════════════════════════════════════════════════════
+     STANDARD NAVBAR (matches home / properties pages)
+═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Header Navigation Container -->
+    <header class="prop-navbar animate-fade-up">
+        <!-- Left Brand Logo -->
+        <div class="prop-navbar-brand">
+            
+            <a href="/">
+                <img src="/static/landing/images/logo-white.png" alt="Roomora Logo" class="prop-logo-img">
+            </a>
+        </div>
+
+        <!-- Center Navigation Pill -->
+        <nav class="prop-center-nav">
+            <a href="/" class="prop-nav-link">Home</a>
+            <a href="/properties/" class="prop-nav-link is-active">Properties</a>
+            <a href="#" class="prop-nav-link">About</a>
+            <a href="#" class="prop-nav-link">Blog</a>
+        </nav>
+
+        <!-- Right Action Panel -->
+        <div class="prop-right-panel glass-panel-base">
+            
+            <a href="/accounts/login/" class="prop-auth-link">Sign In</a>
+            <a href="/properties/" class="prop-auth-btn">Find a Place</a>
+            
+        </div>
+
+        <!-- Mobile Menu Hamburger Button -->
+        <button id="prop-mobile-menu-btn" class="prop-mobile-menu-btn" aria-label="Open menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </header>
+
+    <!-- Mobile Nav Drawer (shared, used by hamburger) -->
+    <div id="prop-mobile-nav-drawer" style="position:fixed;inset:0;background:rgba(8,8,8,0.97);z-index:99999;display:none;flex-direction:column;overflow-y:auto;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:24px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <span style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.03em;font-family:'Plus Jakarta Sans',sans-serif;">Roomora</span>
+            <button id="prop-drawer-close-btn" aria-label="Close menu" style="width:40px;height:40px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div style="display:flex;flex-direction:column;padding:20px 24px;gap:0;font-family:'Plus Jakarta Sans',sans-serif;">
+            <a href="/" style="font-size:24px;font-weight:700;color:rgba(255,255,255,0.5);text-decoration:none;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.07);">Home</a>
+            <a href="/properties/" style="font-size:24px;font-weight:700;color:#fff;text-decoration:none;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.07);">Properties</a>
+            <a href="#" style="font-size:24px;font-weight:700;color:rgba(255,255,255,0.5);text-decoration:none;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.07);">About Us</a>
+            <a href="#" style="font-size:24px;font-weight:700;color:rgba(255,255,255,0.5);text-decoration:none;padding:16px 0;">Blog</a>
+            
+            <a href="/accounts/login/" style="display:block;text-align:center;color:rgba(255,255,255,0.5);text-decoration:none;font-size:16px;font-weight:700;padding:16px 0;margin-top:8px;">Sign In</a>
+            <a href="/properties/" style="display:block;background:#fff;color:#000;text-align:center;padding:18px;border-radius:14px;text-decoration:none;font-weight:800;font-size:16px;">Find a Place</a>
+            
+        </div>
+    </div>
+
+
+<div class="pd-canvas">
+
+  <nav class="pd-breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span class="sep">›</span>
+    <a href="/properties/">Properties</a>
+    <span class="sep">›</span>
+    <span class="current">Western North Executive Suites</span>
+  </nav>
+
+  <div class="scroll-animate pd-title-block">
+    <div class="pd-title-left">
+      <div class="pd-title-eyebrow">Featured stay · Apartment</div>
+      <h1>Western North Executive Suites</h1>
+      <div class="pd-verified-row">
+        <span class="pd-type-badge">Apartment</span>
+        
+        <span class="pd-verified-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Verified
+        </span>
+        
+      </div>
+      <div class="pd-stars-row">
+        <div class="pd-stars">
+          
+          <span class="pd-star filled">★</span>
+          
+          <span class="pd-star filled">★</span>
+          
+          <span class="pd-star filled">★</span>
+          
+          <span class="pd-star filled">★</span>
+          
+          <span class="pd-star filled">★</span>
+          
+        </div>
+        
+        <strong>5.0/5</strong>
+        <a href="#reviews" class="pd-reviews-link">(3 reviews)</a>
+        
+        <span>·</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Sefwi Wiawso, Western North</span>
+      </div>
+      <div class="pd-hero-highlights">
+        <span class="pd-hero-chip">Fast response</span>
+        <span class="pd-hero-chip">Flexible stay options</span>
+        <span class="pd-hero-chip">Safety score 7/10</span>
+      </div>
+      <div class="pd-at-glance">
+        <div class="pd-glance-card">
+          <div class="pd-glance-label">Location</div>
+          <div class="pd-glance-value">Sefwi Wiawso</div>
+        </div>
+        <div class="pd-glance-card">
+          <div class="pd-glance-label">Country</div>
+          <div class="pd-glance-value">Ghana</div>
+        </div>
+        <div class="pd-glance-card">
+          <div class="pd-glance-label">Type</div>
+          <div class="pd-glance-value">Apartment</div>
+        </div>
+        <div class="pd-glance-card">
+          <div class="pd-glance-label">Verified</div>
+          <div class="pd-glance-value">Yes</div>
+        </div>
+        <div class="pd-glance-card">
+          <div class="pd-glance-label">Status</div>
+          <div class="pd-glance-value">Available</div>
+        </div>
+      </div>
+    </div>
+    <div class="pd-quick-actions">
+      <button class="pd-action-btn " id="save-btn" onclick="toggleSave(this)" title="Save property" data-property-id="112">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Save
+      </button>
+      <button class="pd-action-btn" onclick="shareProperty()" title="Share property">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 2: PHOTO GALLERY — Bento Mosaic
+  ═══════════════════════════════════════════════════════════════ -->
+  
+  <div class="scroll-animate pd-gallery-bento animate-fade-up" id="gallery" style="animation-delay: 0.1s;">
+    <!-- Main large image -->
+    <div class="pd-bento-main" onclick="openLightbox(0)">
+      
+      <img id="gallery-main-img" src="https://picsum.photos/seed/WN-003_0/800/600" alt="Western North Executive Suites">
+      
+      <!-- Badge -->
+      <div class="pd-gallery-badge" onclick="event.stopPropagation(); openLightbox(0)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        View all 4 photos
+      </div>
+    </div>
+    <!-- Side thumbnail 1 -->
+    
+      <div class="pd-bento-side" onclick="openLightbox(1)">
+        <img src="https://picsum.photos/seed/WN-003_1/800/600" alt="Western North Executive Suites">
+      </div>
+    
+    <!-- Side thumbnail 2 -->
+    
+      
+      <div class="pd-bento-side has-more" data-more="+1 more" onclick="openLightbox(2)">
+        <img src="https://picsum.photos/seed/WN-003_2/800/600" alt="Western North Executive Suites">
+      </div>
+      
+    
+    <!-- Additional thumbnails for Mobile Swiping only -->
+    
+      
+      <div class="pd-bento-side mobile-only-thumb" onclick="openLightbox(3)">
+        <img src="https://picsum.photos/seed/WN-003_3/800/600" alt="Western North Executive Suites">
+      </div>
+      
+    
+  </div>
+
+  <!-- Lightbox -->
+  <div class="pd-lightbox" id="lightbox" role="dialog" aria-modal="true">
+    <button class="pd-lightbox-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
+    <div class="pd-lightbox-counter" id="lightbox-counter">Photo 1 of 4</div>
+    <img class="pd-lightbox-img" id="lightbox-img" src="" alt="">
+    <div class="pd-lightbox-caption" id="lightbox-caption"></div>
+    <div class="pd-lightbox-nav">
+      <button onclick="lightboxNav(-1)" aria-label="Previous">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button onclick="lightboxNav(1)" aria-label="Next">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+  
+
+  <div class="pd-trust-banner">
+    <div class="pd-trust-item">
+      <div class="pd-trust-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div>
+        <div class="pd-trust-label">Verified</div>
+        <div class="pd-trust-desc">Inspected and reviewed</div>
+      </div>
+    </div>
+    <div class="pd-trust-item">
+      <div class="pd-trust-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12h18"></path><path d="M12 3v18"></path></svg></div>
+      <div>
+        <div class="pd-trust-label">Flexible</div>
+        <div class="pd-trust-desc">Multiple stay options</div>
+      </div>
+    </div>
+    <div class="pd-trust-item">
+      <div class="pd-trust-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+      <div>
+        <div class="pd-trust-label">Convenient</div>
+        <div class="pd-trust-desc">Near key destinations</div>
+      </div>
+    </div>
+    <div class="pd-trust-item">
+      <div class="pd-trust-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+      <div>
+        <div class="pd-trust-label">Secure</div>
+        <div class="pd-trust-desc">Safety focused living</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pd-inner-nav" id="pd-inner-nav">
+    <a href="#overview" class="pd-inner-nav-link active">Overview</a>
+    <a href="#amenities" class="pd-inner-nav-link">Amenities</a>
+    <a href="#rooms" class="pd-inner-nav-link">Rooms</a>
+    <a href="#location" class="pd-inner-nav-link">Location</a>
+    <a href="#reviews" class="pd-inner-nav-link">Reviews</a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       TWO-COLUMN WORKSPACE
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="pd-workspace animate-fade-up" style="animation-delay: 0.5s;">
+
+    <!-- ── LEFT PANE ─────────────────────────────────────────────────── -->
+    <div class="pd-left">
+
+      <!-- ── SECTION 4: PROPERTY OVERVIEW ─────────────────────────── -->
+      <section id="overview">
+        <h2 class="pd-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          About This Property
+        </h2>
+        <div class="pd-description">
+          <p>Affordable accommodation in Sefwi Wiawso with basic amenities.</p>
+        </div>
+        <div class="pd-story-card">
+          <div class="pd-story-title">Why this stay stands out</div>
+          <p>Thoughtfully presented with practical amenities, clear pricing, and a fast booking path designed for a smoother move-in experience.</p>
+        </div>
+
+        <div class="pd-section-shell" style="margin-top: 20px;">
+          <div class="pd-section-intro">
+            <div>
+              <div class="pd-summary-pill">Premium listing experience</div>
+              <h3>Everything you need to decide quickly</h3>
+              <p>From verified details to flexible booking options, this listing is structured so you can understand the space, the neighborhood, and the move-in experience at a glance.</p>
+            </div>
+          </div>
+          <div class="pd-summary-grid">
+            <div class="pd-summary-card">
+              <div class="pd-summary-card-title">Why guests choose this place</div>
+              <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                <span class="pd-summary-pill">✓ Verified and inspected</span>
+                <span class="pd-summary-pill">🛡 Safety score 7/10</span>
+                <span class="pd-summary-pill">📶 Reliable connectivity</span>
+                
+              </div>
+            </div>
+            <div class="pd-summary-card">
+              <div class="pd-summary-card-title">What you’ll find</div>
+              <div style="font-size:14px;color:#FFFFFF;font-weight:600;line-height:1.6;">Flexible pricing, practical amenities, and a straightforward path from selection to confirmation.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key Facts -->
+        <div class="scroll-animate pd-key-facts" style="margin-top: 24px;">
+          <div class="pd-fact-card">
+            <div class="pd-fact-label">Property Type</div>
+            <div class="pd-fact-value">Apartment</div>
+          </div>
+          <div class="pd-fact-card">
+            <div class="pd-fact-label">Category</div>
+            <div class="pd-fact-value">Residential</div>
+          </div>
+          <div class="pd-fact-card">
+            <div class="pd-fact-label">Total Area</div>
+            <div class="pd-fact-value">1900.00 m²</div>
+          </div>
+          
+          <div class="pd-fact-card">
+            <div class="pd-fact-label">Floors</div>
+            <div class="pd-fact-value">G/2</div>
+          </div>
+          
+          <div class="pd-fact-card">
+            <div class="pd-fact-label">Safety Score</div>
+            <div class="pd-fact-value">7/10</div>
+          </div>
+          <div class="pd-fact-card">
+            <div class="pd-fact-label">Water Supply</div>
+            <div class="pd-fact-value">24/7</div>
+          </div>
+          <div class="pd-fact-card">
+            <div class="pd-fact-label">Electricity</div>
+            <div class="pd-fact-value">Stable</div>
+          </div>
+        </div>
+
+        <!-- Additional Details -->
+        <div class="pd-additional-details" style="margin-top: 32px;">
+          <h3 class="pd-section-subtitle">Property Details</h3>
+          <div class="pd-details-grid">
+            <div class="pd-detail-item">
+              <span class="pd-detail-key">Address</span>
+              <span class="pd-detail-value">Sefwi Wiawso</span>
+            </div>
+            <div class="pd-detail-item">
+              <span class="pd-detail-key">Utility Billing</span>
+              <span class="pd-detail-value">Included in Rent</span>
+            </div>
+            <div class="pd-detail-item">
+              <span class="pd-detail-key">Fire Safety</span>
+              <span class="pd-detail-value">✓ Compliant</span>
+            </div>
+            <div class="pd-detail-item">
+              <span class="pd-detail-key">Guests Allowed</span>
+              <span class="pd-detail-value">Yes</span>
+            </div>
+            <div class="pd-detail-item">
+              <span class="pd-detail-key">Maximum Guests</span>
+              <span class="pd-detail-value">1</span>
+            </div>
+            <div class="pd-detail-item">
+              <span class="pd-detail-key">Listed Since</span>
+              <span class="pd-detail-value">Jul 19, 2026</span>
+            </div>
+            <div class="pd-detail-item">
+              <span class="pd-detail-key">Last Updated</span>
+              <span class="pd-detail-value">Jul 19, 2026</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suitable For -->
+        <div class="pd-suitable-for" style="margin-top: 24px;">
+          <h3 class="pd-section-subtitle">Suitable For</h3>
+          <div class="pd-suitable-chips">
+            
+            <span class="pd-suitable-chip">Students</span>
+            
+            
+            <span class="pd-suitable-chip">Workers</span>
+            
+            
+            <span class="pd-suitable-chip">Families</span>
+            
+            
+            
+            
+            
+            
+          </div>
+        </div>
+
+
+
+        <!-- Highlights -->
+        <div class="pd-highlights" style="margin-top: 24px;">
+          
+          
+          <div class="pd-highlight-item">
+            <div class="pd-highlight-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <span>Gated compound with secure access</span>
+          </div>
+          
+          
+          <div class="pd-highlight-item">
+            <div class="pd-highlight-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <span>24/7 security personnel on duty</span>
+          </div>
+          
+          
+          <div class="pd-highlight-item">
+            <div class="pd-highlight-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            </div>
+            <span>CCTV surveillance in common areas</span>
+          </div>
+          
+          
+          <div class="pd-highlight-item">
+            <div class="pd-highlight-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span>Verified property — inspected on record</span>
+          </div>
+          
+          
+          <div class="pd-highlight-item">
+            <div class="pd-highlight-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            </div>
+            <span>Fire safety compliant</span>
+          </div>
+          
+        </div>
+      </section>
+
+      <!-- ── SECTION 5: ROOM / UNIT TYPE CARDS ─────────────────────── -->
+      <section id="amenities">
+        <h2 class="pd-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Amenities &amp; Features
+        </h2>
+
+        <div class="scroll-animate pd-amenities-grid">
+          <!-- Utilities -->
+          <div class="pd-amenity-group">
+            <div class="pd-amenity-group-header">
+              <div class="pd-amenity-group-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+              <div class="pd-amenity-group-title">Utilities</div>
+            </div>
+            <div class="pd-amenity-item">
+              <span class="pd-amenity-status yes">✓</span>
+              Water: 24/7
+            </div>
+            <div class="pd-amenity-item">
+              <span class="pd-amenity-status yes">✓</span>
+              Electricity: Stable
+            </div>
+            
+            <div class="pd-amenity-item">
+              <span class="pd-amenity-status yes">✓</span>Generator Backup
+            </div>
+            
+          </div>
+
+          <!-- Security -->
+          <div class="pd-amenity-group">
+            <div class="pd-amenity-group-header">
+              <div class="pd-amenity-group-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+              <div class="pd-amenity-group-title">Security</div>
+            </div>
+            <div class="pd-amenity-item">
+              <span class="pd-amenity-status yes">✓</span>
+              Gated compound
+            </div>
+            <div class="pd-amenity-item">
+              <span class="pd-amenity-status yes">✓</span>
+              24/7 security guard
+            </div>
+            <div class="pd-amenity-item">
+              <span class="pd-amenity-status yes">✓</span>
+              CCTV cameras
+            </div>
+            <div class="pd-amenity-item">
+              <span class="pd-amenity-status yes">✓</span>
+              Fire safety compliant
+            </div>
+            
+          </div>
+
+          <!-- Connectivity -->
+          <div class="pd-amenity-group">
+            <div class="pd-amenity-group-header">
+              <div class="pd-amenity-group-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M10.54 16.1a6 6 0 0 1 2.92 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg></div>
+              <div class="pd-amenity-group-title">Connectivity</div>
+            </div>
+            <div class="pd-amenity-item">
+              <span class="pd-amenity-status yes">✓</span>
+              Internet: High-speed
+            </div>
+            
+            <div class="pd-amenity-item">
+              <span class="pd-amenity-status yes">✓</span>Free WiFi
+            </div>
+            
+          </div>
+
+          <!-- Facilities -->
+          <div class="pd-amenity-group">
+            <div class="pd-amenity-group-header">
+              <div class="pd-amenity-group-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+              <div class="pd-amenity-group-title">Facilities</div>
+            </div>
+            
+            
+            <div class="pd-amenity-item">
+              <span class="pd-amenity-status no">⊘</span>
+              Smoking not allowed
+            </div>
+            <div class="pd-amenity-item">
+              <span class="pd-amenity-status no">⊘</span>
+              Pets not allowed
+            </div>
+          </div>
+
+          <!-- General Amenities -->
+          
+          <div class="pd-amenity-group" style="grid-column: 1 / -1;">
+            <div class="pd-amenity-group-header">
+              <div class="pd-amenity-group-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+              <div class="pd-amenity-group-title">Additional Amenities</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+              
+              <div class="pd-amenity-item">
+                <span class="pd-amenity-status yes">✓</span>Parking
+              </div>
+              
+              <div class="pd-amenity-item">
+                <span class="pd-amenity-status yes">✓</span>24/7 Security
+              </div>
+              
+            </div>
+          </div>
+          
+        </div>
+      </section>
+
+      <!-- ── SECTION 7: LOCATION & PROXIMITY ──────────────────────── -->
+      <section id="rooms">
+        <h2 class="pd-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          Unit Types
+        </h2>
+
+        <div class="pd-section-shell" style="margin-bottom: 20px;">
+          <div class="pd-section-intro">
+            <div>
+              <div class="pd-summary-pill">Transparent choices</div>
+              <h3>Pick the setup that fits your plan</h3>
+              <p>Each option is laid out with availability, features, and pricing so you can choose quickly without second-guessing.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="scroll-animate pd-room-cards">
+          
+            
+            <div class="pd-room-card">
+              <div class="pd-room-card-header">
+                <div>
+                  <div class="pd-room-name">Two-Bedroom Apartment</div>
+                  <div style="font-size:13px;color:var(--muted);margin-top:4px;">
+                    2 bed · 2 bath · Furnished
+                  </div>
+                </div>
+                
+                  <span class="pd-avail-badge available">✓ 4 available</span>
+                
+              </div>
+              <div class="pd-room-card-body">
+                <div class="pd-room-grid">
+                  <div class="pd-room-details-col">
+                    <h4>Unit Features</h4>
+                    
+                    <div class="pd-room-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Internet / WiFi</div>
+                    
+                    
+                    
+                    
+                    
+                    <div class="pd-room-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Balcony</div>
+                  </div>
+                  <div class="pd-room-pricing-col">
+                    <h4>Pricing Options</h4>
+                    
+                    <div class="pd-price-option">
+                      <span class="price-label">Monthly</span>
+                      <span class="price-val">
+                        GH₵ 2000
+                      </span>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+              <div class="pd-room-card-footer">
+                <div class="pd-slots-info">4 of 4 units available</div>
+                
+                <div class="pd-house-rules-ack" id="ack-unit-70">
+                  <label class="pd-ack-label">
+                    <input type="checkbox" class="pd-ack-check" id="check-unit-70"
+                           onchange="toggleBookBtn('unit', '70')"
+                           data-unit-type-id="70">
+                    <span class="pd-ack-text">
+                      I have read and understood the <a href="#house-rules" class="pd-ack-link">house rules</a> and
+                      the prohibited items list for this property. I agree to abide by these rules during my stay.
+                    </span>
+                  </label>
+                  <a href="/api/bookings/initiate/112/?unit_type_id=70"
+                     id="bookbtn-unit-70"
+                     class="pd-book-btn pd-book-btn--disabled"
+                     onclick="return handleBookClick(event, 'unit', '70', '112')"
+                     data-initiate-url="/api/bookings/initiate/112/?unit_type_id=70">
+                    Book This Unit
+                  </a>
+                </div>
+                
+              </div>
+            </div>
+            
+          
+        </div>
+
+        <!-- Comparison table (for hostels with multiple room types) -->
+        
+      </section>
+
+      <!-- ── SECTION 6: AMENITIES ──────────────────────────────────── -->
+      <section id="location">
+        <h2 class="pd-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Location &amp; Proximity
+        </h2>
+
+        <!-- Map -->
+        <div class="pd-map-frame" style="height: 400px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
+          
+          <div id="property-detail-map" style="width: 100%; height: 100%; z-index: 1;"></div>
+          
+        </div>
+
+        <!-- Map Actions -->
+        
+        <div class="pd-map-actions-row" style="display:flex;gap:12px;margin-top:16px;">
+          <a href="https://www.google.com/maps/dir/?api=1&destination=6.175000,-2.410000" target="_blank" rel="noopener" class="pd-btn-white" style="padding:10px 20px; font-size:14px; font-weight:600;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Get Directions
+          </a>
+          <button id="live-location-btn" onclick="useLiveLocation()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--surface);color:var(--charcoal);border:1px solid var(--border);border-radius:30px;text-decoration:none;font-size:14px;font-weight:600;transition:all .2s; cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span>My Location</span>
+          </button>
+          <a href="/properties/map" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--surface);color:var(--charcoal);border:1px solid var(--border);border-radius:30px;text-decoration:none;font-size:14px;font-weight:600;transition:all .2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            View on Full Map
+          </a>
+        </div>
+        
+
+        <!-- Proximity Table -->
+        <div class="pd-proximity-table-wrapper">
+          <table class="pd-proximity-table">
+            <thead>
+              <tr>
+                <th>Destination</th>
+                <th>Distance</th>
+                <th>Travel Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+                
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                        
+                      </svg>
+                      <strong>Sefwi Wiawso Market</strong>
+                    </div>
+                  </td>
+                  <td>1.00 km</td>
+                  <td>10 min walk</td>
+                </tr>
+                
+              
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── SECTION 8: HOUSE RULES & POLICIES ─────────────────────── -->
+      <section id="policies">
+        <h2 class="pd-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+          House Rules &amp; Property Policies
+        </h2>
+
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 40px;">
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+            <!-- Rules -->
+            <div>
+              <h3 style="font-size: 15px; font-weight: 700; color: var(--charcoal); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                General Rules
+              </h3>
+              
+              <div style="font-size: 14px; color: var(--muted); font-style: italic;">No specific house rules provided. Standard community guidelines apply.</div>
+              
+
+              
+            </div>
+
+            <!-- Prohibited Items & Emergencies -->
+            <div>
+              <h3 style="font-size: 15px; font-weight: 700; color: var(--red); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                Prohibited Appliances
+              </h3>
+              
+              <div style="font-size: 14px; color: var(--muted); font-style: italic;">No specific prohibited appliances listed.</div>
+              
+
+              
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── SECTION 9: REVIEWS ─────────────────────────────────────── -->
+      <section id="reviews">
+        <h2 class="pd-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Guest Reviews
+          <span style="font-size:14px;font-weight:500;color:var(--muted);">(3)</span>
+        </h2>
+
+        
+        <!-- Rating Summary -->
+        <div class="scroll-animate pd-reviews-summary">
+          <div class="pd-rating-big">
+            <div class="pd-rating-score">5.0</div>
+            <div class="pd-rating-stars-big">
+              
+              <span class="pd-star filled">★</span>
+              
+              <span class="pd-star filled">★</span>
+              
+              <span class="pd-star filled">★</span>
+              
+              <span class="pd-star filled">★</span>
+              
+              <span class="pd-star filled">★</span>
+              
+            </div>
+            <div class="pd-rating-out">out of 5.0 · 3 verified reviews</div>
+          </div>
+          <div class="pd-rating-bars">
+            
+            <div class="pd-bar-row">
+              <span class="pd-bar-label">5★</span>
+              <div class="pd-bar-track">
+                <div class="pd-bar-fill" style="width: %;"></div>
+              </div>
+              <span class="pd-bar-count">3</span>
+            </div>
+            
+            <div class="pd-bar-row">
+              <span class="pd-bar-label">4★</span>
+              <div class="pd-bar-track">
+                <div class="pd-bar-fill" style="width: %;"></div>
+              </div>
+              <span class="pd-bar-count">0</span>
+            </div>
+            
+            <div class="pd-bar-row">
+              <span class="pd-bar-label">3★</span>
+              <div class="pd-bar-track">
+                <div class="pd-bar-fill" style="width: %;"></div>
+              </div>
+              <span class="pd-bar-count">0</span>
+            </div>
+            
+            <div class="pd-bar-row">
+              <span class="pd-bar-label">2★</span>
+              <div class="pd-bar-track">
+                <div class="pd-bar-fill" style="width: %;"></div>
+              </div>
+              <span class="pd-bar-count">0</span>
+            </div>
+            
+            <div class="pd-bar-row">
+              <span class="pd-bar-label">1★</span>
+              <div class="pd-bar-track">
+                <div class="pd-bar-fill" style="width: %;"></div>
+              </div>
+              <span class="pd-bar-count">0</span>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- Detailed Category Ratings -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px;margin-bottom:24px;">
+          <h3 style="font-size:14px;font-weight:700;color:var(--charcoal);margin-bottom:16px;">Detailed Ratings</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;color:var(--dark);">Cleanliness</span>
+              <span style="font-size:14px;font-weight:700;color:var(--charcoal);">5.0/5</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;color:var(--dark);">Location</span>
+              <span style="font-size:14px;font-weight:700;color:var(--charcoal);">5.0/5</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;color:var(--dark);">Amenities</span>
+              <span style="font-size:14px;font-weight:700;color:var(--charcoal);">5.0/5</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;color:var(--dark);">Management</span>
+              <span style="font-size:14px;font-weight:700;color:var(--charcoal);">5.0/5</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;color:var(--dark);">Value</span>
+              <span style="font-size:14px;font-weight:700;color:var(--charcoal);">5.0/5</span>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <!-- ── REVIEW THEMES & HIGHLIGHTS ────────────────────────────── -->
+        
+
+        <!-- ── REVIEW FILTERS & SORT ──────────────────────────────────── -->
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px;align-items:center;justify-content:space-between;background:var(--surface);padding:16px;border-radius:var(--radius-md);border:1px solid var(--border);">
+          <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+            <span style="font-size:14px;font-weight:700;color:var(--charcoal);">Filter by:</span>
+            
+            <select id="filterRating" class="pd-filter-select" onchange="fetchReviews()">
+              <option value="">All Ratings</option>
+              <option value="5">5 Stars</option>
+              <option value="4">4+ Stars</option>
+              <option value="3">3+ Stars</option>
+            </select>
+            
+            <select id="filterGuest" class="pd-filter-select" onchange="fetchReviews()">
+              <option value="">All Guest Types</option>
+              <option value="STUDENT">Students</option>
+              <option value="WORKER">Workers</option>
+            </select>
+            
+            
+          </div>
+          
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:14px;font-weight:700;color:var(--charcoal);">Sort by:</span>
+            <select id="sortReviews" class="pd-filter-select" onchange="fetchReviews()">
+              <option value="-helpful_count">Most Helpful</option>
+              <option value="-created_at">Newest First</option>
+              <option value="-rating">Highest Rated</option>
+              <option value="rating">Lowest Rated</option>
+            </select>
+          </div>
+        </div>
+
+        <style>
+          .pd-filter-select {
+            padding: 8px 32px 8px 12px;
+            font-size: 13px;
+            font-family: var(--font);
+            color: var(--charcoal);
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 14px;
+            cursor: pointer;
+          }
+          .pd-filter-select:hover {
+            border-color: var(--muted);
+          }
+          .pd-filter-select:focus {
+            outline: none;
+            border-color: var(--charcoal);
+          }
+        </style>
+
+        <!-- Review Cards Container -->
+        <div id="reviewsContainer">
+          
+<div class="pd-review-cards">
+  
+  <div class="pd-review-card">
+    <div class="pd-review-header">
+      <div class="pd-reviewer-info">
+        <div class="pd-reviewer-avatar">A</div>
+        <div>
+          <div class="pd-reviewer-name">a.</div>
+          <div class="pd-reviewer-meta">
+            
+            <span style="font-size:12px;color:var(--muted);">Student</span>
+            
+            · Jul 2026
+            
+            · <span class="pd-verified-guest" style="color:var(--green);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Verified guest
+            </span>
+            
+          </div>
+        </div>
+      </div>
+      <div class="pd-review-rating">
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+      </div>
+    </div>
+    
+    <div class="pd-review-title">"Excellent accommodation at Western North Executive Suites"</div>
+    
+    <div class="pd-review-content">I had an amazing stay at Western North Executive Suites. The facilities are top-notch and the staff are very helpful. Highly recommended for anyone looking for quality accommodation in Sefwi Wiawso.</div>
+    
+    
+    
+    <div class="pd-review-footer">
+      <button class="pd-helpful-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+        Helpful (0)
+      </button>
+      <span style="font-size:12px;color:var(--muted);">5.0 / 5.0</span>
+    </div>
+  </div>
+  
+  <div class="pd-review-card">
+    <div class="pd-review-header">
+      <div class="pd-reviewer-info">
+        <div class="pd-reviewer-avatar">K</div>
+        <div>
+          <div class="pd-reviewer-name">k.</div>
+          <div class="pd-reviewer-meta">
+            
+            <span style="font-size:12px;color:var(--muted);">Student</span>
+            
+            · Jul 2026
+            
+            · <span class="pd-verified-guest" style="color:var(--green);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Verified guest
+            </span>
+            
+          </div>
+        </div>
+      </div>
+      <div class="pd-review-rating">
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+      </div>
+    </div>
+    
+    <div class="pd-review-title">"Excellent accommodation at Western North Executive Suites"</div>
+    
+    <div class="pd-review-content">I had an amazing stay at Western North Executive Suites. The facilities are top-notch and the staff are very helpful. Highly recommended for anyone looking for quality accommodation in Sefwi Wiawso.</div>
+    
+    
+    
+    <div class="pd-review-footer">
+      <button class="pd-helpful-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+        Helpful (0)
+      </button>
+      <span style="font-size:12px;color:var(--muted);">5.0 / 5.0</span>
+    </div>
+  </div>
+  
+  <div class="pd-review-card">
+    <div class="pd-review-header">
+      <div class="pd-reviewer-info">
+        <div class="pd-reviewer-avatar">Y</div>
+        <div>
+          <div class="pd-reviewer-name">y.</div>
+          <div class="pd-reviewer-meta">
+            
+            <span style="font-size:12px;color:var(--muted);">Student</span>
+            
+            · Jul 2026
+            
+            · <span class="pd-verified-guest" style="color:var(--green);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Verified guest
+            </span>
+            
+          </div>
+        </div>
+      </div>
+      <div class="pd-review-rating">
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+        <span class="pd-star filled" style="font-size:15px;">★</span>
+        
+      </div>
+    </div>
+    
+    <div class="pd-review-title">"Excellent accommodation at Western North Executive Suites"</div>
+    
+    <div class="pd-review-content">I had an amazing stay at Western North Executive Suites. The facilities are top-notch and the staff are very helpful. Highly recommended for anyone looking for quality accommodation in Sefwi Wiawso.</div>
+    
+    
+    
+    <div class="pd-review-footer">
+      <button class="pd-helpful-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+        Helpful (0)
+      </button>
+      <span style="font-size:12px;color:var(--muted);">5.0 / 5.0</span>
+    </div>
+  </div>
+  
+</div>
+
+
+        </div>
+
+        
+
+        <!-- Write Review Button -->
+        <div style="text-align:center;margin-top:32px;padding-top:24px;border-top:1px solid var(--border);">
+          
+          <a href="/login/" class="pd-btn-white" style="padding:14px 28px; font-size:14px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Login to Write a Review
+          </a>
+          
+        </div>
+
+        
+      </section>
+
+      <!-- ── SECTION 9: ROOMMATE MATCHING PREVIEW (REMOVED) ──────────────────── -->
+
+    </div><!-- end .pd-left -->
+
+    <!-- ── RIGHT PANE: STICKY SIDEBAR ─────────────────────────────── -->
+    <div class="pd-right">
+      <div class="scroll-animate pd-booking-card" id="booking-card">
+        <div class="pd-booking-property-name">Western North Executive Suites</div>
+        <div class="pd-booking-location">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Sefwi Wiawso, Western North
+        </div>
+
+        <div class="pd-sidebar-stats">
+          
+          <span class="pd-sidebar-stat">⭐ 5.0 (3)</span>
+          
+          
+          <span class="pd-sidebar-stat" style="color:#6ee7b7;">✓ Verified</span>
+          
+          <span class="pd-sidebar-stat">👁 1 views</span>
+          
+          
+        </div>
+
+        <div class="pd-booking-price-display">
+          <div class="pd-price-from">Starting from</div>
+          
+          
+          
+            <div class="pd-price-main">
+              GH₵ 2000<span>/month</span>
+            </div>
+          
+          
+          
+        </div>
+
+        <div class="pd-booking-steps">
+          <div class="pd-book-step"><strong>1</strong>Select</div>
+          <div class="pd-book-step"><strong>2</strong>Review</div>
+          <div class="pd-book-step"><strong>3</strong>Confirm</div>
+        </div>
+
+        <div class="pd-included-section">
+          <div class="pd-included-title">What you get</div>
+          
+          <div class="pd-included-item"><svg class="yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Water: 24/7</div>
+          
+          
+          <div class="pd-included-item"><svg class="yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Electricity: Stable</div>
+          
+          
+          <div class="pd-included-item"><svg class="yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Internet: High-speed</div>
+          
+          
+          <div class="pd-included-item"><svg class="yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Security & access</div>
+          
+          
+          <div class="pd-included-item"><svg class="yes" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Building amenities (4)</div>
+          
+        </div>
+
+        
+        <div class="pd-cancellation-box">
+          <div class="pd-cancellation-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Cancellation Policy
+          </div>
+          <p>Full refund before 7 days · 50% refund 7–30 days · No refund under 7 days</p>
+        </div>
+        
+
+        <div class="pd-secondary-actions">
+          <button class="pd-secondary-btn " onclick="toggleSave(document.getElementById('save-btn'))">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> Save
+          </button>
+          <button class="pd-secondary-btn" onclick="openVisitModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Schedule Visit
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end .pd-workspace -->
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 11: CONTACT SECTION
+  ═══════════════════════════════════════════════════════════════ -->
+  <section id="contact" class="scroll-animate pd-contact-section">
+    <h2 class="pd-section-title" style="margin-bottom: 24px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.23 19.79 19.79 0 0 1 1.61 4.73 2 2 0 0 1 3.57 2.52h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 10.09a16 16 0 0 0 6 6l.84-.84a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.5 17v-.08z"/></svg>
+      Questions About This Property?
+    </h2>
+    <div class="pd-contact-grid">
+      <div class="pd-contact-info-block">
+        <h3>Contact Information</h3>
+        <p>Reach out to the property manager directly or through StayMatch support.</p>
+        
+        <div class="pd-contact-detail">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          admin@staymatch.com
+        </div>
+        <div class="pd-contact-detail">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          admin@staymatch.com
+        </div>
+        
+        
+        <div class="pd-contact-detail" style="margin-top:16px; font-size:12px; color:var(--muted);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Typically responds within 2–4 hours during business hours
+        </div>
+      </div>
+      <div class="pd-contact-actions">
+        <button class="pd-contact-btn primary" onclick="showToast('📧 Message sent! Expect a reply within 2 hours.')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Send Message
+        </button>
+        <button class="pd-contact-btn outline" onclick="openVisitModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Schedule a Visit
+        </button>
+        <a href="https://wa.me/?text=I'm interested in Western%20North%20Executive%20Suites on StayMatch" target="_blank" rel="noopener" class="pd-contact-btn outline">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          Share via WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 12: RELATED PROPERTIES
+  ═══════════════════════════════════════════════════════════════ -->
+  
+  <section class="pd-related-section" id="similar">
+    <div class="pd-related-header">
+      <h2 class="pd-section-title" style="margin-bottom:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Similar Properties in Sefwi Wiawso
+      </h2>
+      <a href="/properties/?location=Sefwi Wiawso" class="pd-see-all">See all &rarr;</a>
+    </div>
+    <div class="pd-related-grid">
+      
+      <a href="/properties/111/" class="pd-listing-card">
+        <!-- background image -->
+        
+        <img src="https://picsum.photos/seed/WN-002_0/800/600" alt="Sefwi Wiawso Campus Hostel" class="pd-listing-card-img">
+        
+        <!-- gradient overlay -->
+        <div class="pd-listing-card-overlay"></div>
+        <!-- top tags -->
+        <div class="pd-listing-top-tags">
+          <span class="pd-listing-avail-badge avail">
+            Available
+          </span>
+          
+        </div>
+        <!-- bottom content -->
+        <div class="pd-listing-card-content">
+          <div class="pd-listing-card-type">Hostel</div>
+          <div class="pd-listing-card-title">
+            Sefwi Wiawso Campus Hostel
+            
+            <svg width="16" height="16" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;margin-left:4px;"><g><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.918-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.337 2.25c-.416-.165-.866-.25-1.336-.25-2.21 0-3.918 1.792-3.918 4 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.46.74 2.746 1.867 3.45-.094.373-.146.762-.146 1.15 0 2.21 1.71 4 3.918 4 .51 0 1-.096 1.46-.273C9.432 21.688 10.643 22.5 12 22.5s2.568-.812 3.51-2.023c.46.177.95.273 1.46.273 2.21 0 3.918-1.79 3.918-4 0-.388-.052-.777-.146-1.15 1.127-.704 1.867-1.99 1.867-3.45z" fill="#FFFFFF"/><path d="M10.73 16.59l-3.32-3.32c-.28-.28-.28-.75 0-1.04.29-.28.75-.28 1.04 0l2.28 2.28 5.75-5.75c.29-.28.75-.28 1.04 0 .28.29.28.76 0 1.04l-6.27 6.27c-.14.14-.33.22-.52.22s-.38-.08-.52-.22z" fill="#fff"/></g></svg>
+            
+          </div>
+          <div class="pd-listing-card-addr">Sefwi Wiawso, Western North</div>
+          <div class="pd-listing-price-row">
+            <div>
+              <div style="font-size:11px;opacity:.65;margin-bottom:2px;">Price from</div>
+              <div class="pd-listing-price-val">
+                
+                  
+                  GH&#8373; 1800<span>/sem</span>
+                  
+                
+              </div>
+            </div>
+            <div class="pd-listing-go-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <a href="/properties/110/" class="pd-listing-card">
+        <!-- background image -->
+        
+        <img src="https://picsum.photos/seed/WN-001_0/800/600" alt="Sefwi Wiawso Apartments" class="pd-listing-card-img">
+        
+        <!-- gradient overlay -->
+        <div class="pd-listing-card-overlay"></div>
+        <!-- top tags -->
+        <div class="pd-listing-top-tags">
+          <span class="pd-listing-avail-badge avail">
+            Available
+          </span>
+          
+        </div>
+        <!-- bottom content -->
+        <div class="pd-listing-card-content">
+          <div class="pd-listing-card-type">Apartment</div>
+          <div class="pd-listing-card-title">
+            Sefwi Wiawso Apartments
+            
+            <svg width="16" height="16" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;margin-left:4px;"><g><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.918-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.337 2.25c-.416-.165-.866-.25-1.336-.25-2.21 0-3.918 1.792-3.918 4 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.46.74 2.746 1.867 3.45-.094.373-.146.762-.146 1.15 0 2.21 1.71 4 3.918 4 .51 0 1-.096 1.46-.273C9.432 21.688 10.643 22.5 12 22.5s2.568-.812 3.51-2.023c.46.177.95.273 1.46.273 2.21 0 3.918-1.79 3.918-4 0-.388-.052-.777-.146-1.15 1.127-.704 1.867-1.99 1.867-3.45z" fill="#FFFFFF"/><path d="M10.73 16.59l-3.32-3.32c-.28-.28-.28-.75 0-1.04.29-.28.75-.28 1.04 0l2.28 2.28 5.75-5.75c.29-.28.75-.28 1.04 0 .28.29.28.76 0 1.04l-6.27 6.27c-.14.14-.33.22-.52.22s-.38-.08-.52-.22z" fill="#fff"/></g></svg>
+            
+          </div>
+          <div class="pd-listing-card-addr">Sefwi Wiawso, Western North</div>
+          <div class="pd-listing-price-row">
+            <div>
+              <div style="font-size:11px;opacity:.65;margin-bottom:2px;">Price from</div>
+              <div class="pd-listing-price-val">
+                
+                  
+                  GH&#8373; 900<span>/mo</span>
+                  
+                
+              </div>
+            </div>
+            <div class="pd-listing-go-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+    </div>
+  </section>
+  
+
+</div><!-- end .pd-canvas -->
+
+<!-- ── Visit Scheduling Modal ─────────────────────────────────────── -->
+<div class="pd-modal-overlay" id="visit-modal" role="dialog" aria-modal="true" aria-label="Schedule a visit">
+  <div class="pd-modal">
+    <button class="pd-modal-close" onclick="closeVisitModal()" aria-label="Close modal">&times;</button>
+    <h3>Schedule a Property Visit</h3>
+    <p class="pd-modal-sub">Fill in your preferred visit details. Our admin will confirm within 24 hours.</p>
+    
+    <div class="pd-form-group">
+      <label class="pd-form-label" for="visit-name">Full Name</label>
+      <input class="pd-form-input" type="text" id="visit-name" placeholder="John Doe" value="" required>
+    </div>
+    
+    <div class="pd-form-grid-2">
+      <div class="pd-form-group">
+        <label class="pd-form-label" for="visit-email">Email Address</label>
+        <input class="pd-form-input" type="email" id="visit-email" placeholder="john@example.com" value="" required>
+      </div>
+      <div class="pd-form-group">
+        <label class="pd-form-label" for="visit-phone">Phone Number</label>
+        <input class="pd-form-input" type="tel" id="visit-phone" placeholder="050 123 4567" required>
+      </div>
+    </div>
+    <hr style="border:0; border-top:1px solid var(--border); margin: 24px 0;">
+
+    <div class="pd-form-group">
+      <label class="pd-form-label" for="visit-date">Preferred Date</label>
+      <input class="pd-form-input" type="date" id="visit-date" min="2026-07-19" required>
+    </div>
+    <div class="pd-form-grid-2">
+      <div class="pd-form-group">
+        <label class="pd-form-label" for="visit-time">Preferred Time</label>
+        <input class="pd-form-input" type="time" id="visit-time" value="10:00">
+      </div>
+      <div class="pd-form-group">
+        <label class="pd-form-label" for="visit-party">Party Size</label>
+        <select class="pd-form-input" id="visit-party">
+          <option>1 person</option>
+          <option>2 people</option>
+          <option>3 people</option>
+          <option>4+ people</option>
+        </select>
+      </div>
+    </div>
+    <div class="pd-form-group">
+      <label class="pd-form-label" for="visit-contact">Preferred Contact Method</label>
+      <select class="pd-form-input" id="visit-contact">
+        <option>Phone call</option>
+        <option>Email</option>
+        <option>SMS / WhatsApp</option>
+      </select>
+    </div>
+    <div class="pd-form-group">
+      <label class="pd-form-label" for="visit-notes">Additional Notes</label>
+      <textarea class="pd-form-input" id="visit-notes" rows="3" placeholder="Any specific areas you want to see or questions to ask..."></textarea>
+    </div>
+    <button class="pd-book-main-btn" onclick="submitVisit()" style="margin-bottom:0;">Request Visit</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="pd-toast" id="pd-toast" role="alert" aria-live="polite"></div>
+
+
+<!-- Room Select Modal -->
+<div class="bm-overlay" id="roomSelectModalOverlay" style="display:none; z-index:99999; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(10,3,2,0.6); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding: 20px;">
+  <div class="rsm-modal-container" style="background:var(--canvas); border:1px solid rgba(255,255,255,0.08); border-radius:24px; padding:32px; width:500px; max-width:100%; position:relative; max-height: 80vh; overflow-y: auto; animation: bmSlideUp 0.3s forwards;">
+    <button type="button" onclick="document.getElementById('roomSelectModalOverlay').style.display='none'" style="position:absolute; right:20px; top:20px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#FFFFFF; transition:all 0.2s;">
+       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+       </svg>
+    </button>
+    <h3 style="margin-top:0; margin-bottom:8px; font-size:24px; font-weight:800; color:#FFFFFF;">Select an Option</h3>
+    <p style="color:#64748b; margin-bottom:24px; font-size:14px;">Choose the space you would like to book</p>
+    
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      
+          
+            
+              <button type="button" 
+                      onclick="showHouseRulesModal('?unit_type=70')" 
+                      style="text-align:left; padding:20px; border:1px solid rgba(255,255,255,0.08); border-radius:16px; background:rgba(255,255,255,0.02); cursor:pointer; transition:all 0.2s; color:#FFFFFF;"
+                      onmouseover="this.style.borderColor='#FFFFFF'; this.style.backgroundColor='rgba(255,255,255,0.05)';"
+                      onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'; this.style.backgroundColor='rgba(255,255,255,0.02)';">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <div style="font-weight:700; font-size:16px; color:#FFFFFF; margin-bottom:6px;">Two-Bedroom Apartment</div>
+                        <div style="font-size:13px; color:#64748b; font-weight:500;">2 Bed, 2 Bath &bull; 4 available</div>
+                    </div>
+                    <div style="text-align:right;">
+                        
+                        
+                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; 2000</div>
+                        <div style="font-size:11px; color:#64748b; margin-top:2px;">
+                          per month
+                          
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+              </button>
+            
+          
+      
+    </div>
+  </div>
+</div>
+
+<!-- House Rules Acceptance Modal -->
+<div class="hrm-overlay" id="houseRulesModalOverlay" style="display:none; z-index:99999; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(10,3,2,0.6); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding: 20px;">
+  <div class="hrm-modal-container" style="background:var(--canvas); border: 1px solid rgba(255,255,255,0.08); border-radius:24px; padding:32px; width:600px; max-width:100%; position:relative; box-shadow: 0 24px 48px rgba(0,0,0,0.5); max-height: 85vh; overflow:hidden; display:flex; flex-direction:column; animation: hrmSlideUp 0.3s forwards;">
+    <button type="button" onclick="closeHouseRulesModal()" style="position:absolute; right:20px; top:20px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#FFFFFF; transition:all 0.2s;">
+       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+       </svg>
+    </button>
+    
+    <h3 style="margin-top:0; margin-bottom:8px; font-size:22px; font-weight:800; color:#FFFFFF;">House Rules & Policies</h3>
+    <p style="color:#64748b; margin-bottom:20px; font-size:14px;">Please review and accept the rules before proceeding</p>
+    
+    <div style="flex:1; overflow-y:auto; padding-right:8px; margin-bottom:20px;">
+      <div style="background:rgba(255,255,255,0.02); border-radius:12px; padding:20px; border:1px solid rgba(255,255,255,0.08);">
+        <h4 style="margin:0 0 12px 0; font-size:15px; font-weight:700; color:#FFFFFF;">House Rules</h4>
+        <div style="font-size:14px; color:#CBD5E1; line-height:1.6; white-space: pre-wrap;">No specific house rules provided. Standard community guidelines apply.</div>
+        
+        
+      </div>
+    </div>
+    
+    <div style="padding:20px 0 0 0; border-top:1px solid rgba(255,255,255,0.08);">
+      <label style="display:flex; align-items:flex-start; gap:12px; cursor:pointer; margin-bottom:20px;">
+        <input type="checkbox" id="houseRulesCheckbox" style="width:18px; height:18px; margin-top:2px; accent-color:#FFFFFF;" onchange="toggleProceedButton()">
+        <span style="font-size:14px; color:#FFFFFF; line-height:1.5; font-weight:500;">I have read and understood the house rules and policies at Western North Executive Suites. I agree to abide by these rules during my stay.</span>
+      </label>
+      
+      <button type="button" id="proceedToBookingBtn" onclick="proceedToBooking()" disabled style="width:100%; padding:14px 24px; background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.08); border-radius:30px; font-size:15px; font-weight:700; cursor:not-allowed; transition:all 0.2s;">
+        Proceed to Booking
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes hrmSlideUp {
+  from { transform: translateY(30px) scale(0.98); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.hrm-overlay::-webkit-scrollbar {
+  width: 6px;
+}
+
+.hrm-overlay::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hrm-overlay::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 3px;
+}
+</style>
+
+<!-- Booking Confirmation Modal -->
+<div class="bcm-overlay" id="bookingConfirmModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); z-index:99999; align-items:center; justify-content:center; padding:20px;">
+  <div class="bcm-modal" style="background:var(--canvas); border: 1px solid rgba(255,255,255,0.08); border-radius:20px; width:100%; max-width:920px; max-height:92vh; overflow:hidden; position:relative; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); animation: bcmSlideUp 0.4s cubic-bezier(0.16,1,0.3,1); display:flex; flex-direction:column;">
+    
+    <button type="button" onclick="closeBookingConfirmModal()" style="position:absolute; right:16px; top:16px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); width:32px; height:32px; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#FFFFFF; transition:all 0.2s; z-index:10;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    
+    <div style="background:linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%); border-bottom: 1px solid rgba(255,255,255,0.08); color:white; padding:28px 36px; flex-shrink:0; position:relative; overflow:hidden;">
+      <div style="position:absolute; top:-50%; right:-20%; width:200px; height:200px; background:rgba(255,255,255,0.02); border-radius:50%;"></div>
+      <div style="position:relative; z-index:1;">
+        <h2 style="margin:0; font-size:20px; font-weight:700; letter-spacing:-0.5px;">Confirm Your Booking</h2>
+        <p style="margin:6px 0 0 0; font-size:13px; color:rgba(255,255,255,0.5); font-weight:400;">Please review and confirm your booking details</p>
+      </div>
+    </div>
+    
+    <form id="bookingConfirmForm" method="post" style="display:grid; grid-template-columns:1fr 360px; flex:1; overflow:hidden;">
+      <div id="bookingModalContent" style="padding:28px 36px; overflow-y:auto; background:transparent;">Loading...</div>
+      <div id="bookingModalSidebar" style="background:rgba(255,255,255,0.01); padding:28px 36px; border-left:1px solid rgba(255,255,255,0.08); overflow-y:auto;">Loading...</div>
+    </form>
+  </div>
+</div>
+
+<style>
+@keyframes bcmSlideUp {
+  from { transform: translateY(40px) scale(0.96); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Booking Modal Content Styling */
+#bookingModalContent {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+#bookingModalContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+#bookingModalContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#bookingModalContent::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 3px;
+}
+
+#bookingModalContent h2,
+#bookingModalContent h3 {
+  font-size:16px;
+  font-weight:600;
+  color:#FFFFFF;
+  margin:0 0 16px 0;
+  letter-spacing:-0.3px;
+}
+
+#bookingModalContent h2 {
+  font-size:18px;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+#bookingModalContent p,
+#bookingModalContent li {
+  font-size:14px;
+  color:#94a3b8;
+  line-height:1.7;
+}
+
+#bookingModalContent ul {
+  margin:0 0 20px 0;
+  padding-left:18px;
+}
+
+#bookingModalContent li {
+  margin-bottom:8px;
+  color:#CBD5E1;
+}
+
+#bookingModalContent label {
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  font-size:14px;
+  color:#FFFFFF;
+  cursor:pointer;
+  margin-bottom:14px;
+  line-height:1.6;
+  padding:12px;
+  background:rgba(255,255,255,0.02);
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.08);
+  transition:all 0.2s;
+}
+
+#bookingModalContent label:hover {
+  background:rgba(255,255,255,0.05);
+  border-color:#FFFFFF;
+}
+
+#bookingModalContent input[type="checkbox"] {
+  margin-top:2px;
+  width:18px;
+  height:18px;
+  accent-color:#FFFFFF;
+  cursor:pointer;
+}
+
+/* Booking Modal Sidebar Styling */
+#bookingModalSidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+#bookingModalSidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+#bookingModalSidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#bookingModalSidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 3px;
+}
+
+#bookingModalSidebar h3 {
+  font-weight:600;
+  margin:0 0 20px 0;
+  letter-spacing:-0.3px;
+  text-transform:uppercase;
+  font-size:12px;
+  color:#94a3b8;
+}
+
+#bookingModalSidebar .price-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0;
+  font-size:14px;
+  color:#94a3b8;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+#bookingModalSidebar .price-row:last-child {
+  border-bottom:none;
+}
+
+#bookingModalSidebar .price-row.total {
+  font-weight:700;
+  color:#FFFFFF;
+  font-size:18px;
+  border-top:2px solid rgba(255,255,255,0.08);
+  margin-top:8px;
+  padding-top:16px;
+  padding-bottom:4px;
+}
+
+#bookingModalSidebar button[type="submit"] {
+  width:100%;
+  padding:16px 24px;
+  background:#FFFFFF;
+  color:#000000;
+  border:none;
+  border-radius:30px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all 0.3s;
+  margin-top:24px;
+  box-shadow:none;
+  letter-spacing:-0.3px;
+}
+
+#bookingModalSidebar button[type="submit"]:hover {
+  background:#E2E8F0;
+  transform:translateY(-1px);
+}
+
+#bookingModalSidebar button[type="submit"]:active {
+  transform:translateY(0);
+}
+
+#bookingModalSidebar button[type="submit"]:disabled {
+  background:rgba(255,255,255,0.05);
+  color:rgba(255,255,255,0.2);
+  border:1px solid rgba(255,255,255,0.08);
+  cursor:not-allowed;
+  transform:none;
+  box-shadow:none;
+}
+
+@media (max-width: 768px) {
+  .bcm-modal {
+    max-height: 95vh;
+    border-radius:16px;
+  }
+  .bcm-modal > div:nth-child(3) {
+    grid-template-columns: 1fr;
+  }
+  #bookingModalSidebar {
+    border-left: none;
+    border-top: 1px solid #e5e7eb;
+  }
+  #bookingModalContent,
+  #bookingModalSidebar {
+    max-height: none;
+    overflow-y: visible;
+  }
+  #bookingModalContent,
+  #bookingModalSidebar {
+    padding:20px 24px;
+  }
+}
+</style>
+
+
+
+
+
+    
+    <!-- Notification Toast Container -->
+    <div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+    <script src="/static/landing/js/accordion.js"></script>
+    
+    
+    
+    
+<script>
+/* ── Gallery Image Data ───────────────────────────────────────────── */
+const galleryImages = [
+  
+    { src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=700&fit=crop", caption: "Main View" }
+  
+];
+let galleryIdx = 0;
+
+function galleryGoTo(idx) {
+  if (galleryImages.length === 0) return;
+  idx = (idx + galleryImages.length) % galleryImages.length;
+  galleryIdx = idx;
+  document.getElementById('gallery-main-img').src = galleryImages[idx].src;
+  document.getElementById('gallery-counter').textContent = `Photo ${idx + 1} of ${galleryImages.length}`;
+  document.querySelectorAll('.pd-thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
+  // Scroll active thumb into view
+  const thumbs = document.querySelectorAll('.pd-thumb');
+  if (thumbs[idx]) thumbs[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+function galleryNav(dir) { galleryGoTo(galleryIdx + dir); }
+
+/* ── Lightbox ─────────────────────────────────────────────────────── */
+function openLightbox(idx) {
+  galleryIdx = idx;
+  document.getElementById('lightbox-img').src = galleryImages[idx].src;
+  document.getElementById('lightbox-counter').textContent = `Photo ${idx + 1} of ${galleryImages.length}`;
+  document.getElementById('lightbox-caption').textContent = galleryImages[idx].caption || '';
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function lightboxNav(dir) {
+  const idx = (galleryIdx + dir + galleryImages.length) % galleryImages.length;
+  galleryIdx = idx;
+  document.getElementById('lightbox-img').src = galleryImages[idx].src;
+  document.getElementById('lightbox-counter').textContent = `Photo ${idx + 1} of ${galleryImages.length}`;
+  document.getElementById('lightbox-caption').textContent = galleryImages[idx].caption || '';
+}
+document.addEventListener('keydown', (e) => {
+  const lb = document.getElementById('lightbox');
+  if (lb.classList.contains('open')) {
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft')  lightboxNav(-1);
+    if (e.key === 'ArrowRight') lightboxNav(1);
+  }
+});
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeLightbox();
+});
+
+/* ── Comparison Table Toggle ─────────────────────────────────────── */
+function toggleCompare() {
+  const t = document.getElementById('comparison-table');
+  if (t) t.classList.toggle('open');
+}
+
+/* ── Save / Heart ────────────────────────────────────────────────── */
+function toggleSave(btn) {
+  const propertyId = btn.getAttribute('data-property-id');
+  const isCurrentlySaved = btn.classList.contains('save-active');
+  const url = isCurrentlySaved ? `/api/properties/unsave/${propertyId}/` : `/api/properties/save/${propertyId}/`;
+
+  fetch(url, {
+      method: 'GET',
+      headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+      }
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.success) {
+          btn.classList.toggle('save-active');
+          
+          // Also toggle the sticky footer button if it exists
+          const stickyBtn = document.querySelector('.pd-secondary-btn');
+          if (stickyBtn && stickyBtn.textContent.includes('Save')) {
+              stickyBtn.classList.toggle('save-active');
+          }
+          
+          const saved = btn.classList.contains('save-active');
+          showToast(saved ? '❤️ Saved to your properties' : '♡ Removed from saved');
+      } else {
+          showToast('Failed to update save status');
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      // Fallback for non-authenticated users (redirect to login)
+      window.location.href = "/accounts/login/?next=/properties/112/";
+  });
+}
+
+/* ── Share ────────────────────────────────────────────────────────── */
+function shareProperty() {
+  if (navigator.share) {
+    navigator.share({ title: 'Western North Executive Suites', url: window.location.href });
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    showToast('🔗 Link copied to clipboard!');
+  }
+}
+
+/* ── Visit Modal ─────────────────────────────────────────────────── */
+function openVisitModal() {
+  document.getElementById('visit-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeVisitModal() {
+  document.getElementById('visit-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('visit-modal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeVisitModal();
+});
+function submitVisit() {
+  const btn = event.target;
+  const name = document.getElementById('visit-name').value;
+  const email = document.getElementById('visit-email').value;
+  const phone = document.getElementById('visit-phone').value;
+  const date = document.getElementById('visit-date').value;
+  const time = document.getElementById('visit-time').value;
+  const party = document.getElementById('visit-party').value;
+  const contact = document.getElementById('visit-contact').value;
+  const notes = document.getElementById('visit-notes').value;
+  
+  if (!name || !email || !date || !time) {
+    showToast("⚠️ Please fill in all required fields.");
+    return;
+  }
+  
+  btn.disabled = true;
+  btn.innerText = "Submitting...";
+
+  fetch('/api/bookings/visit/request/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '4wte3CTAvpHuZo5iZLC2kj97zVnSNYNTOffbAvJw34JqXa5TLf7IfUOH1TABBsax'
+    },
+    body: JSON.stringify({
+      property_id: 112,
+      name: name,
+      email: email,
+      phone: phone,
+      visit_date: date,
+      visit_time: time,
+      party_size: party,
+      contact_method: contact,
+      notes: notes
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      closeVisitModal();
+      showToast("✅ Visit request submitted! We'll confirm within 24 hours.");
+    } else {
+      showToast("❌ Error: " + data.message);
+    }
+  })
+  .catch(err => {
+    showToast("❌ Network error. Please try again.");
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.innerText = "Request Visit";
+  });
+}
+
+/* ── Toast ───────────────────────────────────────────────────────── */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('pd-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ── Keyboard accessibility: Escape closes modals ───────────────── */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeVisitModal();
+  }
+});
+
+/* ── Inner Sticky Navigation Observer ─────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
+  const sections = document.querySelectorAll('.pd-left section');
+  const navLinks = document.querySelectorAll('.pd-inner-nav-link');
+  
+  if (sections.length === 0 || navLinks.length === 0) return;
+  
+  const observerOptions = {
+    root: null,
+    rootMargin: '-100px 0px -60% 0px',
+    threshold: 0
+  };
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach(link => {
+          if (link.getAttribute('href') === '#' + id) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+    });
+  }, observerOptions);
+  
+  sections.forEach(section => observer.observe(section));
+  
+  // Smooth scroll
+  navLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetSection = document.getElementById(targetId);
+      if (targetSection) {
+        window.scrollTo({
+          top: targetSection.offsetTop - 120, // Offset for main and inner navbars
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+});
+
+/* ── Leaflet Map Initialization ──────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
+  
+  const lat = 6.175000;
+  const lng = -2.410000;
+  
+  const map = L.map('property-detail-map', {
+      center: [lat, lng],
+      zoom: 15,
+      scrollWheelZoom: false // Prevent scrolling issues on detail page
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20
+  }).addTo(map);
+
+  // Custom marker (strictly B&W)
+  const customIcon = L.divIcon({
+      className: 'custom-map-marker',
+      html: `<div style="background-color: #000000; color: #FFFFFF; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 3px solid #FFFFFF; box-shadow: 0 4px 8px rgba(0,0,0,0.5);">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+             </div>`,
+      iconSize: [40, 40],
+      iconAnchor: [20, 40]
+  });
+
+  L.marker([lat, lng], { icon: customIcon }).addTo(map)
+      .bindPopup("<b>Western North Executive Suites</b><br>Sefwi Wiawso").openPopup();
+      
+  // Enable scroll zoom on map focus/click
+  map.on('focus', function() { map.scrollWheelZoom.enable(); });
+  map.on('blur', function() { map.scrollWheelZoom.disable(); });
+  
+  window.propertyDetailMap = map;
+
+let userLocationMarker = null;
+
+function useLiveLocation() {
+    if (!window.propertyDetailMap) return;
+    
+    if ("geolocation" in navigator) {
+        const btn = document.getElementById('live-location-btn');
+        const span = btn.querySelector('span');
+        const originalText = span.textContent;
+        span.textContent = 'Locating...';
+        btn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                window.propertyDetailMap.flyTo([lat, lng], 13, {
+                    animate: true,
+                    duration: 1.5
+                });
+
+                if (userLocationMarker) {
+                    userLocationMarker.setLatLng([lat, lng]);
+                } else {
+                    const userIcon = L.divIcon({
+                        html: `<div style="background-color: #FFFFFF; width: 20px; height: 20px; border-radius: 50%; border: 3px solid #000000; box-shadow: 0 0 10px rgba(0,0,0,0.5);"></div>`,
+                        className: '',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+                    userLocationMarker = L.marker([lat, lng], {icon: userIcon, zIndexOffset: 1000})
+                        .bindPopup('<b>You are here</b>')
+                        .addTo(window.propertyDetailMap);
+                }
+                
+                userLocationMarker.openPopup();
+
+                span.textContent = originalText;
+                btn.disabled = false;
+                
+                // Adjust bounds to show both property and user
+                
+                const bounds = L.latLngBounds([
+                    [6.175000, -2.410000],
+                    [lat, lng]
+                ]);
+                window.propertyDetailMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+                
+            },
+            function(error) {
+                alert("Could not access your location. Please check your browser permissions.");
+                span.textContent = originalText;
+                btn.disabled = false;
+            },
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        );
+    } else {
+        alert("Geolocation is not supported by your browser");
+    }
+}  
+
+  /* ── Check for review submission success ── */
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('review_submitted') === 'true') {
+      showToast('✅ Thank you for your feedback! Your review helps future guests make confident decisions.');
+      
+      // Clean up the URL
+      const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.replaceState({path: newUrl}, '', newUrl);
+  }
+});
+
+/* ── REVIEW FILTERING AJAX ── */
+function fetchReviews() {
+  const container = document.getElementById('reviewsContainer');
+  const rating = document.getElementById('filterRating').value;
+  const guest = document.getElementById('filterGuest').value;
+  const theme = document.getElementById('filterTheme') ? document.getElementById('filterTheme').value : '';
+  const sort = document.getElementById('sortReviews').value;
+  
+  // Show loading state
+  container.style.opacity = '0.5';
+  
+  const params = new URLSearchParams({
+    rating: rating,
+    guest_type: guest,
+    theme: theme,
+    sort: sort
+  });
+  
+  fetch(`/properties/112/reviews/?${params.toString()}`, {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(response => response.text())
+  .then(html => {
+    container.innerHTML = html;
+    container.style.opacity = '1';
+  })
+  .catch(error => {
+    console.error('Error fetching reviews:', error);
+    container.style.opacity = '1';
+    showToast('❌ Failed to update reviews. Please try again.');
+  });
+}
+</script>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- Booking Modal Container -->
+<style>
+  /* Modal Overlay */
+  .bm-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10, 3, 2, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    animation: bmFadeIn 0.3s forwards;
+  }
+  @keyframes bmFadeIn { to { opacity: 1; } }
+
+  /* Modal Container */
+  .bm-modal {
+    background: var(--canvas);
+    border: 1px solid rgba(255,255,255,0.08);
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    border-radius: 24px;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(20px) scale(0.98);
+    opacity: 0;
+    animation: bmSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.1s;
+  }
+  @keyframes bmSlideUp { to { transform: translateY(0) scale(1); opacity: 1; } }
+
+  /* Header */
+  .bm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: transparent;
+  }
+  .bm-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--charcoal);
+    margin: 0;
+  }
+  .bm-close {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #FFFFFF;
+    transition: all 0.2s;
+  }
+  .bm-close:hover {
+    background: rgba(255,255,255,0.1);
+    color: #FFFFFF;
+  }
+
+  /* Body */
+  .bm-body {
+    padding: 32px;
+    overflow-y: auto;
+  }
+  .bm-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 32px;
+  }
+
+  /* Left Details */
+  .bm-section {
+    margin-bottom: 32px;
+  }
+  .bm-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--charcoal);
+  }
+  
+  .bm-prop-overview {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    background: rgba(255,255,255,0.02);
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .bm-prop-img {
+    width: 100px; height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+  .bm-prop-img-placeholder {
+    width: 100px; height: 80px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+  }
+  .bm-prop-info h3 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .bm-meta {
+    font-size: 13px;
+    display: flex;
+    gap: 8px;
+    color: var(--charcoal);
+  }
+
+  .bm-detail-list {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .bm-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 14px;
+  }
+  .bm-detail-row:last-child { border-bottom: none; }
+  .bm-label { color: var(--muted); }
+  .bm-val { font-weight: 600; color: var(--charcoal); }
+
+  /* Agreements */
+  .bm-agreement {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .bm-agreement:hover {
+    border-color: #FFFFFF;
+    background: rgba(255,255,255,0.05);
+  }
+  .bm-checkbox {
+    width: 20px; height: 20px;
+    accent-color: #FFFFFF;
+    margin-top: 2px;
+    cursor: pointer;
+  }
+  .bm-agree-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--charcoal);
+  }
+
+  /* Sidebar */
+  .bm-price-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 24px;
+    position: sticky;
+    top: 0;
+  }
+  .bm-price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    font-size: 15px;
+    color: var(--charcoal);
+  }
+  .bm-total {
+    border-top: 1px dashed rgba(255,255,255,0.08);
+    padding-top: 20px;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .bm-error {
+    background: rgba(255,255,255,0.05);
+    color: #FFFFFF;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .bm-submit-btn {
+    width: 100%;
+    background: #FFFFFF;
+    color: #000000;
+    padding: 16px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .bm-submit-btn:hover {
+    background: #E2E8F0;
+    transform: translateY(-1px);
+    box-shadow: none;
+  }
+  .bm-submit-btn:disabled {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.08);
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .bm-disclaimer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 16px;
+  }
+
+  @media (max-width: 800px) {
+    .bm-grid { grid-template-columns: 1fr; gap: 24px; }
+    .bm-sidebar { order: -1; }
+    .bm-price-card { position: static; padding: 20px; }
+    .bm-body { padding: 20px; }
+    .bm-header { padding: 20px; }
+  }
+</style>
+<div id="bookingModalContainer"></div>
+
+<script>
+window.loadModalSequence = function(url) {
+    const modalContainer = document.getElementById('bookingModalContainer');
+    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Cache-Control': 'no-cache' }, cache: 'no-store' })
+    .then(res => res.text())
+    .then(html => {
+        modalContainer.innerHTML = html;
+        const scripts = modalContainer.querySelectorAll('script');
+        scripts.forEach(oldScript => {
+            const newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+        
+        // Ensure close logic for success modal
+        const closeBtn = document.getElementById('bookingSuccessModalClose');
+        const overlay = document.getElementById('bookingSuccessModalOverlay');
+        if (closeBtn && overlay) {
+            function closeModal() {
+                overlay.style.animation = 'bmFadeOut 0.3s forwards';
+                setTimeout(() => modalContainer.innerHTML = '', 300);
+            }
+            closeBtn.addEventListener('click', closeModal);
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) closeModal();
+            });
+        }
+    })
+    .catch(err => console.error('Failed to load modal sequence:', err));
+};
+
+window.handleBookingModalSubmit = function(e, form) {
+    e.preventDefault();
+    const submitBtn = document.getElementById('bmSubmitBtn');
+    const errorDiv = document.getElementById('bmError');
+    
+    const btnText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span style="display:inline-block; width:16px; height:16px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite;"></span> Processing...';
+    submitBtn.disabled = true;
+    if(errorDiv) errorDiv.style.display = 'none';
+    
+    const formData = new FormData(form);
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        if (data.action === 'open_questionnaire') {
+            if(typeof loadModalSequence === 'function') loadModalSequence(data.questionnaire_url);
+            else window.location.href = data.questionnaire_url;
+        } else if (data.action === 'open_success') {
+            if(typeof loadModalSequence === 'function') loadModalSequence(data.success_url);
+            else window.location.href = data.success_url;
+        } else if (data.redirect_url) {
+            window.location.href = data.redirect_url;
+        }
+      } else {
+        if(errorDiv) {
+            errorDiv.innerText = data.error || 'An error occurred during booking.';
+            errorDiv.style.display = 'block';
+        } else {
+            alert(data.error || 'An error occurred');
+        }
+        submitBtn.innerHTML = btnText;
+        submitBtn.disabled = false;
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      if(errorDiv) {
+          errorDiv.innerText = 'Network error. Please try again.';
+          errorDiv.style.display = 'block';
+      }
+      submitBtn.innerHTML = btnText;
+      submitBtn.disabled = false;
+    });
+};
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle open modal
+  const bookBtns = document.querySelectorAll('.js-open-booking-modal');
+  const modalContainer = document.getElementById('bookingModalContainer');
+  
+  bookBtns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const url = this.getAttribute('href');
+      const originalText = this.innerHTML;
+      this.innerHTML = '<span style="display:inline-block; width:16px; height:16px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite;"></span> Opening...';
+      this.style.pointerEvents = 'none';
+      
+      fetch(url, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Cache-Control': 'no-cache' },
+        credentials: 'same-origin',
+        cache: 'no-store'
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.text().then(body => {
+            console.error('Booking modal HTTP error', res.status, body.substring(0, 500));
+            throw new Error(`HTTP ${res.status}`);
+          });
+        }
+        return res.text();
+      })
+      .then(html => {
+        this.innerHTML = originalText;
+        this.style.pointerEvents = 'auto';
+        
+        if (html.includes('id="loginForm"') || html.includes('auth-wrapper')) {
+          window.location.href = "/accounts/login/?next=" + encodeURIComponent(url);
+          return;
+        }
+        
+        modalContainer.innerHTML = html;
+        
+        // Execute injected scripts
+        const scripts = modalContainer.querySelectorAll('script');
+        scripts.forEach(oldScript => {
+            const newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+        
+        // Attach close event
+        const closeBtn = document.getElementById('bookingModalClose');
+        const overlay = document.getElementById('bookingModalOverlay');
+        
+        if (!closeBtn || !overlay) {
+            console.error("Modal HTML missing expected IDs. Received HTML head:", modalContainer.innerHTML.substring(0, 300));
+            modalContainer.innerHTML = '';
+            showToast('❌ Failed to load booking options. Please try again.');
+            return;
+        }
+        
+        function closeModal() {
+          overlay.style.animation = 'bmFadeOut 0.3s forwards';
+          const modalContent = overlay.querySelector('.bm-modal');
+          modalContent.style.animation = 'bmSlideDown 0.3s forwards';
+          setTimeout(() => modalContainer.innerHTML = '', 300);
+        }
+        
+        closeBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', function(e) {
+          if (e.target === overlay) closeModal();
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        this.innerHTML = originalText;
+        this.style.pointerEvents = 'auto';
+        showToast('❌ Failed to load booking options. Please try again.');
+      });
+    });
+  });
+
+  // Auto-open booking modal after login redirect
+  const params = new URLSearchParams(window.location.search);
+  const autoBookRoom = params.get('auto_book_room');
+  const autoBookUnit = params.get('auto_book_unit');
+  
+  if (autoBookRoom || autoBookUnit) {
+    setTimeout(() => {
+      let btnToClick;
+      if (autoBookRoom) btnToClick = document.getElementById('book-btn-room-' + autoBookRoom);
+      if (autoBookUnit) btnToClick = document.getElementById('book-btn-unit-' + autoBookUnit);
+      
+      if (btnToClick && !btnToClick.classList.contains('booking-disabled') && !btnToClick.disabled) {
+        btnToClick.click();
+        btnToClick.scrollIntoView({behavior: 'smooth', block: 'center'});
+      }
+      
+      // Clean up the URL
+      const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.replaceState({path: newUrl}, '', newUrl);
+    }, 500);
+  }
+});
+
+/* ── House Rules Acknowledgment Logic ─────────────────────────── */
+
+function toggleBookBtn(type, id) {
+  const checkbox = document.getElementById('check-' + type + '-' + id);
+  const btn      = document.getElementById('bookbtn-' + type + '-' + id);
+  if (!btn) return;
+
+  if (checkbox && checkbox.checked) {
+    btn.classList.remove('pd-book-btn--disabled');
+    btn.classList.add('pd-book-btn--active');
+  } else {
+    btn.classList.remove('pd-book-btn--active');
+    btn.classList.add('pd-book-btn--disabled');
+  }
+}
+
+function handleBookClick(e, type, id, propertyId) {
+  const checkbox = document.getElementById('check-' + type + '-' + id);
+
+  // Double-check the checkbox is ticked (belt-and-suspenders)
+  if (!checkbox || !checkbox.checked) {
+    e.preventDefault();
+    return false;
+  }
+
+  
+  // Not logged in — store intent and redirect to login
+  e.preventDefault();
+  const btn = document.getElementById('bookbtn-' + type + '-' + id);
+  const intendedUrl = btn ? btn.getAttribute('data-initiate-url') : '';
+  // Save to sessionStorage so login page can redirect back
+  sessionStorage.setItem('intended_booking_url', intendedUrl);
+  window.location.href = "/accounts/login/?next=" + encodeURIComponent(intendedUrl);
+  return false;
+  
+
+  // Authenticated — allow normal navigation
+  return true;
+}
+
+// House Rules Modal Functions
+let currentBookingParams = '';
+
+function openHouseRulesModal(params) {
+  currentBookingParams = params;
+  document.getElementById('houseRulesModalOverlay').style.display = 'flex';
+  document.getElementById('houseRulesCheckbox').checked = false;
+  toggleProceedButton();
+}
+
+function closeHouseRulesModal() {
+  document.getElementById('houseRulesModalOverlay').style.display = 'none';
+}
+
+function toggleProceedButton() {
+  const checkbox = document.getElementById('houseRulesCheckbox');
+  const btn = document.getElementById('proceedToBookingBtn');
+  
+  if (checkbox.checked) {
+    btn.disabled = false;
+    btn.style.background = '#FFFFFF';
+    btn.style.color = '#000000';
+    btn.style.cursor = 'pointer';
+  } else {
+    btn.disabled = true;
+    btn.style.background = 'rgba(255,255,255,0.05)';
+    btn.style.color = 'rgba(255,255,255,0.2)';
+    btn.style.cursor = 'not-allowed';
+  }
+}
+
+function proceedToBooking() {
+  const btn = document.getElementById('proceedToBookingBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = 'Processing...';
+  }
+
+  // Submit house rules acknowledgment form
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '/bookings/acknowledge-house-rules/';
+  
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+  if (csrfToken) {
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = csrfToken.value;
+    form.appendChild(csrfInput);
+  }
+  
+  const propertyInput = document.createElement('input');
+  propertyInput.type = 'hidden';
+  propertyInput.name = 'property_id';
+  propertyInput.value = '112';
+  form.appendChild(propertyInput);
+  
+  // Parse currentBookingParams to get room_type_id or unit_type_id
+  if (currentBookingParams.includes('room_type=')) {
+    const roomTypeId = currentBookingParams.split('room_type=')[1].split('&')[0];
+    const roomInput = document.createElement('input');
+    roomInput.type = 'hidden';
+    roomInput.name = 'room_type_id';
+    roomInput.value = roomTypeId;
+    form.appendChild(roomInput);
+  }
+  
+  if (currentBookingParams.includes('unit_type=')) {
+    const unitTypeId = currentBookingParams.split('unit_type=')[1].split('&')[0];
+    const unitInput = document.createElement('input');
+    unitInput.type = 'hidden';
+    unitInput.name = 'unit_type_id';
+    unitInput.value = unitTypeId;
+    form.appendChild(unitInput);
+  }
+  
+  document.body.appendChild(form);
+  form.submit();
+}
+
+// Update openBookingModalForRoom to use house rules modal
+function openBookingModalForRoom(params) {
+  openHouseRulesModal(params);
+}
+
+
+// Scroll Animations with IntersectionObserver
+document.addEventListener("DOMContentLoaded", function() {
+    const observerOptions = {
+        threshold: 0.05,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.scroll-animate').forEach(el => {
+        observer.observe(el);
+    });
+});
+
+// Mobile Menu Drawer Toggling
+(function() {
+    var openBtn = document.getElementById('prop-mobile-menu-btn');
+    var closeBtn = document.getElementById('prop-drawer-close-btn');
+    var drawer = document.getElementById('prop-mobile-nav-drawer');
+    if (openBtn && drawer) {
+        openBtn.addEventListener('click', function() {
+            drawer.style.display = 'flex';
+        });
+    }
+    if (closeBtn && drawer) {
+        closeBtn.addEventListener('click', function() {
+            drawer.style.display = 'none';
+        });
+    }
+})();
+</script>
+<style>
+/* Disabled booking button styles */
+.booking-disabled {
+  opacity: 0.5;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  filter: grayscale(100%);
+}
+@keyframes bmFadeOut { to { opacity: 0; } }
+@keyframes bmSlideDown { to { transform: translateY(20px) scale(0.98); opacity: 0; } }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+</style>
+
+<!-- Room Select Modal -->
+<div class="bm-overlay" id="roomSelectModalOverlay" style="display:none; z-index:99999; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(10,3,2,0.6); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding: 20px;">
+  <div class="rsm-modal-container" style="background:var(--canvas); border:1px solid rgba(255,255,255,0.08); border-radius:24px; padding:32px; width:500px; max-width:100%; position:relative; max-height: 80vh; overflow-y: auto; animation: bmSlideUp 0.3s forwards;">
+    <button type="button" onclick="document.getElementById('roomSelectModalOverlay').style.display='none'" style="position:absolute; right:20px; top:20px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#FFFFFF; transition:all 0.2s;">
+       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+       </svg>
+    </button>
+    <h3 style="margin-top:0; margin-bottom:8px; font-size:24px; font-weight:800; color:#FFFFFF;">Select an Option</h3>
+    <p style="color:#64748b; margin-bottom:24px; font-size:14px;">Choose the space you would like to book</p>
+    
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      
+          
+            
+              <a href="/api/bookings/initiate/112/?unit_type_id=70" 
+                      style="display:block; text-decoration:none; text-align:left; padding:20px; border:1px solid rgba(255,255,255,0.08); border-radius:16px; background:rgba(255,255,255,0.02); cursor:pointer; transition:all 0.2s; color:#FFFFFF;"
+                      onmouseover="this.style.borderColor='#FFFFFF'; this.style.backgroundColor='rgba(255,255,255,0.05)';"
+                      onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'; this.style.backgroundColor='rgba(255,255,255,0.02)';">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <div style="font-weight:700; font-size:16px; color:#FFFFFF; margin-bottom:6px;">Two-Bedroom Apartment</div>
+                        <div style="font-size:13px; color:#64748b; font-weight:500;">2 Bed, 2 Bath &bull; 4 available</div>
+                    </div>
+                    <div style="text-align:right;">
+                        
+                        
+                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; 2000</div>
+                        <div style="font-size:11px; color:#64748b; margin-top:2px;">
+                          per month
+                          
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+              </a>
+            
+          
+      
+    </div>
+  </div>
+</div>
+
+
+
+
+</div>
+
+</body>
+</html>

@@ -40,7 +40,7 @@
                         <div class="property-header">
                             {% with main_img=property.images.first %}
                             {% if main_img %}
-                                <img src="{{ main_img.image.url }}" alt="{{ property.title }}" class="property-thumb">
+                                <img src="{{ main_img.image_url }}" alt="{{ property.title }}" class="property-thumb">
                             {% else %}
                                 <div class="property-thumb-placeholder">
                                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">

@@ -37,7 +37,7 @@
               
               <div class="bm-prop-overview">
                 {% if property.images.first %}
-                <img src="{{ property.images.first.image.url }}" alt="{{ property.title }}" class="bm-prop-img">
+                <img src="{{ property.images.first.image_url }}" alt="{{ property.title }}" class="bm-prop-img">
                 {% else %}
                 <div class="bm-prop-img-placeholder" style="display: flex; align-items: center; justify-content: center; color: #94a3b8; border: 1px dashed rgba(255,255,255,0.15); background: #FAFAFA;">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>

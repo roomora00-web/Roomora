@@ -852,7 +852,7 @@
         <a href="{% url 'landing:property_detail' rv.property.id %}" class="property-item">
           {% if rv.property.images.all %}
           {% for first_image in rv.property.images.all|slice:":1" %}
-          <img src="{{ first_image.image.url }}" class="property-item-img" alt="{{ rv.property.name }}">
+          <img src="{{ first_image.image_url }}" class="property-item-img" alt="{{ rv.property.name }}">
           {% endfor %}
           {% else %}
           <div class="property-item-img-placeholder">
@@ -893,7 +893,7 @@
       <a href="{% url 'landing:property_detail' prop.id %}" class="prop-card">
         {% if prop.images.all %}
         {% for first_image in prop.images.all|slice:":1" %}
-        <img src="{{ first_image.image.url }}" class="prop-card-img" alt="{{ prop.title }}">
+        <img src="{{ first_image.image_url }}" class="prop-card-img" alt="{{ prop.title }}">
         {% endfor %}
         {% else %}
         <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=750&fit=crop" class="prop-card-img" alt="{{ prop.title }}">

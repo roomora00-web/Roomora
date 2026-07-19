@@ -65,7 +65,7 @@
           {% if booking.accommodation_property.main_image %}
             <img src="{{ booking.accommodation_property.main_image.url }}" alt="Property image" class="w-full rounded-[1.5rem] object-cover shadow-[0_16px_40px_rgba(0,0,0,0.25)]" />
           {% elif booking.accommodation_property.image %}
-            <img src="{{ booking.accommodation_property.image.url }}" alt="Property image" class="w-full rounded-[1.5rem] object-cover shadow-[0_16px_40px_rgba(0,0,0,0.25)]" />
+            <img src="{{ booking.accommodation_property.image_url }}" alt="Property image" class="w-full rounded-[1.5rem] object-cover shadow-[0_16px_40px_rgba(0,0,0,0.25)]" />
           {% else %}
             <div class="h-56 w-full rounded-[1.5rem] bg-white/[0.04]"></div>
           {% endif %}
