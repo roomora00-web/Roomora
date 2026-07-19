@@ -1,6 +1,9 @@
 
 from django.shortcuts import redirect
 from django.urls import reverse
+import logging
+
+logger = logging.getLogger(__name__)
 
 class RoleBasedRedirectionMiddleware:
     """
@@ -12,18 +15,25 @@ class RoleBasedRedirectionMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.user.is_authenticated:
-            path = request.path_info.lower()
-            
-            # Auth pages protection
-            if path in ['/login/', '/register/']:
-                if request.user.user_type == 'ADMIN':
-                    return redirect('bookings:admin-approval-dashboard')
-                return redirect('accounts:dashboard')
-                
-            # Admin users cannot access non-admin app pages, except api and accounts
-            if request.user.user_type == 'ADMIN' or request.user.is_staff:
-                if not path.startswith('/admin/') and not path.startswith('/api/') and not path.startswith('/accounts/logout') and '/admin' not in path:
-                    return redirect('bookings:admin-approval-dashboard')
-                    
-        return self.get_response(request)
+        logger.info(f"Middleware processing: {request.path_info}, user: {request.user}")
+        try:
+            if request.user.is_authenticated:
+                path = request.path_info.lower()
+
+                # Auth pages protection
+                if path in ['/login/', '/register/']:
+                    if request.user.user_type == 'ADMIN':
+                        return redirect('bookings:admin-approval-dashboard')
+                    return redirect('accounts:dashboard')
+
+                # Admin users cannot access non-admin app pages, except api and accounts
+                if request.user.user_type == 'ADMIN' or request.user.is_staff:
+                    if not path.startswith('/admin/') and not path.startswith('/api/') and not path.startswith('/accounts/logout') and '/admin' not in path:
+                        return redirect('bookings:admin-approval-dashboard')
+
+            response = self.get_response(request)
+            logger.info(f"Response status: {response.status_code}")
+            return response
+        except Exception as e:
+            logger.error(f"Middleware error: {e}")
+            raise
