@@ -932,7 +932,11 @@
                         <div class="card-price-block">
                             <span class="card-price-label">from</span>
                             {% with property.room_types.first.pricing_models.first as pricing %}
+                            {% if pricing %}
                             <span class="card-price-value">GHC {{ pricing.semester_price|default:pricing.monthly_price|default:"—" }}</span>
+                            {% else %}
+                            <span class="card-price-value">GHC —</span>
+                            {% endif %}
                             {% endwith %}
                         </div>
                     </div>
@@ -1211,7 +1215,7 @@
                         {% if pricing %}
                         <div class="card-price-block">
                             <span class="card-price-label">from</span>
-                            <span class="card-price-value">GHC {{ pricing.yearly_price|default:pricing.semester_price|default:pricing.monthly_price }}</span>
+                            <span class="card-price-value">GHC {% if pricing.yearly_price %}{{ pricing.yearly_price }}{% elif pricing.semester_price %}{{ pricing.semester_price }}{% elif pricing.monthly_price %}{{ pricing.monthly_price }}{% else %}—{% endif %}</span>
                         </div>
                         {% endif %}
                         {% endwith %}
@@ -1270,7 +1274,7 @@
                         {% if pricing %}
                         <div class="card-price-block">
                             <span class="card-price-label">from</span>
-                            <span class="card-price-value">GHC {{ pricing.monthly_price|default:pricing.yearly_price }}</span>
+                            <span class="card-price-value">GHC {% if pricing.monthly_price %}{{ pricing.monthly_price }}{% elif pricing.yearly_price %}{{ pricing.yearly_price }}{% else %}—{% endif %}</span>
                         </div>
                         {% endif %}
                         {% endwith %}

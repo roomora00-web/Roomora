@@ -43,7 +43,7 @@
                 {% if property.property_type == 'HOSTEL' %}
                     {% with property.room_types.first.pricing_models.first as pricing %}
                     {% if pricing %}
-                    <span class="card-price-value">GHC {{ pricing.semester_price|default:pricing.monthly_price|default:"—" }}</span>
+                    <span class="card-price-value">GHC {% if pricing.semester_price %}{{ pricing.semester_price }}{% elif pricing.monthly_price %}{{ pricing.monthly_price }}{% else %}—{% endif %}</span>
                     {% else %}
                     <span class="card-price-value">GHC —</span>
                     {% endif %}
@@ -51,7 +51,7 @@
                 {% else %}
                     {% with property.unit_types.first.pricing_models.first as pricing %}
                     {% if pricing %}
-                    <span class="card-price-value">GHC {{ pricing.monthly_price|default:pricing.yearly_price|default:pricing.semester_price|default:"—" }}</span>
+                    <span class="card-price-value">GHC {% if pricing.monthly_price %}{{ pricing.monthly_price }}{% elif pricing.yearly_price %}{{ pricing.yearly_price }}{% elif pricing.semester_price %}{{ pricing.semester_price }}{% else %}—{% endif %}</span>
                     {% else %}
                     <span class="card-price-value">GHC —</span>
                     {% endif %}
