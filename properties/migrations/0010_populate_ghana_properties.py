@@ -2,6 +2,7 @@
 
 from django.db import migrations
 from decimal import Decimal
+from django.contrib.auth.hashers import make_password
 
 
 def populate_ghana_properties(apps, schema_editor):
@@ -27,12 +28,10 @@ def populate_ghana_properties(apps, schema_editor):
             'last_name': 'Mensa',
             'user_type': 'ADMIN',
             'is_staff': True,
-            'is_superuser': True
+            'is_superuser': True,
+            'password': make_password('admin123')
         }
     )
-    if not admin_user.password:
-        admin_user.set_password('admin123')
-        admin_user.save()
     
     # Create amenities
     amenities_data = [
