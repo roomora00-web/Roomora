@@ -2,7 +2,7 @@
 <a class="property-overlay-card"
     href="{% url 'landing:property_detail' property.pk %}"
     {% with primary_image=property.images.all|first %}
-    {% if primary_image %}
+    {% if primary_image and primary_image.image_url %}
     style="background-image: url('{{ primary_image.image_url }}')"
     {% else %}
     style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
