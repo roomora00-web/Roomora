@@ -726,17 +726,25 @@
                         <span class="price-label">Starting from</span>
                         <span class="price-value">
                             {% if featured_property %}
-                            {% with featured_property.room_types.first.pricing_models.first as hostel_price %}
-                            {% with featured_property.unit_types.first.pricing_models.first as apartment_price %}
-                            {% if featured_property.property_type == 'HOSTEL' and hostel_price %}
+                            {% if featured_property.property_type == 'HOSTEL' %}
+                            {% with hostel_price=featured_property.room_types.first.pricing_models.first %}
+                            {% if hostel_price %}
                             GHC {{ hostel_price.semester_price|default:hostel_price.yearly_price|default:hostel_price.monthly_price|default:"—" }}
-                            {% elif featured_property.property_type == 'APARTMENT' and apartment_price %}
+                            {% else %}
+                            Contact for price
+                            {% endif %}
+                            {% endwith %}
+                            {% elif featured_property.property_type == 'APARTMENT' %}
+                            {% with apartment_price=featured_property.unit_types.first.pricing_models.first %}
+                            {% if apartment_price %}
                             GHC {{ apartment_price.monthly_price|default:apartment_price.yearly_price|default:"—" }}
                             {% else %}
                             Contact for price
                             {% endif %}
                             {% endwith %}
-                            {% endwith %}
+                            {% else %}
+                            Contact for price
+                            {% endif %}
                             {% else %}
                             GHC 2,500
                             {% endif %}
