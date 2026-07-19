@@ -507,10 +507,10 @@
     <!-- Body: eyebrow + title + sub + search -->
     <div class="mhero-body">
         <div class="mhero-eyebrow animate-fade-up delay-100">
-            <span></span> 500+ Verified Listings
+            <span></span> Perfect Home
         </div>
-        <h1 class="mhero-title animate-fade-up delay-200">Discover Premium<br>Living Spaces</h1>
-        <p class="mhero-sub animate-fade-up delay-300">Verified student hostels &amp; apartments in Ghana — matched to your lifestyle.</p>
+        <h1 class="mhero-title animate-fade-up delay-200" style="font-size: 4rem; line-height: 0.9; text-transform: uppercase; font-weight: 300;">Perfect<br><span style="font-weight: 600; padding-left: 40px;">Home</span></h1>
+        <p class="mhero-sub animate-fade-up delay-300" style="text-transform: uppercase; letter-spacing: 1px; font-weight: 300;">Where Tranquility Meets Modern Living</p>
 
         <form action="{% url 'landing:properties' %}" method="GET" class="mhero-search animate-fade-up delay-400">
             <svg class="mhero-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -640,11 +640,35 @@
 
 
     <!-- Content Workspace -->
-    <div class="hero-content-workspace center-aligned-hero" style="position: relative; z-index: 10;">
-        <h1 class="hero-main-headline animate-fade-up delay-100">Discover Premium<br>Living Spaces</h1>
-        <p class="hero-tagline-copy animate-fade-up delay-200">
-            Verified student hostels and premium apartments in Ghana,<br>matched to your lifestyle.
-        </p>
+    <div class="hero-content-workspace left-aligned-hero" style="position: relative; z-index: 10; text-align: left; width: 100%; max-width: 1600px; padding: 0 5%; margin: auto 0; padding-bottom: 200px; align-items: flex-start;">
+        <h1 class="hero-main-headline animate-fade-up delay-100" style="font-size: clamp(5rem, 11vw, 13rem); line-height: 0.9; margin: 0; font-weight: 300; letter-spacing: -0.02em; text-transform: uppercase;">
+            Perfect
+            <br>
+            <span style="display: block; margin-left: clamp(40px, 20vw, 350px); font-weight: 500;">Home</span>
+        </h1>
+        
+        <div style="margin-top: 32px; display: flex; flex-direction: column; align-items: flex-start; gap: 40px; margin-left: clamp(40px, 20vw, 350px);" class="animate-fade-up delay-200">
+            <h2 style="font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; line-height: 1.2; color: rgba(255,255,255,0.9); text-transform: uppercase; margin: 0; letter-spacing: 2px;">
+                Where <br>
+                Tranquility Meets <br>
+                Modern Living
+            </h2>
+
+            <a href="{% url 'landing:properties' %}" style="display: inline-flex; background: #FFFFFF; color: #000000; padding: 16px 40px; border-radius: 40px; font-weight: 600; text-decoration: none; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; transition: transform 0.2s;">
+                New Layouts
+            </a>
+        </div>
+        
+        <!-- Floating +300 Customers Card -->
+        <div class="hide-on-mobile animate-fade-up delay-300" style="position: absolute; right: 5%; bottom: 140px; background: #FFFFFF; color: #000000; padding: 32px; border-radius: 30px; display: flex; flex-direction: column; gap: 12px; width: 280px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+            <h3 style="font-size: 2.8rem; font-weight: 400; margin: 0; line-height: 1;">+300</h3>
+            <p style="font-size: 0.95rem; color: #4b5563; margin: 0; line-height: 1.4; font-weight: 500;">customers love our service, always</p>
+            <div style="display: flex; margin-top: 12px;">
+                <img src="https://i.pravatar.cc/100?img=4" style="width: 48px; height: 48px; border-radius: 50%; border: 3px solid #FFF; margin-left: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <img src="https://i.pravatar.cc/100?img=5" style="width: 48px; height: 48px; border-radius: 50%; border: 3px solid #FFF; margin-left: -15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <img src="https://i.pravatar.cc/100?img=6" style="width: 48px; height: 48px; border-radius: 50%; border: 3px solid #FFF; margin-left: -15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            </div>
+        </div>
     </div>
 
     <!-- Anchored Search Widget -->

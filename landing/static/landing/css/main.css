@@ -16,18 +16,18 @@ body {
 
 /* ── Neo-Tropical Glassmorphism Design Tokens ── */
 :root {
-    --primary-dark: #111111;
-    --pure-black: #080808;
-    --muted-gray: #94A3B8;
-    --light-gray: rgba(255, 255, 255, 0.08);
-    --light-gray-alt: rgba(255, 255, 255, 0.05);
-    --pure-white: #F8FAFC;
-    --border-light: rgba(255, 255, 255, 0.10);
-    --bg-secondary: #111111;
-    --accent: #FFFFFF;
-    --accent-glow: rgba(255, 255, 255, 0.15);
-    --bg-glass: rgba(255, 255, 255, 0.06);
-    --bg-elevated: #141414;
+    --primary-dark: #0F172A;
+    --pure-black: #FFFFFF;
+    --muted-gray: #64748B;
+    --light-gray: rgba(0, 0, 0, 0.05);
+    --light-gray-alt: rgba(0, 0, 0, 0.03);
+    --pure-white: #0F172A;
+    --border-light: rgba(0, 0, 0, 0.10);
+    --bg-secondary: #F8FAFC;
+    --accent: #2563EB;
+    --accent-glow: rgba(37, 99, 235, 0.15);
+    --bg-glass: rgba(255, 255, 255, 0.8);
+    --bg-elevated: #FFFFFF;
 }
 
 /* ─── Immersive Glassmorphic Hero Section ─────────────────────────────────── */
@@ -348,13 +348,13 @@ body {
     bottom: 32px;
     left: 32px;
     right: 32px;
-    background: rgba(20, 20, 20, 0.6);
+    background: var(--bg-glass);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--border-light);
     border-radius: 24px;
     padding: 32px;
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
 }
 
 .floating-header {
