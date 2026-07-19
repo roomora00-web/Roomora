@@ -636,6 +636,33 @@
         </div>
     </header>
 
+    <!-- Massive Background Typography (PERFECT HOME) -->
+    <div class="animate-fade-up" style="
+        position: absolute;
+        top: 45%;
+        left: 5%;
+        right: 5%;
+        transform: translateY(-50%);
+        z-index: 5;
+        pointer-events: none;
+    ">
+        <h1 style="
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(5rem, 14vw, 15rem);
+            line-height: 0.85;
+            margin: 0;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: #FFFFFF;
+            text-shadow: 0 8px 40px rgba(0,0,0,0.3);
+            text-align: left;
+        ">
+            Perfect<span style="font-size: 0.25em; vertical-align: super; font-weight: 400; opacity: 0.8;">&copy;</span><br>
+            <span style="padding-left: clamp(40px, 20vw, 350px);">Home</span>
+        </h1>
+    </div>
+
     <!-- Hero Content — sits at the bottom of the image -->
     <div style="
         position: absolute;
@@ -649,8 +676,8 @@
         justify-content: space-between;
         gap: 24px;
     ">
-        <!-- Left: Headline + Tagline + CTA -->
-        <div class="animate-fade-up delay-100" style="flex: 1; max-width: 680px;">
+        <!-- Left: Tagline + CTA -->
+        <div class="animate-fade-up delay-200" style="flex: 1; max-width: 580px;">
 
             <!-- Eyebrow pill -->
             <div style="
@@ -667,62 +694,64 @@
                 letter-spacing: 1px;
                 text-transform: uppercase;
                 color: #FFFFFF;
-                margin-bottom: 18px;
+                margin-bottom: 24px;
             ">
                 <span style="width:6px;height:6px;background:#4ade80;border-radius:50%;display:inline-block;flex-shrink:0;"></span>
                 500+ Verified Listings Across Ghana
             </div>
 
-            <!-- Headline -->
-            <h1 style="
+            <!-- Sub Headline (Mimicking "Where Tranquility Meets Modern Living") -->
+            <h2 style="
                 font-family: 'Plus Jakarta Sans', sans-serif;
-                font-size: clamp(2rem, 4.5vw, 4rem);
-                line-height: 1.08;
+                font-size: clamp(1.5rem, 3vw, 2.8rem);
+                line-height: 1.1;
                 margin: 0 0 16px 0;
-                font-weight: 800;
-                letter-spacing: -0.03em;
+                font-weight: 300;
+                text-transform: uppercase;
+                letter-spacing: 0.02em;
                 color: #FFFFFF;
-                text-shadow: 0 2px 16px rgba(0,0,0,0.5);
+                text-shadow: 0 2px 12px rgba(0,0,0,0.5);
             ">
-                Find Your Perfect Space<br>&amp; Compatible Roommate
-            </h1>
+                Find Your Perfect Space<br>
+                &amp; Compatible Roommate
+            </h2>
 
-            <!-- Subtext -->
+            <!-- Paragraph -->
             <p style="
                 font-size: 1rem;
                 font-weight: 400;
                 line-height: 1.6;
-                color: rgba(255,255,255,0.80);
-                margin: 0 0 28px 0;
-                max-width: 520px;
+                color: rgba(255,255,255,0.85);
+                margin: 0 0 32px 0;
+                max-width: 480px;
+                text-shadow: 0 1px 4px rgba(0,0,0,0.5);
             ">
                 Browse verified student hostels &amp; apartments in Ghana — matched to your budget and lifestyle.
             </p>
 
             <!-- CTA Buttons -->
-            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+            <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
                 <a href="{% url 'landing:properties' %}" style="
                     display: inline-flex; align-items: center; gap: 8px;
-                    background: #111111; color: #F5F5F5;
-                    padding: 14px 32px; border-radius: 40px;
-                    font-weight: 700; text-decoration: none; font-size: 14px;
+                    background: #FFFFFF; color: #111111;
+                    padding: 16px 36px; border-radius: 40px;
+                    font-weight: 800; text-decoration: none; font-size: 14px;
                     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-                    transition: background 0.2s;
+                    text-transform: uppercase; letter-spacing: 0.5px;
+                    transition: transform 0.2s, box-shadow 0.2s;
                 ">
                     Explore Listings
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
                 <a href="{% url 'landing:properties' %}" style="
                     display: inline-flex; align-items: center; gap: 8px;
-                    background: rgba(255,255,255,0.15);
-                    border: 1.5px solid rgba(255,255,255,0.45);
-                    backdrop-filter: blur(10px);
+                    background: transparent;
                     color: #FFFFFF;
-                    padding: 14px 28px; border-radius: 40px;
+                    padding: 16px 0;
                     font-weight: 600; text-decoration: none; font-size: 14px;
-                    transition: background 0.2s;
+                    text-transform: uppercase; letter-spacing: 0.5px;
+                    transition: opacity 0.2s;
                 ">
-                    Find a Roommate
+                    Find a Roommate &rarr;
                 </a>
             </div>
         </div>
