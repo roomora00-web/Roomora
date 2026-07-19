@@ -259,12 +259,16 @@ class PropertyImage(models.Model):
     @property
     def image_url(self):
         if self.image:
-            img_str = str(self.image)
+            img_str = str(self.image.name) if hasattr(self.image, 'name') else str(self.image)
             if img_str.startswith('http'):
                 return img_str
             try:
-                return self.image.url
-            except ValueError:
+                # For local files, verify it actually exists on disk/storage before returning the URL.
+                # If Railway deleted the file, this prevents returning a broken 404 URL.
+                if self.image.storage.exists(self.image.name):
+                    return self.image.url
+                return ""
+            except Exception:
                 return ""
         return ""
 
