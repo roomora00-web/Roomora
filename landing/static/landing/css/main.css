@@ -644,7 +644,7 @@ body {
 
 .map-cta-btn {
     background: var(--accent);
-    color: #000000;
+    color: #F5F5F5;
     border: none;
     border-radius: 12px;
     padding: 16px 32px;
@@ -1419,7 +1419,7 @@ body {
 
 .tab-item.active {
     background: var(--accent);
-    color: #000000;
+    color: #F5F5F5;
     box-shadow: 0 4px 16px var(--accent-glow);
 }
 
@@ -1819,7 +1819,7 @@ body {
 
 .newsletter-submit {
     background: var(--accent);
-    color: #000000;
+    color: #F5F5F5;
     border: none;
     border-radius: 12px;
     padding: 12px 20px;
@@ -1839,7 +1839,7 @@ body {
     height: 44px;
     border-radius: 50%;
     background: var(--accent);
-    color: #000000;
+    color: #F5F5F5;
     border: none;
     cursor: pointer;
     display: inline-flex;
@@ -2782,7 +2782,7 @@ body {
 
 .cta-black-pill {
     background: var(--accent);
-    color: #000000;
+    color: #F5F5F5;
     border-radius: 24px;
     padding: 14px 28px;
     font-size: 14px;
@@ -2960,7 +2960,7 @@ body {
 
 .get-in-touch-btn {
     background: var(--accent);
-    color: #000000;
+    color: #F5F5F5;
     border-radius: 12px;
     padding: 12px 20px;
     font-size: 14px;
@@ -3027,7 +3027,7 @@ body {
 .accordion-item.active .accordion-trigger-icon {
     transform: rotate(45deg);
     background: var(--accent);
-    color: #000000;
+    color: #F5F5F5;
     border-color: var(--accent);
 }
 

@@ -597,6 +597,45 @@
     <!-- Stronger gradient overlay so text is always readable -->
     <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.15) 100%); z-index: 2;"></div>
 
+    <!-- Header Navigation Container -->
+    <header class="navbar-container animate-fade-up" style="position: relative; z-index: 10;">
+
+        <!-- Left Brand Logo -->
+        <div class="navbar-brand" style="display: flex; align-items: center;">
+            <a href="{% url 'landing:home' %}" style="display: block;">
+                <img src="{% static 'landing/images/logo-white.png' %}" alt="Roomora Logo" class="hero-logo-img">
+            </a>
+        </div>
+
+        <!-- Center Navigation Pill -->
+        <nav class="center-navigation-pill">
+            <a href="{% url 'landing:home' %}" class="nav-link is-active"
+                style="text-decoration: none; font-size: 14px;">Home</a>
+            <a href="{% url 'landing:properties' %}" class="nav-link"
+                style="text-decoration: none; font-size: 14px; color: #FFFFFF; font-weight: 500;">Properties</a>
+            <a href="#" class="nav-link"
+                style="text-decoration: none; font-size: 14px; color: #FFFFFF; font-weight: 500;">About</a>
+            <a href="#" class="nav-link"
+                style="text-decoration: none; font-size: 14px; color: #FFFFFF; font-weight: 500;">Blog</a>
+        </nav>
+
+        <!-- Right Action Panel -->
+        <div class="right-auth-panel glass-panel-base mobile-clean-auth"
+            style="display: flex; align-items: center; gap: 16px; padding: 6px 6px 6px 20px;">
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'accounts:logout' %}" class="hide-on-mobile"
+                style="color: #FFFFFF; font-size: 14px; text-decoration: none; font-weight: 500;">Logout</a>
+            <a href="{% url 'accounts:dashboard' %}" class="hide-on-mobile"
+                style="background: #FFFFFF; color: #000000; border-radius: 20px; padding: 8px 16px; font-size: 14px; font-weight: 600; text-decoration: none;">Dashboard</a>
+            {% else %}
+            <a href="{% url 'accounts:login' %}" class="hide-on-mobile" style="color: #FFFFFF; font-size: 14px; text-decoration: none; font-weight: 500;">Sign In</a>
+            <a href="{% url 'landing:properties' %}" class="hide-on-mobile"
+                style="background: #FFFFFF; color: #000000; border-radius: 20px; padding: 8px 16px; font-size: 14px; font-weight: 600; text-decoration: none;">Find a Place</a>
+            {% endif %}
+
+        </div>
+    </header>
+
     <!-- Hero Content — sits at the bottom of the image -->
     <div style="
         position: absolute;
