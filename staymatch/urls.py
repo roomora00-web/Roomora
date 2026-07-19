@@ -24,8 +24,32 @@ from django.http import JsonResponse
 def healthcheck(request):
     return JsonResponse({'status': 'healthy'})
 
+def debug_home(request):
+    """Debug endpoint to test home page rendering"""
+    try:
+        from django.test import RequestFactory
+        from landing.views import HomeView
+        factory = RequestFactory()
+        test_request = factory.get('/')
+        test_request.user = request.user
+        view = HomeView.as_view()
+        response = view(test_request)
+        return JsonResponse({
+            'status': 'success',
+            'response_status': response.status_code,
+            'content_length': len(response.content) if hasattr(response, 'content') else 0
+        })
+    except Exception as e:
+        import traceback
+        return JsonResponse({
+            'status': 'error',
+            'error': str(e),
+            'traceback': traceback.format_exc()
+        }, status=500)
+
 urlpatterns = [
     path('health/', healthcheck),
+    path('debug-home/', debug_home),
     path('admin/', admin.site.urls),
     path('', include('landing.urls')),
     path('accounts/', include('accounts.urls')),
