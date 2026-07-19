@@ -9,7 +9,17 @@ from feedback.views import get_property_reviews
 
 class HomeView(TemplateView):
     template_name = 'landing/home.html'
-    
+
+    def get(self, request, *args, **kwargs):
+        try:
+            return super().get(request, *args, **kwargs)
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error in HomeView.get: {e}")
+            from django.http import HttpResponse
+            return HttpResponse(f"Error loading page: {str(e)}", status=500)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
