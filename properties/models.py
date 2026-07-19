@@ -256,6 +256,18 @@ class PropertyImage(models.Model):
     order = models.PositiveIntegerField(default=0)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     
+    @property
+    def image_url(self):
+        if self.image:
+            img_str = str(self.image)
+            if img_str.startswith('http'):
+                return img_str
+            try:
+                return self.image.url
+            except ValueError:
+                return ""
+        return ""
+
     class Meta:
         db_table = 'property_images'
         verbose_name = 'Property Image'

@@ -2047,7 +2047,7 @@ body {
     <!-- Main large image -->
     <div class="pd-bento-main" onclick="openLightbox(0)">
       {% if all_images %}
-      <img id="gallery-main-img" src="{{ all_images.0.image.url }}" alt="{{ property.title }}">
+      <img id="gallery-main-img" src="{{ all_images.0.image_url }}" alt="{{ property.title }}">
       {% else %}
       <img id="gallery-main-img" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=900&h=700&fit=crop" alt="{{ property.title }}">
       {% endif %}
@@ -2060,14 +2060,14 @@ body {
     <!-- Side thumbnail 1 -->
     {% if all_images|length > 1 %}
       <div class="pd-bento-side" onclick="openLightbox(1)">
-        <img src="{{ all_images.1.image.url }}" alt="{{ property.title }}">
+        <img src="{{ all_images.1.image_url }}" alt="{{ property.title }}">
       </div>
     {% endif %}
     <!-- Side thumbnail 2 -->
     {% if all_images|length > 2 %}
       {% with img_count=all_images|length %}
       <div class="pd-bento-side {% if img_count > 3 %}has-more{% endif %}" {% if img_count > 3 %}data-more="+{{ img_count|add:'-3' }} more"{% endif %} onclick="openLightbox(2)">
-        <img src="{{ all_images.2.image.url }}" alt="{{ property.title }}">
+        <img src="{{ all_images.2.image_url }}" alt="{{ property.title }}">
       </div>
       {% endwith %}
     {% endif %}
@@ -2075,7 +2075,7 @@ body {
     {% if all_images|length > 3 %}
       {% for img in all_images|slice:"3:" %}
       <div class="pd-bento-side mobile-only-thumb" onclick="openLightbox({{ forloop.counter|add:2 }})">
-        <img src="{{ img.image.url }}" alt="{{ property.title }}">
+        <img src="{{ img.image_url }}" alt="{{ property.title }}">
       </div>
       {% endfor %}
     {% endif %}
@@ -3302,7 +3302,7 @@ body {
       <a href="{% url 'landing:property_detail' rec.pk %}" class="pd-listing-card">
         <!-- background image -->
         {% if rec.images.first %}
-        <img src="{{ rec.images.first.image.url }}" alt="{{ rec.title }}" class="pd-listing-card-img">
+        <img src="{{ rec.images.first.image_url }}" alt="{{ rec.title }}" class="pd-listing-card-img">
         {% else %}
         <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=800&fit=crop" alt="{{ rec.title }}" class="pd-listing-card-img">
         {% endif %}
@@ -3798,7 +3798,7 @@ body {
 const galleryImages = [
   {% if all_images %}
     {% for img in all_images %}
-    { src: "{{ img.image.url }}", caption: "Photo {{ forloop.counter }}" }{% if not forloop.last %},{% endif %}
+    { src: "{{ img.image_url }}", caption: "Photo {{ forloop.counter }}" }{% if not forloop.last %},{% endif %}
     {% endfor %}
   {% else %}
     { src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=700&fit=crop", caption: "Main View" }
