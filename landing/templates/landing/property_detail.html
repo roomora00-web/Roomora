@@ -3333,11 +3333,11 @@ body {
               <div class="pd-listing-price-val">
                 {% if rec.property_type == 'HOSTEL' %}
                   {% with rec.room_types.first.pricing_models.first as rp %}
-                  {% if rp %}GH&#8373; {{ rp.semester_price|default:rp.monthly_price|floatformat:0 }}<span>/sem</span>{% else %}Contact{% endif %}
+                  {% if rp %}GH&#8373; {% if rp.semester_price %}{{ rp.semester_price|floatformat:0 }}{% elif rp.monthly_price %}{{ rp.monthly_price|floatformat:0 }}{% else %}—{% endif %}<span>/sem</span>{% else %}Contact{% endif %}
                   {% endwith %}
                 {% else %}
                   {% with rec.unit_types.first.pricing_models.first as ap %}
-                  {% if ap %}GH&#8373; {{ ap.monthly_price|default:ap.yearly_price|floatformat:0 }}<span>/mo</span>{% else %}Contact{% endif %}
+                  {% if ap %}GH&#8373; {% if ap.monthly_price %}{{ ap.monthly_price|floatformat:0 }}{% elif ap.yearly_price %}{{ ap.yearly_price|floatformat:0 }}{% else %}—{% endif %}<span>/mo</span>{% else %}Contact{% endif %}
                   {% endwith %}
                 {% endif %}
               </div>
@@ -3444,13 +3444,19 @@ body {
                         <div style="font-size:13px; color:#64748b; font-weight:500;">{{ room.get_occupancy_type_display }} &bull; {{ room.available_slots }} slot{{ room.available_slots|pluralize }} available</div>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; {{ room.pricing_models.first.semester_price|default:room.pricing_models.first.monthly_price|default:room.pricing_models.first.yearly_price|floatformat:0 }}</div>
+                        {% with room_price=room.pricing_models.first %}
+                        {% if room_price %}
+                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; {% if room_price.semester_price %}{{ room_price.semester_price|floatformat:0 }}{% elif room_price.monthly_price %}{{ room_price.monthly_price|floatformat:0 }}{% elif room_price.yearly_price %}{{ room_price.yearly_price|floatformat:0 }}{% else %}—{% endif %}</div>
                         <div style="font-size:11px; color:#64748b; margin-top:2px;">
-                          {% if room.pricing_models.first.semester_price %}per semester
-                          {% elif room.pricing_models.first.monthly_price %}per month
-                          {% elif room.pricing_models.first.yearly_price %}per year
+                          {% if room_price.semester_price %}per semester
+                          {% elif room_price.monthly_price %}per month
+                          {% elif room_price.yearly_price %}per year
                           {% endif %}
                         </div>
+                        {% else %}
+                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; —</div>
+                        {% endif %}
+                        {% endwith %}
                     </div>
                 </div>
               </button>
@@ -3472,12 +3478,18 @@ body {
                         <div style="font-size:13px; color:#64748b; font-weight:500;">{{ unit.bedrooms }} Bed, {{ unit.bathrooms }} Bath &bull; {{ unit.available_units }} available</div>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; {{ unit.pricing_models.first.monthly_price|default:unit.pricing_models.first.yearly_price|floatformat:0 }}</div>
+                        {% with unit_price=unit.pricing_models.first %}
+                        {% if unit_price %}
+                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; {% if unit_price.monthly_price %}{{ unit_price.monthly_price|floatformat:0 }}{% elif unit_price.yearly_price %}{{ unit_price.yearly_price|floatformat:0 }}{% else %}—{% endif %}</div>
                         <div style="font-size:11px; color:#64748b; margin-top:2px;">
-                          {% if unit.pricing_models.first.monthly_price %}per month
-                          {% elif unit.pricing_models.first.yearly_price %}per year
+                          {% if unit_price.monthly_price %}per month
+                          {% elif unit_price.yearly_price %}per year
                           {% endif %}
                         </div>
+                        {% else %}
+                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; —</div>
+                        {% endif %}
+                        {% endwith %}
                     </div>
                 </div>
               </button>
@@ -4803,13 +4815,19 @@ document.addEventListener("DOMContentLoaded", function() {
                         <div style="font-size:13px; color:#64748b; font-weight:500;">{{ room.get_occupancy_type_display }} &bull; {{ room.available_slots }} slot{{ room.available_slots|pluralize }} available</div>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; {{ room.pricing_models.first.semester_price|default:room.pricing_models.first.monthly_price|default:room.pricing_models.first.yearly_price|floatformat:0 }}</div>
+                        {% with room_price=room.pricing_models.first %}
+                        {% if room_price %}
+                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; {% if room_price.semester_price %}{{ room_price.semester_price|floatformat:0 }}{% elif room_price.monthly_price %}{{ room_price.monthly_price|floatformat:0 }}{% elif room_price.yearly_price %}{{ room_price.yearly_price|floatformat:0 }}{% else %}—{% endif %}</div>
                         <div style="font-size:11px; color:#64748b; margin-top:2px;">
-                          {% if room.pricing_models.first.semester_price %}per semester
-                          {% elif room.pricing_models.first.monthly_price %}per month
-                          {% elif room.pricing_models.first.yearly_price %}per year
+                          {% if room_price.semester_price %}per semester
+                          {% elif room_price.monthly_price %}per month
+                          {% elif room_price.yearly_price %}per year
                           {% endif %}
                         </div>
+                        {% else %}
+                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; —</div>
+                        {% endif %}
+                        {% endwith %}
                     </div>
                 </div>
               </a>
@@ -4830,12 +4848,18 @@ document.addEventListener("DOMContentLoaded", function() {
                         <div style="font-size:13px; color:#64748b; font-weight:500;">{{ unit.bedrooms }} Bed, {{ unit.bathrooms }} Bath &bull; {{ unit.available_units }} available</div>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; {{ unit.pricing_models.first.monthly_price|default:unit.pricing_models.first.yearly_price|floatformat:0 }}</div>
+                        {% with unit_price=unit.pricing_models.first %}
+                        {% if unit_price %}
+                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; {% if unit_price.monthly_price %}{{ unit_price.monthly_price|floatformat:0 }}{% elif unit_price.yearly_price %}{{ unit_price.yearly_price|floatformat:0 }}{% else %}—{% endif %}</div>
                         <div style="font-size:11px; color:#64748b; margin-top:2px;">
-                          {% if unit.pricing_models.first.monthly_price %}per month
-                          {% elif unit.pricing_models.first.yearly_price %}per year
+                          {% if unit_price.monthly_price %}per month
+                          {% elif unit_price.yearly_price %}per year
                           {% endif %}
                         </div>
+                        {% else %}
+                        <div style="font-weight:800; font-size:16px; color:#FFFFFF;">GH&#8373; —</div>
+                        {% endif %}
+                        {% endwith %}
                     </div>
                 </div>
               </a>
