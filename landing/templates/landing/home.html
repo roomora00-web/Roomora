@@ -594,58 +594,16 @@
         <div class="hero-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=2075&q=80')"></div>
     </div>
 
-    <!-- Overlay to darken background slightly for contrast -->
-    <div class="hero-overlay"
-        style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%); z-index: 1;">
-    </div>
+    <!-- Stronger gradient overlay so text is always readable -->
+    <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.15) 100%); z-index: 2;"></div>
 
-    <!-- Header Navigation Container -->
-    <header class="navbar-container animate-fade-up" style="position: relative; z-index: 10;">
-
-        <!-- Left Brand Logo -->
-        <div class="navbar-brand" style="display: flex; align-items: center;">
-            <a href="{% url 'landing:home' %}" style="display: block;">
-                <img src="{% static 'landing/images/logo-white.png' %}" alt="Roomora Logo" class="hero-logo-img">
-            </a>
-        </div>
-
-        <!-- Center Navigation Pill -->
-        <nav class="center-navigation-pill">
-            <a href="{% url 'landing:home' %}" class="nav-link is-active"
-                style="text-decoration: none; font-size: 14px;">Home</a>
-            <a href="{% url 'landing:properties' %}" class="nav-link"
-                style="text-decoration: none; font-size: 14px; color: #FFFFFF; font-weight: 500;">Properties</a>
-            <a href="#" class="nav-link"
-                style="text-decoration: none; font-size: 14px; color: #FFFFFF; font-weight: 500;">About</a>
-            <a href="#" class="nav-link"
-                style="text-decoration: none; font-size: 14px; color: #FFFFFF; font-weight: 500;">Blog</a>
-        </nav>
-
-        <!-- Right Action Panel -->
-        <div class="right-auth-panel glass-panel-base mobile-clean-auth"
-            style="display: flex; align-items: center; gap: 16px; padding: 6px 6px 6px 20px;">
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'accounts:logout' %}" class="hide-on-mobile"
-                style="color: #FFFFFF; font-size: 14px; text-decoration: none; font-weight: 500;">Logout</a>
-            <a href="{% url 'accounts:dashboard' %}" class="hide-on-mobile"
-                style="background: #FFFFFF; color: #000000; border-radius: 20px; padding: 8px 16px; font-size: 14px; font-weight: 600; text-decoration: none;">Dashboard</a>
-            {% else %}
-            <a href="{% url 'accounts:login' %}" class="hide-on-mobile" style="color: #FFFFFF; font-size: 14px; text-decoration: none; font-weight: 500;">Sign In</a>
-            <a href="{% url 'landing:properties' %}" class="hide-on-mobile"
-                style="background: #FFFFFF; color: #000000; border-radius: 20px; padding: 8px 16px; font-size: 14px; font-weight: 600; text-decoration: none;">Find a Place</a>
-            {% endif %}
-
-        </div>
-    </header>
-
-
-    <!-- Hero Content — Positioned at bottom-left of the background image -->
+    <!-- Hero Content — sits at the bottom of the image -->
     <div style="
         position: absolute;
         z-index: 10;
         left: 0;
         right: 0;
-        bottom: 116px;
+        bottom: 64px;
         padding: 0 5%;
         display: flex;
         align-items: flex-end;
@@ -653,88 +611,76 @@
         gap: 24px;
     ">
         <!-- Left: Headline + Tagline + CTA -->
-        <div class="animate-fade-up delay-100" style="flex: 1; max-width: 700px;">
+        <div class="animate-fade-up delay-100" style="flex: 1; max-width: 680px;">
 
-            <!-- Small eyebrow label -->
+            <!-- Eyebrow pill -->
             <div style="
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
-                background: rgba(255,255,255,0.18);
-                border: 1px solid rgba(255,255,255,0.35);
+                background: rgba(255,255,255,0.15);
+                border: 1px solid rgba(255,255,255,0.3);
                 backdrop-filter: blur(8px);
                 border-radius: 30px;
-                padding: 7px 18px;
-                font-size: 12px;
+                padding: 6px 16px;
+                font-size: 11px;
                 font-weight: 700;
-                letter-spacing: 1.5px;
+                letter-spacing: 1px;
                 text-transform: uppercase;
                 color: #FFFFFF;
-                margin-bottom: 20px;
+                margin-bottom: 18px;
             ">
-                <span style="width:7px;height:7px;background:#4ade80;border-radius:50%;display:inline-block;"></span>
+                <span style="width:6px;height:6px;background:#4ade80;border-radius:50%;display:inline-block;flex-shrink:0;"></span>
                 500+ Verified Listings Across Ghana
             </div>
 
-            <!-- Main headline — reduced, project-relevant -->
+            <!-- Headline -->
             <h1 style="
                 font-family: 'Plus Jakarta Sans', sans-serif;
-                font-size: clamp(2.4rem, 5vw, 5rem);
-                line-height: 1.05;
-                margin: 0 0 20px 0;
+                font-size: clamp(2rem, 4.5vw, 4rem);
+                line-height: 1.08;
+                margin: 0 0 16px 0;
                 font-weight: 800;
                 letter-spacing: -0.03em;
                 color: #FFFFFF;
-                text-shadow: 0 3px 20px rgba(0,0,0,0.5);
+                text-shadow: 0 2px 16px rgba(0,0,0,0.5);
             ">
-                Find Your Perfect<br>Space &amp; Compatible<br>Roommate
+                Find Your Perfect Space<br>&amp; Compatible Roommate
             </h1>
 
             <!-- Subtext -->
             <p style="
-                font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+                font-size: 1rem;
                 font-weight: 400;
                 line-height: 1.6;
-                color: rgba(255,255,255,0.82);
-                margin: 0 0 32px 0;
-                max-width: 480px;
+                color: rgba(255,255,255,0.80);
+                margin: 0 0 28px 0;
+                max-width: 520px;
             ">
                 Browse verified student hostels &amp; apartments in Ghana — matched to your budget and lifestyle.
             </p>
 
             <!-- CTA Buttons -->
-            <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center;">
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
                 <a href="{% url 'landing:properties' %}" style="
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 10px;
-                    background: #111111;
-                    color: #F5F5F5;
-                    padding: 15px 36px;
-                    border-radius: 40px;
-                    font-weight: 700;
-                    text-decoration: none;
-                    font-size: 14px;
-                    letter-spacing: 0.5px;
-                    transition: transform 0.2s, box-shadow 0.2s;
-                    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+                    display: inline-flex; align-items: center; gap: 8px;
+                    background: #111111; color: #F5F5F5;
+                    padding: 14px 32px; border-radius: 40px;
+                    font-weight: 700; text-decoration: none; font-size: 14px;
+                    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+                    transition: background 0.2s;
                 ">
                     Explore Listings
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
                 <a href="{% url 'landing:properties' %}" style="
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 10px;
-                    background: rgba(255,255,255,0.18);
-                    border: 1.5px solid rgba(255,255,255,0.5);
+                    display: inline-flex; align-items: center; gap: 8px;
+                    background: rgba(255,255,255,0.15);
+                    border: 1.5px solid rgba(255,255,255,0.45);
                     backdrop-filter: blur(10px);
                     color: #FFFFFF;
-                    padding: 15px 32px;
-                    border-radius: 40px;
-                    font-weight: 600;
-                    text-decoration: none;
-                    font-size: 14px;
+                    padding: 14px 28px; border-radius: 40px;
+                    font-weight: 600; text-decoration: none; font-size: 14px;
                     transition: background 0.2s;
                 ">
                     Find a Roommate
@@ -747,29 +693,30 @@
             background: rgba(255,255,255,0.96);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            padding: 28px;
-            border-radius: 24px;
+            padding: 24px 28px;
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            width: 240px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            gap: 8px;
+            width: 220px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.22);
             flex-shrink: 0;
         ">
-            <h3 style="font-size: 2.6rem; font-weight: 800; margin: 0; line-height: 1; color: #111111;">+300</h3>
-            <p style="font-size: 0.88rem; color: #555; margin: 0; line-height: 1.5; font-weight: 500;">students found their<br>perfect space with us</p>
-            <div style="display: flex; margin-top: 6px;">
-                <img src="https://i.pravatar.cc/100?img=4" style="width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
-                <img src="https://i.pravatar.cc/100?img=5" style="width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; margin-left: -12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
-                <img src="https://i.pravatar.cc/100?img=6" style="width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; margin-left: -12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
-                <div style="width:40px;height:40px;border-radius:50%;border:3px solid #fff;margin-left:-12px;background:#111;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#F5F5F5;">+99</div>
+            <h3 style="font-size: 2.4rem; font-weight: 800; margin: 0; line-height: 1; color: #111111;">+300</h3>
+            <p style="font-size: 0.85rem; color: #555; margin: 0; line-height: 1.5; font-weight: 500;">students found their<br>perfect space with us</p>
+            <div style="display: flex; margin-top: 8px;">
+                <img src="https://i.pravatar.cc/100?img=4" style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" alt="">
+                <img src="https://i.pravatar.cc/100?img=5" style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #fff; margin-left: -10px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" alt="">
+                <img src="https://i.pravatar.cc/100?img=6" style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #fff; margin-left: -10px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" alt="">
+                <div style="width:36px;height:36px;border-radius:50%;border:3px solid #fff;margin-left:-10px;background:#111;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#F5F5F5;">+99</div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Anchored Search Widget -->
-    <form action="{% url 'landing:properties' %}" method="GET" class="anchored-search-widget-bar animate-fade-up delay-400"
-        style="position: absolute; z-index: 10;">
+<!-- Search Bar — Outside the hero, sits naturally below it -->
+<div style="background: #F5F5F5; padding: 28px 5%; border-bottom: 1px solid rgba(0,0,0,0.08);">
+    <form action="{% url 'landing:properties' %}" method="GET" class="anchored-search-widget-bar animate-fade-up">
         <div class="search-field-pill-box">
             <label style="font-size: 10px; color: #6B7280; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Category</label>
             <select name="property_type" style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
@@ -811,6 +758,8 @@
 </div>
 
 <!-- Features & Stats Showcase Section -->
+
+
 
 <section class="features-showcase-section">
     <div class="showcase-container">
