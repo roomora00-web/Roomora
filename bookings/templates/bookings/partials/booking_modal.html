@@ -1,0 +1,473 @@
+<div class="bm-overlay" id="bookingModalOverlay">
+  <div class="bm-modal">
+    <!-- Header -->
+    <div class="bm-header">
+      <h2 class="bm-title">Confirm Your Booking</h2>
+      <button type="button" class="bm-close" id="bookingModalClose">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="bm-body">
+      <form id="bookingModalForm" method="post" onsubmit="handleBookingModalSubmit(event, this)" action="{% url 'bookings:booking-page' property.id %}{% if room_type %}?room_type={{ room_type.id }}{% else %}?unit_type={{ unit_type.id }}{% endif %}">
+        {% csrf_token %}
+        <input type="hidden" name="is_ajax" value="true">
+        
+        <div class="bm-grid">
+          <!-- Left Column: Details -->
+          <div class="bm-details">
+            <!-- Property Overview -->
+            <div class="bm-section">
+              <div class="bm-user-context" style="margin-bottom: 20px; padding: 12px 16px; background: #FFFFFF; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; gap: 12px;">
+                {% if request.user.profile_picture %}
+                <img src="{{ request.user.profile_picture.url }}" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                {% else %}
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: #22c55e; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                  {{ request.user.first_name|first|default:request.user.email|first|upper }}
+                </div>
+                {% endif %}
+                <div>
+                  <div style="font-size: 14px; font-weight: 700; color: #000000;">Booking as {{ request.user.get_full_name|default:request.user.email }}</div>
+                  <div style="font-size: 12px; color: #15803d;">Your details will be used for this reservation.</div>
+                </div>
+              </div>
+              
+              <div class="bm-prop-overview">
+                {% if property.images.first %}
+                <img src="{{ property.images.first.image.url }}" alt="{{ property.title }}" class="bm-prop-img">
+                {% else %}
+                <div class="bm-prop-img-placeholder" style="display: flex; align-items: center; justify-content: center; color: #94a3b8; border: 1px dashed rgba(255,255,255,0.15); background: #FAFAFA;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
+                {% endif %}
+                <div class="bm-prop-info">
+                  <h3>{{ property.title }}</h3>
+                  <div class="bm-meta">
+                    <span style="color:var(--accent); font-weight:600;">⭐ {{ avg_rating|floatformat:1 }}</span>
+                    <span>({{ review_count }} reviews)</span>
+                  </div>
+                  <div style="font-size: 13px; color: #71717A; margin-top: 4px;">{{ property.city }}, {{ property.region }}</div>
+                </div>
+              </div>
+
+              <div class="bm-detail-list">
+                <div class="bm-detail-row" style="border-bottom: none; padding-bottom: 8px;">
+                  <span class="bm-label">Space</span>
+                  <span class="bm-val">{% if room_type %}{{ room_type.room_type_name }} ({{ room_type.get_occupancy_type_display }}){% else %}{{ unit_type.unit_name }}{% endif %}</span>
+                </div>
+                
+                {% if room_type and room_type.occupancy_type != 'SINGLE' %}
+                <div class="bm-detail-row" style="background: #eff6ff; border-radius: 8px; margin: 0 16px 16px 16px; padding: 12px; border: 1px solid #bfdbfe;">
+                  <div style="display: flex; gap: 10px; align-items: flex-start;">
+                    <span style="font-size: 16px; margin-top: 2px;">🤝</span>
+                    <div>
+                      <div style="font-weight: 600; font-size: 13px; color: #1e40af;">Roommate Matching Required</div>
+                      <div style="font-size: 12px; color: #2563eb; margin-top: 4px; line-height: 1.4;">This is a shared room. Roomora will pair you with compatible roommates based on your lifestyle profile.</div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+                <div class="bm-detail-row">
+                  <span class="bm-label">Move-in</span>
+                  <span class="bm-val">
+                    <input type="date" name="move_in_date" id="bmMoveInDate" value="{{ move_in_date|date:'Y-m-d' }}" required style="font-family:inherit;font-size:14px;border: 1px solid #E4E4E7;border-radius:6px;padding:4px 8px;outline:none;">
+                  </span>
+                </div>
+                <div class="bm-detail-row" style="align-items:center;">
+                  <span class="bm-label">Duration</span>
+                  <span class="bm-val">
+                    <select name="duration_months" id="bmDurationSelect" required style="font-family:inherit;font-size:14px;border: 1px solid #E4E4E7;border-radius:6px;padding:4px 8px;outline:none;cursor:pointer;">
+                      {% if room_type %}
+                      <option value="6" selected>1 Semester (6 mos)</option>
+                      <option value="12">2 Semesters (1 yr)</option>
+                      {% else %}
+                      <option value="6">6 Months</option>
+                      <option value="12" selected>12 Months</option>
+                      <option value="24">24 Months</option>
+                      {% endif %}
+                    </select>
+                  </span>
+                </div>
+                <div class="bm-detail-row">
+                  <span class="bm-label">Move-out <span style="font-size:11px;color:var(--muted)">(Auto-calculated)</span></span>
+                  <span class="bm-val" id="bmDisplayMoveOut" style="color: #71717A;">Calculating...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Agreements -->
+            <div class="bm-section bm-agreements">
+              <h4 class="bm-section-title">Review & Agree</h4>
+              
+              <label class="bm-agreement">
+                <input type="checkbox" name="understand_pricing" class="bm-checkbox" required>
+                <div class="bm-agree-text">
+                  <div class="bm-agree-title">I understand the pricing and policies</div>
+                </div>
+              </label>
+              
+              <label class="bm-agreement">
+                <input type="checkbox" name="complete_profile" class="bm-checkbox" required>
+                <div class="bm-agree-text">
+                  <div class="bm-agree-title">I agree to complete my lifestyle profile</div>
+                </div>
+              </label>
+              
+              <label class="bm-agreement">
+                <input type="checkbox" name="accept_match" class="bm-checkbox" required>
+                <div class="bm-agree-text">
+                  <div class="bm-agree-title">I accept the roommate matching process</div>
+                </div>
+              </label>
+              
+              <label class="bm-agreement">
+                <input type="checkbox" name="acknowledge_rules" class="bm-checkbox" required>
+                <div class="bm-agree-text">
+                  <div class="bm-agree-title" style="font-weight: 500; font-size: 13px; line-height: 1.4;">
+                    I have read and understood the house rules and prohibited items list at {{ property.title }} ({% if room_type %}{{ room_type.room_type_name }}{% else %}{{ unit_type.unit_name }}{% endif %}). I agree to abide by these rules during my stay.
+                    <span style="display: block; font-size: 12px; color: #71717A; margin-top: 4px;">You must acknowledge this before booking.</span>
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Right Column: Price & Action -->
+          <div class="bm-sidebar">
+            <div class="bm-price-card">
+              <h4 class="bm-section-title" style="margin-bottom: 20px;">Price Breakdown</h4>
+              
+              <div class="bm-price-row">
+                <span>Base Rent</span>
+                <span style="font-weight: 600;" id="bmDisplayBase">GH₵ {{ initial_base|floatformat:0 }}</span>
+              </div>
+              
+              <div class="bm-price-row">
+                <span>Deposit <span style="font-size:12px;color:var(--muted)">(Refundable)</span></span>
+                <span style="font-weight: 600;">GH₵ {{ deposit|floatformat:0 }}</span>
+              </div>
+              
+              <div class="bm-price-row bm-total">
+                <span>Total Due Today</span>
+                <span id="bmDisplayTotal">GH₵ {{ total_price|floatformat:0 }}</span>
+              </div>
+
+              <div id="bmError" class="bm-error" style="display:none;"></div>
+              
+              <button type="submit" class="bm-submit-btn" style="background-color: #000000 !important; color: #FFFFFF !important;" id="bmSubmitBtn">
+                Confirm & Request to Book
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+              <div class="bm-disclaimer">You won't be charged until approved.</div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Modal Overlay */
+  .bm-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10, 3, 2, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    animation: bmFadeIn 0.3s forwards;
+  }
+  @keyframes bmFadeIn { to { opacity: 1; } }
+
+  /* Modal Container */
+  .bm-modal {
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    border-radius: 24px;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(20px) scale(0.98);
+    opacity: 0;
+    animation: bmSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.1s;
+  }
+  @keyframes bmSlideUp { to { transform: translateY(0) scale(1); opacity: 1; } }
+
+  /* Header */
+  .bm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--border);
+    background: #FFFFFF;
+  }
+  .bm-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #18181B;
+    margin: 0;
+  }
+  .bm-close {
+    background: #FAFAFA;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #71717A;
+    transition: all 0.2s;
+  }
+  .bm-close:hover {
+    background: var(--border);
+    color: #18181B;
+  }
+
+  /* Body */
+  .bm-body {
+    padding: 32px;
+    overflow-y: auto;
+  }
+  .bm-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 32px;
+  }
+
+  /* Left Details */
+  .bm-section {
+    margin-bottom: 32px;
+  }
+  .bm-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #18181B;
+  }
+  
+  .bm-prop-overview {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    background: #FAFAFA;
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid #E4E4E7;
+  }
+  .bm-prop-img {
+    width: 100px; height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+  .bm-prop-img-placeholder {
+    width: 100px; height: 80px;
+    border-radius: 12px;
+    background: var(--border);
+  }
+  .bm-prop-info h3 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .bm-meta {
+    font-size: 13px;
+    display: flex;
+    gap: 8px;
+    color: #18181B;
+  }
+
+  .bm-detail-list {
+    background: #FFFFFF;
+    border: 1px solid #E4E4E7;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .bm-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .bm-detail-row:last-child { border-bottom: none; }
+  .bm-label { color: #71717A; }
+  .bm-val { font-weight: 600; color: #18181B; }
+
+  /* Agreements */
+  .bm-agreement {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid #E4E4E7;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .bm-agreement:hover {
+    border-color: #18181B;
+    background: #fafafa;
+  }
+  .bm-checkbox {
+    width: 20px; height: 20px;
+    accent-color: #18181B;
+    margin-top: 2px;
+    cursor: pointer;
+  }
+  .bm-agree-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #18181B;
+  }
+
+  /* Sidebar */
+  .bm-price-card {
+    background: #FAFAFA;
+    border: 1px solid #E4E4E7;
+    border-radius: 20px;
+    padding: 24px;
+    position: sticky;
+    top: 0;
+  }
+  .bm-price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    font-size: 15px;
+    color: #18181B;
+  }
+  .bm-total {
+    border-top: 1px dashed var(--border);
+    padding-top: 20px;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .bm-error {
+    background: #fef2f2;
+    color: #b91c1c;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    border: 1px solid #fecaca;
+  }
+
+  .bm-submit-btn {
+    width: 100%;
+    background: var(--charcoal);
+    color: #FFFFFF;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .bm-submit-btn:hover {
+    background: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+  }
+  .bm-submit-btn:disabled {
+    background: var(--muted);
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .bm-disclaimer {
+    text-align: center;
+    font-size: 12px;
+    color: #71717A;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 800px) {
+    .bm-grid { grid-template-columns: 1fr; gap: 24px; }
+    .bm-sidebar { order: -1; }
+    .bm-price-card { position: static; padding: 20px; }
+    .bm-body { padding: 20px; }
+    .bm-header { padding: 20px; }
+  }
+</style>
+
+<script>
+  (function() {
+    const durationSelect = document.getElementById('bmDurationSelect');
+    const moveInInput = document.getElementById('bmMoveInDate');
+    const displayMoveOut = document.getElementById('bmDisplayMoveOut');
+    const displayBase = document.getElementById('bmDisplayBase');
+    const displayTotal = document.getElementById('bmDisplayTotal');
+    
+    // Price constants from backend
+    const baseSem = {{ base_semester|default:0 }};
+    const baseYr = {{ base_yearly|default:0 }};
+    const baseMon = {{ base_monthly|default:0 }};
+    const deposit = {{ deposit|default:0 }};
+    const isRoomType = {% if room_type %}true{% else %}false{% endif %};
+
+    function updateCalculations() {
+      if (!durationSelect) return;
+      
+      const dur = parseInt(durationSelect.value);
+      
+      // Calculate Price
+      let rent = 0;
+      if (isRoomType) {
+        rent = baseSem ? (baseSem * (dur / 6)) : (baseMon * dur);
+      } else {
+        rent = baseYr ? (baseYr * (dur / 12)) : (baseMon * dur);
+      }
+      
+      const total = rent + deposit;
+      if (displayBase) displayBase.innerText = `GH₵ ${Math.round(rent).toLocaleString()}`;
+      if (displayTotal) displayTotal.innerText = `GH₵ ${Math.round(total).toLocaleString()}`;
+      
+      // Calculate Move-Out Date
+      if (moveInInput && moveInInput.value && displayMoveOut) {
+        const moveInDate = new Date(moveInInput.value);
+        if (!isNaN(moveInDate)) {
+          // Add duration months
+          const moveOutDate = new Date(moveInDate);
+          moveOutDate.setMonth(moveOutDate.getMonth() + dur);
+          
+          const options = { year: 'numeric', month: 'short', day: 'numeric' };
+          displayMoveOut.innerText = moveOutDate.toLocaleDateString(undefined, options);
+          displayMoveOut.style.color = "var(--charcoal)";
+        }
+      }
+    }
+
+    if (durationSelect) {
+      durationSelect.addEventListener('change', updateCalculations);
+    }
+    if (moveInInput) {
+      moveInInput.addEventListener('change', updateCalculations);
+    }
+    
+    // Initial calculation
+    updateCalculations();
+
+    
+  })();
+</script>

@@ -1,0 +1,571 @@
+{% extends "accounts/base_auth.html" %}
+{% load static %}
+
+{% block title %}Create Account — Roomora{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet">
+<style>
+/* ─── HARD RESET ──────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  height: auto !important;
+  overflow: auto !important;
+  overflow-x: hidden !important;
+  background: #FFFFFF !important;
+  color: #0A0A0A !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  margin: 0; padding: 0;
+}
+
+:root {
+  --font: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --muted: rgba(255,255,255,0.7);
+  --subtle: rgba(255,255,255,0.85);
+}
+
+/* ─── DESKTOP SHELL ──────────────────────────────────────── */
+.auth-shell {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEFT PANEL (DARK THEME)
+═══════════════════════════════════════════════════════════ */
+.auth-left {
+  position: fixed;
+  top: 0; left: 0;
+  width: 52%;
+  height: 100vh;
+  background: linear-gradient(150deg, #0D0D0D 0%, #181818 40%, #111111 70%, #0A0A0A 100%);
+  background-size: 300% 300%;
+  animation: gradFlow 18s ease infinite;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
+@keyframes gradFlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Grid & Particles */
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0;
+}
+.bg-noise {
+  position: absolute; inset: 0; opacity: 0.25; z-index: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+.glow-tl {
+  position: absolute; top: -180px; left: -140px; width: 560px; height: 560px;
+  background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.15) 0%, transparent 65%);
+  animation: breathe 8s ease-in-out infinite; pointer-events: none; z-index: 0;
+}
+.glow-br {
+  position: absolute; bottom: -120px; right: -100px; width: 440px; height: 440px;
+  background: radial-gradient(circle at 60% 60%, rgba(255,255,255,0.1) 0%, transparent 65%);
+  animation: breathe 11s ease-in-out infinite reverse; pointer-events: none; z-index: 0;
+}
+@keyframes breathe {
+  0%,100% { transform: scale(1); opacity: .7; }
+  50% { transform: scale(1.18); opacity: 1; }
+}
+
+/* Left Content Inner */
+.left-inner {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; justify-content: space-between;
+  height: 100%; padding: 40px 48px;
+  animation: revealLeft .9s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes revealLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Brand */
+.l-brand { display:flex; align-items:center; gap:12px; }
+.l-brand img { height:48px; width:auto; }
+.l-brand-name { font-size:22px; font-weight:800; letter-spacing:-.4px; color:#fff; }
+
+/* Headline */
+.l-eyebrow, .l-headline-eyebrow {
+  display:flex; align-items:center; gap:10px; font-size:11px; font-weight:700;
+  letter-spacing:2.5px; text-transform:uppercase; color:var(--muted); margin-bottom:16px;
+}
+.l-eyebrow::before, .l-headline-eyebrow span { content:''; display:block; width:28px; height:1px; background:var(--muted); }
+
+.l-title, .l-headline-title { line-height:.96; letter-spacing:-3px; font-weight:800; margin:0; font-style: italic; }
+.l-title .solid, .l-headline-title .line { display:block; font-size:clamp(48px, 5.5vw, 76px); color:#FFFFFF; animation: wordReveal .7s cubic-bezier(.16,1,.3,1) both .3s; }
+.l-title .ghost, .l-headline-title .line-ghost { display:block; font-size:clamp(48px, 5.5vw, 76px); color:transparent; -webkit-text-stroke:1.5px rgba(255,255,255,0.5); animation: wordReveal .7s cubic-bezier(.16,1,.3,1) both .45s; }
+.l-title .italic { display:block; font-size:clamp(48px, 5.5vw, 76px); color:#FFFFFF; font-style:italic; animation: wordReveal .7s cubic-bezier(.16,1,.3,1) both .6s; }
+.l-sub, .l-headline-sub { font-size:15px; color:var(--subtle); line-height:1.7; margin-top:20px; max-width:340px; font-style:normal; font-weight:400; }
+@keyframes wordReveal { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+/* Register Steps */
+.l-steps { display: flex; flex-direction: column; gap: 0; position: relative; }
+.l-steps::before { content: ''; position: absolute; left: 18px; top: 26px; bottom: 26px; width: 1px; background: linear-gradient(to bottom, rgba(255,255,255,.18), rgba(255,255,255,.04)); }
+.l-step { display: flex; align-items: flex-start; gap: 14px; padding: 9px 0; animation: fadeUp .5s ease both; }
+.l-step:nth-child(1) { animation-delay: .35s; }
+.l-step:nth-child(2) { animation-delay: .5s; }
+.l-step:nth-child(3) { animation-delay: .65s; }
+.step-num-circle { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; background: rgba(255,255,255,.13); border: 1px solid rgba(255,255,255,.18); display: flex; align-items: flex-start; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; position: relative; z-index: 1; }
+.step-body { padding-top: 4px; }
+.step-title { font-size:13px; font-weight:700; color:#fff; margin-bottom:2px; }
+.step-desc { font-size:11.5px; color:var(--muted); line-height:1.45; }
+
+/* Login Marquee */
+.l-marquee-track { overflow: hidden; margin: 0 -48px; padding: 0 0 24px; mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent); }
+.l-marquee-inner { display: flex; gap: 10px; width: max-content; animation: marquee 28s linear infinite; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.l-chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: rgba(255,255,255,0.13); border: 1px solid rgba(255,255,255,0.22); border-radius: 100px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.65); }
+.l-chip .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+
+/* Stats Strip */
+.l-stats { display: flex; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); border-radius: 14px; overflow: hidden; position: relative; }
+.l-stats::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%); animation: shimmerStat 4s ease-in-out infinite; }
+.l-stat { flex: 1; padding: 12px 10px; text-align: center; border-right: 1px solid rgba(255,255,255,.1); }
+.l-stat:last-child { border-right: none; }
+.stat-n { font-size: 19px; font-weight: 800; letter-spacing: -1px; color: #fff; line-height: 1; animation: statPop .6s cubic-bezier(.34,1.56,.64,1) both; }
+.l-stat:nth-child(1) .stat-n { animation-delay: .8s; }
+.l-stat:nth-child(2) .stat-n { animation-delay: .95s; }
+.l-stat:nth-child(3) .stat-n { animation-delay: 1.1s; }
+.stat-l { font-size: 10.5px; color: var(--muted); margin-top: 3px; font-weight: 500; }
+@keyframes shimmerStat { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes statPop { from { opacity:0; transform:scale(0.7) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT PANEL (LIGHT THEME FORM)
+═══════════════════════════════════════════════════════════ */
+.auth-right {
+  margin-left: 52%; /* pushes past fixed left */
+  width: 48%;
+  min-height: 100vh;
+  background: #FFFFFF;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 30px 40px;
+}
+
+.form-shell {
+  width: 100%; max-width: 400px; margin: auto;
+  animation: panelSlideUp .8s cubic-bezier(.16,1,.3,1) .1s both;
+}
+@keyframes panelSlideUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Header */
+.fh { margin-bottom: 24px; }
+.fh h2 { font-size: 28px; font-weight: 800; letter-spacing: -.7px; color: #0A0A0A; margin-bottom: 6px; }
+.fh p { font-size: 14.5px; color: rgba(0,0,0,0.55); }
+
+/* Form Elements */
+.aform { display: flex; flex-direction: column; gap: 12px; }
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fg { display: flex; flex-direction: column; gap: 6px; transition: transform .2s; }
+.fg:focus-within { transform: translateY(-1px); }
+.fl { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: rgba(0,0,0,0.6); }
+.fsec { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(0,0,0,0.4); display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+.fsec::after { content:''; flex:1; height:1px; background: rgba(0,0,0,0.1); }
+
+/* Inputs */
+.iw { position: relative; }
+.iw .ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(0,0,0,0.35); pointer-events: none; width: 18px; height: 18px; transition: color .22s; }
+.iw:focus-within .ico { color: #0A0A0A; }
+
+.fi {
+  width: 100%;
+  padding: 13px 16px 13px 44px !important;
+  background: #F7F7F9 !important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  border-radius: 12px !important;
+  font-size: 15px !important; font-family: var(--font) !important;
+  color: #0A0A0A !important;
+  transition: border-color .22s, box-shadow .22s, background .22s !important;
+  outline: none !important; -webkit-appearance: none;
+}
+.fi:focus {
+  background: #FFFFFF !important;
+  border-color: #0A0A0A !important;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06) !important;
+}
+.fi::placeholder { color: rgba(0,0,0,0.3) !important; }
+.fi.no-icon { padding-left:14px !important; }
+select.fi option { background:#fff; color:#0a0a0a; }
+select.fi { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,0.5)' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: right 14px center !important; }
+
+/* Password */
+.pw-wrap .fi { padding-right: 48px !important; }
+.pw-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(0,0,0,0.35); cursor: pointer; padding: 4px; display: flex; align-items: center; transition: color .2s; }
+.pw-btn:hover { color: #0A0A0A; }
+
+/* Links */
+.forgot-row { display: flex; justify-content: flex-end; margin-top: -4px; }
+.forgot-link { font-size: 13.5px; font-weight: 600; color: rgba(0,0,0,0.5); text-decoration: none; transition: color .2s; }
+.forgot-link:hover { color: #0A0A0A; }
+
+/* Terms */
+.terms-row { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.08); border-radius:12px; }
+.terms-row input[type="checkbox"] { width:18px; height:18px; flex-shrink:0; margin-top:1px; accent-color:#0A0A0A; cursor:pointer; }
+.terms-txt { font-size:13px; color:rgba(0,0,0,0.6); line-height:1.5; }
+.terms-txt a { color:#0A0A0A; font-weight:600; text-decoration:none; border-bottom:1px solid rgba(0,0,0,0.2); }
+.terms-txt a:hover { border-bottom-color:#0A0A0A; }
+
+/* Button */
+.sub-btn {
+  width: 100%; padding: 16px 24px;
+  background: #0A0A0A; color: #FFFFFF; border: none; border-radius: 100px;
+  font-size: 16px; font-weight: 700; font-family: var(--font);
+  cursor: pointer; display: flex; align-items: flex-start; justify-content: center;
+  gap: 8px; margin-top: 8px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  transition: all .2s; position: relative; overflow: hidden;
+}
+.sub-btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+  transform: translateX(-120%); transition: transform .55s ease;
+}
+.sub-btn:hover::after { transform: translateX(120%); }
+.sub-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); background: #222222; }
+.sub-btn:active { transform: translateY(0); box-shadow: none; }
+.sub-btn:disabled { background: #E0E0E0; color: #999; box-shadow: none; cursor: not-allowed; transform: none; }
+
+/* Footer */
+.form-foot { text-align: center; font-size: 14px; color: rgba(0,0,0,0.5); padding-top: 24px; border-top: 1px solid rgba(0,0,0,0.08); margin-top: 12px; }
+.form-foot a { color: #0A0A0A; font-weight: 700; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.2); padding-bottom: 1px; transition: border-color .2s; }
+.form-foot a:hover { border-bottom-color: #0A0A0A; }
+
+/* Error */
+.err-box { background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.2); border-left: 3px solid #DC2626; border-radius: 12px; padding: 12px 16px; margin-bottom: 24px; animation: shake .38s ease; }
+@keyframes shake { 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+.err-box ul { list-style: none; margin:0; padding:0; }
+.err-box li { font-size: 13.5px; color: #B91C1C; padding: 2px 0; display: flex; gap: 8px; font-weight:500; }
+.err-box li::before { content: '✕'; font-size: 11px; opacity: .7; flex-shrink: 0; margin-top: 2px; }
+
+/* ═══════════════════════════════════════════════════════════
+   APP-LIKE MOBILE VIEW
+═══════════════════════════════════════════════════════════ */
+.mob-brand { display: none !important; }
+
+@media (max-width: 920px) {
+  /* Hide the split layout entirely */
+  .auth-left { display: none !important; }
+  
+  /* Right panel becomes the full screen app view */
+  .auth-right {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 48px 24px 80px !important; box-sizing: border-box !important;
+    background: #FFFFFF !important;
+    align-items: flex-start !important;
+  }
+
+  .form-shell {
+    max-width: 100% !important;
+    animation: none !important; /* No slide up on mobile, feels faster */
+  }
+
+  /* Show mobile brand */
+  .mob-brand { display: flex !important; align-items: center; gap: 16px; margin-bottom: 40px; }
+  .mob-brand img { height: 80px; }
+  .mob-brand-name { font-size: 32px; font-weight: 800; letter-spacing: -1px; color: #0A0A0A; }
+
+  /* Adjust typography for mobile */
+  .fh h2 { font-size: 26px !important; }
+  .fh p { font-size: 14px !important; }
+  
+  /* Inputs larger for touch */
+  .fi { font-size: 16px !important; padding: 14px 16px 14px 44px !important; }
+  .sub-btn { padding: 16px; font-size: 16px !important; }
+  
+  /* Stack form rows on small screens */
+  .frow { grid-template-columns: 1fr !important; gap: 16px !important; }
+}
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="auth-shell">
+
+  <!-- ═══ LEFT ═══════════════════════════════════════════════ -->
+  <div class="auth-left">
+    <div class="bg-grid"></div>
+    <div class="bg-noise"></div>
+    <div class="glow-a"></div>
+    <div class="glow-b"></div>
+    <div class="glow-c"></div>
+
+    <div class="left-inner">
+
+      <a href="{% url 'landing:home' %}" class="l-brand" style="text-decoration:none;">
+        {% load static %}
+        <img src="{% static 'landing/images/logo-white.png' %}" alt="Roomora">
+        <span class="l-brand-name">Roomora</span>
+      </a>
+
+      <div class="l-headline">
+        <div class="l-eyebrow">Start your journey</div>
+        <h1 class="l-title">
+          <span class="solid">Your new</span>
+          <span class="ghost">chapter</span>
+          <span class="italic">starts.</span>
+        </h1>
+        <p class="l-sub">Join thousands of students who found the right room — and the right people — in days, not weeks.</p>
+      </div>
+
+      <!-- 3-step visual -->
+      <div class="l-steps">
+        <div class="l-step">
+          <div class="step-num-circle">1</div>
+          <div class="step-body">
+            <div class="step-title">Create your free account</div>
+            <div class="step-desc">Less than 2 minutes. No card needed.</div>
+          </div>
+        </div>
+        <div class="l-step">
+          <div class="step-num-circle">2</div>
+          <div class="step-body">
+            <div class="step-title">Build your lifestyle profile</div>
+            <div class="step-desc">Tell us your habits, schedule &amp; budget.</div>
+          </div>
+        </div>
+        <div class="l-step">
+          <div class="step-num-circle">3</div>
+          <div class="step-body">
+            <div class="step-title">Match, book &amp; move in</div>
+            <div class="step-desc">Pre-matched rooms with compatible roommates.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="l-stats">
+        <div class="l-stat">
+          <div class="stat-n">1,200+</div>
+          <div class="stat-l">Verified rooms</div>
+        </div>
+        <div class="l-stat">
+          <div class="stat-n">94%</div>
+          <div class="stat-l">Match rate</div>
+        </div>
+        <div class="l-stat">
+          <div class="stat-n">&lt; 8 min</div>
+          <div class="stat-l">Avg. booking</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ RIGHT ══════════════════════════════════════════════ -->
+  <div class="auth-right">
+    <div class="form-shell">
+
+      <a href="{% url 'landing:home' %}" class="mob-brand" style="text-decoration:none;">
+        {% load static %}
+        <img src="{% static 'landing/images/logo-black.png' %}" alt="Roomora">
+        <span class="mob-brand-name">Roomora</span>
+      </a>
+
+      <div class="fh">
+        <h2>Create your account</h2>
+        <p>Free forever. Book your first room in minutes.</p>
+      </div>
+
+      {% if form.errors %}
+      <div class="err-box">
+        <ul>
+          {% for f,errors in form.errors.items %}{% for e in errors %}<li>{{ e }}</li>{% endfor %}{% endfor %}
+          {% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <form method="post" class="aform" id="reg-form">
+        {% csrf_token %}
+
+        <div class="fsec">Personal Info</div>
+
+        <div class="frow">
+          <div class="fg">
+            <label class="fl">First Name</label>
+            <div class="iw">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+              {{ form.first_name }}
+            </div>
+          </div>
+          <div class="fg">
+            <label class="fl">Last Name</label>
+            <div class="iw">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+              {{ form.last_name }}
+            </div>
+          </div>
+        </div>
+
+        <div class="fsec">Contact</div>
+
+        <div class="fg">
+          <label class="fl">Email Address</label>
+          <div class="iw">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            {{ form.email }}
+          </div>
+        </div>
+
+        <div class="fg">
+          <label class="fl">Phone Number</label>
+          <div class="iw">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 3.09 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 16.92z"/>
+            </svg>
+            {{ form.phone_number }}
+          </div>
+        </div>
+
+        <div class="fsec">About You</div>
+
+        <div class="frow">
+          <div class="fg">
+            <label class="fl">Gender</label>
+            {{ form.gender }}
+          </div>
+          <div class="fg">
+            <label class="fl">I am a</label>
+            {{ form.user_type }}
+          </div>
+        </div>
+
+        <div class="fsec">Security</div>
+
+        <div class="fg">
+          <label class="fl">Password</label>
+          <div class="iw pw-wrap">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            {{ form.password }}
+            <button type="button" class="pw-btn" id="pw1" aria-label="Toggle password">
+              <svg id="eye1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="fg">
+          <label class="fl">Confirm Password</label>
+          <div class="iw pw-wrap">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            {{ form.confirm_password }}
+            <button type="button" class="pw-btn" id="pw2" aria-label="Toggle confirm password">
+              <svg id="eye2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="terms-row">
+          {{ form.agree_terms }}
+          <span class="terms-txt">
+            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            I confirm I am a student or landlord.
+          </span>
+        </div>
+
+        <button type="submit" class="sub-btn" id="reg-btn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="8.5" cy="7" r="4"/>
+            <line x1="20" y1="8" x2="20" y2="14"/>
+            <line x1="23" y1="11" x2="17" y2="11"/>
+          </svg>
+          Create Free Account
+        </button>
+      </form>
+
+      <div class="form-foot">
+        Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Apply styling to Django inputs
+  const map = [
+    { name:'first_name',       ph:'First name',       pr:false },
+    { name:'last_name',        ph:'Last name',        pr:false },
+    { name:'email',            ph:'your@email.com',   pr:false },
+    { name:'phone_number',     ph:'+233 xx xxx xxxx', pr:false },
+    { name:'password',         ph:'••••••••',         pr:true  },
+    { name:'confirm_password', ph:'••••••••',         pr:true  },
+  ];
+  map.forEach(cfg => {
+    const el = document.querySelector('input[name="'+cfg.name+'"]');
+    if (!el) return;
+    el.classList.add('fi');
+    el.placeholder = cfg.ph;
+    el.style.paddingLeft = '43px';
+    if (cfg.pr) el.style.paddingRight = '44px';
+  });
+
+  document.querySelectorAll('select').forEach(sel => sel.classList.add('fi'));
+
+  function makeToggle(btnId, eyeId, fieldName) {
+    const b = document.getElementById(btnId);
+    const e = document.getElementById(eyeId);
+    const i = document.querySelector('input[name="'+fieldName+'"]');
+    if (!b||!i) return;
+    b.addEventListener('click', () => {
+      const s = i.type === 'password';
+      i.type = s ? 'text' : 'password';
+      e.innerHTML = s
+        ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
+        : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    });
+  }
+  makeToggle('pw1','eye1','password');
+  makeToggle('pw2','eye2','confirm_password');
+
+  const form = document.getElementById('reg-form');
+  const btn  = document.getElementById('reg-btn');
+  if (form && btn) {
+    form.addEventListener('submit', () => {
+      btn.disabled = true;
+      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Creating account…';
+    });
+  }
+});
+</script>
+
+{% endblock %}

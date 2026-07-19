@@ -1,0 +1,73 @@
+<div class="bm-overlay" id="questionnaireModalOverlay" style="animation: bmFadeIn 0.3s forwards;">
+  <div class="bm-modal" style="max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 0;">
+    <div class="bm-header" style="background: var(--charcoal); color: white; justify-content: space-between; position: sticky; top: 0; z-index: 10;">
+      <h2 class="bm-title" style="color: white; margin:0;">LIVING PREFERENCES</h2>
+      <button type="button" class="bm-close" id="questionnaireModalClose" style="background: rgba(255,255,255,0.1); color: white;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div style="padding: 0 20px; background: #FAFAFA;">
+      
+    </div>
+  </div>
+</div>
+
+<script>
+/* init */
+  const closeBtn = document.getElementById('questionnaireModalClose');
+  if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+          const overlay = document.getElementById('questionnaireModalOverlay');
+          if (overlay) {
+              overlay.style.animation = 'bmFadeOut 0.3s forwards';
+              setTimeout(() => {
+                  const mc = document.getElementById('bookingModalContainer');
+                  if (mc) mc.innerHTML = '';
+              }, 300);
+          }
+      });
+  }
+  
+  // Override links to load via AJAX if loadModalSequence exists
+  const useSavedBtn = document.querySelector('a.lq-btn-primary');
+  if (useSavedBtn) {
+      useSavedBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (typeof loadModalSequence === 'function') {
+              // For "Use Saved Profile", we can redirect or load success modal
+              window.location.href = this.href;
+          } else {
+              window.location.href = this.href;
+          }
+      });
+  }
+  
+  const reCompleteBtn = document.querySelector('a[href*="mode=re_complete"]');
+  if (reCompleteBtn) {
+      reCompleteBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (typeof loadModalSequence === 'function') {
+              loadModalSequence(this.href);
+          } else {
+              window.location.href = this.href;
+          }
+      });
+  }
+  
+  const editForm = document.querySelector('form.lq-category-form');
+  if (editForm) {
+      editForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const step = this.querySelector('input[name="step"]:checked').value;
+          const url = this.action + '?mode=edit&step=' + step;
+          if (typeof loadModalSequence === 'function') {
+              loadModalSequence(url);
+          } else {
+              window.location.href = url;
+          }
+      });
+  }
+/* end */
+</script>

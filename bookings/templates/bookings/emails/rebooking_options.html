@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rebooking Options Available</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 0 0 5px 5px;
+        }
+        .rebooking-info {
+            background: #d1ecf1;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .options-list {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .option-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+        .option-item:last-child {
+            margin-bottom: 0;
+        }
+        .option-title {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        .option-details {
+            color: #666;
+            font-size: 14px;
+        }
+        .option-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 10px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Priority Rebooking Options</h1>
+    </div>
+    
+    <div class="content">
+        <p>Dear {{ student_name }},</p>
+        
+        <div class="rebooking-info">
+            <p>You're currently in your grace period and have <strong>{{ days_remaining }} days</strong> remaining.</p>
+            <p>Your room is available for priority rebooking!</p>
+        </div>
+        
+        <div class="booking-details">
+            <h3>Current Booking</h3>
+            <table>
+                <tr>
+                    <td>Property:</td>
+                    <td>{{ property_name }}</td>
+                </tr>
+                <tr>
+                    <td>Move-Out Date:</td>
+                    <td>{{ move_out_date|date:"F d, Y" }}</td>
+                </tr>
+                <tr>
+                    <td>Grace Period Ends:</td>
+                    <td>{{ slot_available_date|date:"F d, Y" }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <h3>Available Rebooking Options</h3>
+        
+        <div class="options-list">
+            {% for option in options %}
+            <div class="option-item">
+                <div class="option-title">{{ option.description }}</div>
+                <div class="option-details">
+                    Move-in: {{ option.move_in_date|date:"F d, Y" }}<br>
+                    Move-out: {{ option.move_out_date|date:"F d, Y" }}
+                </div>
+                <div class="option-price">GH₵ {{ option.price }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <a href="#" class="cta-button">Book Now with Priority</a>
+        
+        <p>These options are only available during your grace period. After your grace period ends, your room will be released to new applicants.</p>
+        
+        <p>If you don't wish to rebook, please confirm your departure to ensure proper room release.</p>
+        
+        <div class="footer">
+            <p>This is an automated email. Please do not reply directly.</p>
+            <p>&copy; 2026 Roomora. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

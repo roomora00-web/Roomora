@@ -1,0 +1,271 @@
+{% extends "bookings/base_checkout.html" %}
+{% load static %}
+
+{% block title %}Compatibility Review - Roomora{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <div class="info-icon mb-3">
+                    <i class="fas fa-user-check fa-4x text-info"></i>
+                </div>
+                <h1 class="display-5 fw-bold">Compatibility Review</h1>
+                <p class="lead text-muted">Please review your compatibility with potential roommates.</p>
+            </div>
+
+            <!-- Compatibility Score Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <h2 class="display-4 fw-bold text-info">{{ result.score|floatformat:0 }}%</h2>
+                        <p class="text-muted mb-0">Compatibility Score</p>
+                    </div>
+                    
+                    <div class="alert alert-warning d-flex align-items-center">
+                        <i class="fas fa-clock me-2"></i>
+                        <div>
+                            <strong>Consent Required:</strong> Your score is below the auto-assignment threshold.
+                            Please review the details below and decide if you'd like to proceed.
+                        </div>
+                    </div>
+
+                    <!-- Countdown Timer -->
+                    <div class="text-center mt-4">
+                        <p class="text-muted small mb-2">You have 24 hours to make your decision</p>
+                        <div id="countdown" class="display-6 fw-bold text-primary" data-deadline="{{ booking.consent_deadline|date:'Y-m-d\TH:i:s' }}">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Breakdown -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Compatibility Breakdown</h5>
+                </div>
+                <div class="card-body p-4">
+                    <!-- High Priority Factors -->
+                    <h6 class="text-uppercase text-muted small mb-3">High Priority Factors (70% weight)</h6>
+                    
+                    {% for factor, data in result.breakdown.high_priority.items %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-medium">{{ data.label }}</span>
+                            <span class="fw-bold {% if data.score >= 70 %}text-success{% elif data.score >= 50 %}text-warning{% else %}text-danger{% endif %}">{{ data.score|floatformat:0 }}%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar {% if data.score >= 70 %}bg-success{% elif data.score >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                 role="progressbar" style="width: {{ data.score }}%"></div>
+                        </div>
+                        {% if data.alignment %}
+                        <small class="text-success d-block mt-1">
+                            <i class="fas fa-check me-1"></i>{{ data.alignment }}
+                        </small>
+                        {% endif %}
+                        {% if data.difference %}
+                        <small class="text-warning d-block mt-1">
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ data.difference }}
+                        </small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <!-- Medium Priority Factors -->
+                    <h6 class="text-uppercase text-muted small mb-3 mt-4">Medium Priority Factors (20% weight)</h6>
+                    
+                    {% for factor, data in result.breakdown.medium_priority.items %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-medium">{{ data.label }}</span>
+                            <span class="fw-bold {% if data.score >= 70 %}text-success{% elif data.score >= 50 %}text-warning{% else %}text-danger{% endif %}">{{ data.score|floatformat:0 }}%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar {% if data.score >= 70 %}bg-success{% elif data.score >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                 role="progressbar" style="width: {{ data.score }}%"></div>
+                        </div>
+                        {% if data.alignment %}
+                        <small class="text-success d-block mt-1">
+                            <i class="fas fa-check me-1"></i>{{ data.alignment }}
+                        </small>
+                        {% endif %}
+                        {% if data.difference %}
+                        <small class="text-warning d-block mt-1">
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ data.difference }}
+                        </small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <!-- Low Priority Factors -->
+                    <h6 class="text-uppercase text-muted small mb-3 mt-4">Low Priority Factors (10% weight)</h6>
+                    
+                    {% for factor, data in result.breakdown.low_priority.items %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-medium">{{ data.label }}</span>
+                            <span class="fw-bold {% if data.score >= 70 %}text-success{% elif data.score >= 50 %}text-warning{% else %}text-danger{% endif %}">{{ data.score|floatformat:0 }}%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar {% if data.score >= 70 %}bg-success{% elif data.score >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                 role="progressbar" style="width: {{ data.score }}%"></div>
+                        </div>
+                        {% if data.alignment %}
+                        <small class="text-success d-block mt-1">
+                            <i class="fas fa-check me-1"></i>{{ data.alignment }}
+                        </small>
+                        {% endif %}
+                        {% if data.difference %}
+                        <small class="text-warning d-block mt-1">
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ data.difference }}
+                        </small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Alignment Summary -->
+            {% if result.alignments %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">What You Have in Common</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="list-unstyled mb-0">
+                        {% for alignment in result.alignments %}
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            {{ alignment }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Differences Summary -->
+            {% if result.differences %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Areas to Discuss</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="list-unstyled mb-0">
+                        {% for diff in result.differences %}
+                        <li class="mb-2">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>
+                            {{ diff }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Property Summary -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="mb-3">Your Booking</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Property:</strong> {{ property.name }}</p>
+                            <p class="mb-1"><strong>Room:</strong> {{ booking.room_type|default:"TBD" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Move-in:</strong> {{ booking.move_in_date|date:"M d, Y" }}</p>
+                            <p class="mb-1"><strong>Duration:</strong> {{ booking.duration_months }} months</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-3">
+                <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#acceptModal">
+                    <i class="fas fa-check me-2"></i>Accept & Proceed
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-lg" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                    <i class="fas fa-times me-2"></i>Decline Booking
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Accept Confirmation Modal -->
+<div class="modal fade" id="acceptModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Your Decision</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to accept this booking?</p>
+                <p class="text-muted small">By accepting, you confirm that you've reviewed the compatibility information and are comfortable proceeding with this room assignment.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{% url 'bookings:accept_consent' booking.id %}" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Yes, Accept</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Confirmation Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Decline Booking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to decline this booking?</p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Important:</strong> If you decline, your booking will be temporarily cancelled. You'll have 24 hours to reinstate it before it's permanently cancelled.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{% url 'bookings:reject_consent' booking.id %}" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Yes, Decline</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Countdown Timer
+function updateCountdown() {
+    const countdownEl = document.getElementById('countdown');
+    const deadline = new Date(countdownEl.dataset.deadline);
+    const now = new Date();
+    const diff = deadline - now;
+    
+    if (diff <= 0) {
+        countdownEl.innerHTML = 'Expired';
+        return;
+    }
+    
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    countdownEl.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+</script>
+{% endblock %}

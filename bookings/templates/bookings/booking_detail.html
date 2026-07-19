@@ -1,0 +1,169 @@
+{% extends "bookings/base_checkout.html" %}
+
+{% block title %}Booking Details - Roomora{% endblock %}
+
+{% block content %}
+<style>
+  .bd-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+  .bd-header {
+    margin-bottom: 32px;
+  }
+  .bd-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ecfdf5;
+    color: #059669;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .bd-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #18181B;
+  }
+  
+  .bd-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #E4E4E7;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  
+  .bd-card-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #18181B;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .bd-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  
+  .bd-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .bd-label {
+    font-size: 13px;
+    color: #71717A;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .bd-val {
+    font-size: 16px;
+    color: #18181B;
+    font-weight: 500;
+  }
+  
+  /* Occupancy Stats Tracker */
+  .bd-occupancy-tracker {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--border);
+  }
+  .bd-stat {
+    flex: 1;
+    background: #FAFAFA;
+    border: 1px solid #E4E4E7;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+  .bd-stat-val {
+    font-size: 24px;
+    font-weight: 800;
+    color: #18181B;
+  }
+  .bd-stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #71717A;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  
+  .bd-notice {
+    background: #f0fdfa;
+    border-left: 4px solid #14b8a6;
+    padding: 16px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 24px;
+    color: #0f766e;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  
+  .bd-notice strong {
+    font-weight: 700;
+    color: #115e59;
+  }
+</style>
+
+<div class="bd-container">
+  <div class="bd-header">
+    <div class="bd-status">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      {{ booking.get_status_display|upper }}
+    </div>
+    <h1 class="bd-title">{{ property.title }} &mdash; {% if booking.assigned_room %}Room {{ booking.assigned_room.room_number }}{% else %}Room Pending{% endif %} ({% if booking.room_type %}{{ booking.room_type.get_occupancy_type_display }}{% else %}{{ booking.unit_type.unit_name }}{% endif %})</h1>
+  </div>
+  
+  <div class="bd-card">
+    <h2 class="bd-card-title">Reservation Details</h2>
+    <div class="bd-grid">
+      <div class="bd-item">
+        <span class="bd-label">Reference</span>
+        <span class="bd-val">{{ booking.reference_number|default:"#SM-BOOKING" }}</span>
+      </div>
+      <div class="bd-item">
+        <span class="bd-label">Total Amount</span>
+        <span class="bd-val" style="font-weight: 700; color: var(--accent);">GH₵ {% if booking.billing_allocation %}{{ booking.billing_allocation.total_amount|floatformat:0 }}{% else %}{{ booking.total_amount|floatformat:0 }}{% endif %} {% if booking.room_type.pricing_models.first.payment_type == 'SEMESTER' %}per semester{% endif %}</span>
+      </div>
+      <div class="bd-item">
+        <span class="bd-label">Move-in</span>
+        <span class="bd-val">{{ booking.move_in_date|date:"F j, Y" }}</span>
+      </div>
+      <div class="bd-item">
+        <span class="bd-label">Move-out</span>
+        <span class="bd-val">{{ booking.move_out_date|date:"F j, Y" }}</span>
+      </div>
+    </div>
+    
+    {% if booking.room_allocation and booking.room_allocation.assigned_room and booking.room_allocation.assigned_room.occupied_slots == 1 and booking.room_allocation.assigned_room.total_slots > 1 %}
+    <div class="bd-notice">
+      <strong>You are currently the only occupant of this room.</strong><br>
+      If another student books this room, Roomora will notify you about your new roommate. Your lifestyle profile remains unlocked so you can update your preferences if needed.
+    </div>
+    {% endif %}
+  </div>
+  
+  {% if booking.status == 'COMPATIBILITY_REVIEW' or booking.status == 'WAITING_CONSENT' or booking.status == 'ASSIGNED_AWAITING' %}
+  <div style="margin-top: 2rem; text-align: center;">
+    <a href="{% url 'bookings:user-consent' booking.id %}" style="display: inline-block; padding: 1rem 3rem; background: linear-gradient(135deg, #10B981, #059669); color: white; text-decoration: none; border-radius: 2rem; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: transform 0.2s ease;">
+      Review &amp; Complete Consent Process
+    </a>
+  </div>
+  {% endif %}
+  
+</div>
+{% endblock %}

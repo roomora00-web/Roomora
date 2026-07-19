@@ -1,0 +1,41 @@
+<style>
+  .lifestyle-selection-labels label.selected {
+    border-color: rgba(255, 255, 255, 0.55) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  }
+  .lifestyle-selection-labels label.selected .text-sm,
+  .lifestyle-selection-labels label.selected .text-[15px],
+  .lifestyle-selection-labels label.selected .text-[24px] {
+    color: #ffffff !important;
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const inputs = document.querySelectorAll('.lifestyle-selection-labels label > input[type="radio"], .lifestyle-selection-labels label > input[type="checkbox"]');
+    if (!inputs.length) return;
+
+    function updateRadioGroup(name) {
+      const radios = document.querySelectorAll(`.lifestyle-selection-labels input[name="${name}"]`);
+      radios.forEach(radio => {
+        const label = radio.closest('label');
+        if (!label) return;
+        label.classList.toggle('selected', radio.checked);
+      });
+    }
+
+    inputs.forEach(input => {
+      const label = input.closest('label');
+      if (!label) return;
+      label.classList.add('lifestyle-selection-label');
+
+      if (input.type === 'radio') {
+        input.addEventListener('change', () => updateRadioGroup(input.name));
+        if (input.checked) updateRadioGroup(input.name);
+      } else {
+        input.addEventListener('change', () => label.classList.toggle('selected', input.checked));
+        if (input.checked) label.classList.add('selected');
+      }
+    });
+  });
+</script>

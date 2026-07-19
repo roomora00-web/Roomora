@@ -1,0 +1,512 @@
+{% extends "landing/base.html" %}
+{% load static %}
+
+{% block title %}Bank Transfer Payment - Roomora{% endblock %}
+
+{% block extra_css %}
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #fff !important;
+    color: #1f2937 !important;
+}
+
+.checkout-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+@media (min-width: 768px) {
+    .checkout-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 767px) {
+    .checkout-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .left-column {
+        padding: 24px;
+    }
+    
+    .right-column {
+        padding: 24px;
+    }
+    
+    .amount-display {
+        font-size: 36px;
+    }
+}
+
+/* Left Column - Dark Theme */
+.left-column {
+    background: #000000;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #fff;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 32px;
+    transition: color 0.2s;
+}
+
+.back-button:hover {
+    color: #fff;
+}
+
+.amount-display {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: #ffffff;
+}
+
+.billing-subtext {
+    color: #ffffff;
+    font-size: 16px;
+    margin-bottom: 32px;
+    line-height: 1.5;
+}
+
+.plan-card {
+    background: #000000;
+    border: 1px solid #333333;
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.plan-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #ffffff;
+}
+
+.breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.breakdown-item:last-child {
+    border-bottom: none;
+}
+
+.breakdown-label {
+    color: #ffffff;
+}
+
+.breakdown-value {
+    color: #fff;
+    font-weight: 600;
+}
+
+.total-due {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+    border: 1px solid #333333;
+}
+
+.total-due .breakdown-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+/* Right Column - White Theme */
+.right-column {
+    background: #ffffff;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-column h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 24px;
+}
+
+.bank-detail-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.bank-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.bank-detail-row:last-child {
+    border-bottom: none;
+}
+
+.bank-detail-label {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.bank-detail-value {
+    color: #1f2937;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.bank-detail-value.highlight {
+    color: #000000;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.important-notice {
+    background: #f5f5f5;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.important-notice strong {
+    color: #000000;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.important-notice .reference {
+    color: #000000;
+    font-weight: 700;
+    font-size: 16px;
+    display: block;
+    margin-top: 8px;
+}
+
+.important-notice small {
+    color: #666666;
+    display: block;
+    margin-top: 8px;
+    line-height: 1.5;
+    font-size: 13px;
+}
+
+.transfer-methods {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.transfer-methods li {
+    padding: 12px 0;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.transfer-methods li:last-child {
+    border-bottom: none;
+}
+
+.transfer-methods li::before {
+    content: '';
+    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.verification-notice {
+    background: #f5f5f5;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.verification-notice strong {
+    color: #000000;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.verification-notice .reference {
+    color: #000000;
+    font-weight: 700;
+    font-size: 16px;
+    display: block;
+    margin-top: 8px;
+}
+
+.verification-notice small {
+    color: #666666;
+    display: block;
+    margin-top: 8px;
+    line-height: 1.5;
+    font-size: 13px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.btn-primary {
+    width: 100%;
+    background: #000000;
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+    width: 100%;
+    background: transparent;
+    color: #000000;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    border: 2px solid #000000;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+.spinner {
+    width: 56px;
+    height: 56px;
+    border: 4px solid #e5e5e5;
+    border-top-color: #000000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 24px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <!-- Left Column - Payment Summary -->
+    <div class="left-column">
+        <a href="{% url 'accounts:dashboard' %}" class="back-button">
+            ← Back to Dashboard
+        </a>
+        
+        <div class="amount-display">GH₵ {{ payment.amount_total|floatformat:2 }}</div>
+        <div class="billing-subtext">
+            Complete your booking payment via bank transfer for {{ booking.accommodation_property.title }}
+        </div>
+        
+        <div class="plan-card">
+            <div class="plan-title">
+                {% if booking.assigned_room %}
+                    Room {{ booking.assigned_room.room_number }}
+                {% elif booking.room_type %}
+                    {{ booking.room_type.room_type_name }}
+                {% elif booking.unit_type %}
+                    {{ booking.unit_type.unit_name }}
+                {% else %}
+                    Premium Room
+                {% endif %}
+            </div>
+            
+            <div class="breakdown-item">
+                <span class="breakdown-label">Reference</span>
+                <span class="breakdown-value">{{ booking.reference_number }}</span>
+            </div>
+            <div class="breakdown-item">
+                <span class="breakdown-label">Duration</span>
+                <span class="breakdown-value">{{ duration_display }}</span>
+            </div>
+            <div class="breakdown-item">
+                <span class="breakdown-label">Move-in</span>
+                <span class="breakdown-value">{{ booking.move_in_date|date:"F j, Y" }}</span>
+            </div>
+            <div class="breakdown-item">
+                <span class="breakdown-label">Move-out</span>
+                <span class="breakdown-value">{{ booking.move_out_date|date:"F j, Y" }}</span>
+            </div>
+            
+            <div class="total-due breakdown-item">
+                <span class="breakdown-label">Total Due Today</span>
+                <span class="breakdown-value">GH₵ {{ payment.amount_total|floatformat:2 }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Column - Bank Transfer Form -->
+    <div class="right-column">
+        <h2>Bank Transfer Details</h2>
+        
+        <div class="bank-detail-card">
+            <div class="bank-detail-row">
+                <span class="bank-detail-label">Bank</span>
+                <span class="bank-detail-value">Guaranty Trust Bank (GTBank)</span>
+            </div>
+            <div class="bank-detail-row">
+                <span class="bank-detail-label">Account Name</span>
+                <span class="bank-detail-value">Roomora Limited</span>
+            </div>
+            <div class="bank-detail-row">
+                <span class="bank-detail-label">Account Number</span>
+                <span class="bank-detail-value highlight">0123456789</span>
+            </div>
+            <div class="bank-detail-row">
+                <span class="bank-detail-label">Branch</span>
+                <span class="bank-detail-value">Kumasi Main Branch</span>
+            </div>
+            
+            <div class="important-notice">
+                <strong>IMPORTANT:</strong> You MUST include your booking reference as the transfer description.
+                <div class="reference">Reference: {{ booking.reference_number }}</div>
+                <small>This is how we identify your payment.</small>
+            </div>
+        </div>
+        
+        <h2>Transfer Via</h2>
+        <div class="bank-detail-card">
+            <ul class="transfer-methods">
+                <li>Mobile banking app</li>
+                <li>Internet banking</li>
+                <li>Bank branch</li>
+            </ul>
+        </div>
+        
+        <div class="verification-notice">
+            <strong>Verification Process:</strong>
+            <div style="color: #3b82f6; margin-top: 8px; line-height: 1.5; font-size: 14px;">
+                After you notify us, our system will verify your transfer within 2 hours (during business hours).
+                Your booking slot remains held during verification.
+            </div>
+            <div class="reference">Reference: {{ booking.reference_number }}</div>
+            <small>You will be notified once payment is verified and your booking is confirmed.</small>
+        </div>
+        
+        <form id="bank-transfer-claim-form">
+            {% csrf_token %}
+            <input type="hidden" name="payment_id" value="{{ payment.id }}">
+            
+            <div class="action-buttons">
+                <button type="submit" class="btn-primary">
+                    I Have Completed the Transfer
+                </button>
+                <a href="{% url 'accounts:dashboard' %}" class="btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById('bank-transfer-claim-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const paymentId = formData.get('payment_id');
+    
+    try {
+        const response = await fetch(`/api/v1/payments/${paymentId}/bank-transfer-claim/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({})
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Show pending verification message
+            document.querySelector('.checkout-container').innerHTML = `
+                <div class="left-column" style="grid-column: 1 / -1; text-align: center;">
+                    <div class="spinner"></div>
+                    <h2 style="color: #fff; margin-bottom: 20px; font-size: 24px; font-weight: 700;">PAYMENT PENDING VERIFICATION</h2>
+                    <p style="color: #9CA3AF; margin-bottom: 16px; line-height: 1.6;">
+                        We have received your notification that you completed a bank transfer of GH₵ {{ payment.amount_total|floatformat:2 }}.
+                    </p>
+                    <p style="color: #9CA3AF; margin-bottom: 16px; line-height: 1.6;">
+                        Our system will verify this transfer within 2 hours (during business hours).
+                    </p>
+                    <p style="color: #9CA3AF; margin-bottom: 16px; line-height: 1.6;">
+                        Your booking slot remains held during verification.
+                    </p>
+                    <p style="margin-bottom: 20px;">
+                        <strong style="color: #60A5FA; font-size: 18px;">Reference: {{ booking.reference_number }}</strong>
+                    </p>
+                    <p style="color: #6B7280; margin-bottom: 28px; line-height: 1.6;">
+                        You will be notified once payment is verified and your booking is confirmed.
+                    </p>
+                    <a href="{% url 'accounts:dashboard' %}" class="btn-primary" style="max-width: 300px; margin: 0 auto;">
+                        View Booking Status
+                    </a>
+                </div>
+            `;
+        } else {
+            alert('Error: ' + (data.error || 'Unknown error'));
+        }
+    } catch (error) {
+        alert('An error occurred: ' + error.message);
+    }
+});
+</script>
+{% endblock %}

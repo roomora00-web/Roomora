@@ -1,0 +1,903 @@
+{% extends 'landing/base.html' %}
+{% load static %}
+
+{% block title %}Roommate Dashboard - Roomora{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --deep-navy: #0C1424;
+        --navy-light: #1A2639;
+        --accent-blue: #3B82F6;
+        --success-green: #1D9E75;
+        --warning-amber: #EF9F27;
+        --danger-red: #E24B4A;
+        --text-white: #FFFFFF;
+        --text-gray: #6B7280;
+        --bg-surface: #F9FAFB;
+        --border-color: #E5E7EB;
+    }
+
+    body {
+        background-color: var(--bg-surface);
+        color: var(--deep-navy);
+        padding-top: 60px; /* Space for sticky header */
+    }
+
+    /* Sticky Header */
+    .sticky-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        border-bottom: 1px solid var(--border-color);
+        z-index: 50;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .header-back {
+        color: var(--text-gray);
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .header-title {
+        font-weight: 600;
+        color: var(--deep-navy);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .room-badge {
+        background: var(--bg-surface);
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 0.875rem;
+        border: 1px solid var(--border-color);
+    }
+
+    /* Main Container */
+    .dashboard-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* Card Base */
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+    }
+
+    .section-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        color: var(--text-gray);
+        letter-spacing: 0.05em;
+    }
+
+    /* Section 1: Room Summary */
+    .room-summary {
+        position: sticky;
+        top: 84px;
+        z-index: 40;
+    }
+    
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .summary-item {
+        font-size: 0.9rem;
+    }
+
+    .progress-bar-container {
+        width: 100%;
+        height: 16px;
+        background-color: var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 8px;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background-color: var(--success-green);
+        transition: width 0.5s ease;
+    }
+
+    /* Section 2: Roommates */
+    .roommate-card {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+    }
+
+    .rm-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+    }
+
+    .rm-avatar-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .rm-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--navy-light);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .rm-score-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+    .score-excellent { background: rgba(29, 158, 117, 0.1); color: var(--success-green); }
+    .score-good { background: rgba(43, 138, 109, 0.1); color: #2B8A6D; }
+    .score-moderate { background: rgba(239, 159, 39, 0.1); color: var(--warning-amber); }
+    .score-low { background: rgba(226, 75, 74, 0.1); color: var(--danger-red); }
+
+    .alignment-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px 0;
+    }
+
+    .alignment-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .area-to-discuss {
+        background: rgba(239, 159, 39, 0.05);
+        border-left: 4px solid var(--warning-amber);
+        padding: 16px;
+        border-radius: 0 8px 8px 0;
+        margin-bottom: 16px;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+
+    .btn-primary { background: var(--accent-blue); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--deep-navy); }
+    .btn-danger-link { background: transparent; color: var(--danger-red); padding: 0; font-weight: 500; font-size: 0.875rem; }
+
+    /* Section 4: Declarations */
+    .declaration-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        margin-bottom: 12px;
+        gap: 16px;
+    }
+
+    .decl-icon {
+        font-size: 2rem;
+        width: 48px;
+        text-align: center;
+    }
+
+    .decl-content {
+        flex: 1;
+    }
+
+    .consumption-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 4px;
+    }
+
+    .cons-high { background: rgba(226, 75, 74, 0.1); color: var(--danger-red); }
+    .cons-medium { background: rgba(239, 159, 39, 0.1); color: var(--warning-amber); }
+    .cons-low { background: rgba(29, 158, 117, 0.1); color: var(--success-green); }
+
+    .flagged-alert {
+        margin-top: 12px;
+        padding: 12px;
+        background: rgba(226, 75, 74, 0.05);
+        border: 1px solid var(--danger-red);
+        border-radius: 6px;
+        font-size: 0.875rem;
+    }
+
+    /* Section 5: Discussion */
+    .discussion-container {
+        display: flex;
+        flex-direction: column;
+        height: 600px;
+    }
+
+    .message-thread {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        background: var(--bg-surface);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        margin-bottom: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .msg-system {
+        text-align: center;
+        color: var(--text-gray);
+        font-style: italic;
+        font-size: 0.875rem;
+        margin: 16px 0;
+    }
+
+    .msg-user {
+        max-width: 80%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .msg-other {
+        align-self: flex-start;
+    }
+
+    .msg-self {
+        align-self: flex-end;
+    }
+
+    .msg-meta {
+        font-size: 0.75rem;
+        color: var(--text-gray);
+        margin-bottom: 4px;
+    }
+
+    .msg-bubble {
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .msg-other .msg-bubble {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-bottom-left-radius: 4px;
+    }
+
+    .msg-self .msg-bubble {
+        background: var(--accent-blue);
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    .message-input-area {
+        position: relative;
+    }
+
+    .message-input {
+        width: 100%;
+        padding: 16px;
+        padding-right: 80px;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        resize: none;
+        height: 80px;
+        font-family: inherit;
+    }
+
+    .send-btn {
+        position: absolute;
+        bottom: 16px;
+        right: 16px;
+        background: var(--accent-blue);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 16px;
+        }
+        
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .amenities-collapse-btn {
+            display: block;
+            margin-bottom: 16px;
+        }
+        
+        .amenities-content {
+            display: none;
+        }
+        
+        .amenities-content.expanded {
+            display: block;
+        }
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Sticky Header -->
+<div class="sticky-header">
+    <a href="{% url 'accounts:dashboard' %}" class="header-back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+    </a>
+    <div class="header-title">
+        ROOMMATE PAGE
+        <span class="room-badge">Room {{ assignment.assigned_room.room_number|default:"TBD" }}</span>
+    </div>
+    <button class="btn-outline" style="padding: 6px 12px;">⚙️ Help</button>
+</div>
+
+<div class="dashboard-container">
+
+    <!-- Section 1: Room Summary -->
+    <div class="card room-summary">
+        <h2 class="section-title">Room Summary</h2>
+        <div class="summary-grid">
+            <div class="summary-item">
+                <div class="text-gray mb-1">Property</div>
+                <div class="font-bold"><a href="{% url 'landing:property_detail' booking.accommodation_property.id %}" style="color: inherit; text-decoration: none;">{{ booking.accommodation_property.title }}</a></div>
+            </div>
+            <div class="summary-item">
+                <div class="text-gray mb-1">Room</div>
+                <div class="font-bold">{{ assignment.assigned_room.room_number|default:"TBD" }} ({{ booking.room_type.room_type_name }})</div>
+            </div>
+            <div class="summary-item">
+                <div class="text-gray mb-1">Floor</div>
+                <div class="font-bold">{{ assignment.assigned_room.floor_number|default:"TBD" }}</div>
+            </div>
+        </div>
+        
+        <div style="margin: 16px 0; font-size: 0.9rem;">
+            <div class="text-gray">Move-in: {{ booking.move_in_date|date:"F j, Y" }}</div>
+            <div class="text-gray">Move-out: {{ booking.move_out_date|date:"F j, Y" }}</div>
+        </div>
+        
+        {% if progress.status == 'Pending Move-in' %}
+        <div style="margin-bottom: 16px; padding: 12px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.2);">
+            <div style="font-weight: 600; color: var(--accent-blue);">Pending move-in — {{ progress.days_remaining }} days until move-in</div>
+        </div>
+        {% endif %}
+        
+        <div class="progress-bar-container" style="{% if progress.status == 'Pending Move-in' %}background: var(--border-color);{% endif %}">
+            <div class="progress-bar-fill" style="width: {{ progress.percentage }}%; {% if progress.status == 'Pending Move-in' %}background: var(--border-color);{% endif %}"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 16px;">
+            <span style="font-weight: 600; {% if progress.status == 'Pending Move-in' %}color: var(--text-gray);{% else %}color: var(--success-green);{% endif %}">{{ progress.percentage }}% Complete</span>
+            <span class="text-gray">{% if progress.status == 'Completed' %}Lease completed — Moved out {{ progress.days_ago }} days ago{% else %}{{ progress.days_remaining }} days remaining{% endif %}</span>
+        </div>
+        
+        <a href="/api/bookings/booking/{{ booking.id }}/" style="font-size: 0.875rem; color: var(--accent-blue); text-decoration: none; font-weight: 500;">View Full Booking Details →</a>
+    </div>
+
+    <!-- Section 2: Roommates -->
+    <div class="card">
+        <h2 class="section-title">Your Roommates</h2>
+        
+        {% for occ in occupants %}
+        <div class="roommate-card">
+            <div class="rm-header">
+                <div class="rm-avatar-info">
+                    <div class="rm-avatar">{{ occ.user.first_name|make_list|first|upper }}</div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 6px;">
+                            {{ occ.user.first_name }} {{ occ.user.last_name|make_list|first|upper }}.
+                            <span style="color: var(--success-green); font-size: 0.9rem;">✓ Verified</span>
+                        </div>
+                        <div class="text-gray">{{ occ.user.get_user_type_display }}</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: right;">
+                    <div class="rm-score-badge {% if occ.score >= 90 %}score-excellent{% elif occ.score >= 80 %}score-good{% elif occ.score >= 70 %}score-moderate{% else %}score-low{% endif %}">
+                        COMPATIBILITY: {{ occ.score }}%
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-gray); margin-top: 4px;">Matched: {{ occ.match_date|date:"M j, Y" }}</div>
+                    <div style="font-size: 0.7rem; color: var(--text-faint);">Verified: {{ occ.user.date_joined|date:"M j, Y" }}</div>
+                </div>
+            </div>
+            
+            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 16px 0;">
+            
+            <div style="font-weight: 600; font-size: 0.875rem; color: var(--text-gray); margin-bottom: 12px; letter-spacing: 0.05em;">TOP ALIGNMENTS</div>
+            <ul class="alignment-list">
+                {% for alignment in occ.top_alignments %}
+                <li><span style="color: var(--success-green);">✓</span> {{ alignment }}</li>
+                {% empty %}
+                <li><span style="color: var(--success-green);">✓</span> Compatible schedules</li>
+                {% endfor %}
+            </ul>
+            
+            {% if occ.area_to_discuss %}
+            <div class="area-to-discuss">
+                <div style="font-weight: 700; color: var(--warning-amber); margin-bottom: 8px;">AREA TO DISCUSS</div>
+                <div style="font-size: 0.95rem; margin-bottom: 8px;">{{ occ.area_to_discuss }}</div>
+                <div style="font-size: 0.875rem; color: #854D0E;">
+                    💡 <strong>Tip:</strong> Discuss this early to set mutual expectations and avoid future conflict.
+                </div>
+            </div>
+            {% endif %}
+            
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="btn btn-outline" onclick="document.getElementById('compatModal-{{ occ.user.id }}').style.display='block'">View Full Breakdown</button>
+                <button class="btn btn-primary" onclick="document.getElementById('introModal-{{ occ.user.id }}').style.display='block'">Send Introduction Message</button>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: right;">
+                {% if progress.status == 'Active' %}
+                <a href="{% url 'bookings:report-conflict' assignment.id %}" class="btn-danger-link">Report a Concern</a>
+                {% else %}
+                <span class="btn-danger-link" style="opacity: 0.5; cursor: not-allowed;" title="Available after move-in">Report a Concern</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Full Compatibility Breakdown Modal -->
+        <div id="compatModal-{{ occ.user.id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100;">
+            <div style="background:white; max-width:600px; margin: 100px auto; padding: 24px; border-radius: 12px; max-height: 80vh; overflow-y: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0; font-size: 1.5rem;">Compatibility Breakdown</h2>
+                    <button type="button" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-gray);" onclick="document.getElementById('compatModal-{{ occ.user.id }}').style.display='none'">&times;</button>
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div class="rm-score-badge {% if occ.score >= 90 %}score-excellent{% elif occ.score >= 80 %}score-good{% elif occ.score >= 70 %}score-moderate{% else %}score-low{% endif %}" style="font-size: 1.25rem; padding: 8px 16px;">
+                        {{ occ.score }}% MATCH
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 1rem; font-weight: 600; color: var(--success-green); margin-bottom: 12px;">✓ ALIGNMENTS</h3>
+                    <ul class="alignment-list">
+                        {% for alignment in occ.full_breakdown.alignments %}
+                        <li style="padding: 12px; background: rgba(29, 158, 117, 0.05); border-radius: 6px; border: 1px solid rgba(29, 158, 117, 0.2);"><span style="color: var(--success-green); font-weight: bold; margin-right: 8px;">✓</span> {{ alignment }}</li>
+                        {% empty %}
+                        <li style="padding: 12px; color: var(--text-gray);">No specific alignments recorded. You generally have compatible lifestyles.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 style="font-size: 1rem; font-weight: 600; color: var(--warning-amber); margin-bottom: 12px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:text-bottom;margin-right:6px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> DIFFERENCES & COMPROMISES</h3>
+                    <ul class="alignment-list">
+                        {% for diff in occ.full_breakdown.differences %}
+                        <li style="padding: 12px; background: rgba(239, 159, 39, 0.05); border-radius: 6px; border: 1px solid rgba(239, 159, 39, 0.2);"><span style="color: var(--warning-amber); font-weight: bold; margin-right: 8px;">!</span> {{ diff }}</li>
+                        {% empty %}
+                        <li style="padding: 12px; color: var(--text-gray);">No significant differences found! You both answered very similarly across all priority questions.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div style="margin-top: 32px; text-align: center;">
+                    <button class="btn btn-primary" style="width: 100%;" onclick="document.getElementById('compatModal-{{ occ.user.id }}').style.display='none'">Close Breakdown</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Introduction Message Modal -->
+        <div id="introModal-{{ occ.user.id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100;">
+            <div style="background:white; max-width:500px; margin: 100px auto; padding: 24px; border-radius: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0; font-size: 1.5rem;">Send a Message to {{ occ.user.first_name }}</h2>
+                    <button type="button" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-gray);" onclick="document.getElementById('introModal-{{ occ.user.id }}').style.display='none'">&times;</button>
+                </div>
+                <form id="introForm-{{ occ.user.id }}">
+                    <div style="margin-bottom: 16px;">
+                        <label style="display:block; margin-bottom: 8px; font-weight: 600;">Subject</label>
+                        <input type="text" value="Let's introduce ourselves!" readonly style="width:100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-surface);">
+                    </div>
+                    <div style="margin-bottom: 24px;">
+                        <label style="display:block; margin-bottom: 8px; font-weight: 600;">Message</label>
+                        <textarea id="introMessage-{{ occ.user.id }}" style="width:100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; resize:none; height: 150px;" placeholder="Type your message...">Hi {{ occ.user.first_name }},
+
+I saw we're matched at {{ occ.score }}% compatibility, which is great!
+I'm looking forward to sharing the room with you on {{ booking.move_in_date|date:"F j" }}.
+
+Looking forward to meeting you!
+
+{{ request.user.first_name }}</textarea>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                        <button type="button" class="btn btn-outline" onclick="document.getElementById('introModal-{{ occ.user.id }}').style.display='none'">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div style="padding: 40px; text-align: center; color: var(--text-gray); background: var(--bg-surface); border-radius: 8px;">
+            No roommates assigned yet. You will be notified when someone books this room.
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Section 3: Room Amenities -->
+    <div class="card">
+        <h2 class="section-title">Room Amenities</h2>
+        
+        <button class="amenities-collapse-btn btn btn-outline" style="display: none; width: 100%; margin-bottom: 16px;" onclick="toggleAmenities()">
+            ▼ View All Amenities
+        </button>
+        
+        <div class="amenities-content">
+            <div style="margin-bottom: 16px;">
+                <h3 style="font-size: 0.9rem; font-weight: 600; color: var(--text-gray); margin-bottom: 12px;">FURNITURE & FIXTURES</h3>
+                <ul class="alignment-list">
+                    <li><span style="color: var(--success-green);">✓</span> Single bed per person (mattress included)</li>
+                    <li><span style="color: var(--success-green);">✓</span> Study desk per person</li>
+                    <li><span style="color: var(--success-green);">✓</span> Study chair per person</li>
+                    <li><span style="color: var(--success-green);">✓</span> Individual wardrobe/closet per person</li>
+                    <li><span style="color: var(--success-green);">✓</span> Shared bathroom (1 per 2 rooms)</li>
+                </ul>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <h3 style="font-size: 0.9rem; font-weight: 600; color: var(--text-gray); margin-bottom: 12px;">UTILITIES</h3>
+                <ul class="alignment-list">
+                    <li><span style="color: var(--success-green);">✓</span> 24-hour water supply</li>
+                    <li><span style="color: var(--success-green);">✓</span> Electricity (standard monthly allowance)</li>
+                    <li><span style="color: var(--success-green);">✓</span> WiFi high-speed internet access</li>
+                </ul>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <h3 style="font-size: 0.9rem; font-weight: 600; color: var(--text-gray); margin-bottom: 12px;">SERVICES</h3>
+                <ul class="alignment-list">
+                    <li><span style="color: var(--success-green);">✓</span> Cleaning service twice per week</li>
+                    <li><span style="color: var(--success-green);">✓</span> Maintenance support</li>
+                    <li><span style="color: var(--success-green);">✓</span> 24-hour security</li>
+                </ul>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <h3 style="font-size: 0.9rem; font-weight: 600; color: var(--text-gray); margin-bottom: 12px;">NOT INCLUDED</h3>
+                <ul class="alignment-list">
+                    <li><span style="color: var(--danger-red);">✗</span> Meals</li>
+                    <li><span style="color: var(--danger-red);">✗</span> Laundry service</li>
+                    <li><span style="color: var(--danger-red);">✗</span> Extra electricity beyond allowance</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div style="font-size: 0.75rem; color: var(--text-gray); margin-top: 16px;">
+            Source: {{ booking.accommodation_property.title }} verified property listing. Last updated: {% now "F j, Y" %}.
+            <br>
+            <a href="#" style="color: var(--accent-blue);">Report an issue with this information</a>
+        </div>
+    </div>
+
+    <!-- Section 4: Declarations -->
+    <div class="card">
+        <h2 class="section-title">Room Setup Declarations</h2>
+        
+        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 12px;">MY DECLARATIONS</h3>
+        {% for item in my_declarations %}
+        <div class="declaration-item">
+            <div class="decl-icon">
+                {% if 'television' in item.item_name.lower or 'tv' in item.item_name.lower or 'monitor' in item.item_name.lower %}📺
+                {% elif 'playstation' in item.item_name.lower or 'xbox' in item.item_name.lower or 'console' in item.item_name.lower or 'gaming' in item.item_name.lower %}🎮
+                {% elif 'computer' in item.item_name.lower or 'laptop' in item.item_name.lower or 'pc' in item.item_name.lower %}💻
+                {% elif 'refrigerator' in item.item_name.lower or 'fridge' in item.item_name.lower or 'freezer' in item.item_name.lower %}❄️
+                {% elif 'heater' in item.item_name.lower or 'air conditioner' in item.item_name.lower or 'ac' in item.item_name.lower or 'fan' in item.item_name.lower %}�
+                {% elif item.category == 'FURNITURE' %}🪑
+                {% elif item.category == 'PERSONAL' %}📦
+                {% else %}📦{% endif %}
+            </div>
+            <div class="decl-content">
+                <div style="font-weight: 600; font-size: 1.1rem;">{{ item.item_name }}</div>
+                <div style="color: var(--text-gray); font-size: 0.875rem;">Category: {{ item.get_category_display }}</div>
+                
+                {% if item.category == 'ELECTRICAL' %}
+                <div class="consumption-badge {% if item.consumption_level == 'HIGH' %}cons-high{% elif item.consumption_level == 'MEDIUM' %}cons-medium{% else %}cons-low{% endif %}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:text-bottom;margin-right:6px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> {{ item.get_consumption_level_display }}
+                </div>
+                {% endif %}
+                
+                {% if item.description %}
+                <div style="margin-top: 8px; font-style: italic; font-size: 0.9rem;">"{{ item.description }}"</div>
+                {% endif %}
+                
+                {% if item.is_flagged %}
+                <div class="flagged-alert">
+                    <strong><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:text-bottom;margin-right:6px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> FLAGGED</strong><br>
+                    This item may violate {{ booking.accommodation_property.title }}'s house rules. Property rules prohibit: "{{ booking.accommodation_property.prohibited_items|default:"Certain items" }}".<br>
+                    An admin has been notified.
+                    <div style="margin-top: 8px; display: flex; gap: 12px;">
+                        <a href="{% url 'landing:property_detail' booking.accommodation_property.id %}" class="btn-danger-link" style="font-size: 0.8rem;">View House Rules</a>
+                        <a href="#" class="btn-danger-link" style="font-size: 0.8rem;">Edit Item</a>
+                        <a href="#" class="btn-danger-link" style="font-size: 0.8rem;">Remove Item</a>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.8rem; color: var(--text-gray);">Admin Status: Flagged — Awaiting Resolution</div>
+                    <a href="#" class="btn-danger-link" style="font-size: 0.8rem;">Contact Admin About This Item</a>
+                </div>
+                {% endif %}
+                
+                {% if not item.is_flagged %}
+                <div style="margin-top: 12px; display: flex; gap: 12px;">
+                    <a href="#" class="btn-danger-link">Edit</a>
+                    <a href="#" class="btn-danger-link">Remove Item</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div style="color: var(--text-gray); font-style: italic; margin-bottom: 16px;">No items declared yet.</div>
+        {% endfor %}
+        
+        <button class="btn btn-outline" style="width: 100%; margin-bottom: 32px;" onclick="document.getElementById('declareModal').style.display='block'">+ Add New Item</button>
+        
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 0 0 24px 0;">
+        
+        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 12px; color: var(--text-gray);">ROOMMATE DECLARATIONS</h3>
+        {% for item in roommate_declarations %}
+        <div class="declaration-item" style="background: var(--bg-surface);">
+            <div class="decl-icon">
+                {% if 'television' in item.item_name.lower or 'tv' in item.item_name.lower or 'monitor' in item.item_name.lower %}📺
+                {% elif 'playstation' in item.item_name.lower or 'xbox' in item.item_name.lower or 'console' in item.item_name.lower or 'gaming' in item.item_name.lower %}🎮
+                {% elif 'computer' in item.item_name.lower or 'laptop' in item.item_name.lower or 'pc' in item.item_name.lower %}💻
+                {% elif 'refrigerator' in item.item_name.lower or 'fridge' in item.item_name.lower or 'freezer' in item.item_name.lower %}❄️
+                {% elif 'heater' in item.item_name.lower or 'air conditioner' in item.item_name.lower or 'ac' in item.item_name.lower or 'fan' in item.item_name.lower %}�
+                {% elif item.category == 'FURNITURE' %}🪑
+                {% elif item.category == 'PERSONAL' %}📦
+                {% else %}📦{% endif %}
+            </div>
+            <div class="decl-content">
+                <div style="font-weight: 600; font-size: 1.1rem;">{{ item.item_name }} <span style="font-weight: normal; color: var(--text-gray); font-size: 0.9rem;">(by {{ item.user.first_name }})</span></div>
+                
+                {% if item.category == 'ELECTRICAL' %}
+                <div class="consumption-badge {% if item.consumption_level == 'HIGH' %}cons-high{% elif item.consumption_level == 'MEDIUM' %}cons-medium{% else %}cons-low{% endif %}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:text-bottom;margin-right:6px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> {{ item.get_consumption_level_display }}
+                </div>
+                {% endif %}
+                
+                {% if item.description %}
+                <div style="margin-top: 8px; font-style: italic; font-size: 0.9rem;">"{{ item.description }}"</div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div style="color: var(--text-gray); font-style: italic;">Your roommates haven't declared any items yet.</div>
+        {% endfor %}
+    </div>
+
+    <!-- Section 5: Discussion -->
+    <div class="card" id="discussion">
+        <h2 class="section-title">Room Discussion</h2>
+        <div class="discussion-container">
+            <div class="message-thread" id="messageThread">
+                {% for msg in room_messages %}
+                    {% if msg.is_system %}
+                    <div class="msg-system">
+                        {{ msg.created_at|date:"M j, Y \a\t g:i A" }}<br>
+                        {{ msg.content }}
+                    </div>
+                    {% else %}
+                    <div class="msg-user {% if msg.sender == request.user %}msg-self{% else %}msg-other{% endif %}">
+                        <div class="msg-meta">
+                            <strong>{% if msg.sender == request.user %}YOU{% else %}{{ msg.sender.first_name|upper }}{% endif %}</strong> — {{ msg.created_at|date:"M j, g:i A" }}
+                        </div>
+                        <div class="msg-bubble">
+                            {{ msg.content }}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                <div style="text-align: center; color: var(--text-gray); margin-top: auto; margin-bottom: auto;">
+                    Start the conversation! Introduce yourself to your roommates.
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="message-input-area">
+                <form id="messageForm">
+                    <textarea class="message-input" id="messageInput" placeholder="Type a message..." maxlength="1000"></textarea>
+                    <div style="position: absolute; bottom: 16px; right: 80px; font-size: 0.75rem; color: var(--text-gray);">
+                        <span id="charCount">0</span>/1000
+                    </div>
+                    <button type="submit" class="send-btn">Send ▶</button>
+                </form>
+            </div>
+            
+            {% if progress.status == 'Active' %}
+            <div style="margin-top: 16px; text-align: center;">
+                <a href="#" class="btn-danger-link" style="font-size: 0.875rem;">Report Conversation to Admin</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Item Modal -->
+<div id="declareModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100;">
+    <div style="background:white; max-width:500px; margin: 100px auto; padding: 24px; border-radius: 12px;">
+        <h2 style="margin-bottom: 20px;">Add an Item</h2>
+        <form id="declareForm">
+            <div style="margin-bottom: 16px;">
+                <label style="display:block; margin-bottom: 8px; font-weight: 600;">Item Name</label>
+                <input type="text" id="itemName" required style="width:100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px;">
+            </div>
+            <div style="margin-bottom: 16px;">
+                <label style="display:block; margin-bottom: 8px; font-weight: 600;">Category</label>
+                <select id="itemCategory" required style="width:100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <option value="ELECTRICAL">Electrical Appliance</option>
+                    <option value="FURNITURE">Furniture</option>
+                    <option value="PERSONAL">Personal Equipment</option>
+                    <option value="OTHER">Other</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 24px;">
+                <label style="display:block; margin-bottom: 8px; font-weight: 600;">Description (Optional)</label>
+                <textarea id="itemDesc" style="width:100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; resize:none;"></textarea>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('declareModal').style.display='none'">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Item</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Auto-scroll discussion to bottom
+    const thread = document.getElementById('messageThread');
+    if(thread) thread.scrollTop = thread.scrollHeight;
+    
+    // Setup fetch handlers
+    function getCSRFToken() {
+        return document.cookie.split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+    }
+    
+    // Character counter for message input
+    const messageInput = document.getElementById('messageInput');
+    const charCount = document.getElementById('charCount');
+    if(messageInput && charCount) {
+        messageInput.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
+    }
+    
+    // Toggle amenities on mobile
+    function toggleAmenities() {
+        const content = document.querySelector('.amenities-content');
+        const btn = document.querySelector('.amenities-collapse-btn');
+        if(content && btn) {
+            content.classList.toggle('expanded');
+            btn.textContent = content.classList.contains('expanded') ? '▲ Hide Amenities' : '▼ View All Amenities';
+        }
+    }
+    
+    document.getElementById('messageForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const content = document.getElementById('messageInput').value.trim();
+        if(!content) return;
+        
+        fetch("{% url 'bookings:room-discussion' booking.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({ content })
+        }).then(res => res.json()).then(data => {
+            if(data.success) {
+                window.location.reload();
+            }
+        });
+    });
+    
+    document.getElementById('declareForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const item_name = document.getElementById('itemName').value;
+        const category = document.getElementById('itemCategory').value;
+        const description = document.getElementById('itemDesc').value;
+        
+        fetch("{% url 'bookings:setup-declaration' booking.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({ item_name, category, description })
+        }).then(res => res.json()).then(data => {
+            if(data.success) {
+                window.location.reload();
+            }
+        });
+    });
+    
+    // Introduction message form handlers
+    {% for occ in occupants %}
+    (function() {
+        const introForm = document.getElementById('introForm-{{ occ.user.id }}');
+        if(introForm) {
+            introForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const content = document.getElementById('introMessage-{{ occ.user.id }}').value.trim();
+                if(!content) return;
+                
+                fetch("{% url 'bookings:room-discussion' booking.id %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken()
+                    },
+                    body: JSON.stringify({ content })
+                }).then(res => res.json()).then(data => {
+                    if(data.success) {
+                        document.getElementById('introModal-{{ occ.user.id }}').style.display='none';
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+    })();
+    {% endfor %}
+</script>
+{% endblock %}

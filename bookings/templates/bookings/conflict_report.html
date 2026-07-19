@@ -1,0 +1,108 @@
+{% extends 'landing/base.html' %}
+{% load static %}
+
+{% block title %}Report Roommate Conflict - Roomora{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --deep-navy: #0C1424;
+        --navy-light: #1A2639;
+        --accent-blue: #3B82F6;
+        --danger-red: #EF4444;
+        --text-white: #FFFFFF;
+        --text-gray: #9CA3AF;
+        --bg-surface: #F9FAFB;
+    }
+
+    body {
+        background-color: var(--bg-surface);
+        color: var(--deep-navy);
+    }
+
+    .report-container {
+        max-width: 600px;
+        margin: 40px auto;
+        background: white;
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+    }
+
+    .btn-submit {
+        background-color: var(--danger-red);
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .btn-submit:hover {
+        background-color: #DC2626;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="report-container">
+    <h1 class="h3 mb-2" style="color: var(--danger-red);">Report Conflict</h1>
+    <p class="text-gray mb-4">Phase 13 Conflict Resolution. Please provide details about the issue.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="form-label">Issue Category</label>
+            <select name="issue_type" class="form-control" required>
+                <option value="NOISE">Noise</option>
+                <option value="CLEANLINESS">Cleanliness</option>
+                <option value="VISITORS">Visitors</option>
+                <option value="ITEMS">Items/Appliances</option>
+                <option value="PERSONAL">Personal Conflict</option>
+                <option value="OTHER">Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" rows="5" required placeholder="Describe the conflict in detail..."></textarea>
+        </div>
+
+        <div class="form-group" style="display: flex; gap: 8px; align-items: flex-start;">
+            <input type="checkbox" name="attempted_direct_resolution" id="attempted" style="margin-top: 4px;">
+            <label for="attempted" class="form-label" style="font-weight: normal; margin: 0;">I have already attempted to resolve this directly with my roommate.</label>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Preferred Resolution Path</label>
+            <select name="preferred_resolution" class="form-control" required>
+                <option value="MEDIATION">Mediation Session</option>
+                <option value="TRANSFER">Room Transfer</option>
+                <option value="LEASE_REVIEW">Lease Review</option>
+                <option value="ADMIN_CONTACT">Admin Contact Only</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-submit">Submit Report</button>
+    </form>
+</div>
+{% endblock %}

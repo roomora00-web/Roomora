@@ -1,0 +1,907 @@
+{% extends "bookings/base_checkout.html" %}
+
+{% block title %}Compatibility Results - {{ booking.accommodation_property.title }}{% endblock %}
+
+{% block content %}
+<div class="cr-container">
+  <div class="cr-header">
+    <h1>COMPATIBILITY RESULTS</h1>
+    <p class="cr-subtitle">Your roommate matching results based on lifestyle profile analysis</p>
+  </div>
+
+  {% if no_match_found %}
+  <!-- No Compatible Match Found -->
+  <div class="cr-no-match">
+    <div class="cr-no-match-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:text-bottom;margin-right:6px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+    <h2>No Compatible Match Found</h2>
+    <p>We couldn't find a compatible roommate with your current preferences.</p>
+    
+    <div class="cr-options">
+      <div class="cr-option">
+        <h3>OPTION 1: WAITLIST (Recommended)</h3>
+        <p>Wait for a compatible match to become available. We'll notify you immediately when someone matches at 80%+ compatibility.</p>
+        <button class="cr-btn cr-btn-primary">Join Waitlist</button>
+        <p class="cr-option-status">Status: You're #1 on waitlist for this room type</p>
+        <p class="cr-option-wait">Expected wait: 2-4 weeks based on demand</p>
+      </div>
+      
+      <div class="cr-option">
+        <h3>OPTION 2: ACCEPT WITH CAUTION</h3>
+        <p>Accept one of these options below, understanding compatibility is lower than ideal.</p>
+        <button class="cr-btn cr-btn-secondary">View Available Options</button>
+      </div>
+      
+      <div class="cr-option">
+        <h3>OPTION 3: EXPLORE NEARBY PROPERTIES</h3>
+        <p>Find other properties near {{ booking.accommodation_property.city }} with better matches available.</p>
+        <a href="{% url 'landing:properties' %}" class="cr-btn cr-btn-secondary">Browse Alternatives</a>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <!-- Compatible Match Found -->
+  <div class="cr-match-found">
+    <div class="cr-match-header">
+      <div class="cr-match-icon">✓</div>
+      <h2>COMPATIBLE MATCH FOUND!</h2>
+      <div class="cr-score-display">
+        <span class="cr-score-number">{{ best_match.compatibility_score }}%</span>
+        <span class="cr-score-label">Compatibility Score</span>
+      </div>
+      <div class="cr-match-status {% if best_match.verdict == 'EXCELLENT' %}cr-status-excellent{% elif best_match.verdict == 'GOOD' %}cr-status-good{% else %}cr-status-moderate{% endif %}">
+        Match Status: {{ best_match.verdict }} MATCH
+      </div>
+    </div>
+
+    <!-- Your Match -->
+    <div class="cr-section">
+      <h3>Your Match</h3>
+      <div class="cr-match-details">
+        <div class="cr-match-info">
+          <div class="cr-match-avatar">{% if best_match.occupant.get_full_name %}{{ best_match.occupant.get_full_name|make_list|first|upper }}{% else %}{{ best_match.occupant.email|make_list|first|upper }}{% endif %}</div>
+          <div>
+            <div class="cr-match-name">{% if best_match.occupant.get_full_name %}{{ best_match.occupant.get_full_name }}{% else %}{{ best_match.occupant.email|slice:":1" }}.{% endif %}</div>
+            <div class="cr-match-type">{{ best_match.occupant.user_type|default:'Student' }}</div>
+          </div>
+        </div>
+        <div class="cr-match-room">
+          <span>Room: {% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</span>
+          <span>Occupancy: 1 current + you = {% if booking.room_type %}{{ booking.room_type.occupancy_per_room|default:2 }}{% else %}2{% endif %}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Where You Align -->
+    <div class="cr-section">
+      <h3>WHERE YOU ALIGN</h3>
+      <div class="cr-alignment-list">
+        <div class="cr-alignment-item">
+          <span class="cr-check">✓</span>
+          <span>Both sleep {{ profile.sleep_time|default:"early" }} ({{ profile.sleep_time_details|default:"9-10pm" }})</span>
+        </div>
+        <div class="cr-alignment-item">
+          <span class="cr-check">✓</span>
+          <span>Both value cleanliness ({{ profile.personal_cleanliness_level|default:4 }}/5)</span>
+        </div>
+        <div class="cr-alignment-item">
+          <span class="cr-check">✓</span>
+          <span>Both prefer {{ profile.preferred_noise_level|default:"quiet" }} environments</span>
+        </div>
+        <div class="cr-alignment-item">
+          <span class="cr-check">✓</span>
+          <span>Both {% if profile.visitor_frequency == 'RARE' %}rarely{% elif profile.visitor_frequency == 'OCCASIONAL' %}occasionally{% else %}have{% endif %} overnight guests</span>
+        </div>
+        <div class="cr-alignment-item">
+          <span class="cr-check">✓</span>
+          <span>Both {{ profile.smoking_tolerance|default:"non-smokers" }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Areas of Slight Difference -->
+    {% if best_match.compatibility_score < 95 %}
+    <div class="cr-section cr-section-warning">
+      <h3>AREAS OF SLIGHT DIFFERENCE</h3>
+      <div class="cr-difference-item">
+        <span class="cr-diff-icon">→</span>
+        <div>
+          <div class="cr-diff-title">Visitor Frequency</div>
+          <div class="cr-diff-desc">You: {{ profile.visitor_frequency|default:"Occasional" }} visitors | Them: {{ best_match.profile.visitor_frequency|default:"Rare" }} visitors</div>
+          <div class="cr-diff-suggestion">💡 Suggestion: Discuss visitor notice period and frequency expectations</div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Compatibility Summary -->
+    <div class="cr-section">
+      <h3>ROOMMATE COMPATIBILITY SUMMARY</h3>
+      
+      <div class="cr-comparison">
+        <div class="cr-comparison-side">
+          <h4>Your Profile</h4>
+          <ul>
+            <li>Sleep: {{ profile.sleep_time_details|default:"9-10pm" }}, wake {{ profile.wake_time_details|default:"6-7am" }}</li>
+            <li>Cleanliness: {{ profile.personal_cleanliness_level|default:4 }}/5, {{ profile.shared_space_cleaning_frequency|default:"weekly" }} cleaning</li>
+            <li>Noise: {{ profile.noise_tolerance|default:"Low" }} tolerance, {{ profile.preferred_noise_level|default:"quiet" }} needed for study</li>
+            <li>Visitors: {{ profile.visitor_frequency|default:"Occasional" }}, {{ profile.visitor_overnight_preference|default:"48-hour notice" }} preferred</li>
+            <li>Smoking: {{ profile.smoking_tolerance|default:"Non-smoker" }}, {{ profile.alcohol_tolerance|default:"no drinking" }}</li>
+            <li>Study: {{ profile.study_location|default:"Outside room" }}, values {{ profile.quiet_hours_needed|default:"quiet hours" }}</li>
+          </ul>
+        </div>
+        
+        <div class="cr-comparison-side">
+          <h4>Their Profile</h4>
+          <ul>
+            {% if best_match.profile %}
+            <li>Sleep: {{ best_match.profile.sleep_time_details|default:"9-10pm" }}, wake {{ best_match.profile.wake_time_details|default:"6-7am" }}</li>
+            <li>Cleanliness: {{ best_match.profile.personal_cleanliness_level|default:4 }}/5, {{ best_match.profile.shared_space_cleaning_frequency|default:"weekly" }} cleaning</li>
+            <li>Noise: {{ best_match.profile.noise_tolerance|default:"Low" }} tolerance, {{ best_match.profile.preferred_noise_level|default:"quiet" }} needed for study</li>
+            <li>Visitors: {{ best_match.profile.visitor_frequency|default:"Occasional" }}, {{ best_match.profile.visitor_overnight_preference|default:"48-hour notice" }} preferred</li>
+            <li>Smoking: {{ best_match.profile.smoking_tolerance|default:"Non-smoker" }}, {{ best_match.profile.alcohol_tolerance|default:"no drinking" }}</li>
+            <li>Study: {{ best_match.profile.study_location|default:"Outside room" }}, values {{ best_match.profile.quiet_hours_needed|default:"quiet hours" }}</li>
+            {% else %}
+            <li>Profile information not available</li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Understanding the Match -->
+    <div class="cr-section cr-section-info">
+      <div class="cr-info-box">
+        <h4>UNDERSTANDING THE MATCH</h4>
+        <p>A {{ best_match.compatibility_score }}% match means you align on most important factors. The {{ 100|sub:best_match.compatibility_score }}% difference is minor and manageable through communication.</p>
+        <p>Matches 90%+ are considered excellent and highly compatible.</p>
+      </div>
+    </div>
+
+    <!-- Consent Agreement -->
+    <div class="cr-section">
+      <h3>By clicking Accept, you agree to:</h3>
+      <label class="cr-consent-checkbox">
+        <input type="checkbox" id="consentAgreement" required>
+        <span>"I understand this compatibility score and accept this match. I commit to respecting my roommate's comfort and communicating openly about preferences."</span>
+      </label>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="cr-actions">
+      <button id="acceptMatchBtn" class="cr-btn cr-btn-primary" disabled>Accept Match</button>
+      <button id="viewAlternativesBtn" class="cr-btn cr-btn-secondary">View Alternatives</button>
+      <button id="declineMatchBtn" class="cr-btn cr-btn-danger">Decline</button>
+    </div>
+
+    <!-- Alternative Matches -->
+    <div id="alternativesSection" class="cr-alternatives" style="display: none;">
+      <h3>OTHER AVAILABLE ROOMS</h3>
+      {% for match in matches|slice:"1:" %}
+      <div class="cr-alternative-item">
+        <div class="cr-alternative-info">
+          <span>Room {% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %} ({% if booking.room_type %}{{ booking.room_type.get_occupancy_type_display }}{% else %}Private{% endif %})</span>
+          <span>Occupancy: 1 current + you = {% if booking.room_type %}{{ booking.room_type.occupancy_per_room|default:2 }}{% else %}2{% endif %}</span>
+        </div>
+        <div class="cr-alternative-score">
+          <span class="cr-score-number">{{ match.compatibility_score }}%</span>
+          <span class="cr-score-label">Compatibility</span>
+        </div>
+        <div class="cr-alternative-verdict {{ match.verdict|lower }}">
+          {{ match.verdict }} Match
+        </div>
+        {% if match.verdict != 'EXCELLENT' %}
+        <div class="cr-alternative-note">"{{ match.verdict|lower }} match - slight differences in preferences"</div>
+        {% endif %}
+        <button class="cr-btn cr-btn-small cr-btn-secondary" onclick="selectAlternative({{ forloop.counter0 }})">Accept This Room</button>
+      </div>
+      {% endfor %}
+      
+      <div class="cr-alternative-item cr-alternative-empty">
+        <div class="cr-alternative-info">
+          <span>Room {% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %} (Empty)</span>
+          <span>Occupancy: 0 current (empty room)</span>
+        </div>
+        <div class="cr-alternative-score">
+          <span class="cr-score-number">N/A</span>
+          <span class="cr-score-label">Compatibility</span>
+        </div>
+        <div class="cr-alternative-verdict">First Occupant</div>
+        <div class="cr-alternative-note">"You'd be the first occupant. Future roommate will match to you."</div>
+        <button class="cr-btn cr-btn-small cr-btn-secondary" onclick="selectEmptyRoom()">Accept This Room</button>
+      </div>
+      
+      <button class="cr-btn cr-btn-secondary" onclick="hideAlternatives()">Back to my recommended match ({{ best_match.compatibility_score }}%)</button>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+.cr-container {
+  max-width: 850px;
+  margin: 60px auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 10;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.03) 0%, transparent 40%),
+              radial-gradient(circle at 20% 80%, rgba(225, 29, 72, 0.03) 0%, transparent 40%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.cr-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.cr-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.02em;
+}
+
+.cr-subtitle {
+  font-size: 16px;
+  color: #71717A;
+  margin: 0;
+}
+
+.cr-match-found {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.cr-no-match {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  padding: 50px 40px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+}
+
+.cr-no-match-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
+
+.cr-no-match h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 15px 0;
+}
+
+.cr-no-match p {
+  font-size: 16px;
+  color: #71717A;
+  margin: 0 0 40px 0;
+}
+
+.cr-options {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.cr-option {
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 14px;
+  padding: 25px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.cr-option:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.04);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.cr-option h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 10px 0;
+}
+
+.cr-option p {
+  font-size: 15px;
+  color: #71717A;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+.cr-option-status,
+.cr-option-wait {
+  font-size: 14px;
+  font-weight: 600;
+  color: #71717A;
+  margin: 5px 0;
+}
+
+.cr-match-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 2px solid var(--bg);
+}
+
+.cr-match-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: #10B981;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+}
+
+.cr-match-header h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 25px 0;
+}
+
+.cr-score-display {
+  margin-bottom: 20px;
+}
+
+.cr-score-number {
+  font-size: 56px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #10B981, #059669);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+
+.cr-score-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #71717A;
+  display: block;
+  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cr-match-status {
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.cr-status-excellent {
+  background: #D1FAE5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.cr-status-good {
+  background: #DBEAFE;
+  color: #1E40AF;
+  border: 1px solid #BFDBFE;
+}
+
+.cr-status-moderate {
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
+.cr-section {
+  margin-bottom: 40px;
+}
+
+.cr-section h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.cr-match-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #FAFAFA;
+  border: 1px solid #E4E4E7;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
+}
+
+.cr-match-info {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.cr-match-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+}
+
+.cr-match-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.cr-match-type {
+  font-size: 15px;
+  font-weight: 500;
+  color: #71717A;
+}
+
+.cr-match-room {
+  text-align: right;
+  font-size: 15px;
+  font-weight: 600;
+  color: #71717A;
+}
+
+.cr-match-room span {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.cr-alignment-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.cr-alignment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--bg);
+  background: #FFFFFF;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--bg);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.cr-check {
+  color: #10B981;
+  font-size: 18px;
+  font-weight: 800;
+  margin-top: -2px;
+}
+
+.cr-section-warning {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.cr-difference-item {
+  display: flex;
+  gap: 15px;
+  background: #FFFFFF;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #FEF3C7;
+}
+
+.cr-diff-icon {
+  font-size: 20px;
+  color: #F59E0B;
+}
+
+.cr-diff-title {
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 8px;
+}
+
+.cr-diff-desc {
+  font-size: 15px;
+  color: #71717A;
+  margin-bottom: 8px;
+}
+
+.cr-diff-suggestion {
+  font-size: 14px;
+  font-weight: 600;
+  color: #B45309;
+  font-style: italic;
+  background: #FEF3C7;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 5px;
+}
+
+.cr-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.cr-comparison-side {
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.cr-comparison-side h4 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--bg);
+}
+
+.cr-comparison-side ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cr-comparison-side li {
+  font-size: 14px;
+  font-weight: 500;
+  color: #71717A;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--border);
+}
+
+.cr-comparison-side li:last-child {
+  border-bottom: none;
+}
+
+.cr-section-info {
+  background: #F0F9FF;
+  border: 1px solid #BAE6FD;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.cr-info-box h4 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0369A1;
+  margin: 0 0 12px 0;
+}
+
+.cr-info-box p {
+  font-size: 15px;
+  color: #0F172A;
+  margin: 0 0 10px 0;
+  line-height: 1.6;
+}
+
+.cr-consent-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  cursor: pointer;
+  background: #FAFAFA;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #E4E4E7;
+  transition: background 0.3s;
+}
+
+.cr-consent-checkbox:hover {
+  background: #FAFAFA;
+}
+
+.cr-consent-checkbox input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: #E11D48;
+}
+
+.cr-consent-checkbox span {
+  font-size: 15px;
+  font-weight: 600;
+  color: #18181B;
+  line-height: 1.5;
+}
+
+.cr-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px solid var(--bg);
+}
+
+.cr-btn {
+  flex: 1;
+  padding: 16px 28px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cr-btn-primary {
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: white;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.cr-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+.cr-btn-primary:disabled {
+  background: #F4F4F5;
+  box-shadow: none;
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cr-btn-secondary {
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  color: #71717A;
+}
+
+.cr-btn-secondary:hover {
+  background: #FAFAFA;
+  border-color: rgba(255,255,255,0.15);
+  color: #0F172A;
+}
+
+.cr-btn-danger {
+  background: #FFFFFF;
+  border: 2px solid #FECACA;
+  color: #DC2626;
+}
+
+.cr-btn-danger:hover {
+  background: #FEF2F2;
+  border-color: #F87171;
+}
+
+.cr-btn-small {
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.cr-alternatives {
+  margin-top: 40px;
+  padding-top: 40px;
+  border-top: 2px solid var(--bg);
+}
+
+.cr-alternative-item {
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.cr-alternative-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+}
+
+.cr-alternative-info span {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #18181B;
+  margin-bottom: 5px;
+}
+
+.cr-alternative-info span:last-child {
+  font-weight: 500;
+  color: #71717A;
+}
+
+.cr-alternative-score {
+  text-align: center;
+}
+
+.cr-alternative-score .cr-score-number {
+  font-size: 28px;
+  font-weight: 800;
+  color: #10B981;
+}
+
+.cr-alternative-score .cr-score-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #71717A;
+  text-transform: uppercase;
+}
+
+.cr-alternative-verdict {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.cr-alternative-empty {
+  background: #FFFFFF;
+  border-color: rgba(255,255,255,0.2);
+}
+
+@media (max-width: 768px) {
+  .cr-alignment-list, .cr-comparison {
+    grid-template-columns: 1fr;
+  }
+  .cr-actions {
+    flex-direction: column;
+  }
+  .cr-alternative-item {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>
+
+<script>
+// Enable accept button when consent is checked
+document.getElementById('consentAgreement').addEventListener('change', function() {
+  document.getElementById('acceptMatchBtn').disabled = !this.checked;
+});
+
+// Accept match
+document.getElementById('acceptMatchBtn').addEventListener('click', function() {
+  acceptMatch('{{ best_match.booking.id }}');
+});
+
+// View alternatives
+document.getElementById('viewAlternativesBtn').addEventListener('click', function() {
+  document.getElementById('alternativesSection').style.display = 'block';
+  this.style.display = 'none';
+});
+
+// Decline match
+document.getElementById('declineMatchBtn').addEventListener('click', function() {
+  if (confirm('Are you sure you want to decline this match? Your booking will be cancelled.')) {
+    declineMatch();
+  }
+});
+
+function acceptMatch(matchId) {
+  const btn = document.getElementById('acceptMatchBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  
+  // Update booking status and redirect to consent
+  fetch(`/api/bookings/{{ booking.id }}/accept-consent/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'),
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status) {
+      // Redirect to confirmation or next step
+      window.location.href = `/bookings/{{ booking.id }}/confirmation/`;
+    } else {
+      alert(data.error || 'Failed to accept match');
+      btn.disabled = false;
+      btn.textContent = 'Accept Match';
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Accept Match';
+  });
+}
+
+function declineMatch() {
+  fetch(`/api/bookings/{{ booking.id }}/cancel/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'),
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ reason: 'User declined roommate match' })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'cancelled') {
+      window.location.href = '/properties/';
+    } else {
+      alert('Failed to cancel booking');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred. Please try again.');
+  });
+}
+
+function selectAlternative(index) {
+  // In a real implementation, this would select a different match
+  alert('Alternative match selection would be implemented here');
+}
+
+function selectEmptyRoom() {
+  // In a real implementation, this would accept the empty room option
+  alert('Empty room selection would be implemented here');
+}
+
+function hideAlternatives() {
+  document.getElementById('alternativesSection').style.display = 'none';
+  document.getElementById('viewAlternativesBtn').style.display = 'inline-block';
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,485 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Matching Results - StayMatch{% endblock %}
+
+{% block content %}
+<div class="matching-results-container">
+    <div class="results-header">
+        <h1>Your Roommate Matches</h1>
+        <p class="results-subtitle">Based on your lifestyle preferences, we found {{ total_matches }} potential roommate{{ total_matches|pluralize }}</p>
+    </div>
+
+    {% if matches %}
+        <div class="matches-grid">
+            {% for match in matches %}
+            <div class="match-card">
+                <div class="match-header">
+                    <div class="match-avatar">
+                        {% if match.user.profile_photo %}
+                            <img src="{{ match.user.profile_photo.url }}" alt="{{ match.user.get_full_name }}">
+                        {% else %}
+                            <div class="avatar-placeholder">{{ match.user.get_full_name|first|upper }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="match-info">
+                        <h3>{{ match.user.get_full_name }}</h3>
+                        <p class="match-type">{{ match.user.userprofile.get_user_type_display }}</p>
+                    </div>
+                    <div class="match-score">
+                        <div class="score-circle score-{{ match.score|floatformat:0 }}">
+                            {{ match.score|floatformat:0 }}%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="match-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🌙</span>
+                        <span class="detail-label">Sleep:</span>
+                        <span class="detail-value">{{ match.profile.get_sleep_time_display }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🧹</span>
+                        <span class="detail-label">Cleanliness:</span>
+                        <span class="detail-value">{{ match.profile.get_personal_cleanliness_level_display }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🔊</span>
+                        <span class="detail-label">Noise:</span>
+                        <span class="detail-value">{{ match.profile.get_noise_tolerance_display }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">👥</span>
+                        <span class="detail-label">Visitors:</span>
+                        <span class="detail-value">{{ match.profile.get_visitor_frequency_display }}</span>
+                    </div>
+                </div>
+
+                <div class="match-actions">
+                    <button class="btn btn-primary btn-view-profile">View Full Profile</button>
+                    <button class="btn btn-secondary btn-contact">Send Message</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if total_matches > 5 %}
+        <div class="view-more-section">
+            <p>Showing top 5 matches out of {{ total_matches }}</p>
+            <button class="btn btn-outline">View All Matches</button>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="no-matches-container">
+            <div class="no-matches-icon">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                </svg>
+            </div>
+            <h2>No Matches Found</h2>
+            <p>We couldn't find any compatible roommates at this time. Here are your options:</p>
+            
+            <div class="no-match-options">
+                <div class="option-card">
+                    <div class="option-icon option-waitlist">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <h3>Join Waitlist</h3>
+                    <p>We'll notify you when new compatible roommates join the platform.</p>
+                    <button class="btn btn-primary">Join Waitlist</button>
+                </div>
+
+                <div class="option-card">
+                    <div class="option-icon option-caution">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
+                    <h3>Accept with Caution</h3>
+                    <p>View all available roommates, even those with lower compatibility scores.</p>
+                    <button class="btn btn-secondary">View All Roommates</button>
+                </div>
+
+                <div class="option-card">
+                    <div class="option-icon option-alternatives">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="2" y1="12" x2="22" y2="12"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                    </div>
+                    <h3>Explore Alternatives</h3>
+                    <p>Consider private rooms or different property types that might have different compatibility pools.</p>
+                    <button class="btn btn-secondary">Browse Properties</button>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="actions-section">
+        <a href="{% url 'accounts:lifestyle_edit' %}" class="btn btn-outline">Edit Preferences</a>
+        <a href="{% url 'accounts:profile' %}" class="btn btn-cancel">Back to Profile</a>
+    </div>
+</div>
+
+<style>
+.matching-results-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.results-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.results-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.results-subtitle {
+    font-size: 18px;
+    color: #666;
+    margin: 0;
+}
+
+.matches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.match-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.match-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.match-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.match-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.match-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.match-info {
+    flex: 1;
+}
+
+.match-info h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.match-type {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.match-score {
+    flex-shrink: 0;
+}
+
+.score-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+}
+
+.score-80, .score-90, .score-100 {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.score-70 {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.score-60 {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.score-50 {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.match-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.detail-icon {
+    font-size: 18px;
+}
+
+.detail-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.detail-value {
+    color: #333;
+    font-weight: 600;
+}
+
+.match-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-primary, .btn-secondary, .btn-outline, .btn-cancel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+    flex: 1;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #f0f0f0;
+    border-color: #667eea;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.btn-outline:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.btn-cancel {
+    background: #f8f9fa;
+    color: #666;
+    border: 2px solid #e0e0e0;
+}
+
+.btn-cancel:hover {
+    background: #f0f0f0;
+    border-color: #999;
+}
+
+.view-more-section {
+    text-align: center;
+    padding: 24px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin-bottom: 40px;
+}
+
+.view-more-section p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 16px;
+}
+
+.no-matches-container {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.no-matches-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 128px;
+    height: 128px;
+    background: #f8f9fa;
+    border-radius: 50%;
+    margin-bottom: 24px;
+    color: #999;
+}
+
+.no-matches-container h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.no-matches-container > p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.no-match-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.option-card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.option-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+
+.option-waitlist {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.option-caution {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.option-alternatives {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.option-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.option-card p {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.actions-section {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .matching-results-container {
+        padding: 20px 16px;
+    }
+
+    .results-header h1 {
+        font-size: 24px;
+    }
+
+    .matches-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .match-details {
+        grid-template-columns: 1fr;
+    }
+
+    .no-match-options {
+        grid-template-columns: 1fr;
+    }
+
+    .actions-section {
+        flex-direction: column;
+    }
+
+    .btn-primary, .btn-secondary, .btn-outline, .btn-cancel {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

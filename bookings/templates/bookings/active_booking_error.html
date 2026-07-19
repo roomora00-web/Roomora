@@ -1,0 +1,124 @@
+{% extends 'landing/base.html' %}
+{% load static %}
+
+{% block title %}Active Booking - Roomora{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --deep-navy: #0C1424;
+        --navy-light: #1A2639;
+        --danger-red: #EF4444;
+        --text-white: #FFFFFF;
+        --text-gray: #9CA3AF;
+    }
+
+    body {
+        background-color: var(--deep-navy);
+        color: var(--text-white);
+    }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(12, 20, 36, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background-color: var(--navy-light);
+        padding: 32px;
+        border-radius: 16px;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-icon {
+        width: 64px;
+        height: 64px;
+        background-color: rgba(239, 68, 68, 0.1);
+        color: var(--danger-red);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+        font-weight: 700;
+    }
+
+    .modal-desc {
+        color: var(--text-gray);
+        margin-bottom: 32px;
+        line-height: 1.5;
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+        padding: 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-align: center;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+        text-decoration: none;
+        margin-bottom: 12px;
+    }
+
+    .btn-primary {
+        background-color: transparent;
+        color: var(--text-gray);
+        border: 1px solid var(--text-gray);
+    }
+
+    .btn-primary:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .btn-danger {
+        background-color: var(--danger-red);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #DC2626;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        </div>
+        <h2 class="modal-title">Active Booking Exists</h2>
+        <p class="modal-desc">
+            You already have an active booking. You cannot initiate another booking at this time.<br><br>
+            If you wish to proceed with a new booking, you must first cancel your existing one by contacting the admin.
+        </p>
+        
+        <a href="{% url 'bookings:my-bookings' %}" class="btn btn-danger">View My Bookings</a>
+        <a href="javascript:history.back()" class="btn btn-primary">Go Back</a>
+    </div>
+</div>
+{% endblock %}

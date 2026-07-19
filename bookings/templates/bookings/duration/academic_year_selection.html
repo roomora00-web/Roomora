@@ -1,0 +1,91 @@
+{% extends "bookings/base_checkout.html" %}
+{% load static %}
+{% block title %}Academic Year Stay — {{ property.title }}{% endblock %}
+{% block extra_css %}{% endblock %}
+{% block content %}
+<div class="min-h-[calc(100vh-80px)] flex flex-col items-center justify-start pt-[60px] pb-[80px] px-5 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.03)_0%,transparent_40%)]">
+  <div class="w-full max-w-[720px] mb-10 hidden sm:block">
+    <div class="flex gap-0 justify-between relative before:content-[''] before:absolute before:top-4 before:left-[10%] before:right-[10%] before:h-0.5 before:bg-border before:z-0">
+      <div class="flex-1 text-center relative z-10">
+        <div class="w-[34px] h-[34px] rounded-full bg-white text-black border-2 border-white font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">✓</div>
+        <div class="text-[12px] font-bold text-white tracking-[0.02em] transition-all duration-300">House Rules</div>
+      </div>
+      <div class="flex-1 text-center relative z-10 group">
+        <div class="w-[34px] h-[34px] rounded-full bg-white text-black border-2 border-white font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 shadow-[0_0_0_6px_rgba(255,255,255,0.1)] scale-110 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">2</div>
+        <div class="text-[12px] font-bold text-white tracking-[0.02em] transition-all duration-300">Duration</div>
+      </div>
+      <div class="flex-1 text-center relative z-10">
+        <div class="w-[34px] h-[34px] rounded-full bg-[#111] text-muted border-2 border-border font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">3</div>
+        <div class="text-[12px] font-semibold text-muted tracking-[0.02em] transition-all duration-300">Lifestyle</div>
+      </div>
+      <div class="flex-1 text-center relative z-10">
+        <div class="w-[34px] h-[34px] rounded-full bg-[#111] text-muted border-2 border-border font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">4</div>
+        <div class="text-[12px] font-semibold text-muted tracking-[0.02em] transition-all duration-300">Confirm</div>
+      </div>
+    </div>
+  </div>
+  <div class="glass-card w-full max-w-[720px] animate-slideUp opacity-0">
+    <div class="glass-header px-6 sm:px-10 py-8 sm:py-10 pb-6 sm:pb-8">
+      <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-full text-[12px] font-bold text-white uppercase tracking-[0.05em] mb-5"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:text-bottom;margin-right:6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Step 2 of 4</div>
+      <h1 class="text-[28px] font-extrabold m-0 mb-3 text-white leading-[1.2]">Choose Your Academic Year Duration</h1>
+      <p class="m-0 text-[15px] text-muted leading-relaxed">{{ property.title }}</p>
+    </div>
+    <div class="p-6 sm:p-10">
+      <div class="flex items-center gap-2.5 bg-white/[0.03] border border-white/10 rounded-xl p-4 mb-8 text-[14px] text-white font-semibold">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Billing: Academic Year &nbsp;•&nbsp; 1 Academic Year = 2 Semesters (34 weeks)
+      </div>
+      <form method="post" action="{% url 'bookings:submit_duration' booking.id %}">
+        {% csrf_token %}
+        <div class="mb-7">
+          <label class="text-[14px] font-bold text-white mb-2.5 block" for="moveInDate">Semester 1 Move-In Date</label>
+          <input type="date" id="moveInDate" name="move_in_date" class="w-full px-4 py-3.5 border border-white/15 rounded-xl text-[15px] text-white font-sans bg-white/[0.02] transition-all duration-300 focus:outline-none focus:border-white focus:bg-white/5 [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-70 [&::-webkit-calendar-picker-indicator]:cursor-pointer" min="{{ today }}" required onchange="recalculate()">
+        </div>
+        <div class="text-[14px] font-bold text-white mb-3.5 block">Number of Academic Years</div>
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mb-8">
+          <label class="bg-white/[0.03] border border-white/10 rounded-2xl p-6 cursor-pointer transition-all duration-300 relative flex flex-col items-center text-center hover:border-white/20 hover:bg-white/5 [&.selected]:border-white [&.selected]:bg-white/[0.08] [&.selected]:shadow-[inset_0_0_0_1px_#fff] selected" id="card-1" onclick="selectYears(1)">
+            <input type="radio" name="duration_value" value="1" checked class="hidden">
+            <div class="text-[32px] font-extrabold text-white mb-1 leading-none">1</div>
+            <div class="text-[14px] font-bold text-muted uppercase tracking-[0.05em] mb-4">Academic Year</div>
+            <div class="text-[18px] font-extrabold text-white mb-1">GH₵ {{ billing_model.academic_year_price|default:4000|floatformat:0 }}</div>
+            <div class="text-[13px] text-muted">2 semesters, 34 weeks</div>
+          </label>
+          <label class="bg-white/[0.03] border border-white/10 rounded-2xl p-6 cursor-pointer transition-all duration-300 relative flex flex-col items-center text-center hover:border-white/20 hover:bg-white/5 [&.selected]:border-white [&.selected]:bg-white/[0.08] [&.selected]:shadow-[inset_0_0_0_1px_#fff]" id="card-2" onclick="selectYears(2)">
+            <input type="radio" name="duration_value" value="2" class="hidden">
+            <div class="absolute -top-2.5 bg-white text-black text-[11px] font-extrabold py-1 px-2.5 rounded-full uppercase tracking-[0.05em]">Best Value</div>
+            <div class="text-[32px] font-extrabold text-white mb-1 leading-none">2</div>
+            <div class="text-[14px] font-bold text-muted uppercase tracking-[0.05em] mb-4">Academic Years</div>
+            <div class="text-[18px] font-extrabold text-white mb-1">GH₵ {{ billing_model.academic_year_price|default:4000|floatformat:0 }}</div>
+            <div class="text-[13px] text-muted">4 semesters, 68 weeks</div>
+          </label>
+        </div>
+        <div class="bg-white/[0.02] border border-white/[0.08] rounded-2xl p-6 mb-8">
+          <div class="flex justify-between items-center py-3 border-b border-white/5 first:pt-0 last:border-b-0 last:pb-0 text-[15px]"><span class="text-muted font-medium">Semester 1 Start</span><span class="font-bold text-white" id="calcMoveIn">—</span></div>
+          <div class="flex justify-between items-center py-3 border-b border-white/5 first:pt-0 last:border-b-0 last:pb-0 text-[15px]"><span class="text-muted font-medium">End Date</span><span class="font-bold text-white" id="calcMoveOut">—</span></div>
+          <div class="flex justify-between items-center py-3 border-b border-white/5 first:pt-0 last:border-b-0 last:pb-0 text-[15px]"><span class="text-muted font-medium">Total Price</span><span class="font-bold text-white text-[18px]" id="calcTotal">GH₵ {{ billing_model.academic_year_price|default:4000|floatformat:0 }}</span></div>
+        </div>
+        <button type="submit" class="ds-btn" >
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Continue — Select Semester Structure
+        </button>
+      </form>
+      <div class="text-center mt-6"><a href="{% url 'bookings:booking_initiated' booking.id %}" class="text-[14px] text-muted no-underline transition-colors duration-200 font-semibold hover:text-white">← Back</a></div>
+    </div>
+  </div>
+</div>
+<script>
+var ayPrice = {{ billing_model.academic_year_price|default:4000 }};
+var selectedYears = 1;
+function selectYears(n){selectedYears=n;[1,2].forEach(i=>document.getElementById('card-'+i).classList.toggle('selected',i===n));recalculate();}
+function recalculate(){
+  var moveIn=document.getElementById('moveInDate').value;
+  if(moveIn){
+    var d=new Date(moveIn);
+    document.getElementById('calcMoveIn').textContent=d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    var end=new Date(d);end.setDate(end.getDate()+(selectedYears*238));
+    document.getElementById('calcMoveOut').textContent=end.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  }
+  document.getElementById('calcTotal').textContent='GH₵ '+(ayPrice*selectedYears).toLocaleString();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,247 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Room Occupancy Calendar</h2>
+        
+        <!-- Filters -->
+        <div class="calendar-filters">
+            <form method="get" class="form-inline">
+                <label for="property_id">Property:</label>
+                <select name="property_id" id="property_id" class="form-control">
+                    <option value="">All Properties</option>
+                    {% for property in properties %}
+                    <option value="{{ property.id }}" {% if property_id == property.id|stringformat:"s" %}selected{% endif %}>
+                        {{ property.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+                
+                <label for="room_type_id">Room Type:</label>
+                <select name="room_type_id" id="room_type_id" class="form-control">
+                    <option value="">All Room Types</option>
+                    {% for room_type in room_types %}
+                    <option value="{{ room_type.id }}" {% if room_type_id == room_type.id|stringformat:"s" %}selected{% endif %}>
+                        {{ room_type.room_type_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                
+                <label for="year">Year:</label>
+                <input type="number" name="year" id="year" value="{{ year }}" class="form-control" min="2020" max="2030">
+                
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+        </div>
+        
+        <!-- Calendar Legend -->
+        <div class="calendar-legend">
+            <span class="legend-item"><span class="legend-color paid"></span> Paid Period</span>
+            <span class="legend-item"><span class="legend-color reserved"></span> Vacation Reserve</span>
+            <span class="legend-item"><span class="legend-color grace"></span> Grace Period</span>
+            <span class="legend-item"><span class="legend-color overstay"></span> Overstay</span>
+        </div>
+        
+        <!-- Horizontal Calendar -->
+        <div class="room-occupancy-calendar">
+            <div class="calendar-header">
+                <div class="year-display">{{ year }}</div>
+                <div class="months-row">
+                    {% for month_num in 12 %}
+                    <div class="month-cell">
+                        {% with month_num=forloop.counter %}
+                        {% if month_num == 1 %}Jan{% elif month_num == 2 %}Feb{% elif month_num == 3 %}Mar{% elif month_num == 4 %}Apr{% elif month_num == 5 %}May{% elif month_num == 6 %}Jun{% elif month_num == 7 %}Jul{% elif month_num == 8 %}Aug{% elif month_num == 9 %}Sep{% elif month_num == 10 %}Oct{% elif month_num == 11 %}Nov{% else %}Dec{% endif %}
+                        {% endwith %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Booking Rows -->
+            {% for item in calendar_data %}
+            <div class="booking-row">
+                <div class="booking-info">
+                    <div class="room-number">{{ item.room_number }}</div>
+                    <div class="student-name">{{ item.student }}</div>
+                    <div class="property-name">{{ item.property }}</div>
+                </div>
+                
+                <div class="timeline">
+                    {% for segment in item.segments %}
+                    <div class="timeline-segment segment-{{ segment.type|lower }}" 
+                         style="left: {{ segment.start|date:'z' }}px; width: {{ segment.end|date:'z' }}px;"
+                         title="{{ segment.type }}: {{ segment.start|date:'M d' }} - {{ segment.end|date:'M d' }}">
+                        <span class="segment-label">{{ segment.type }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if not calendar_data %}
+        <div class="empty-state">
+            <p>No bookings found for the selected filters.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.calendar-filters {
+    background: #f8f8f8;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.calendar-filters label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.calendar-filters select,
+.calendar-filters input {
+    margin-right: 20px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.calendar-legend {
+    margin: 20px 0;
+    padding: 10px;
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+.legend-item {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    border-radius: 3px;
+}
+
+.legend-color.paid { background: #4CAF50; }
+.legend-color.reserved { background: #FF9800; }
+.legend-color.grace { background: #2196F3; }
+.legend-color.overstay { background: #F44336; }
+
+.room-occupancy-calendar {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.calendar-header {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.year-display {
+    width: 150px;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 10px;
+}
+
+.months-row {
+    display: flex;
+    flex: 1;
+}
+
+.month-cell {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    background: #e0e0e0;
+    border-left: 1px solid #ccc;
+    font-weight: bold;
+}
+
+.booking-row {
+    display: flex;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.booking-info {
+    width: 150px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-right: 2px solid #ddd;
+}
+
+.room-number {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.student-name {
+    font-size: 12px;
+    color: #666;
+}
+
+.property-name {
+    font-size: 11px;
+    color: #999;
+}
+
+.timeline {
+    flex: 1;
+    position: relative;
+    height: 40px;
+    background: #fff;
+}
+
+.timeline-segment {
+    position: absolute;
+    height: 100%;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.segment-semester_1,
+.segment-semester_2,
+.segment-continuous {
+    background: #4CAF50;
+}
+
+.segment-vacation_reserve {
+    background: #FF9800;
+}
+
+.segment-grace_period {
+    background: #2196F3;
+}
+
+.segment-overstay {
+    background: #F44336;
+}
+
+.segment-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 5px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+</style>
+{% endblock %}

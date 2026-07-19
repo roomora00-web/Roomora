@@ -1,0 +1,966 @@
+{% extends 'accounts/dashboard_base.html' %}
+{% block dashboard_title %}Dashboard — StayMatch{% endblock %}
+
+{% block dashboard_extra_css %}
+<style>
+/* ─── Page Layout ──────────────────────────────────────────────── */
+.page-header {
+  margin-bottom: 28px;
+}
+.page-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-head);
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+.page-header p {
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+/* ─── Status Banner ────────────────────────────────────────────── */
+.status-banner {
+  background: var(--brand);
+  border-radius: var(--radius-xl);
+  padding: 28px 32px;
+  color: #fff;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.status-banner::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  pointer-events: none;
+}
+
+.status-banner.state-searching { background: #1a56db; }
+.status-banner.state-booking   { background: #d97706; }
+.status-banner.state-approved  { background: #1d9e75; }
+.status-banner.state-active    { background: #5a3fa0; }
+.status-banner.state-completed { background: #374151; }
+
+.banner-text h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.banner-text p {
+  font-size: 13px;
+  opacity: 0.88;
+  line-height: 1.55;
+  max-width: 480px;
+}
+.banner-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.banner-btn {
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+}
+.banner-btn svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.banner-btn-primary {
+  background: #FFFFFF;
+  color: var(--text-head);
+}
+.banner-btn-primary:hover { background: #F7FAFC; }
+.banner-btn-secondary {
+  background: rgba(255,255,255,0.15);
+  color: #FFFFFF;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.banner-btn-secondary:hover { background: rgba(255,255,255,0.22); }
+
+/* ─── Stat Cards Row ───────────────────────────────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.stat-card:hover {
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+.stat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.stat-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.stat-icon.blue   { background: #EBF4FF; color: #2563EB; }
+.stat-icon.green  { background: var(--success-light); color: var(--success); }
+.stat-icon.amber  { background: var(--warning-light); color: var(--warning); }
+.stat-icon.purple { background: var(--accent-light); color: var(--accent); }
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-head);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ─── Quick Actions Strip ──────────────────────────────────────── */
+.quick-actions-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.qa-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-right: 20px;
+  border-right: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+.qa-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  flex: 1;
+}
+.qa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-head);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+.qa-btn:hover {
+  background: var(--border-light);
+  transform: translateY(-1px);
+}
+.qa-btn svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ─── Two-column layout ────────────────────────────────────────── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 1100px) {
+  .two-col { grid-template-columns: 1fr; }
+}
+
+/* ─── Section Card ─────────────────────────────────────────────── */
+.section-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.section-card-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-card-header h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-head);
+  letter-spacing: -0.01em;
+}
+
+.section-card-header a {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.section-card-body {
+  padding: 20px;
+}
+
+/* ─── Property Card ────────────────────────────────────────────── */
+.property-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.property-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  background: var(--bg-input);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s;
+}
+
+.property-item:hover {
+  background: var(--border-light);
+}
+
+.property-item-img {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--border-light);
+}
+
+.property-item-img-placeholder {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: var(--border-light);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-faint);
+}
+
+.property-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.property-item-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-head);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.property-item-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.property-item-price {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-head);
+  flex-shrink: 0;
+}
+
+/* ─── Notifications Panel ──────────────────────────────────────── */
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  transition: background 0.15s;
+}
+
+.notif-item:hover {
+  background: var(--bg-input);
+}
+
+.notif-indicator {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.notif-indicator svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.notif-indicator.urgent { background: var(--error-light); color: var(--error); }
+.notif-indicator.warning { background: var(--warning-light); color: var(--warning); }
+.notif-indicator.success { background: var(--success-light); color: var(--success); }
+.notif-indicator.info { background: #EBF4FF; color: #2563EB; }
+
+.notif-text-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-head);
+  margin-bottom: 2px;
+}
+
+.notif-text-body {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.notif-text-action {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 4px;
+  display: inline-block;
+}
+
+/* ─── Profile Completion Strip ─────────────────────────────────── */
+.profile-strip {
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.strip-ring {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.strip-ring svg { width: 100%; height: 100%; }
+
+.strip-ring-track { stroke: var(--border-light); stroke-width: 5; fill: none; }
+.strip-ring-fill  { stroke: var(--brand); stroke-width: 5; fill: none; stroke-linecap: round;
+                    transition: stroke-dashoffset 0.5s ease; transform: rotate(-90deg); transform-origin: 50% 50%; }
+
+.strip-ring-text {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 12px; font-weight: 700; color: var(--text-head);
+}
+
+.strip-info { flex: 1; }
+.strip-info h4 { font-size: 14px; font-weight: 700; color: var(--text-head); margin-bottom: 3px; }
+.strip-info p  { font-size: 12.5px; color: var(--text-muted); }
+
+.strip-btn {
+  padding: 8px 18px;
+  background: var(--brand);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.strip-btn:hover { opacity: 0.88; }
+
+/* ─── Empty State ──────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 20px;
+  color: var(--text-faint);
+  text-align: center;
+  gap: 10px;
+}
+
+.empty-state svg {
+  width: 36px;
+  height: 36px;
+  stroke: var(--border);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.empty-state p { font-size: 13px; }
+.empty-state a { font-size: 13px; font-weight: 600; color: var(--accent); }
+
+/* ─── Recommended Properties Carousel ─────────────────────────────── */
+.prop-carousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.prop-carousel::-webkit-scrollbar { height: 6px; }
+.prop-carousel::-webkit-scrollbar-track { background: transparent; }
+.prop-carousel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.prop-carousel .prop-card {
+  min-width: 280px;
+  max-width: 320px;
+  flex: 0 0 80%;
+  scroll-snap-align: start;
+}
+
+.prop-card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: block;
+  text-decoration: none;
+}
+.prop-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+.prop-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.prop-card:hover .prop-card-img {
+  transform: scale(1.08);
+}
+.prop-card-tags {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+}
+.prop-card-badge {
+  background: var(--surface);
+  color: var(--text-head);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.prop-card-overlay {
+  background: linear-gradient(to top, rgba(12,20,36, 0.85) 0%, rgba(12,20,36, 0) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 60%;
+  z-index: 1;
+}
+.prop-card-type {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255,255,255,0.2);
+  padding: 3px 8px;
+  border-radius: 4px;
+  align-self: flex-start;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(4px);
+}
+.prop-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+.prop-card-location {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 8px;
+}
+.prop-card-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+.prop-card-price {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+}
+.prop-card-price span {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+/* ─── Status Badge ─────────────────────────────────────────────── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.status-badge svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+.badge-success { background: var(--success-light); color: var(--success); }
+.badge-warning { background: var(--warning-light); color: var(--warning); }
+.badge-error   { background: var(--error-light);   color: var(--error); }
+.badge-neutral { background: var(--bg-input);      color: var(--text-muted); border: 1px solid var(--border-light); }
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<!-- Page Header -->
+<div class="page-header">
+  <h1>Good to see you, {{ user.first_name|default:"there" }}!</h1>
+  <p>Here's what's happening with your account today.</p>
+</div>
+
+<!-- Profile completion strip -->
+{% if needs_profile_enrichment %}
+<div class="profile-strip">
+  <div class="strip-ring">
+    <svg viewBox="0 0 56 56">
+      <circle class="strip-ring-track" cx="28" cy="28" r="23"/>
+      <circle class="strip-ring-fill" id="profileRingFill" cx="28" cy="28" r="23"
+              stroke-dasharray="144.5" stroke-dashoffset="144.5"/>
+    </svg>
+    <div class="strip-ring-text" id="profilePct">{{ completion_percentage|default:0 }}%</div>
+  </div>
+  <div class="strip-info">
+    <h4>Complete your profile</h4>
+    <p>A complete profile gets seen 3× more by property managers. Fill in the remaining details to unlock full access.</p>
+  </div>
+  <a href="{% url 'accounts:profile' %}" class="strip-btn">Complete Profile</a>
+</div>
+{% endif %}
+
+<!-- Status Banner (state-aware) -->
+{% if current_booking %}
+  {% if current_booking.status == 'INITIATED' or current_booking.status == 'LIFESTYLE_PENDING' %}
+  <div class="status-banner state-searching">
+    <div class="banner-text">
+      <h2>⚠️ ACTION REQUIRED</h2>
+      <p>Complete your lifestyle questionnaire and preferences to continue your booking at {{ current_booking.accommodation_property.title }}.</p>
+    </div>
+    <div class="banner-actions">
+      <a href="{% url 'bookings:resume_booking' current_booking.id %}" class="banner-btn banner-btn-primary">Resume Booking</a>
+    </div>
+  </div>
+  {% elif current_booking.status == 'WAITING_CONSENT' or current_booking.status == 'CONSENT_PENDING' %}
+  <div class="status-banner state-booking">
+    <div class="banner-text">
+      <h2>⚖️ DECISION REQUIRED</h2>
+      <p>We found a roommate match for you! Review your matched roommate and accept or decline to proceed.</p>
+    </div>
+    <div class="banner-actions">
+      <a href="{% url 'bookings:my-bookings' %}" class="banner-btn banner-btn-primary">Review Match</a>
+    </div>
+  </div>
+  {% elif current_booking.status == 'TEMPORARILY_CANCELLED' %}
+  <div class="status-banner state-completed">
+    <div class="banner-text">
+      <h2>⏸️ BOOKING ON HOLD</h2>
+      <p>Your booking at {{ current_booking.accommodation_property.title }} is temporarily cancelled or on hold.</p>
+    </div>
+    <div class="banner-actions">
+      <a href="{% url 'landing:contact' %}" class="banner-btn banner-btn-secondary">Contact Support</a>
+    </div>
+  </div>
+  {% elif current_booking.status == 'CONFIRMED' or current_booking.status == 'CONFIRMED_ASSIGNED' %}
+  <div class="status-banner state-approved">
+    <div class="banner-text">
+      <h2>✅ BOOKING CONFIRMED</h2>
+      <p>Your accommodation at {{ current_booking.accommodation_property.title }} is secured. Get ready for move-in!</p>
+    </div>
+    <div class="banner-actions">
+      <a href="{% url 'bookings:my-bookings' %}" class="banner-btn banner-btn-primary">View Details</a>
+    </div>
+  </div>
+  {% elif current_booking.status == 'ACTIVE' %}
+  <div class="status-banner state-active">
+    <div class="banner-text">
+      <h2>🏠 YOUR CURRENT HOME</h2>
+      <p>You are currently staying at {{ current_booking.accommodation_property.title }}, Room {{ current_booking.assigned_room.room_number|default:"N/A" }}.</p>
+    </div>
+    <div class="banner-actions">
+      <a href="{% url 'bookings:my-bookings' %}" class="banner-btn banner-btn-primary">Manage Stay</a>
+    </div>
+  </div>
+  {% elif current_booking.status == 'GRACE_PERIOD' %}
+  <div class="status-banner state-booking">
+    <div class="banner-text">
+      <h2>⏳ GRACE PERIOD</h2>
+      <p>Your stay has ended but you are in the 7-day grace period. Please clear your belongings.</p>
+    </div>
+    <div class="banner-actions">
+      <a href="{% url 'bookings:my-bookings' %}" class="banner-btn banner-btn-primary">Manage Stay</a>
+    </div>
+  </div>
+  {% elif current_booking.status == 'VACATION_RESERVE' %}
+  <div class="status-banner state-active">
+    <div class="banner-text">
+      <h2>🧳 ROOM HELD</h2>
+      <p>Your room at {{ current_booking.accommodation_property.title }} is reserved while you are on vacation for Semester 2.</p>
+    </div>
+    <div class="banner-actions">
+      <a href="{% url 'bookings:my-bookings' %}" class="banner-btn banner-btn-primary">View Details</a>
+    </div>
+  </div>
+  {% else %}
+  <div class="status-banner state-searching">
+    <div class="banner-text">
+      <h2>Booking Status: {{ current_booking.get_status_display|default:current_booking.status }}</h2>
+      <p>Your booking at {{ current_booking.accommodation_property.title }} is currently being processed.</p>
+    </div>
+    <div class="banner-actions">
+      <a href="{% url 'bookings:my-bookings' %}" class="banner-btn banner-btn-primary">View Status</a>
+    </div>
+  </div>
+  {% endif %}
+{% else %}
+  {% if user_state == 'new_user' or user_state == 'incomplete_profile' %}
+  <div class="status-banner">
+    <div class="banner-text">
+      <h2>Welcome to StayMatch!</h2>
+      <p>{{ status_message }}</p>
+    </div>
+    <div class="banner-actions">
+      <a href="{% url 'landing:properties' %}" class="banner-btn banner-btn-primary">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Browse Properties
+      </a>
+      <a href="{% url 'accounts:profile' %}" class="banner-btn banner-btn-secondary">Set Up Profile</a>
+    </div>
+  </div>
+  {% elif user_state == 'searching' %}
+  <div class="status-banner state-searching">
+    <div class="banner-text">
+      <h2>Keep Exploring</h2>
+      <p>{{ status_message }}</p>
+    </div>
+    <div class="banner-actions">
+      {% if last_search %}
+      <a href="{% url 'landing:properties' %}?city={{ last_search.city }}" class="banner-btn banner-btn-primary">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Resume Search
+      </a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+{% endif %}
+
+<!-- Quick Actions Strip -->
+<div class="quick-actions-card">
+  <div class="qa-title">Quick Actions</div>
+  <div class="qa-btn-group">
+    {% if user_state == 'searching' %}
+      <a href="{% url 'landing:properties' %}" class="qa-btn">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Search Properties
+      </a>
+      <a href="{% url 'properties:saved-properties' %}" class="qa-btn">
+        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> Saved ({{ saved_properties_count|default:0 }})
+      </a>
+    {% else %}
+      <a href="{% url 'accounts:profile' %}?tab=photo" class="qa-btn">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Add Photo
+      </a>
+      <a href="{% url 'landing:properties' %}" class="qa-btn">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Browse Now
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Stat Cards -->
+<div class="stats-row">
+  <a href="{% url 'properties:saved-properties' %}" class="stat-card">
+    <div class="stat-icon blue">
+      <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div class="stat-value">{{ saved_properties_count|default:0 }}</div>
+    <div class="stat-label">Saved Properties</div>
+  </a>
+
+  <div class="stat-card">
+    <div class="stat-icon green">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <div class="stat-value">{{ recent_searches_count|default:0 }}</div>
+    <div class="stat-label">Recent Searches</div>
+  </div>
+
+</div>
+
+<!-- Two-col layout: notifications + recently viewed -->
+<div class="two-col">
+  <!-- Left: Notifications -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <h3>Notifications</h3>
+    </div>
+    <div class="section-card-body">
+      {% if notifications %}
+      <div class="notif-list">
+        {% for notif in notifications %}
+        <div class="notif-item">
+          <div class="notif-indicator
+            {% if notif.type == 'urgent' %}urgent
+            {% elif notif.type == 'warning' %}warning
+            {% elif notif.type == 'success' %}success
+            {% else %}info{% endif %}">
+            {% if notif.type == 'urgent' %}
+            <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            {% elif notif.type == 'success' %}
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            {% elif notif.type == 'warning' %}
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            {% else %}
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            {% endif %}
+          </div>
+          <div>
+            <div class="notif-text-title">{{ notif.title }}</div>
+            <div class="notif-text-body">{{ notif.message }}</div>
+            {% if notif.action %}
+            <a href="{{ notif.action_url|default:'#' }}" class="notif-text-action">{{ notif.action }} &rarr;</a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <p>You're all caught up! No new notifications.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Right: Recently Viewed -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <h3>Recently Viewed</h3>
+      <a href="{% url 'landing:properties' %}">Browse all</a>
+    </div>
+    <div class="section-card-body">
+      {% if recently_viewed %}
+      <div class="property-list">
+        {% for rv in recently_viewed %}
+        <a href="{% url 'landing:property_detail' rv.property.id %}" class="property-item">
+          {% if rv.property.images.all %}
+          {% for first_image in rv.property.images.all|slice:":1" %}
+          <img src="{{ first_image.image.url }}" class="property-item-img" alt="{{ rv.property.name }}">
+          {% endfor %}
+          {% else %}
+          <div class="property-item-img-placeholder">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          </div>
+          {% endif %}
+          <div class="property-item-info">
+            <div class="property-item-name">{{ rv.property.name }}</div>
+            <div class="property-item-meta">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              {{ rv.property.city }}
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <p>No properties viewed yet.</p>
+        <a href="{% url 'landing:properties' %}">Start browsing &rarr;</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Recommended Properties -->
+<div class="section-card" style="margin-bottom:28px;">
+  <div class="section-card-header">
+    <h3>Recommended for You</h3>
+    <a href="{% url 'landing:properties' %}">View all</a>
+  </div>
+  <div class="section-card-body">
+    {% if recommended_properties %}
+    <div class="prop-carousel">
+      {% for prop in recommended_properties %}
+      <a href="{% url 'landing:property_detail' prop.id %}" class="prop-card">
+        {% if prop.images.all %}
+        {% for first_image in prop.images.all|slice:":1" %}
+        <img src="{{ first_image.image.url }}" class="prop-card-img" alt="{{ prop.title }}">
+        {% endfor %}
+        {% else %}
+        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=750&fit=crop" class="prop-card-img" alt="{{ prop.title }}">
+        {% endif %}
+        <div class="prop-card-tags">
+          {% if prop.is_available %}
+          <div class="prop-card-badge" style="color:var(--success);">
+            Available
+          </div>
+          {% else %}
+          <div class="prop-card-badge" style="color:var(--error);">
+            Unavailable
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="prop-card-overlay">
+          <div class="prop-card-type">{{ prop.get_property_type_display }}</div>
+          <div class="prop-card-title">{{ prop.title }}</div>
+          <div class="prop-card-location">{{ prop.city }}, {{ prop.region }}</div>
+          <div class="prop-card-price-row">
+            <span style="font-size:11px;color:rgba(255,255,255,0.7);text-transform:uppercase;font-weight:600;">Price from</span>
+            <div class="prop-card-price">
+              GH&#8373; 
+              {% if prop.property_type == 'HOSTEL' %}
+                {% for room_type in prop.room_types.all|slice:":1" %}
+                  {% for pt in room_type.pricing_models.all|slice:":1" %}
+                    {{ pt.yearly_price|default:pt.semester_price|default:pt.monthly_price|default:"—" }}
+                  {% empty %}—{% endfor %}
+                {% empty %}—{% endfor %}
+                <span>/yr</span>
+              {% else %}
+                {% for unit_type in prop.unit_types.all|slice:":1" %}
+                  {% for pt in unit_type.pricing_models.all|slice:":1" %}
+                    {{ pt.monthly_price|default:pt.yearly_price|default:"—" }}
+                  {% empty %}—{% endfor %}
+                {% empty %}—{% endfor %}
+                <span>/mo</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <p>No recommendations yet. <a href="{% url 'landing:properties' %}">Browse properties</a></p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
+
+{% block dashboard_js %}
+<script>
+// Animate profile ring
+(function(){
+  var circle = document.getElementById('profileRingFill');
+  var pct = {{ completion_percentage|default:0 }};
+  if(circle){
+    var r = 23, c = 2*Math.PI*r;
+    circle.style.strokeDasharray = c;
+    setTimeout(function(){ circle.style.strokeDashoffset = c - (pct/100)*c; }, 100);
+  }
+})();
+</script>
+{% endblock %}

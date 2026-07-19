@@ -1,0 +1,163 @@
+{% extends "bookings/base_checkout.html" %}
+
+{% block title %}Admin Review Booking - Roomora{% endblock %}
+
+{% block content %}
+<style>
+  .detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #71717A;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+  .back-link:hover {
+    color: #18181B;
+  }
+  
+  .card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #E4E4E7;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  
+  .card-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #18181B;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .info-label {
+    font-size: 13px;
+    color: #71717A;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .info-val {
+    font-size: 16px;
+    color: #18181B;
+    font-weight: 500;
+  }
+  
+  .status-text {
+    color: #10b981;
+    font-weight: 600;
+  }
+  
+  .form-group {
+    margin-bottom: 24px;
+  }
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #18181B;
+  }
+  .form-select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #E4E4E7;
+    border-radius: 8px;
+    font-size: 16px;
+    background: white;
+  }
+  .form-select:focus {
+    outline: none;
+    border-color: #18181B;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--charcoal);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .submit-btn:hover {
+    background: #1a2744;
+  }
+</style>
+
+<div class="detail-container">
+  <a href="{% url 'bookings:admin-approval-dashboard' %}" class="back-link">
+    &larr; Back to Queue
+  </a>
+  
+  <div class="card">
+    <h2 class="card-title">Booking Details</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">Applicant</span>
+        <span class="info-val">{{ booking.tenant.full_name }} ({% if booking.tenant.email_verified %}verified student{% else %}unverified{% endif %})</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Property</span>
+        <span class="info-val">{{ booking.accommodation_property.title }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Room Type</span>
+        <span class="info-val">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Status</span>
+        <span class="info-val">First occupant — no matching required</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Lifestyle Profile</span>
+        <span class="info-val status-text">Submitted ✓</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Account flags</span>
+        <span class="info-val">None</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2 class="card-title">Room Assignment</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Select Available Room</label>
+        <select name="room_id" class="form-select" required>
+          <option value="">-- Choose a room --</option>
+          {% for room in available_rooms %}
+          <option value="{{ room.id }}">Room {{ room.room_number }} ({{ room.occupied_slots }} / {{ room.total_slots }} occupied)</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <button type="submit" class="submit-btn">Approve and Assign Room</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

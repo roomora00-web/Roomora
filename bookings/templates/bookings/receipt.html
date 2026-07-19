@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Receipt - {{ booking.reference_number }}</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;color:#111;background:#f5f5f5}
+    .container{max-width:800px;margin:32px auto;padding:30px;background:#fff;border:1px solid #ddd;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+    .header{border-bottom:2px solid #333;padding-bottom:20px;margin-bottom:20px}
+    .header h1{margin:0 0 8px;color:#333;font-size:24px}
+    .header p{margin:0;color:#666;font-size:14px}
+    .section{margin-bottom:20px}
+    .section h2{margin:0 0 12px;color:#333;font-size:16px;border-bottom:1px solid #eee;padding-bottom:8px}
+    .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0}
+    .row:last-child{border-bottom:none}
+    .row .label{color:#666;font-weight:500}
+    .row .value{color:#333;font-weight:600}
+    .total-row{background:#f9f9f9;padding:12px;margin-top:10px;border-radius:4px}
+    .total-row .label{color:#333}
+    .total-row .value{color:#1a73e8;font-size:18px}
+    .status{display:inline-block;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600}
+    .status.completed{background:#e8f5e9;color:#2e7d32}
+    .status.pending{background:#fff3e0;color:#ef6c00}
+    .footer{margin-top:30px;padding-top:20px;border-top:1px solid #eee;text-align:center;font-size:12px;color:#666}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Booking Receipt</h1>
+      <p>Reference: <strong>{{ booking.reference_number }}</strong></p>
+      <p>Generated: <strong>{% now "d M Y, H:i" %}</strong></p>
+    </div>
+
+    <div class="section">
+      <h2>Guest Information</h2>
+      <div class="row"><div class="label">Name</div><div class="value">{{ booking.tenant.full_name|default:booking.tenant.email }}</div></div>
+      <div class="row"><div class="label">Email</div><div class="value">{{ booking.tenant.email }}</div></div>
+      <div class="row"><div class="label">Phone</div><div class="value">{{ booking.tenant.phone_number|default:'Not provided' }}</div></div>
+    </div>
+
+    <div class="section">
+      <h2>Property Details</h2>
+      <div class="row"><div class="label">Property</div><div class="value">{{ property.title }}</div></div>
+      <div class="row"><div class="label">Location</div><div class="value">{{ property.city }}, {{ property.region }}, {{ property.country }}</div></div>
+      <div class="row"><div class="label">Category</div><div class="value">{{ property.get_property_category_display|default:property.property_category }}</div></div>
+      <div class="row"><div class="label">Type</div><div class="value">{{ property.property_type }}</div></div>
+    </div>
+
+    <div class="section">
+      <h2>Room Details</h2>
+      <div class="row"><div class="label">Room Type</div><div class="value">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% elif booking.unit_type %}{{ booking.unit_type.unit_name }}{% else %}Reserved stay{% endif %}</div></div>
+      <div class="row"><div class="label">Room Number</div><div class="value">{% if booking.assigned_room %}{{ booking.assigned_room.room_number }}{% else %}To be assigned{% endif %}</div></div>
+      <div class="row"><div class="label">Occupancy Type</div><div class="value">{% if booking.room_type %}{{ booking.room_type.get_occupancy_type_display }}{% else %}Single{% endif %}</div></div>
+    </div>
+
+    <div class="section">
+      <h2>Booking Details</h2>
+      <div class="row"><div class="label">Move-in Date</div><div class="value">{{ booking.move_in_date|date:'d M Y' }}</div></div>
+      <div class="row"><div class="label">Move-out Date</div><div class="value">{{ booking.move_out_date|date:'d M Y'|default:'Not set' }}</div></div>
+      <div class="row"><div class="label">Duration</div><div class="value">{{ booking.calculated_duration_label }}</div></div>
+      <div class="row"><div class="label">Booking Status</div><div class="value"><span class="status {% if booking.status == 'CONFIRMED' or booking.status == 'ACTIVE' %}completed{% else %}pending{% endif %}">{{ booking.get_status_display }}</span></div></div>
+    </div>
+
+    <div class="section">
+      <h2>Payment Summary</h2>
+      <div class="row"><div class="label">Price per Unit</div><div class="value">GH₵ {{ booking.price_per_unit|default:0|floatformat:2 }}</div></div>
+      <div class="row"><div class="label">Duration</div><div class="value">{{ booking.calculated_duration_label|default:'1 month' }}</div></div>
+      <div class="row"><div class="label">Security Deposit</div><div class="value">GH₵ {{ booking.security_deposit|default:'0.00'|floatformat:2 }}</div></div>
+      <div class="row"><div class="label">Platform Fee</div><div class="value">GH₵ {{ booking.total_amount|multiply:0.05|floatformat:2 }}</div></div>
+      <div class="total-row row">
+        <div class="label">Total Amount Paid</div>
+        <div class="value">GH₵ {{ booking.total_amount|default:booking.total_price|default:0|floatformat:2 }}</div>
+      </div>
+      <div class="row"><div class="label">Payment Status</div><div class="value"><span class="status {% if booking.payment_status == 'PAID' %}completed{% else %}pending{% endif %}">{{ booking.get_payment_status_display }}</span></div></div>
+    </div>
+
+    <div class="section">
+      <h2>Additional Information</h2>
+      <div class="row"><div class="label">Booking Created</div><div class="value">{{ booking.created_at|date:'d M Y, H:i' }}</div></div>
+      <div class="row"><div class="label">Last Updated</div><div class="value">{{ booking.updated_at|date:'d M Y, H:i' }}</div></div>
+    </div>
+
+    <div class="footer">
+      <p>This receipt serves as proof of payment and booking confirmation.</p>
+      <p>For inquiries, contact support@roomora.com</p>
+      <p style="margin-top:10px">Generated by Roomora - Smart Accommodation Platform</p>
+    </div>
+  </div>
+</body>
+</html>

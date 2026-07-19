@@ -1,0 +1,57 @@
+<div class="bm-overlay" id="bookingModalOverlay">
+  <div class="bm-modal" style="max-width: 500px;">
+    <!-- Header -->
+    <div class="bm-header" style="border-bottom: none; padding-bottom: 0;">
+      <h2 class="bm-title" style="color: var(--red);">Room Unavailable</h2>
+      <button type="button" class="bm-close" id="bookingModalClose">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="bm-body" style="text-align: center; padding-top: 16px;">
+      <div style="width: 64px; height: 64px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      
+      <p style="font-size: 16px; color: #18181B; line-height: 1.6; margin-bottom: 32px;">
+        This room is no longer available. Rooms at popular properties fill up quickly.
+      </p>
+
+      <div style="display: flex; gap: 16px; justify-content: center;">
+        <button type="button" class="bm-submit-btn" style="background-color: #000000 !important; color: #FFFFFF !important; background: white; color: #18181B; border: 1px solid #E4E4E7;" id="seeOtherRoomsBtn">
+          See Other Room Types
+        </button>
+        <button type="button" class="bm-submit-btn" style="background-color: #000000 !important; color: #FFFFFF !important; background: var(--charcoal); color: white;">
+          Join Waitlist
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const closeBtn = document.getElementById('bookingModalClose');
+    const seeOtherBtn = document.getElementById('seeOtherRoomsBtn');
+    const overlay = document.getElementById('bookingModalOverlay');
+    
+    function closeModal() {
+      overlay.style.animation = 'bmFadeOut 0.3s forwards';
+      const modalContent = overlay.querySelector('.bm-modal');
+      modalContent.style.animation = 'bmSlideDown 0.3s forwards';
+      setTimeout(() => document.getElementById('bookingModalContainer').innerHTML = '', 300);
+    }
+    
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (seeOtherBtn) seeOtherBtn.addEventListener('click', closeModal);
+    
+    if (overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) closeModal();
+      });
+    }
+  })();
+</script>

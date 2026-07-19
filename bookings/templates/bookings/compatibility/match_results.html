@@ -1,0 +1,387 @@
+{% extends "bookings/base_checkout.html" %}
+
+{% block title %}Compatibility Matches - {{ property.title }}{% endblock %}
+
+{% block content %}
+<style>
+  /* Base & Reset */
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --primary: #4F46E5;
+    --primary-hover: #4338CA;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --bg-dark: #0f172a;
+    --text-main: var(--surface);
+    --text-muted: #94a3b8;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .cm-header {
+    text-align: center;
+    padding: 3rem 1rem 2rem;
+    animation: fadeInDown 0.8s ease-out;
+  }
+  .cm-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #60a5fa, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cm-header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Container */
+  .cm-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem 4rem;
+  }
+
+  /* Match Card */
+  .cm-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 0.6s ease-out backwards;
+  }
+  .cm-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Stagger animations for list */
+  .cm-card:nth-child(1) { animation-delay: 0.1s; }
+  .cm-card:nth-child(2) { animation-delay: 0.2s; }
+  .cm-card:nth-child(3) { animation-delay: 0.3s; }
+  .cm-card:nth-child(4) { animation-delay: 0.4s; }
+
+  /* Match Header (Score + Info) */
+  .cm-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .cm-profile-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .cm-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+  .cm-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  .cm-major {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  /* Score Badge */
+  .cm-score-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    border: 1px solid var(--glass-border);
+  }
+  .cm-score-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  .cm-score-excellent { color: var(--success); text-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+  .cm-score-good { color: var(--warning); text-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+  .cm-score-fair { color: var(--danger); }
+
+  /* Deep Dive Toggle */
+  .cm-toggle-btn {
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+  .cm-toggle-btn:hover {
+    background: #FFFFFF;
+    color: var(--text-main);
+  }
+  .cm-toggle-icon {
+    transition: transform 0.3s ease;
+  }
+  .cm-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .cm-details.open {
+    max-height: 1000px;
+  }
+
+  /* Detail Sections */
+  .cm-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--glass-border);
+  }
+  @media (max-width: 600px) {
+    .cm-detail-grid { grid-template-columns: 1fr; }
+  }
+  
+  .cm-section-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .cm-alignments .cm-section-title { color: var(--success); }
+  .cm-differences .cm-section-title { color: var(--warning); }
+
+  .cm-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cm-list-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .cm-list-item-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--border);
+  }
+  .cm-list-item-desc {
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .cm-suggestion {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed rgba(255,255,255,0.1);
+    font-style: italic;
+    color: rgba(255,255,255,0.15);
+    font-size: 0.85rem;
+  }
+
+  /* Actions */
+  .cm-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1rem;
+  }
+  .cm-btn-accept {
+    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+  }
+  .cm-btn-accept:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+  }
+
+  /* Empty State */
+  .cm-empty {
+    text-align: center;
+    padding: 3rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+  }
+  .cm-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Animations */
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<div class="cm-header">
+  <h1>Roommate Matches</h1>
+  <p>The Compatibility Engine has analyzed your lifestyle preferences against current occupants. Here are your best matches.</p>
+</div>
+
+<div class="cm-container">
+  {% if matches %}
+    {% for match in matches %}
+      <div class="cm-card">
+        
+        <div class="cm-card-header">
+          <div class="cm-profile-info">
+            <div class="cm-avatar">
+              {{ match.booking.tenant.first_name|default:match.booking.tenant.email|slice:":1"|upper }}
+            </div>
+            <div>
+              <h2 class="cm-name">Match with {{ match.booking.tenant.first_name|default:match.booking.tenant.email }}</h2>
+              <p class="cm-major">Room {{ match.booking.assigned_room.room_number|default:"TBD" }} &bull; {{ match.profile.course_of_study|default:"Student" }}</p>
+            </div>
+          </div>
+          
+          <div class="cm-score-badge">
+            <span class="cm-score-value {% if match.score.score >= 85 %}cm-score-excellent{% elif match.score.score >= 70 %}cm-score-good{% else %}cm-score-fair{% endif %}">
+              {{ match.score.score }}%
+            </span>
+            <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Match</span>
+          </div>
+        </div>
+
+        <button class="cm-toggle-btn" onclick="toggleDetails(this)">
+          <span>View Compatibility Deep Dive</span>
+          <span class="cm-toggle-icon">▼</span>
+        </button>
+
+        <div class="cm-details">
+          <div class="cm-detail-grid">
+            
+            <div class="cm-alignments">
+              <div class="cm-section-title">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                Where You Align
+              </div>
+              <ul class="cm-list">
+                {% for align in match.score.alignments|slice:":4" %}
+                <li class="cm-list-item">
+                  <div class="cm-list-item-title">{{ align.factor }}</div>
+                  <div class="cm-list-item-desc">{{ align.description }}</div>
+                </li>
+                {% empty %}
+                <li class="cm-list-item"><div class="cm-list-item-desc">No strong alignments identified.</div></li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div class="cm-differences">
+              <div class="cm-section-title">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                Differences & Compromises
+              </div>
+              <ul class="cm-list">
+                {% for diff in match.score.differences|slice:":4" %}
+                <li class="cm-list-item">
+                  <div class="cm-list-item-title">{{ diff.factor }}</div>
+                  <div class="cm-list-item-desc">{{ diff.implication }}</div>
+                  {% if diff.suggestion %}
+                  <div class="cm-suggestion">💡 {{ diff.suggestion }}</div>
+                  {% endif %}
+                </li>
+                {% empty %}
+                <li class="cm-list-item"><div class="cm-list-item-desc">No major differences identified!</div></li>
+                {% endfor %}
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="cm-actions">
+          <form method="POST" action="{% url 'bookings:accept_match' booking.id match.booking.id %}">
+            {% csrf_token %}
+            <button type="submit" class="cm-btn-accept">Accept Match</button>
+          </form>
+        </div>
+
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="cm-empty">
+      <div class="cm-empty-icon">🔍</div>
+      <h2>No matches found</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">There are currently no occupants in this room type to match with.</p>
+      <form method="POST" action="{% url 'bookings:booking_confirmation' booking.id %}">
+        {% csrf_token %}
+        <button type="submit" class="cm-btn-accept">Continue as First Occupant</button>
+      </form>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  function toggleDetails(btn) {
+    const details = btn.nextElementSibling;
+    const icon = btn.querySelector('.cm-toggle-icon');
+    
+    if (details.classList.contains('open')) {
+      details.classList.remove('open');
+      icon.style.transform = 'rotate(0deg)';
+    } else {
+      details.classList.add('open');
+      icon.style.transform = 'rotate(180deg)';
+    }
+  }
+</script>
+
+{% endblock %}

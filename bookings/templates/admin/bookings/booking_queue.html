@@ -1,0 +1,449 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/admin_queue.css' %}">
+<style>
+    .queue-container {
+        padding: 20px;
+    }
+    
+    .queue-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .queue-stats {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .stat-card {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+    }
+    
+    .stat-card.warning {
+        border-left-color: #ffc107;
+    }
+    
+    .stat-card.danger {
+        border-left-color: #dc3545;
+    }
+    
+    .stat-number {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+        color: #666;
+        text-transform: uppercase;
+    }
+    
+    .filters-bar {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .filter-group label {
+        font-weight: 500;
+        color: #495057;
+    }
+    
+    .filter-group select {
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background: white;
+    }
+    
+    .booking-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+    }
+    
+    .booking-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        border: 1px solid #e9ecef;
+        transition: all 0.2s;
+    }
+    
+    .booking-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    
+    .booking-card.sla-breached {
+        border-left: 4px solid #dc3545;
+    }
+    
+    .booking-card.flagged {
+        border-left: 4px solid #ffc107;
+    }
+    
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+    
+    .booking-ref {
+        font-size: 14px;
+        font-weight: 600;
+        color: #007bff;
+    }
+    
+    .waiting-time {
+        font-size: 12px;
+        color: #6c757d;
+    }
+    
+    .waiting-time.breached {
+        color: #dc3545;
+        font-weight: 600;
+    }
+    
+    .card-body {
+        margin-bottom: 15px;
+    }
+    
+    .applicant-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+    
+    .applicant-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .applicant-name {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .applicant-email {
+        font-size: 12px;
+        color: #6c757d;
+    }
+    
+    .booking-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        font-size: 13px;
+    }
+    
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .detail-label {
+        color: #6c757d;
+        font-size: 11px;
+        text-transform: uppercase;
+    }
+    
+    .detail-value {
+        color: #333;
+        font-weight: 500;
+    }
+    
+    .compatibility-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .compatibility-badge.high {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .compatibility-badge.medium {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .compatibility-badge.low {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .compatibility-badge.none {
+        background: #e9ecef;
+        color: #6c757d;
+    }
+    
+    .flags-section {
+        margin-top: 10px;
+        padding: 8px;
+        background: #fff3cd;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+    
+    .flags-section strong {
+        color: #856404;
+    }
+    
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 15px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .action-type {
+        font-size: 12px;
+        font-weight: 600;
+        color: #495057;
+        text-transform: uppercase;
+    }
+    
+    .action-btn {
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    
+    .action-btn.primary {
+        background: #007bff;
+        color: white;
+        border: none;
+    }
+    
+    .action-btn.primary:hover {
+        background: #0056b3;
+    }
+    
+    .action-btn.secondary {
+        background: #6c757d;
+        color: white;
+        border: none;
+    }
+    
+    .action-btn.secondary:hover {
+        background: #545b62;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+    
+    .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+    }
+    
+    .empty-state-text {
+        font-size: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="queue-container">
+    <div class="queue-header">
+        <h1>Admin Booking Queue</h1>
+        <div class="queue-stats">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_count }}</div>
+                <div class="stat-label">Total Pending</div>
+            </div>
+            {% if sla_breached_count > 0 %}
+            <div class="stat-card danger">
+                <div class="stat-number">{{ sla_breached_count }}</div>
+                <div class="stat-label">SLA Breached</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="filters-bar">
+        <div class="filter-group">
+            <label for="status-filter">Status:</label>
+            <select id="status-filter" name="status">
+                <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending Review</option>
+                <option value="awaiting_assignment" {% if status_filter == 'awaiting_assignment' %}selected{% endif %}>Awaiting Assignment</option>
+                <option value="flagged" {% if status_filter == 'flagged' %}selected{% endif %}>Flagged</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="property-filter">Property:</label>
+            <select id="property-filter" name="property_id">
+                <option value="">All Properties</option>
+                {% for property in properties %}
+                <option value="{{ property.id }}" {% if property_filter == property.id|stringformat:"s" %}selected{% endif %}>
+                    {{ property.title }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="sort-filter">Sort by:</label>
+            <select id="sort-filter" name="sort">
+                <option value="oldest" {% if sort_by == 'oldest' %}selected{% endif %}>Oldest First</option>
+                <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                <option value="deadline" {% if sort_by == 'deadline' %}selected{% endif %}>Deadline</option>
+            </select>
+        </div>
+        
+        <button type="button" class="button" onclick="applyFilters()">Apply Filters</button>
+    </div>
+    
+    {% if bookings %}
+    <div class="booking-grid">
+        {% for item in bookings %}
+        <div class="booking-card {% if item.sla_breached %}sla-breached{% endif %} {% if item.has_flags %}flagged{% endif %}">
+            <div class="card-header">
+                <div>
+                    <div class="booking-ref">SM-{{ item.booking.created_at|date:"Ymd" }}-{{ item.booking.id|default:"0000" }}</div>
+                    <div class="waiting-time {% if item.sla_breached %}breached{% endif %}">
+                        {% if item.sla_breached %}
+                            ⚠️ SLA Breached: {{ item.waiting_hours|floatformat:1 }}h
+                        {% else %}
+                            Waiting: {{ item.waiting_hours|floatformat:1 }}h
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="booking-status">
+                    <span class="badge">{{ item.booking.status }}</span>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <div class="applicant-info">
+                    <div class="applicant-avatar">
+                        {{ item.booking.tenant.first_name|first }}{{ item.booking.tenant.last_name|first }}
+                    </div>
+                    <div>
+                        <div class="applicant-name">{{ item.booking.tenant.full_name }}</div>
+                        <div class="applicant-email">{{ item.booking.tenant.email }}</div>
+                    </div>
+                </div>
+                
+                <div class="booking-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Property</span>
+                        <span class="detail-value">{{ item.booking.accommodation_property.title }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Room Type</span>
+                        <span class="detail-value">{{ item.booking.room_type.room_type_name }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Move-in</span>
+                        <span class="detail-value">{{ item.booking.move_in_date|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Duration</span>
+                        <span class="detail-value">{{ item.booking.duration_days }} days</span>
+                    </div>
+                </div>
+                
+                {% if item.compatibility_score %}
+                <div style="margin-top: 12px;">
+                    <span class="detail-label">Compatibility:</span>
+                    <span class="compatibility-badge {% if item.compatibility_score >= 85 %}high{% elif item.compatibility_score >= 70 %}medium{% else %}low{% endif %}">
+                        {{ item.compatibility_score|floatformat:0 }}%
+                    </span>
+                </div>
+                {% endif %}
+                
+                {% if item.has_flags %}
+                <div class="flags-section">
+                    <strong>⚠️ Flags:</strong> {{ item.booking.flags|join:", " }}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="card-footer">
+                <div class="action-type">{{ item.action_type }}</div>
+                {% if item.action_type == 'PENDING_ASSIGNMENT' %}
+                <a href="{% url 'bookings:admin_assign_room' item.booking.id %}" class="action-btn primary">
+                    {{ item.action_label }}
+                </a>
+                {% elif item.action_type == 'CONFIRM_ASSIGNMENT' %}
+                <a href="{% url 'bookings:admin_finalize_booking' item.booking.id %}" class="action-btn primary">
+                    {{ item.action_label }}
+                </a>
+                {% else %}
+                <a href="{% url 'admin:bookings_booking_change' item.booking.id %}" class="action-btn secondary">
+                    {{ item.action_label }}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-text">No bookings requiring review at this time.</div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function applyFilters() {
+    const status = document.getElementById('status-filter').value;
+    const property = document.getElementById('property-filter').value;
+    const sort = document.getElementById('sort-filter').value;
+    
+    const params = new URLSearchParams();
+    if (status) params.set('status', status);
+    if (property) params.set('property_id', property);
+    if (sort) params.set('sort', sort);
+    
+    window.location.href = '?' + params.toString();
+}
+</script>
+{% endblock %}

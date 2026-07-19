@@ -1,0 +1,87 @@
+{% extends "bookings/base_checkout.html" %}
+{% load static %}
+
+{% block title %}Semester Structure — {{ property.title }}{% endblock %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+<div class="min-h-[calc(100vh-80px)] flex flex-col items-center justify-start pt-[60px] pb-[80px] px-5 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.03)_0%,transparent_40%)]">
+  <div class="w-full max-w-[720px] mb-10 hidden sm:block">
+    <div class="flex gap-0 justify-between relative before:content-[''] before:absolute before:top-4 before:left-[10%] before:right-[10%] before:h-0.5 before:bg-border before:z-0">
+      <div class="flex-1 text-center relative z-10">
+        <div class="w-[34px] h-[34px] rounded-full bg-white text-black border-2 border-white font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">✓</div>
+        <div class="text-[12px] font-bold text-white tracking-[0.02em] transition-all duration-300">House Rules</div>
+      </div>
+      <div class="flex-1 text-center relative z-10 group">
+        <div class="w-[34px] h-[34px] rounded-full bg-white text-black border-2 border-white font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 shadow-[0_0_0_6px_rgba(255,255,255,0.1)] scale-110 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">2</div>
+        <div class="text-[12px] font-bold text-white tracking-[0.02em] transition-all duration-300">Duration</div>
+      </div>
+      <div class="flex-1 text-center relative z-10">
+        <div class="w-[34px] h-[34px] rounded-full bg-[#111] text-muted border-2 border-border font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">3</div>
+        <div class="text-[12px] font-semibold text-muted tracking-[0.02em] transition-all duration-300">Lifestyle</div>
+      </div>
+      <div class="flex-1 text-center relative z-10">
+        <div class="w-[34px] h-[34px] rounded-full bg-[#111] text-muted border-2 border-border font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">4</div>
+        <div class="text-[12px] font-semibold text-muted tracking-[0.02em] transition-all duration-300">Confirm</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card w-full max-w-[720px] animate-slideUp opacity-0">
+    <div class="glass-header px-6 sm:px-10 py-8 sm:py-10 pb-6 sm:pb-8">
+      <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-full text-[12px] font-bold text-white uppercase tracking-[0.05em] mb-5"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:text-bottom;margin-right:6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Step 2 of 4</div>
+      <h1 class="text-[28px] font-extrabold m-0 mb-3 text-white leading-[1.2]">Choose Semester Structure</h1>
+      <p class="m-0 text-[15px] text-muted leading-relaxed">How would you like to structure your multi-semester stay?</p>
+    </div>
+    
+    <div class="p-6 sm:p-10">
+      <form method="post" action="{% url 'bookings:submit_semester_structure' booking.id %}">
+        {% csrf_token %}
+        <div class="flex flex-col gap-4 mb-8">
+          <label class="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/10 cursor-pointer transition-all duration-300 hover:border-white/30 hover:bg-white/5 [&.selected]:border-white [&.selected]:bg-white/[0.08] [&.selected]:shadow-[inset_0_0_0_1px_#fff] selected" id="card-CONTINUOUS" onclick="selectStructure('CONTINUOUS')">
+            <input type="radio" name="structure" value="CONTINUOUS" checked class="hidden">
+            <div class="text-[28px] leading-none shrink-0">🔄</div>
+            <div class="flex-1">
+              <div class="text-[16px] font-bold text-white mb-1">Continuous Stay (Recommended)</div>
+              <div class="text-[14px] text-muted mb-3 leading-relaxed">You will stay in the room straight through without any breaks between semesters.</div>
+              <ul class="list-disc pl-5 text-[13px] text-muted space-y-1">
+                <li>Keep your belongings in the room year-round</li>
+                <li>No need to pack up during the inter-semester break</li>
+                <li>Best for international students or those taking vacation classes</li>
+              </ul>
+            </div>
+          </label>
+          
+          <label class="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/10 cursor-pointer transition-all duration-300 hover:border-white/30 hover:bg-white/5 [&.selected]:border-white [&.selected]:bg-white/[0.08] [&.selected]:shadow-[inset_0_0_0_1px_#fff]" id="card-SPLIT" onclick="selectStructure('SPLIT')">
+            <input type="radio" name="structure" value="SPLIT" class="hidden">
+            <div class="text-[28px] leading-none shrink-0">⏸️</div>
+            <div class="flex-1">
+              <div class="text-[16px] font-bold text-white mb-1">Split Stay (Vacation Gap)</div>
+              <div class="text-[14px] text-muted mb-3 leading-relaxed">You will vacate the room during the long break between semesters.</div>
+              <ul class="list-disc pl-5 text-[13px] text-muted space-y-1">
+                <li>You must remove all belongings during the break</li>
+                <li>The property management may rent the room to short-stay guests</li>
+                <li>Your room is guaranteed for when you return for Semester 2</li>
+              </ul>
+            </div>
+          </label>
+        </div>
+        
+        <button type="submit" class="ds-btn" >
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Continue
+        </button>
+      </form>
+      <div class="text-center mt-6"><a href="{% url 'bookings:duration_selection' booking.id %}" class="text-[14px] text-muted no-underline transition-colors duration-200 font-semibold hover:text-white">← Back</a></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function selectStructure(val) {
+  document.getElementById('card-CONTINUOUS').classList.toggle('selected', val === 'CONTINUOUS');
+  document.getElementById('card-SPLIT').classList.toggle('selected', val === 'SPLIT');
+}
+</script>
+{% endblock %}

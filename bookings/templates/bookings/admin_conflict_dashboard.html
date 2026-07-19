@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Conflict Dashboard - Roomora{% end block %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --deep-navy: #0C1424;
+        --navy-light: #1A2639;
+        --accent-blue: #3B82F6;
+        --success-green: #10B981;
+        --warning-orange: #F59E0B;
+        --danger-red: #EF4444;
+        --text-white: #FFFFFF;
+        --text-gray: #9CA3AF;
+    }
+
+    body {
+        background-color: var(--deep-navy);
+        color: var(--text-white);
+    }
+
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 24px;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+    }
+
+    .stat-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: var(--navy-light);
+        padding: 24px;
+        border-radius: 12px;
+        border-left: 4px solid var(--accent-blue);
+    }
+
+    .stat-card.warning { border-left-color: var(--warning-orange); }
+    .stat-card.danger { border-left-color: var(--danger-red); }
+
+    .stat-title {
+        color: var(--text-gray);
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .conflict-table-container {
+        background: var(--navy-light);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .conflict-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .conflict-table th {
+        background: #FFFFFF;
+        padding: 16px;
+        text-align: left;
+        font-weight: 600;
+        color: var(--text-gray);
+    }
+
+    .conflict-table td {
+        padding: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .status-pending { background: rgba(245, 158, 11, 0.2); color: var(--warning-orange); }
+    .status-investigating { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
+    .status-resolved { background: rgba(16, 185, 129, 0.2); color: var(--success-green); }
+
+    .btn-action {
+        background: transparent;
+        border: 1px solid var(--accent-blue);
+        color: var(--accent-blue);
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+        background: var(--accent-blue);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h1 class="h2 mb-2">Conflict Resolution Dashboard</h1>
+            <p class="text-gray">Manage tenant disputes and roommate conflicts</p>
+        </div>
+    </div>
+
+    <div class="stat-cards">
+        <div class="stat-card danger">
+            <div class="stat-title">New Conflicts</div>
+            <div class="stat-value">{{ pending_conflicts_count|default:"0" }}</div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-title">Under Investigation</div>
+            <div class="stat-value">{{ investigating_count|default:"0" }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Resolved (This Month)</div>
+            <div class="stat-value">{{ resolved_count|default:"0" }}</div>
+        </div>
+    </div>
+
+    <div class="conflict-table-container">
+        <table class="conflict-table">
+            <thead>
+                <tr>
+                    <th>Date Reported</th>
+                    <th>Property / Room</th>
+                    <th>Reported By</th>
+                    <th>Issue Type</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for conflict in conflicts %}
+                <tr>
+                    <td>{{ conflict.created_at|date:"M d, Y" }}</td>
+                    <td>{{ conflict.assignment.property.title }} - Room {{ conflict.assignment.assigned_room.room_number|default:"N/A" }}</td>
+                    <td>{{ conflict.reported_by.get_full_name|default:conflict.reported_by.email }}</td>
+                    <td>{{ conflict.issue_type }}</td>
+                    <td>
+                        <span class="status-badge 
+                            {% if conflict.status == 'PENDING' %}status-pending
+                            {% elif conflict.status == 'INVESTIGATING' %}status-investigating
+                            {% else %}status-resolved{% endif %}">
+                            {{ conflict.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn-action">Review</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center" style="padding: 32px; color: var(--text-gray);">
+                        No conflicts reported.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

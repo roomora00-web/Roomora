@@ -1,0 +1,186 @@
+{% extends "bookings/base_checkout.html" %}
+{% load static %}
+
+{% block title %}Reinstate Your Booking - Roomora{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <div class="warning-icon mb-3">
+                    <i class="fas fa-hourglass-half fa-4x text-warning"></i>
+                </div>
+                <h1 class="display-5 fw-bold">Booking Temporarily Cancelled</h1>
+                <p class="lead text-muted">You can reinstate your booking within the time remaining.</p>
+            </div>
+
+            <!-- Countdown Timer Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4 text-center">
+                    <h5 class="mb-3">Time Remaining to Reinstate</h5>
+                    <div id="countdown" class="display-3 fw-bold text-warning mb-3">
+                        {{ hours_remaining }}h {{ minutes_remaining }}m
+                    </div>
+                    <p class="text-muted">
+                        After this time expires, your booking will be permanently cancelled.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Reinstatement Info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="mb-3">What Happens When You Reinstate?</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Your booking will be reactivated
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Your room assignment will be preserved
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            You can proceed to checkout
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-info-circle text-info me-2"></i>
+                            This will be recorded as reinstatement #{{ booking.reinstatement_count|add:1 }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Property Summary -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="mb-3">Your Booking</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Property:</strong> {{ property.name }}</p>
+                            <p class="mb-1"><strong>Room:</strong> {{ booking.room_type|default:"TBD" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Move-in:</strong> {{ booking.move_in_date|date:"M d, Y" }}</p>
+                            <p class="mb-1"><strong>Duration:</strong> {{ booking.duration_months }} months</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-3">
+                <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#reinstateModal">
+                    <i class="fas fa-undo me-2"></i>Reinstate Booking
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-lg" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                    <i class="fas fa-times me-2"></i>Permanently Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reinstate Confirmation Modal -->
+<div class="modal fade" id="reinstateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reinstate Booking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reinstate this booking?</p>
+                <p class="text-muted small">Your booking will be reactivated and you can proceed with the checkout process.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="reinstateBtn">Yes, Reinstate</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Permanent Cancel Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Permanently Cancel Booking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to permanently cancel this booking?</p>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone. Your booking will be permanently cancelled and you'll need to start a new booking process.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{% url 'bookings:permanent_cancel' booking.id %}" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Yes, Cancel Permanently</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Countdown Timer
+function updateCountdown() {
+    const hoursRemaining = {{ hours_remaining }};
+    const minutesRemaining = {{ minutes_remaining }};
+    
+    let totalSeconds = hoursRemaining * 3600 + minutesRemaining * 60;
+    
+    const countdownEl = document.getElementById('countdown');
+    
+    setInterval(() => {
+        if (totalSeconds <= 0) {
+            countdownEl.innerHTML = 'Expired';
+            window.location.reload();
+            return;
+        }
+        
+        totalSeconds--;
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        
+        countdownEl.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
+    }, 1000);
+}
+
+updateCountdown();
+
+// Reinstate AJAX
+document.getElementById('reinstateBtn').addEventListener('click', function() {
+    fetch("{% url 'bookings:reinstate_booking' booking.id %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            window.location.href = "{% url 'bookings:booking_confirmation' booking.id %}";
+        } else {
+            alert(data.message);
+            window.location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    });
+});
+</script>
+{% endblock %}

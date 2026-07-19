@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Under Review - Roomora</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #18181B; padding: 40px 30px;">
+        <!-- Header -->
+        <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #0C1424;">
+            <h1 style="color: #0C1424; margin: 0; font-size: 28px; font-weight: 800;">Roomora</h1>
+            <p style="color: #6B7280; margin: 5px 0 0; font-size: 14px;">Find Your Perfect Roommate</p>
+        </div>
+
+        <!-- Main Content -->
+        <div style="margin-bottom: 30px;">
+            <h2 style="color: #0C1424; margin: 0 0 15px; font-size: 22px; font-weight: 700;">Booking Submitted Successfully!</h2>
+            <p style="color: #374151; margin: 0 0 20px; font-size: 15px; line-height: 1.6;">
+                Dear {{ user.first_name }},
+            </p>
+            <p style="color: #374151; margin: 0 0 20px; font-size: 15px; line-height: 1.6;">
+                Thank you for booking with Roomora! Your booking request has been submitted and is currently under review.
+            </p>
+        </div>
+
+        <!-- Booking Details Card -->
+        <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+            <h3 style="color: #0C1424; margin: 0 0 15px; font-size: 18px; font-weight: 700;">Booking Details</h3>
+            
+            <div style="margin-bottom: 15px;">
+                <p style="color: #6B7280; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Property</p>
+                <p style="color: #0C1424; margin: 0; font-size: 16px; font-weight: 500;">{{ property.title }}</p>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <p style="color: #6B7280; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Room Type</p>
+                <p style="color: #0C1424; margin: 0; font-size: 16px; font-weight: 500;">{% if room_type %}{{ room_type.room_type_name }} ({{ room_type.get_occupancy_type_display }}){% else %}{{ unit_type.unit_name }}{% endif %}</p>
+            </div>
+
+            <div style="display: flex; gap: 30px; margin-bottom: 15px;">
+                <div style="flex: 1;">
+                    <p style="color: #6B7280; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Move-in Date</p>
+                    <p style="color: #0C1424; margin: 0; font-size: 16px; font-weight: 500;">{{ booking.move_in_date|date:"F j, Y" }}</p>
+                </div>
+                <div style="flex: 1;">
+                    <p style="color: #6B7280; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Move-out Date</p>
+                    <p style="color: #0C1424; margin: 0; font-size: 16px; font-weight: 500;">{{ booking.move_out_date|date:"F j, Y" }}</p>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <p style="color: #6B7280; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Duration</p>
+                <p style="color: #0C1424; margin: 0; font-size: 16px; font-weight: 500;">{{ booking.duration_months }} months</p>
+            </div>
+
+            <div style="margin-bottom: 0;">
+                <p style="color: #6B7280; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Total Amount</p>
+                <p style="color: #1D9E75; margin: 0; font-size: 20px; font-weight: 700;">GH₵ {{ booking.total_amount|floatformat:0 }}</p>
+            </div>
+        </div>
+
+        <!-- Reference Number -->
+        <div style="background-color: #e0e7ff; border: 1px dashed #6366f1; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 25px;">
+            <p style="color: #4338ca; margin: 0 0 8px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Booking Reference</p>
+            <p style="color: #0C1424; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: 2px;">{{ booking.reference|default:"SM-BOOKING" }}</p>
+        </div>
+
+        <!-- What Happens Next -->
+        <div style="margin-bottom: 25px;">
+            <h3 style="color: #0C1424; margin: 0 0 15px; font-size: 18px; font-weight: 700;">What Happens Next?</h3>
+            
+            {% if booking.requires_roommate_matching %}
+            <div style="margin-bottom: 15px; padding-left: 20px; border-left: 3px solid #3B82F6;">
+                <p style="color: #374151; margin: 0 0 5px; font-size: 15px; font-weight: 600;">1. Lifestyle Profile Review</p>
+                <p style="color: #6B7280; margin: 0; font-size: 14px;">Our team will review your lifestyle preferences to find compatible roommates.</p>
+            </div>
+            
+            <div style="margin-bottom: 15px; padding-left: 20px; border-left: 3px solid #3B82F6;">
+                <p style="color: #374151; margin: 0 0 5px; font-size: 15px; font-weight: 600;">2. Roommate Matching</p>
+                <p style="color: #6B7280; margin: 0; font-size: 14px;">We'll match you with roommates who share similar lifestyle preferences.</p>
+            </div>
+            
+            <div style="margin-bottom: 0; padding-left: 20px; border-left: 3px solid #3B82F6;">
+                <p style="color: #374151; margin: 0 0 5px; font-size: 15px; font-weight: 600;">3. Room Assignment</p>
+                <p style="color: #6B7280; margin: 0; font-size: 14px;">Once matched, you'll receive your room assignment and roommate details.</p>
+            </div>
+            {% else %}
+            <div style="margin-bottom: 15px; padding-left: 20px; border-left: 3px solid #3B82F6;">
+                <p style="color: #374151; margin: 0 0 5px; font-size: 15px; font-weight: 600;">1. Property Manager Review</p>
+                <p style="color: #6B7280; margin: 0; font-size: 14px;">The property manager will review your booking request.</p>
+            </div>
+            
+            <div style="margin-bottom: 0; padding-left: 20px; border-left: 3px solid #3B82F6;">
+                <p style="color: #374151; margin: 0 0 5px; font-size: 15px; font-weight: 600;">2. Confirmation & Payment</p>
+                <p style="color: #6B7280; margin: 0; font-size: 14px;">You'll receive confirmation and payment instructions once approved.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- CTA Button -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="{{ site_url }}/bookings/booking/{{ booking.id }}/" style="display: inline-block; background-color: #0C1424; color: #18181B; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">View Booking Details</a>
+        </div>
+
+        <!-- Footer -->
+        <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; text-align: center;">
+            <p style="color: #6B7280; margin: 0 0 10px; font-size: 13px;">Need help? Contact us at <a href="mailto:support@roomora.com" style="color: #3B82F6; text-decoration: none;">support@roomora.com</a></p>
+            <p style="color: #9CA3AF; margin: 0; font-size: 12px;">© 2026 Roomora. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1226 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block dashboard_title %}Profile Settings — StayMatch{% endblock %}
+
+{% block dashboard_extra_css %}
+<style>
+/* ─── Shared Tokens ──────────────────────────────────────────────── */
+:root {
+  --brand-orange: #FF8C53;
+  --brand-orange-lt: #FFF0EA;
+  --success:      #137333;
+  --success-lt:   #E6F4EA;
+  --warning:      #B45309;
+  --warning-lt:   #FEF3C7;
+  --danger:       #CF1322;
+  --danger-lt:    #FFF1F0;
+  --danger-border:#FFA39E;
+  --bg-section:   #F8FAFC;
+}
+
+/* ─── Page Layout ────────────────────────────────────────────────── */
+.profile-page { max-width: 1100px; margin: 0 auto; }
+
+/* ─── Flash Messages ─────────────────────────────────────────────── */
+.alert { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:8px; font-size:14px; font-weight:500; margin-bottom:16px; }
+.alert-success { background:var(--success-lt); border:1px solid #34A853; color:var(--success); }
+.alert-error   { background:#FCE8E6; border:1px solid #EA4335; color:var(--danger); }
+.alert-info    { background:#E8F0FE; border:1px solid #4285F4; color:#1967D2; }
+.alert svg     { width:18px; height:18px; flex-shrink:0; }
+
+/* ─── Profile Header Card ────────────────────────────────────────── */
+.ph-card {
+  background:#fff;
+  border:1px solid var(--border-light);
+  border-radius:16px;
+  padding:32px;
+  margin-bottom:28px;
+  display:flex;
+  gap:28px;
+  align-items:flex-start;
+  flex-wrap:wrap;
+}
+
+.ph-avatar-wrap {
+  position:relative;
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  flex-shrink:0;
+  background:var(--bg-section);
+  border:4px solid #fff;
+  box-shadow:0 4px 16px rgba(12,20,36,.12);
+  overflow:hidden;
+}
+.ph-avatar-wrap img { width:100%; height:100%; object-fit:cover; }
+.ph-avatar-initials {
+  width:100%; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:36px; font-weight:800; color:#fff;
+  background:linear-gradient(135deg,#0C1424 0%,#2D3748 100%);
+}
+.ph-avatar-edit {
+  position:absolute; bottom:0; left:0; right:0;
+  background:rgba(0,0,0,.65); color:#fff;
+  font-size:11px; font-weight:700; text-align:center;
+  padding:5px 0; cursor:pointer; transition:background .2s;
+  letter-spacing:.03em;
+}
+.ph-avatar-edit:hover { background:rgba(0,0,0,.85); }
+
+.ph-info { flex:1; min-width:240px; }
+.ph-name {
+  font-size:26px; font-weight:800; color:var(--text-head);
+  letter-spacing:-.03em; margin-bottom:4px;
+  display:flex; align-items:center; gap:10px;
+}
+.ph-type-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  background:var(--bg-section); border:1px solid var(--border-light);
+  border-radius:20px; padding:3px 12px;
+  font-size:12px; font-weight:700; color:var(--text-mid);
+  text-transform:uppercase; letter-spacing:.04em;
+}
+.ph-meta { font-size:13px; color:var(--text-muted); margin-bottom:16px; }
+
+.ph-verif { display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
+.verif-row { display:flex; align-items:center; gap:8px; font-size:13px; }
+.verif-icon { width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.verif-icon.ok  { background:var(--success-lt); }
+.verif-icon.warn{ background:var(--warning-lt); }
+.verif-icon svg { width:12px; height:12px; }
+.verif-icon.ok  svg { stroke:var(--success); }
+.verif-icon.warn svg { stroke:var(--warning); }
+.verif-label.ok   { color:var(--success); font-weight:600; }
+.verif-label.warn { color:var(--warning); font-weight:600; }
+.verif-label.muted{ color:var(--text-muted); }
+
+.ph-stats { display:flex; gap:28px; margin-bottom:20px; }
+.ph-stat { display:flex; flex-direction:column; }
+.ph-stat-val { font-size:18px; font-weight:800; color:var(--text-head); }
+.ph-stat-lbl { font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; font-weight:600; }
+
+.ph-actions { display:flex; gap:10px; flex-wrap:wrap; }
+
+/* ─── Layout: Sidebar + Panel ────────────────────────────────────── */
+.profile-layout { display:flex; gap:24px; align-items:flex-start; }
+
+/* ─── Sidebar Nav ────────────────────────────────────────────────── */
+.profile-nav {
+  width:230px; flex-shrink:0;
+  background:#fff;
+  border:1px solid var(--border-light);
+  border-radius:12px;
+  overflow:hidden;
+  position:sticky; top:0;
+}
+.nav-group-label {
+  font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--text-faint); padding:14px 16px 6px;
+}
+.pnav-btn {
+  display:flex; align-items:center; gap:10px;
+  padding:11px 16px; width:100%;
+  font-size:13.5px; font-weight:500; color:var(--text-mid);
+  background:none; border:none; cursor:pointer;
+  transition:all .15s; text-align:left; font-family:inherit;
+  border-bottom:1px solid var(--border-light);
+  position:relative;
+}
+.pnav-btn:last-child { border-bottom:none; }
+.pnav-btn svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+.pnav-btn:hover { background:var(--bg-section); color:var(--text-head); }
+.pnav-btn.active {
+  background:#0C1424; color:#fff; font-weight:700;
+}
+.pnav-btn.active svg { stroke:#fff; }
+.pnav-btn.active::before {
+  content:''; position:absolute; left:0; top:0; bottom:0;
+  width:3px; background:var(--brand-orange);
+}
+
+/* ─── Completion Widget in Sidebar ───────────────────────────────── */
+.completeness-widget {
+  padding:16px; border-bottom:1px solid var(--border-light);
+}
+.cw-label { font-size:12px; font-weight:700; color:var(--text-head); margin-bottom:4px; }
+.cw-sub   { font-size:11px; color:var(--text-muted); margin-bottom:10px; }
+.cw-bar   { height:6px; border-radius:3px; background:var(--border-light); overflow:hidden; margin-bottom:6px; }
+.cw-fill  { height:100%; border-radius:3px; background:linear-gradient(90deg,#0C1424,var(--brand-orange)); transition:width .4s; }
+.cw-pct   { font-size:13px; font-weight:800; color:var(--text-head); }
+
+/* ─── Main Panel ─────────────────────────────────────────────────── */
+.profile-panel { flex:1; min-width:0; }
+.tab-pane { display:none; animation:fadeIn .2s ease; }
+.tab-pane.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+/* ─── Section Cards ──────────────────────────────────────────────── */
+.section-card {
+  background:#fff; border:1px solid var(--border-light);
+  border-radius:12px; overflow:hidden; margin-bottom:20px;
+}
+.section-card:last-child { margin-bottom:0; }
+.sc-head {
+  padding:18px 24px;
+  border-bottom:1px solid var(--border-light);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.sc-head h2 { font-size:16px; font-weight:700; color:var(--text-head); margin-bottom:2px; }
+.sc-head p  { font-size:13px; color:var(--text-muted); }
+.sc-body { padding:24px; }
+
+/* ─── Forms ──────────────────────────────────────────────────────── */
+.field-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.field-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+.field-group  { display:flex; flex-direction:column; gap:6px; margin-bottom:18px; }
+.field-group:last-child { margin-bottom:0; }
+.field-label  { font-size:13px; font-weight:600; color:var(--text-body); }
+.field-label .req { color:var(--danger); }
+.field-help   { font-size:12px; color:var(--text-muted); margin-top:4px; line-height:1.5; }
+.field-input, .field-select, .field-textarea {
+  width:100%; padding:10px 14px;
+  border:1px solid var(--border); border-radius:8px;
+  font-size:14px; font-family:inherit; color:var(--text-head);
+  background:var(--bg-input); transition:all .2s; outline:none;
+}
+.field-input:focus, .field-select:focus, .field-textarea:focus {
+  border-color:#0C1424; background:#fff;
+  box-shadow:0 0 0 3px rgba(12,20,36,.07);
+}
+.field-input[disabled], .field-input[readonly] {
+  background:#F1F3F5; cursor:not-allowed; color:var(--text-muted);
+}
+.field-textarea { resize:vertical; min-height:90px; }
+.char-count { font-size:11px; color:var(--text-faint); text-align:right; margin-top:4px; }
+
+/* Radio group */
+.radio-group { display:flex; flex-wrap:wrap; gap:10px; }
+.radio-option {
+  display:flex; align-items:center; gap:7px;
+  padding:9px 14px; border:1px solid var(--border);
+  border-radius:8px; cursor:pointer; transition:all .15s;
+  font-size:14px; color:var(--text-body);
+}
+.radio-option:hover { border-color:#0C1424; }
+.radio-option input[type=radio] { accent-color:#0C1424; }
+.radio-option.selected { border-color:#0C1424; background:var(--bg-section); color:var(--text-head); font-weight:600; }
+
+/* Toggle checkbox */
+.toggle-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border-light); }
+.toggle-row:last-child { border-bottom:none; }
+.toggle-info .tl { font-size:14px; font-weight:600; color:var(--text-head); }
+.toggle-info .ts { font-size:12px; color:var(--text-muted); margin-top:2px; }
+.toggle-switch { position:relative; width:40px; height:22px; flex-shrink:0; }
+.toggle-switch input { opacity:0; width:0; height:0; }
+.toggle-slider {
+  position:absolute; inset:0; border-radius:22px;
+  background:var(--border); cursor:pointer; transition:.2s;
+}
+.toggle-slider::before {
+  content:''; position:absolute; width:16px; height:16px;
+  border-radius:50%; background:#fff;
+  top:3px; left:3px; transition:.2s;
+  box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+.toggle-switch input:checked + .toggle-slider { background:#0C1424; }
+.toggle-switch input:checked + .toggle-slider::before { transform:translateX(18px); }
+
+/* Divider */
+.sc-divider { border:none; border-top:1px solid var(--border-light); margin:24px 0; }
+
+/* ─── Buttons ────────────────────────────────────────────────────── */
+.btn { display:inline-flex; align-items:center; gap:7px; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; transition:all .15s; border:none; font-family:inherit; }
+.btn svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.btn-primary   { background:#0C1424; color:#fff; }
+.btn-primary:hover { background:#1a2640; }
+.btn-orange    { background:var(--brand-orange); color:#fff; }
+.btn-orange:hover { background:#e0743f; }
+.btn-outline   { background:transparent; color:var(--text-head); border:1px solid var(--border); }
+.btn-outline:hover { background:var(--bg-section); }
+.btn-ghost     { background:transparent; color:var(--text-muted); border:1px solid transparent; }
+.btn-ghost:hover { color:var(--text-head); background:var(--bg-section); }
+.btn-danger    { background:var(--danger-lt); color:var(--danger); border:1px solid var(--danger-border); }
+.btn-danger:hover { background:#FFCCC7; }
+.btn-sm        { padding:7px 14px; font-size:12.5px; }
+.form-actions  { display:flex; align-items:center; gap:10px; justify-content:flex-end; margin-top:24px; padding-top:20px; border-top:1px solid var(--border-light); }
+
+/* ─── Status Badges ──────────────────────────────────────────────── */
+.badge-ok   { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:99px; font-size:12px; font-weight:700; background:var(--success-lt); color:var(--success); }
+.badge-warn { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:99px; font-size:12px; font-weight:700; background:var(--warning-lt); color:var(--warning); }
+.badge-info { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:99px; font-size:12px; font-weight:700; background:#E8F0FE; color:#1967D2; }
+.badge-muted{ display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:99px; font-size:12px; font-weight:700; background:var(--border-light); color:var(--text-mid); }
+.badge svg  { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2.5; }
+
+/* ─── Verif Status Block ─────────────────────────────────────────── */
+.verif-block {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px; border:1px solid var(--border-light); border-radius:10px; margin-bottom:14px;
+  gap:12px;
+}
+.verif-block:last-child { margin-bottom:0; }
+.vb-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.vb-icon.ok   { background:var(--success-lt); }
+.vb-icon.warn { background:var(--warning-lt); }
+.vb-icon.muted{ background:var(--bg-section); }
+.vb-icon svg  { width:20px; height:20px; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; fill:none; }
+.vb-icon.ok svg   { stroke:var(--success); }
+.vb-icon.warn svg { stroke:var(--warning); }
+.vb-icon.muted svg{ stroke:var(--text-muted); }
+.vb-text .vt-title { font-size:14px; font-weight:700; color:var(--text-head); margin-bottom:3px; }
+.vb-text .vt-sub   { font-size:13px; color:var(--text-muted); }
+.vb-actions { display:flex; gap:8px; flex-shrink:0; flex-wrap:wrap; }
+
+/* ─── Session Cards ──────────────────────────────────────────────── */
+.session-card {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  padding:16px; border:1px solid var(--border-light); border-radius:10px;
+  margin-bottom:12px; gap:12px;
+}
+.session-card:last-child { margin-bottom:0; }
+.sess-icon { width:38px; height:38px; border-radius:8px; background:var(--bg-section); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.sess-icon svg { width:18px; height:18px; stroke:var(--text-mid); fill:none; stroke-width:2; }
+.sess-detail .sd-name { font-size:14px; font-weight:700; color:var(--text-head); margin-bottom:2px; }
+.sess-detail .sd-meta { font-size:12.5px; color:var(--text-muted); }
+.sess-detail .sd-current { font-size:11px; font-weight:700; color:var(--success); background:var(--success-lt); padding:2px 8px; border-radius:99px; margin-left:8px; }
+
+/* ─── Danger Zone ────────────────────────────────────────────────── */
+.danger-zone { border:1px solid var(--danger-border); border-radius:12px; overflow:hidden; }
+.dz-head { background:var(--danger-lt); padding:16px 20px; border-bottom:1px solid var(--danger-border); }
+.dz-head h2 { font-size:15px; font-weight:700; color:var(--danger); margin-bottom:2px; }
+.dz-head p  { font-size:13px; color:var(--danger); opacity:.75; }
+.dz-body { padding:20px; }
+.dz-item { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding-bottom:20px; margin-bottom:20px; border-bottom:1px solid var(--border-light); }
+.dz-item:last-child { padding-bottom:0; margin-bottom:0; border-bottom:none; }
+.dz-text .dt-title { font-size:14px; font-weight:700; color:var(--text-head); margin-bottom:4px; }
+.dz-text .dt-desc  { font-size:13px; color:var(--text-muted); line-height:1.55; }
+
+/* ─── Data/Actions Row ───────────────────────────────────────────── */
+.action-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 0; border-bottom:1px solid var(--border-light); gap:12px;
+}
+.action-row:last-child { border-bottom:none; }
+.ar-info .ar-title { font-size:14px; font-weight:700; color:var(--text-head); margin-bottom:3px; }
+.ar-info .ar-desc  { font-size:13px; color:var(--text-muted); }
+
+/* ─── Account Status ─────────────────────────────────────────────── */
+.status-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.stat-tile { background:var(--bg-section); border-radius:10px; padding:14px 16px; }
+.stat-tile .st-val { font-size:20px; font-weight:800; color:var(--text-head); margin-bottom:2px; }
+.stat-tile .st-lbl { font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; font-weight:600; }
+
+/* ─── Privacy Row ────────────────────────────────────────────────── */
+.priv-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 0; border-bottom:1px solid var(--border-light); gap:12px;
+}
+.priv-row:last-child { border-bottom:none; }
+.pr-label .pl-title { font-size:14px; font-weight:600; color:var(--text-head); margin-bottom:3px; }
+.pr-label .pl-desc  { font-size:12.5px; color:var(--text-muted); }
+.pr-control select { border:1px solid var(--border); border-radius:7px; padding:7px 10px; font-size:13px; font-family:inherit; background:var(--bg-input); color:var(--text-head); outline:none; }
+.pr-control select:focus { border-color:#0C1424; }
+
+/* ─── Section header with icon ───────────────────────────────────── */
+.sc-icon-head { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+.sc-icon-head svg { width:20px; height:20px; stroke:var(--brand-orange); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.sc-icon-head h3 { font-size:15px; font-weight:700; color:var(--text-head); }
+
+/* ─── Photo Upload Modal ─────────────────────────────────────────── */
+.photo-modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000;
+  display:none; align-items:center; justify-content:center;
+}
+.photo-modal-overlay.open { display:flex; }
+.photo-modal {
+  background:#fff; border-radius:16px; padding:28px; width:460px; max-width:90vw;
+}
+.pm-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.pm-head h2 { font-size:18px; font-weight:700; color:var(--text-head); }
+.pm-close { background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:22px; line-height:1; }
+.pm-dropzone {
+  border:2px dashed var(--border); border-radius:10px; padding:40px;
+  text-align:center; cursor:pointer; transition:all .2s;
+  margin-bottom:16px;
+}
+.pm-dropzone:hover { border-color:#0C1424; background:var(--bg-section); }
+.pm-dropzone svg { width:40px; height:40px; stroke:var(--text-faint); margin-bottom:10px; fill:none; stroke-width:1.5; }
+.pm-dropzone p { font-size:14px; color:var(--text-muted); }
+.pm-dropzone input[type=file] { display:none; }
+
+/* ─── Mobile Responsive ──────────────────────────────────────────── */
+@media (max-width:900px) {
+  .profile-layout { flex-direction:column; }
+  .profile-nav { width:100%; position:static; display:flex; flex-wrap:wrap; border-radius:10px; }
+  .completeness-widget { width:100%; border-bottom:1px solid var(--border-light); border-right:none; }
+  .nav-group-label { display:none; }
+  .pnav-btn { border-bottom:none; border-right:1px solid var(--border-light); flex:1; min-width:120px; justify-content:center; }
+  .pnav-btn::before { display:none; }
+}
+@media (max-width:640px) {
+  .ph-card { flex-direction:column; align-items:center; text-align:center; }
+  .ph-stats { justify-content:center; }
+  .ph-actions { justify-content:center; }
+  .ph-verif { align-items:center; }
+  .field-grid-2, .field-grid-3 { grid-template-columns:1fr; }
+  .status-grid { grid-template-columns:1fr; }
+}
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<div class="profile-page">
+
+  <!-- ─── Flash Messages ──────────────────────────────────────────── -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-error{% else %}alert-info{% endif %}">
+        {% if message.tags == 'success' %}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        {% elif message.tags == 'error' %}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        {% else %}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        {% endif %}
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- ─────────────────────────────────────────────────────────────── -->
+  <!-- 9.1 PROFILE HEADER                                             -->
+  <!-- ─────────────────────────────────────────────────────────────── -->
+  <div class="ph-card">
+    <!-- Avatar + Upload -->
+    <div class="ph-avatar-wrap" onclick="document.getElementById('photoModal').classList.add('open')" style="cursor:pointer;" title="Change photo">
+      {% if user.profile_picture %}
+        <img src="{{ user.profile_picture.url }}" alt="{{ user.get_full_name }}">
+      {% else %}
+        <div class="ph-avatar-initials">{{ user.first_name|default:"U"|slice:":1"|upper }}{{ user.last_name|default:""|slice:":1"|upper }}</div>
+      {% endif %}
+      <div class="ph-avatar-edit">Change Photo</div>
+    </div>
+
+    <!-- Info -->
+    <div class="ph-info">
+      <div class="ph-name">
+        {{ user.get_full_name|default:user.email }}
+        <span class="ph-type-badge">
+          {% if user.user_type == 'STUDENT' %}Student
+          {% elif user.user_type == 'WORKER' %}Worker
+          {% elif user.user_type == 'FAMILY' %}Family
+          {% elif user.user_type == 'NATIONAL_SERVICE' %}NSP
+          {% elif user.user_type == 'EXPATRIATE' %}Expat
+          {% else %}{{ user.user_type|default:"Member" }}{% endif %}
+        </span>
+      </div>
+      <div class="ph-meta">Member since {{ user.date_joined|date:"F j, Y" }} &nbsp;·&nbsp; Last login: {{ user.last_login|date:"M j, Y" }}</div>
+
+      <!-- Verification Status -->
+      <div class="ph-verif">
+        {% if user.email %}
+        <div class="verif-row">
+          <div class="verif-icon ok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="verif-label ok">Email verified</span>
+          <span class="verif-label muted">— {{ user.email }}</span>
+        </div>
+        {% endif %}
+
+        <div class="verif-row">
+          <div class="verif-icon ok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="verif-label ok">Account active</span>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="ph-stats">
+        <div class="ph-stat">
+          <span class="ph-stat-val">{{ user_reviews.count }}</span>
+          <span class="ph-stat-lbl">Reviews</span>
+        </div>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="ph-actions">
+        <button class="btn btn-primary" onclick="switchTab('personal')">
+          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Profile
+        </button>
+        <button class="btn btn-outline" onclick="switchTab('security')">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Security
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────── -->
+  <!-- MAIN LAYOUT: Nav + Panel                                        -->
+  <!-- ─────────────────────────────────────────────────────────────── -->
+  <div class="profile-layout">
+
+    <!-- ── Left Navigation Rail ──────────────────────────────────── -->
+    <nav class="profile-nav" id="profileNav">
+
+
+      <span class="nav-group-label">My Information</span>
+      <button class="pnav-btn active" data-tab="personal" onclick="switchTab('personal')">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Personal Info
+      </button>
+      <button class="pnav-btn" data-tab="type_info" onclick="switchTab('type_info')">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        {% if user.user_type == 'STUDENT' %}Student Info{% elif user.user_type == 'WORKER' %}Work Info{% elif user.user_type == 'FAMILY' %}Family Info{% elif user.user_type == 'NATIONAL_SERVICE' %}NSP Info{% elif user.user_type == 'EXPATRIATE' %}Expat Info{% else %}Type Info{% endif %}
+      </button>
+      <button class="pnav-btn" data-tab="verification" onclick="switchTab('verification')">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Verification
+      </button>
+
+      <button class="pnav-btn" data-tab="lifestyle" onclick="switchTab('lifestyle')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Lifestyle Profile
+      </button>
+
+      <span class="nav-group-label">Settings</span>
+      <button class="pnav-btn" data-tab="privacy" onclick="switchTab('privacy')">
+        <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Privacy
+      </button>
+      <button class="pnav-btn" data-tab="notifications" onclick="switchTab('notifications')">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Notifications
+      </button>
+      <button class="pnav-btn" data-tab="security" onclick="switchTab('security')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Security
+      </button>
+      <button class="pnav-btn" data-tab="actions" onclick="switchTab('actions')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Account Actions
+      </button>
+    </nav>
+
+    <!-- ── Right Content Panel ────────────────────────────────────── -->
+    <div class="profile-panel">
+
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- TAB 1: PERSONAL INFORMATION (9.2)                          -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <div class="tab-pane active" id="tab-personal">
+        <div class="section-card">
+          <div class="sc-head">
+            <div><h2>Personal Information</h2><p>Basic identifying details visible on your profile.</p></div>
+          </div>
+          <div class="sc-body">
+            <form method="POST" action="{% url 'accounts:profile' %}">
+              {% csrf_token %}
+              <input type="hidden" name="form_type" value="personal">
+
+              <div class="field-grid-2">
+                <div class="field-group">
+                  <label class="field-label">First Name <span class="req">*</span></label>
+                  {{ personal_form.first_name }}
+                  {% if personal_form.first_name.errors %}<div class="field-help" style="color:var(--danger)">{{ personal_form.first_name.errors }}</div>{% endif %}
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Last Name <span class="req">*</span></label>
+                  {{ personal_form.last_name }}
+                  {% if personal_form.last_name.errors %}<div class="field-help" style="color:var(--danger)">{{ personal_form.last_name.errors }}</div>{% endif %}
+                </div>
+              </div>
+
+              <div class="field-grid-2">
+                <div class="field-group">
+                  <label class="field-label">Email Address <span class="req">*</span></label>
+                  <input type="email" class="field-input" value="{{ user.email }}" disabled>
+                  <span class="field-help">Cannot be changed. <a href="#" style="color:#0C1424;font-weight:600;">Why?</a></span>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Phone Number</label>
+                  {{ personal_form.phone_number }}
+                  {% if personal_form.phone_number.errors %}<div class="field-help" style="color:var(--danger)">{{ personal_form.phone_number.errors }}</div>{% endif %}
+                </div>
+              </div>
+
+              <div class="field-grid-2">
+                <div class="field-group">
+                  <label class="field-label">Gender <span class="req">*</span></label>
+                  {{ personal_form.gender }}
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Date of Birth</label>
+                  {{ personal_form.date_of_birth }}
+                  <span class="field-help">Used for age-appropriate roommate matching.</span>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label">Preferred Name</label>
+                {{ personal_form.preferred_name }}
+                <span class="field-help">What should we call you in messages and notifications?</span>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label">Bio <small style="font-weight:400;color:var(--text-muted);">(optional, 150 chars)</small></label>
+                <textarea name="bio" class="field-textarea" maxlength="150" id="bioTextarea" placeholder="Tell us a bit about yourself...">{{ profile.bio|default:'' }}</textarea>
+                <div class="char-count"><span id="bioCount">{{ profile.bio|length|default:0 }}</span>/150</div>
+              </div>
+
+              <hr class="sc-divider">
+              <div class="sc-icon-head">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <h3>Emergency Contact <small style="font-size:12px;font-weight:400;color:var(--text-muted);">Optional</small></h3>
+              </div>
+              <div class="field-grid-2">
+                <div class="field-group">
+                  <label class="field-label">Contact Name</label>
+                  {{ personal_form.emergency_contact_name }}
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Contact Phone</label>
+                  {{ personal_form.emergency_contact_phone }}
+                </div>
+              </div>
+              <div class="field-group" style="max-width:300px;">
+                <label class="field-label">Relationship</label>
+                {{ personal_form.emergency_contact_relationship }}
+              </div>
+
+              <div class="form-actions">
+                <button type="reset" class="btn btn-ghost">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                  <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- TAB 2: TYPE-SPECIFIC INFO (9.3)                            -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <div class="tab-pane" id="tab-type_info">
+        <div class="section-card">
+          <div class="sc-head">
+            <div>
+              <h2>{% if user.user_type == 'STUDENT' %}Student Information{% elif user.user_type == 'WORKER' %}Work Information{% elif user.user_type == 'FAMILY' %}Family Information{% elif user.user_type == 'NATIONAL_SERVICE' %}National Service Information{% elif user.user_type == 'EXPATRIATE' %}Expatriate Information{% else %}Additional Information{% endif %}</h2>
+              <p>Details specific to your user type that help us match you better.</p>
+            </div>
+          </div>
+          <div class="sc-body">
+            <form method="POST" action="{% url 'accounts:profile' %}">
+              {% csrf_token %}
+              {% if user.user_type == 'STUDENT' and student_form %}
+                <input type="hidden" name="form_type" value="student">
+                <div class="field-grid-2">
+                  <div class="field-group"><label class="field-label">Academic Institution <span class="req">*</span></label>{{ student_form.institution }}<span class="field-help">Which school do you attend?</span></div>
+                  <div class="field-group"><label class="field-label">Current Level <span class="req">*</span></label>{{ student_form.academic_level }}<span class="field-help">Your current year of study.</span></div>
+                </div>
+                <div class="field-grid-2">
+                  <div class="field-group"><label class="field-label">Field of Study <span class="req">*</span></label>{{ student_form.field_of_study }}<span class="field-help">Your major or department.</span></div>
+                  <div class="field-group"><label class="field-label">Expected Graduation</label>{{ student_form.expected_graduation }}<span class="field-help">Helps us suggest housing aligned with your timeline.</span></div>
+                </div>
+                <div class="field-grid-2">
+                  <div class="field-group"><label class="field-label">School Email <small style="font-weight:400;color:var(--text-muted);">Optional</small></label>{{ student_form.school_email }}<span class="field-help">For verification and institutional discounts.</span></div>
+                  <div class="field-group"><label class="field-label">Student ID (Last 4 digits) <small style="font-weight:400;color:var(--text-muted);">Optional</small></label>{{ student_form.student_id }}</div>
+                </div>
+
+              {% elif user.user_type == 'WORKER' and worker_form %}
+                <input type="hidden" name="form_type" value="worker">
+                <div class="field-grid-2">
+                  <div class="field-group"><label class="field-label">Occupation <span class="req">*</span></label>{{ worker_form.occupation }}<span class="field-help">Your job title or role.</span></div>
+                  <div class="field-group"><label class="field-label">Company / Employer <span class="req">*</span></label>{{ worker_form.employer_name }}</div>
+                </div>
+                <div class="field-grid-2">
+                  <div class="field-group"><label class="field-label">Industry <span class="req">*</span></label>{{ worker_form.industry }}</div>
+                  <div class="field-group"><label class="field-label">Employment Status <span class="req">*</span></label>{{ worker_form.employment_status }}</div>
+                </div>
+                <div class="field-grid-2">
+                  <div class="field-group"><label class="field-label">Company Location <small style="font-weight:400;color:var(--text-muted);">Optional</small></label>{{ worker_form.company_location }}<span class="field-help">Helps recommend properties near your workplace.</span></div>
+                  <div class="field-group"><label class="field-label">Work Email <small style="font-weight:400;color:var(--text-muted);">Optional</small></label>{{ worker_form.work_email }}</div>
+                </div>
+
+              {% elif user.user_type == 'FAMILY' and family_form %}
+                <input type="hidden" name="form_type" value="family">
+                <div class="field-grid-2">
+                  <div class="field-group"><label class="field-label">Household Size <span class="req">*</span></label>{{ family_form.household_size }}<span class="field-help">How many people in your household?</span></div>
+                  <div class="field-group"><label class="field-label">Number of Children <small style="font-weight:400;color:var(--text-muted);">Optional</small></label>{{ family_form.number_of_children }}</div>
+                </div>
+                <div class="field-group"><label class="field-label">Special Requirements <small style="font-weight:400;color:var(--text-muted);">Optional</small></label>{{ family_form.special_requirements }}<span class="field-help">Any special accommodations or amenities needed?</span></div>
+
+              {% elif user.user_type == 'NATIONAL_SERVICE' and nsp_form %}
+                <input type="hidden" name="form_type" value="national_service">
+                <div class="field-grid-2">
+                  <div class="field-group"><label class="field-label">NSP Organization <span class="req">*</span></label>{{ nsp_form.nsp_organization }}<span class="field-help">Which organization are you assigned to?</span></div>
+                  <div class="field-group"><label class="field-label">Organization Location <span class="req">*</span></label>{{ nsp_form.nsp_location }}</div>
+                </div>
+                <div class="field-grid-2">
+                  <div class="field-group"><label class="field-label">Service End Date <span class="req">*</span></label>{{ nsp_form.service_end_date }}</div>
+                  <div class="field-group"><label class="field-label">Service ID <small style="font-weight:400;color:var(--text-muted);">Optional</small></label>{{ nsp_form.service_id }}</div>
+                </div>
+
+              {% elif user.user_type == 'EXPATRIATE' and expat_form %}
+                <input type="hidden" name="form_type" value="expatriate">
+                <div class="field-grid-2">
+                  <div class="field-group"><label class="field-label">Home Country <span class="req">*</span></label>{{ expat_form.home_country }}</div>
+                  <div class="field-group"><label class="field-label">Visa Status <span class="req">*</span></label>{{ expat_form.visa_status }}</div>
+                </div>
+                <div class="field-grid-2">
+                  <div class="field-group"><label class="field-label">Purpose of Stay <span class="req">*</span></label>{{ expat_form.purpose_of_stay }}</div>
+                  <div class="field-group"><label class="field-label">Length of Stay <span class="req">*</span></label>{{ expat_form.length_of_stay }}</div>
+                </div>
+                <div class="field-group"><label class="field-label">Dietary / Cultural Requirements <small style="font-weight:400;color:var(--text-muted);">Optional</small></label>{{ expat_form.dietary_requirements }}<span class="field-help">Any special requirements we should know?</span></div>
+
+              {% else %}
+                <div style="text-align:center;padding:40px 0;color:var(--text-muted);">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  <p style="font-size:15px;font-weight:600;color:var(--text-head);margin-bottom:6px;">No additional information required</p>
+                  <p style="font-size:13px;">Your user type doesn't require specific additional details.</p>
+                </div>
+              {% endif %}
+
+              {% if user.user_type != 'COUPLE' and user.user_type != 'SHORT_STAY' %}
+              <div class="form-actions">
+                <button type="reset" class="btn btn-ghost">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                  <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  Save Changes
+                </button>
+              </div>
+              {% endif %}
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- TAB 3: VERIFICATION (9.4)                                  -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <div class="tab-pane" id="tab-verification">
+        <div class="section-card">
+          <div class="sc-head">
+            <div><h2>Account Verification</h2><p>Verify your identity to unlock full platform features.</p></div>
+          </div>
+          <div class="sc-body">
+
+            <!-- Email -->
+            <div class="verif-block">
+              <div class="vb-icon ok">
+                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div class="vb-text" style="flex:1;">
+                <div class="vt-title">Email Address
+                  <span class="badge-ok" style="margin-left:8px;">
+                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Verified
+                  </span>
+                </div>
+                <div class="vt-sub">{{ user.email }} &nbsp;·&nbsp; Verified on {{ user.date_joined|date:"F j, Y" }}</div>
+              </div>
+              <div class="vb-actions">
+                <form method="POST" action="{% url 'accounts:profile' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="form_type" value="verification">
+                  <input type="hidden" name="verify_action" value="email">
+                  <button type="submit" class="btn btn-sm btn-outline">Resend Email</button>
+                </form>
+              </div>
+            </div>
+
+
+
+
+
+            <hr class="sc-divider">
+            <div style="background:var(--bg-section);border-radius:10px;padding:16px;">
+              <h3 style="font-size:14px;font-weight:700;color:var(--text-head);margin-bottom:10px;">Why We Verify</h3>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;color:var(--text-body);">
+                <div style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Prevent fraud</div>
+                <div style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Enable communication</div>
+                <div style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Account recovery</div>
+                <div style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Roommate contact</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- TAB 5: PRIVACY & VISIBILITY (9.6)                          -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <div class="tab-pane" id="tab-privacy">
+        <div class="section-card">
+          <div class="sc-head">
+            <div><h2>Privacy &amp; Visibility Settings</h2><p>Control what information is visible to others.</p></div>
+          </div>
+          <div class="sc-body">
+            <form method="POST" action="{% url 'accounts:profile' %}">
+              {% csrf_token %}
+              <input type="hidden" name="form_type" value="privacy">
+
+              <h3 style="font-size:14px;font-weight:700;color:var(--text-head);margin-bottom:14px;">Profile Visibility</h3>
+              <div class="radio-group" style="margin-bottom:24px;" id="visibilityGroup">
+                <label class="radio-option {% if profile.profile_visibility == 'PUBLIC' %}selected{% endif %}" onclick="selectVisibility(this)">
+                  <input type="radio" name="profile_visibility" value="PUBLIC" {% if profile.profile_visibility == 'PUBLIC' %}checked{% endif %}> Fully Public
+                </label>
+                <label class="radio-option {% if profile.profile_visibility == 'ROOMMATES_ONLY' %}selected{% endif %}" onclick="selectVisibility(this)">
+                  <input type="radio" name="profile_visibility" value="ROOMMATES_ONLY" {% if profile.profile_visibility == 'ROOMMATES_ONLY' %}checked{% endif %}> Private (Roommates Only)
+                </label>
+              </div>
+
+              <hr class="sc-divider">
+              <h3 style="font-size:14px;font-weight:700;color:var(--text-head);margin-bottom:4px;">What is Shared During Matching</h3>
+              <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Control who can see each piece of your information.</p>
+
+              <div class="priv-row">
+                <div class="pr-label"><div class="pl-title">Email Address</div><div class="pl-desc">Used for introductions before move-in</div></div>
+                <div class="pr-control">
+                  <select name="email_visibility">
+                    <option value="roommate_only">Roommate only</option>
+                    <option value="nobody">Nobody</option>
+                  </select>
+                </div>
+              </div>
+              <div class="priv-row">
+                <div class="pr-label"><div class="pl-title">Phone Number</div><div class="pl-desc">Used for emergencies and coordination</div></div>
+                <div class="pr-control">
+                  <select name="phone_visibility">
+                    <option value="roommate_only">Roommate only</option>
+                    <option value="nobody">Nobody</option>
+                  </select>
+                </div>
+              </div>
+              <div class="priv-row">
+                <div class="pr-label"><div class="pl-title">Profile Photo</div><div class="pl-desc">Protects your privacy until confirmed match</div></div>
+                <div class="pr-control">
+                  <select name="photo_visibility">
+                    <option value="after_match">After both accept</option>
+                    <option value="nobody">Nobody until move-in</option>
+                  </select>
+                </div>
+              </div>
+              <div class="priv-row">
+                <div class="pr-label"><div class="pl-title">Bio / About You</div><div class="pl-desc">Controls how much roommates learn about you</div></div>
+                <div class="pr-control">
+                  <select name="bio_visibility">
+                    <option value="full">Full text</option>
+                    <option value="summary">Summary only</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+              </div>
+              <div class="priv-row">
+                <div class="pr-label"><div class="pl-title">Academic / Professional Info</div><div class="pl-desc">Provides context while preserving privacy</div></div>
+                <div class="pr-control">
+                  <select name="academic_visibility">
+                    <option value="full">Full details</option>
+                    <option value="institution">Institution only</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+              </div>
+              <div class="priv-row">
+                <div class="pr-label"><div class="pl-title">Search History &amp; Saved Properties</div><div class="pl-desc">Always private</div></div>
+                <div class="pr-control"><span class="badge-muted" style="font-size:12px;">Always Hidden</span></div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Privacy Settings</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- TAB 6: NOTIFICATION PREFERENCES (9.7)                      -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <div class="tab-pane" id="tab-notifications">
+        <div class="section-card">
+          <div class="sc-head">
+            <div><h2>Notification Preferences</h2><p>Choose how and when you receive updates.</p></div>
+          </div>
+          <div class="sc-body">
+
+
+              <h3 style="font-size:16px;font-weight:700;color:var(--text-head);margin-bottom:16px;">Notification Preferences</h3>
+              
+              <form method="POST" action="{% url 'accounts:profile' %}">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="communication">
+
+              <h3 style="font-size:14px;font-weight:700;color:var(--text-head);margin-bottom:16px;">Notification Channels</h3>
+
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="tl">Email Notifications</div><div class="ts">Receive updates via email</div></div>
+                <label class="toggle-switch"><input type="checkbox" name="notif_email_enabled" {% if profile.notif_email_enabled %}checked{% endif %} id="tog_email"><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="tl">SMS Notifications</div><div class="ts">Receive SMS updates for critical items</div></div>
+                <label class="toggle-switch"><input type="checkbox" name="notif_sms_enabled" {% if profile.notif_sms_enabled %}checked{% endif %}><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="tl">Push Notifications</div><div class="ts">Browser or app push alerts</div></div>
+                <label class="toggle-switch"><input type="checkbox" name="notif_push_enabled" {% if profile.notif_push_enabled %}checked{% endif %}><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="tl">In-App Notifications</div><div class="ts">Notifications within the platform</div></div>
+                <label class="toggle-switch"><input type="checkbox" name="notif_in_app_enabled" {% if profile.notif_in_app_enabled %}checked{% endif %}><span class="toggle-slider"></span></label>
+              </div>
+
+              <hr class="sc-divider">
+              <h3 style="font-size:14px;font-weight:700;color:var(--text-head);margin-bottom:16px;">Notification Categories</h3>
+
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="tl">Booking &amp; Reservations</div><div class="ts">Confirmations, status changes, approvals</div></div>
+                <label class="toggle-switch"><input type="checkbox" name="notif_booking_updates" {% if profile.notif_booking_updates %}checked{% endif %}><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="tl">Property Updates</div><div class="ts">Price changes, new availability on saved properties</div></div>
+                <label class="toggle-switch"><input type="checkbox" name="notif_property_updates" {% if profile.notif_property_updates %}checked{% endif %}><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="tl">System &amp; Security Alerts</div><div class="ts">Verification expiry, login alerts</div></div>
+                <label class="toggle-switch"><input type="checkbox" name="notif_system_alerts" {% if profile.notif_system_alerts %}checked{% endif %}><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="tl">Marketing &amp; Promotions</div><div class="ts">Special offers, new features, newsletter</div></div>
+                <label class="toggle-switch"><input type="checkbox" name="notif_marketing" {% if profile.notif_marketing %}checked{% endif %}><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="tl">Roommate Messages</div><div class="ts">New messages and mentions from roommates</div></div>
+                <label class="toggle-switch"><input type="checkbox" name="notif_roommate_messages" {% if profile.notif_roommate_messages %}checked{% endif %}><span class="toggle-slider"></span></label>
+              </div>
+
+              <hr class="sc-divider">
+              <h3 style="font-size:14px;font-weight:700;color:var(--text-head);margin-bottom:6px;">Quiet Hours</h3>
+              <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Do not send non-urgent notifications during this period.</p>
+              <div class="field-grid-2" style="max-width:400px;">
+                <div class="field-group">
+                  <label class="field-label">Start Time</label>
+                  <input type="time" name="quiet_hours_start" class="field-input" value="{{ profile.quiet_hours_start|time:'H:i'|default:'22:00' }}">
+                </div>
+                <div class="field-group">
+                  <label class="field-label">End Time</label>
+                  <input type="time" name="quiet_hours_end" class="field-input" value="{{ profile.quiet_hours_end|time:'H:i'|default:'07:00' }}">
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Preferences</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- TAB: LIFESTYLE PROFILE                                     -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <div class="tab-pane" id="tab-lifestyle">
+        <div class="section-card">
+          <div class="sc-head">
+            <div><h2>Lifestyle Profile</h2><p>Your habits and preferences for roommate matching.</p></div>
+          </div>
+          <div class="sc-body" style="text-align: center; padding: 40px 20px;">
+            {% if lifestyle_profile and lifestyle_profile.is_complete %}
+              <div style="margin-bottom: 24px;">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 16px;">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <path d="M22 4L12 14.01l-3-3"/>
+                </svg>
+                <h3 style="font-size: 18px; color: var(--text-head); margin-bottom: 8px;">Profile Complete!</h3>
+                <p style="color: var(--text-muted); font-size: 14px; max-width: 400px; margin: 0 auto;">Your lifestyle preferences are active and will be used by the Compatibility Engine for roommate matching.</p>
+              </div>
+              <a href="{% url 'accounts:lifestyle_edit' %}" class="btn btn-outline">Edit Preferences</a>
+            {% else %}
+              <div style="margin-bottom: 24px;">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 16px; color: var(--text-faint);">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <h3 style="font-size: 18px; color: var(--text-head); margin-bottom: 8px;">No Profile Found</h3>
+                <p style="color: var(--text-muted); font-size: 14px; max-width: 400px; margin: 0 auto;">You haven't completed your lifestyle questionnaire yet. Completing it helps us find the perfect roommate for you.</p>
+              </div>
+              <a href="{% url 'accounts:lifestyle_questionnaire_standalone' 1 %}" class="btn btn-primary">Create Profile</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- TAB 7: SECURITY SETTINGS (9.8)                             -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <div class="tab-pane" id="tab-security">
+        <!-- Change Password -->
+        <div class="section-card">
+          <div class="sc-head">
+            <div><h2>Password Management</h2><p>Keep your account secure with a strong password.</p></div>
+            <span class="badge-ok">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Strong
+            </span>
+          </div>
+          <div class="sc-body">
+            <form method="POST" action="{% url 'accounts:profile' %}">
+              {% csrf_token %}
+              <input type="hidden" name="form_type" value="security">
+              <div class="field-group">
+                <label class="field-label">Current Password</label>
+                <input type="password" name="current_password" class="field-input" autocomplete="current-password" required>
+              </div>
+              <div class="field-grid-2">
+                <div class="field-group">
+                  <label class="field-label">New Password</label>
+                  <input type="password" name="new_password" class="field-input" id="newPwd" autocomplete="new-password" required>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Confirm New Password</label>
+                  <input type="password" name="confirm_password" class="field-input" autocomplete="new-password" required>
+                </div>
+              </div>
+              <div style="background:var(--bg-section);border-radius:10px;padding:16px;margin-bottom:8px;">
+                <p style="font-size:13px;font-weight:600;color:var(--text-head);margin-bottom:10px;">Password Requirements</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13px;color:var(--text-muted);">
+                  <div>✓ At least 8 characters</div>
+                  <div>✓ Uppercase &amp; lowercase</div>
+                  <div>✓ At least one number</div>
+                  <div>✓ One special character (!@#$%)</div>
+                </div>
+              </div>
+              <div class="alert alert-info" style="font-size:13px;">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Changing your password will log out all active sessions and require re-login on all devices.
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Password</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Active Sessions -->
+        <div class="section-card">
+          <div class="sc-head">
+            <div><h2>Active Sessions</h2><p>Devices currently logged into your account.</p></div>
+          </div>
+          <div class="sc-body">
+            <div class="session-card">
+              <div class="sess-icon">
+                <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              </div>
+              <div class="sess-detail" style="flex:1;">
+                <div class="sd-name">Current Browser <span class="sd-current">Current Session</span></div>
+                <div class="sd-meta">Last activity: Just now</div>
+              </div>
+              <span class="badge-ok" style="font-size:12px;">Trusted</span>
+            </div>
+            <p style="font-size:13px;color:var(--text-muted);padding-top:12px;border-top:1px solid var(--border-light);margin-top:4px;">Active session management with full device list will be available in a future update.</p>
+          </div>
+        </div>
+
+        <!-- 2FA Coming Soon -->
+        <div class="section-card">
+          <div class="sc-head">
+            <div><h2>Two-Factor Authentication</h2><p>Adds an extra security layer to your account.</p></div>
+            <span class="badge-muted">Coming Soon</span>
+          </div>
+          <div class="sc-body">
+            <p style="font-size:14px;color:var(--text-muted);">Two-factor authentication via SMS or authenticator app will be available in Q3 2025.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- TAB 8: ACCOUNT ACTIONS (9.9)                               -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <div class="tab-pane" id="tab-actions">
+
+        <!-- Account Status -->
+        <div class="section-card">
+          <div class="sc-head">
+            <div><h2>Account Status</h2><p>Your current account overview.</p></div>
+            <span class="badge-ok"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Active</span>
+          </div>
+          <div class="sc-body">
+            <div class="status-grid">
+              <div class="stat-tile"><div class="st-val">{{ user.date_joined|date:"M Y" }}</div><div class="st-lbl">Member Since</div></div>
+              <div class="stat-tile"><div class="st-val">{{ user_bookings.count }}</div><div class="st-lbl">Total Bookings</div></div>
+              <div class="stat-tile"><div class="st-val">{{ user_reviews.count }}</div><div class="st-lbl">Reviews Written</div></div>
+              <div class="stat-tile"><div class="st-val">{{ completion_percentage }}%</div><div class="st-lbl">Profile Complete</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data & Tools -->
+        <div class="section-card">
+          <div class="sc-head"><div><h2>Data &amp; Account Tools</h2><p>Manage your data and get support.</p></div></div>
+          <div class="sc-body">
+            <div class="action-row">
+              <div class="ar-info">
+                <div class="ar-title">Download My Data</div>
+                <div class="ar-desc">Export your profile, bookings, messages, and reviews in JSON or CSV format.</div>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download
+              </button>
+            </div>
+            <div class="action-row">
+              <div class="ar-info">
+                <div class="ar-title">Report a Problem</div>
+                <div class="ar-desc">Submit a support ticket for account, booking, roommate, or property issues.</div>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm">
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Report Issue
+              </button>
+            </div>
+            <div class="action-row">
+              <div class="ar-info">
+                <div class="ar-title">Help &amp; Support</div>
+                <div class="ar-desc">View FAQ, contact support, or report abuse.</div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="btn btn-outline btn-sm">FAQ</button>
+                <button type="button" class="btn btn-outline btn-sm">Contact</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="danger-zone">
+          <div class="dz-head">
+            <h2>Danger Zone</h2>
+            <p>These actions are irreversible. Please proceed with caution.</p>
+          </div>
+          <div class="dz-body">
+            <div class="dz-item">
+              <div class="dz-text">
+                <div class="dt-title">Deactivate Account</div>
+                <div class="dt-desc">Your profile will be hidden, active bookings cancelled, and all personal data deleted after 30 days. This cannot be undone after the grace period.</div>
+              </div>
+              <button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('deactivateModal').classList.add('open')">Deactivate</button>
+            </div>
+            <div class="dz-item">
+              <div class="dz-text">
+                <div class="dt-title">Delete Account Permanently</div>
+                <div class="dt-desc">Permanently removes your account and all associated data. A 30-day grace period applies. This action cannot be reversed.</div>
+              </div>
+              <form method="POST" action="{% url 'accounts:profile' %}" onsubmit="return confirm('Are you absolutely sure? This cannot be undone.');">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="delete_account">
+                <button type="submit" class="btn btn-danger btn-sm">Delete Account</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end .profile-panel -->
+  </div><!-- end .profile-layout -->
+</div><!-- end .profile-page -->
+
+<!-- ─── Photo Upload Modal ─────────────────────────────────────────── -->
+<div class="photo-modal-overlay" id="photoModal">
+  <div class="photo-modal">
+    <div class="pm-head">
+      <h2>Update Profile Photo</h2>
+      <button class="pm-close" onclick="document.getElementById('photoModal').classList.remove('open')">&times;</button>
+    </div>
+    <form method="POST" action="{% url 'accounts:profile' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="photo">
+      <div class="pm-dropzone" onclick="document.getElementById('photoFileInput').click()">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <p>Click to select a photo<br><small>JPG, PNG — max 5MB</small></p>
+        <input type="file" id="photoFileInput" name="profile_picture" accept="image/*" onchange="this.form.submit()">
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ─── Deactivate Confirmation Modal ────────────────────────────────── -->
+<div class="photo-modal-overlay" id="deactivateModal">
+  <div class="photo-modal">
+    <div class="pm-head">
+      <h2 style="color:var(--danger);">Deactivate Account</h2>
+      <button class="pm-close" onclick="document.getElementById('deactivateModal').classList.remove('open')">&times;</button>
+    </div>
+    <div style="padding:0 4px;">
+      <p style="font-size:14px;color:var(--text-body);margin-bottom:16px;line-height:1.6;">This will hide your profile, cancel active bookings, and delete all data after 30 days. Type <strong>DEACTIVATE</strong> to confirm.</p>
+      <input type="text" id="deactivateInput" class="field-input" placeholder="Type DEACTIVATE here" style="margin-bottom:16px;">
+      <form method="POST" action="{% url 'accounts:profile' %}">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="deactivate_account">
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button type="button" class="btn btn-ghost" onclick="document.getElementById('deactivateModal').classList.remove('open')">Cancel</button>
+          <button type="submit" id="deactivateBtn" class="btn btn-danger" onclick="return document.getElementById('deactivateInput').value === 'DEACTIVATE'">Deactivate My Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block dashboard_js %}
+<script>
+/* ─── Tab Switching ──────────────────────────────────────────────── */
+function switchTab(tabId) {
+  // Hide all panes
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  // Show target
+  const pane = document.getElementById('tab-' + tabId);
+  if (pane) pane.classList.add('active');
+  // Update nav buttons
+  document.querySelectorAll('.pnav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.pnav-btn[data-tab="${tabId}"]`);
+  if (btn) btn.classList.add('active');
+  // Update URL
+  const url = new URL(window.location);
+  url.searchParams.set('tab', tabId);
+  window.history.replaceState({}, '', url);
+}
+
+/* ─── Initialise from URL ────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  const urlTab = new URLSearchParams(window.location.search).get('tab') || '{{ active_tab|default:"personal" }}';
+  switchTab(urlTab);
+
+  /* Bio character counter */
+  const bio = document.getElementById('bioTextarea');
+  const cnt = document.getElementById('bioCount');
+  if (bio && cnt) {
+    bio.addEventListener('input', () => { cnt.textContent = bio.value.length; });
+  }
+
+  /* Radio option visual selection */
+  document.querySelectorAll('.radio-option input[type=radio]').forEach(r => {
+    r.addEventListener('change', () => {
+      r.closest('.radio-group').querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
+      r.closest('.radio-option').classList.add('selected');
+    });
+  });
+});
+
+/* ─── Visibility radio helper ────────────────────────────────────── */
+function selectVisibility(el) {
+  document.querySelectorAll('#visibilityGroup .radio-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+/* ─── Close modals on overlay click ─────────────────────────────── */
+document.querySelectorAll('.photo-modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+</script>
+{% endblock %}

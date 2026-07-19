@@ -1,0 +1,803 @@
+{% extends 'landing/base.html' %}
+{% block title %}Write a Review — StayMatch{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #0A0302;
+  --accent-light: #F3F3F3;
+  --charcoal: #0A0302;
+  --dark: #1E293B;
+  --mid: #475569;
+  --muted: #666666;
+  --border: #E5E7EB;
+  --border-light: #F3F3F3;
+  --surface: #FFFFFF;
+  --canvas: #F8F9FA;
+  --green: #059669;
+  --green-light: #D1FAE5;
+  --red: #DC2626;
+  --red-light: #FEE2E2;
+  --amber: #F59E0B;
+  --amber-light: #FEF3C7;
+  --shadow-md: 0 4px 16px rgba(0,0,0,.07);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.10);
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --font: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: #FFFFFF;
+  color: var(--charcoal);
+  line-height: 1.6;
+}
+
+.rf-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.rf-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.rf-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--charcoal);
+  margin-bottom: 8px;
+}
+
+.rf-header p {
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.rf-property-info {
+  background: var(--accent-light);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.rf-property-info img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.rf-property-info div {
+  flex: 1;
+}
+
+.rf-property-info h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--charcoal);
+  margin-bottom: 4px;
+}
+
+.rf-property-info p {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.rf-form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+
+.rf-section {
+  margin-bottom: 32px;
+}
+
+.rf-section:last-child {
+  margin-bottom: 0;
+}
+
+.rf-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--charcoal);
+  margin-bottom: 16px;
+}
+
+.rf-section-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.rf-rating-stars {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.rf-star {
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  transition: transform .2s;
+}
+
+.rf-star:hover {
+  transform: scale(1.1);
+}
+
+.rf-star svg {
+  fill: var(--border-light);
+  stroke: var(--border);
+  stroke-width: 2;
+}
+
+.rf-star.active svg {
+  fill: #F59E0B;
+  stroke: #F59E0B;
+}
+
+.rf-form-group {
+  margin-bottom: 20px;
+}
+
+.rf-form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--charcoal);
+  margin-bottom: 8px;
+}
+
+.rf-form-group label .required {
+  color: var(--red);
+}
+
+.rf-form-group input[type="text"],
+.rf-form-group textarea,
+.rf-form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: var(--font);
+  transition: border-color .2s;
+}
+
+.rf-form-group input[type="text"]:focus,
+.rf-form-group textarea:focus,
+.rf-form-group select:focus {
+  outline: none;
+  border-color: var(--charcoal);
+}
+
+.rf-form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.rf-form-hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.rf-checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.rf-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.rf-checkbox-item:hover {
+  background: var(--canvas);
+}
+
+.rf-checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.rf-checkbox-item label {
+  font-size: 14px;
+  color: var(--dark);
+  cursor: pointer;
+  margin: 0;
+}
+
+.rf-radio-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.rf-radio-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.rf-radio-item input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.rf-radio-item label {
+  font-size: 14px;
+  color: var(--dark);
+  cursor: pointer;
+  margin: 0;
+}
+
+.rf-photo-upload {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.rf-photo-upload:hover {
+  border-color: var(--charcoal);
+  background: var(--canvas);
+}
+
+.rf-photo-upload svg {
+  width: 48px;
+  height: 48px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.rf-photo-upload p {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.rf-photo-upload span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.rf-photo-preview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.rf-photo-preview-item {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.rf-photo-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rf-photo-preview-item .remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.rf-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.rf-btn {
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  border: none;
+}
+
+.rf-btn-primary {
+  background: var(--charcoal);
+  color: white;
+}
+
+.rf-btn-primary:hover {
+  background: var(--accent);
+}
+
+.rf-btn-secondary {
+  background: var(--surface);
+  color: var(--charcoal);
+  border: 1px solid var(--border);
+}
+
+.rf-btn-secondary:hover {
+  border-color: var(--charcoal);
+}
+
+.rf-error {
+  color: var(--red);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.rf-ineligible {
+  background: var(--red-light);
+  border: 1px solid var(--red);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+}
+
+.rf-ineligible h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--red);
+  margin-bottom: 8px;
+}
+
+.rf-ineligible p {
+  font-size: 14px;
+  color: var(--dark);
+  margin-bottom: 12px;
+}
+
+.rf-ineligible a {
+  color: var(--charcoal);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .rf-container {
+    padding: 16px;
+  }
+  
+  .rf-form {
+    padding: 20px;
+  }
+  
+  .rf-checkbox-group {
+    grid-template-columns: 1fr;
+  }
+  
+  .rf-radio-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="rf-container">
+  <div class="rf-header">
+    <h1>Write a Review</h1>
+    <p>We'd love to hear about your experience at {{ property.title }}!</p>
+  </div>
+
+  {% if ineligible %}
+  <div class="rf-ineligible">
+    <h3>You're not eligible to review this property yet</h3>
+    <p>{{ ineligible_message }}</p>
+    <a href="/properties/{{ property.id }}/">Back to property</a>
+  </div>
+  {% else %}
+  
+  <div class="rf-property-info">
+    {% if property.images.first %}
+    <img src="{{ property.images.first.image.url }}" alt="{{ property.title }}">
+    {% endif %}
+    <div>
+      <h3>{{ property.title }}</h3>
+      <p>{{ property.city }}, {{ property.region }}</p>
+    </div>
+  </div>
+
+  <form class="rf-form" method="post" enctype="multipart/form-data" id="reviewForm">
+    {% csrf_token %}
+    
+    <!-- Rating -->
+    <div class="rf-section">
+      <h2 class="rf-section-title">Your Rating</h2>
+      <div class="rf-rating-stars" id="ratingStars">
+        <div class="rf-star" data-rating="1">
+          <svg viewBox="0 0 24 24" width="48" height="48"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="rf-star" data-rating="2">
+          <svg viewBox="0 0 24 24" width="48" height="48"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="rf-star" data-rating="3">
+          <svg viewBox="0 0 24 24" width="48" height="48"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="rf-star" data-rating="4">
+          <svg viewBox="0 0 24 24" width="48" height="48"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="rf-star" data-rating="5">
+          <svg viewBox="0 0 24 24" width="48" height="48"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+      </div>
+      <input type="hidden" name="rating" id="ratingInput" value="5" required>
+      {% if form.rating.errors %}
+      <div class="rf-error">{{ form.rating.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Review Title -->
+    <div class="rf-section">
+      <h2 class="rf-section-title">Review Title <span class="required">*</span></h2>
+      <p class="rf-section-subtitle">What would you tell a friend? (1 line, required)</p>
+      <div class="rf-form-group">
+        <input type="text" name="title" placeholder="Example: Great location, responsive management" required maxlength="200" value="{{ form.title.value|default:'' }}">
+        {% if form.title.errors %}
+        <div class="rf-error">{{ form.title.errors.0 }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Review Content -->
+    <div class="rf-section">
+      <h2 class="rf-section-title">Your Review <span class="required">*</span></h2>
+      <p class="rf-section-subtitle">Tell us more... (100-1000 characters)</p>
+      <div class="rf-form-group">
+        <textarea name="content" placeholder="Write about your experience..." required minlength="100" maxlength="1000" id="reviewContent">{{ form.content.value|default:'' }}</textarea>
+        <div class="rf-form-hint"><span id="charCount">0</span>/1000 characters</div>
+        {% if form.content.errors %}
+        <div class="rf-error">{{ form.content.errors.0 }}</div>
+        {% endif %}
+      </div>
+      
+      <p class="rf-section-subtitle" style="margin-top: 16px;">Write about:</p>
+      <ul style="font-size: 13px; color: var(--muted); margin-left: 20px; line-height: 1.8;">
+        <li>Location and proximity to campus</li>
+        <li>Room cleanliness and maintenance</li>
+        <li>Management responsiveness</li>
+        <li>Roommate matching quality</li>
+        <li>Security and safety</li>
+        <li>Value for money</li>
+        <li>Community and social aspect</li>
+      </ul>
+    </div>
+
+    <!-- Detailed Ratings -->
+    <div class="rf-section">
+      <h2 class="rf-section-title">Rate Specific Aspects (Optional)</h2>
+      <div class="rf-checkbox-group" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <div class="rf-form-group">
+          <label>Cleanliness</label>
+          <select name="cleanliness_rating">
+            <option value="">Not rated</option>
+            <option value="1">1 - Poor</option>
+            <option value="2">2 - Fair</option>
+            <option value="3">3 - Good</option>
+            <option value="4">4 - Very Good</option>
+            <option value="5">5 - Excellent</option>
+          </select>
+        </div>
+        <div class="rf-form-group">
+          <label>Location</label>
+          <select name="location_rating">
+            <option value="">Not rated</option>
+            <option value="1">1 - Poor</option>
+            <option value="2">2 - Fair</option>
+            <option value="3">3 - Good</option>
+            <option value="4">4 - Very Good</option>
+            <option value="5">5 - Excellent</option>
+          </select>
+        </div>
+        <div class="rf-form-group">
+          <label>Amenities</label>
+          <select name="amenities_rating">
+            <option value="">Not rated</option>
+            <option value="1">1 - Poor</option>
+            <option value="2">2 - Fair</option>
+            <option value="3">3 - Good</option>
+            <option value="4">4 - Very Good</option>
+            <option value="5">5 - Excellent</option>
+          </select>
+        </div>
+        <div class="rf-form-group">
+          <label>Management/Communication</label>
+          <select name="communication_rating">
+            <option value="">Not rated</option>
+            <option value="1">1 - Poor</option>
+            <option value="2">2 - Fair</option>
+            <option value="3">3 - Good</option>
+            <option value="4">4 - Very Good</option>
+            <option value="5">5 - Excellent</option>
+          </select>
+        </div>
+        <div class="rf-form-group">
+          <label>Value for Money</label>
+          <select name="value_rating">
+            <option value="">Not rated</option>
+            <option value="1">1 - Poor</option>
+            <option value="2">2 - Fair</option>
+            <option value="3">3 - Good</option>
+            <option value="4">4 - Very Good</option>
+            <option value="5">5 - Excellent</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Photo Upload -->
+    <div class="rf-section">
+      <h2 class="rf-section-title">Upload Photos (Optional)</h2>
+      <p class="rf-section-subtitle">Photos help future guests see reality. Max 3 photos, 5MB each, JPG/PNG only.</p>
+      <div class="rf-photo-upload" id="photoUpload">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <p>Drag files or click to upload</p>
+        <span>Room photo, Common area photo, Proof of stay (optional)</span>
+        <input type="file" name="photos" multiple accept="image/jpeg,image/png" style="display: none;" id="photoInput">
+      </div>
+      <div class="rf-photo-preview" id="photoPreview"></div>
+    </div>
+
+    <!-- Recommendation -->
+    <div class="rf-section">
+      <h2 class="rf-section-title">Would you recommend this property?</h2>
+      <div class="rf-radio-group">
+        <div class="rf-radio-item">
+          <input type="radio" name="recommendation" value="DEFINITELY" id="rec_definitely" checked>
+          <label for="rec_definitely">Yes, definitely</label>
+        </div>
+        <div class="rf-radio-item">
+          <input type="radio" name="recommendation" value="MAYBE" id="rec_maybe">
+          <label for="rec_maybe">Maybe</label>
+        </div>
+        <div class="rf-radio-item">
+          <input type="radio" name="recommendation" value="NO" id="rec_no">
+          <label for="rec_no">No, not recommended</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aspects Highlighted -->
+    <div class="rf-section">
+      <h2 class="rf-section-title">Which aspects would you highlight?</h2>
+      <div class="rf-checkbox-group">
+        <div class="rf-checkbox-item">
+          <input type="checkbox" name="aspects" value="Location" id="aspect_location">
+          <label for="aspect_location">Location</label>
+        </div>
+        <div class="rf-checkbox-item">
+          <input type="checkbox" name="aspects" value="Security" id="aspect_security">
+          <label for="aspect_security">Security</label>
+        </div>
+        <div class="rf-checkbox-item">
+          <input type="checkbox" name="aspects" value="Cleanliness" id="aspect_cleanliness">
+          <label for="aspect_cleanliness">Cleanliness</label>
+        </div>
+        <div class="rf-checkbox-item">
+          <input type="checkbox" name="aspects" value="WiFi" id="aspect_wifi">
+          <label for="aspect_wifi">WiFi</label>
+        </div>
+        <div class="rf-checkbox-item">
+          <input type="checkbox" name="aspects" value="Kitchen" id="aspect_kitchen">
+          <label for="aspect_kitchen">Kitchen</label>
+        </div>
+        <div class="rf-checkbox-item">
+          <input type="checkbox" name="aspects" value="Community" id="aspect_community">
+          <label for="aspect_community">Community</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Concerns -->
+    <div class="rf-section">
+      <h2 class="rf-section-title">Any concerns for future guests?</h2>
+      <div class="rf-checkbox-group">
+        <div class="rf-checkbox-item">
+          <input type="checkbox" name="concerns" value="Water pressure issues" id="concern_water">
+          <label for="concern_water">Water pressure issues</label>
+        </div>
+        <div class="rf-checkbox-item">
+          <input type="checkbox" name="concerns" value="Noise levels" id="concern_noise">
+          <label for="concern_noise">Noise levels</label>
+        </div>
+        <div class="rf-checkbox-item">
+          <input type="checkbox" name="concerns" value="Kitchen access hours" id="concern_kitchen">
+          <label for="concern_kitchen">Kitchen access hours</label>
+        </div>
+        <div class="rf-checkbox-item">
+          <input type="checkbox" name="concerns" value="Parking limited" id="concern_parking">
+          <label for="concern_parking">Parking limited</label>
+        </div>
+        <div class="rf-checkbox-item">
+          <input type="checkbox" name="concerns" value="Other" id="concern_other">
+          <label for="concern_other">Other</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Would Stay Again -->
+    <div class="rf-section">
+      <h2 class="rf-section-title">Would you stay here again?</h2>
+      <div class="rf-radio-group">
+        <div class="rf-radio-item">
+          <input type="radio" name="would_stay_again" value="ALREADY_BOOKED" id="stay_booked">
+          <label for="stay_booked">Already booked next semester</label>
+        </div>
+        <div class="rf-radio-item">
+          <input type="radio" name="would_stay_again" value="DEFINITELY" id="stay_definitely" checked>
+          <label for="stay_definitely">Definitely</label>
+        </div>
+        <div class="rf-radio-item">
+          <input type="radio" name="would_stay_again" value="MAYBE" id="stay_maybe">
+          <label for="stay_maybe">Maybe</label>
+        </div>
+        <div class="rf-radio-item">
+          <input type="radio" name="would_stay_again" value="NO" id="stay_no">
+          <label for="stay_no">No, looking elsewhere</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guest Type -->
+    <div class="rf-section">
+      <h2 class="rf-section-title">Guest Type</h2>
+      <div class="rf-radio-group">
+        <div class="rf-radio-item">
+          <input type="radio" name="guest_type" value="STUDENT" id="guest_student" checked>
+          <label for="guest_student">Student</label>
+        </div>
+        <div class="rf-radio-item">
+          <input type="radio" name="guest_type" value="WORKER" id="guest_worker">
+          <label for="guest_worker">Worker</label>
+        </div>
+        <div class="rf-radio-item">
+          <input type="radio" name="guest_type" value="FAMILY" id="guest_family">
+          <label for="guest_family">Family</label>
+        </div>
+        <div class="rf-radio-item">
+          <input type="radio" name="guest_type" value="OTHER" id="guest_other">
+          <label for="guest_other">Other</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="rf-actions">
+      <button type="submit" class="rf-btn rf-btn-primary">Submit Review</button>
+      <a href="/properties/{{ property.id }}/" class="rf-btn rf-btn-secondary" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Cancel</a>
+    </div>
+  </form>
+  {% endif %}
+</div>
+
+<script>
+// Rating stars
+const ratingStars = document.querySelectorAll('.rf-star');
+const ratingInput = document.getElementById('ratingInput');
+
+ratingStars.forEach(star => {
+  star.addEventListener('click', () => {
+    const rating = star.dataset.rating;
+    ratingInput.value = rating;
+    
+    ratingStars.forEach((s, index) => {
+      if (index < rating) {
+        s.classList.add('active');
+      } else {
+        s.classList.remove('active');
+      }
+    });
+  });
+});
+
+// Character count
+const reviewContent = document.getElementById('reviewContent');
+const charCount = document.getElementById('charCount');
+
+reviewContent.addEventListener('input', () => {
+  charCount.textContent = reviewContent.value.length;
+});
+
+// Photo upload
+const photoUpload = document.getElementById('photoUpload');
+const photoInput = document.getElementById('photoInput');
+const photoPreview = document.getElementById('photoPreview');
+let uploadedPhotos = [];
+
+photoUpload.addEventListener('click', () => photoInput.click());
+
+photoInput.addEventListener('change', (e) => {
+  const files = Array.from(e.target.files);
+  
+  if (uploadedPhotos.length + files.length > 3) {
+    alert('Maximum 3 photos allowed');
+    return;
+  }
+  
+  files.forEach(file => {
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Photo must be less than 5MB');
+      return;
+    }
+    
+    if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+      alert('Only JPG and PNG files allowed');
+      return;
+    }
+    
+    uploadedPhotos.push(file);
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const div = document.createElement('div');
+      div.className = 'rf-photo-preview-item';
+      div.innerHTML = `
+        <img src="${e.target.result}" alt="Preview">
+        <button type="button" class="remove-btn" onclick="removePhoto(${uploadedPhotos.length - 1})">×</button>
+      `;
+      photoPreview.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+function removePhoto(index) {
+  uploadedPhotos.splice(index, 1);
+  photoPreview.innerHTML = '';
+  uploadedPhotos.forEach((file, i) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const div = document.createElement('div');
+      div.className = 'rf-photo-preview-item';
+      div.innerHTML = `
+        <img src="${e.target.result}" alt="Preview">
+        <button type="button" class="remove-btn" onclick="removePhoto(${i})">×</button>
+      `;
+      photoPreview.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+</script>
+{% endblock %}

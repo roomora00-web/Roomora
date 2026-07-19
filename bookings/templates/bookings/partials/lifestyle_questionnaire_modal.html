@@ -1,0 +1,633 @@
+<div class="bm-overlay" id="questionnaireModalOverlay" style="animation: bmFadeIn 0.3s forwards;">
+  <div class="bm-modal" style="max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 0;">
+    <div class="bm-header" style="background: var(--charcoal); color: white; justify-content: space-between; position: sticky; top: 0; z-index: 10;">
+      <h2 class="bm-title" style="color: white; margin:0;">LIVING PREFERENCES</h2>
+      <button type="button" class="bm-close" id="questionnaireModalClose" style="background: rgba(255,255,255,0.1); color: white;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div style="padding: 0 20px; background: #FAFAFA;">
+      <div class="lq-container">
+  <!-- Progress Bar -->
+  <div class="lq-header-top">
+    <div class="lq-step-title">Page {{ step|default:1 }} of 4 &mdash; 
+      {% if step|default:1 == 1 %}Sleep and Daily Routine
+      {% elif step|default:1 == 2 %}Cleanliness, Noise and Visitors
+      {% elif step|default:1 == 3 %}Study Habits, Food and Environment
+      {% elif step|default:1 == 4 %}Personal Boundaries and Review
+      {% endif %}
+    </div>
+    <div class="lq-progress-wrapper">
+      <div class="lq-progress-bar-container">
+        <div class="lq-progress-bar" style="width: {{ progress_percent }}%"></div>
+      </div>
+      <div class="lq-progress-text">{{ progress_percent }}%</div>
+    </div>
+    <p class="lq-reassure-text">This takes about 5 minutes. Be honest &mdash; accurate answers lead to better roommate matches.</p>
+  </div>
+
+  <form id="lifestyleForm" class="lq-form">
+    <input type="hidden" name="step" value="{{ step|default:1 }}">
+    <input type="hidden" name="mode" value="{{ request.GET.mode|default:'' }}">
+    
+    <!-- Screen 1: Sleep & Daily Routine -->
+    {% if step|default:1 == 1 %}
+    <div class="lq-screen" data-step="1">
+      <h2>Sleep and Daily Routine</h2>
+      
+      <div class="lq-question">
+        <label>Question 1: What time do you typically go to sleep?</label>
+        <p class="lq-q-desc">Your bedtime helps us understand when you'll need quiet and when you'll be active.</p>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="sleep_time" value="VERY_EARLY" {% if profile.sleep_time == 'VERY_EARLY' %}checked{% endif %} required> <span>Very Early &mdash; Before 9pm</span></label>
+          <label class="lq-radio"><input type="radio" name="sleep_time" value="EARLY" {% if profile.sleep_time == 'EARLY' %}checked{% endif %}> <span>Early &mdash; Around 9-10pm</span></label>
+          <label class="lq-radio"><input type="radio" name="sleep_time" value="MODERATE" {% if profile.sleep_time == 'MODERATE' %}checked{% endif %}> <span>Moderate &mdash; Around 10-11pm</span></label>
+          <label class="lq-radio"><input type="radio" name="sleep_time" value="LATE" {% if profile.sleep_time == 'LATE' %}checked{% endif %}> <span>Late &mdash; After 11pm</span></label>
+          <label class="lq-radio"><input type="radio" name="sleep_time" value="VERY_LATE" {% if profile.sleep_time == 'VERY_LATE' %}checked{% endif %}> <span>Very Late &mdash; Midnight or later</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 2: What time do you typically wake up?</label>
+        <p class="lq-q-desc">This affects morning routines, bathroom use, and noise levels.</p>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="wake_time" value="VERY_EARLY" {% if profile.wake_time == 'VERY_EARLY' %}checked{% endif %} required> <span>Very Early &mdash; Before 6am</span></label>
+          <label class="lq-radio"><input type="radio" name="wake_time" value="EARLY" {% if profile.wake_time == 'EARLY' %}checked{% endif %}> <span>Early &mdash; Around 6-7am</span></label>
+          <label class="lq-radio"><input type="radio" name="wake_time" value="MODERATE" {% if profile.wake_time == 'MODERATE' %}checked{% endif %}> <span>Moderate &mdash; Around 7-8am</span></label>
+          <label class="lq-radio"><input type="radio" name="wake_time" value="LATE" {% if profile.wake_time == 'LATE' %}checked{% endif %}> <span>Late &mdash; Around 8-9am</span></label>
+          <label class="lq-radio"><input type="radio" name="wake_time" value="VERY_LATE" {% if profile.wake_time == 'VERY_LATE' %}checked{% endif %}> <span>Very Late &mdash; After 9am</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 3: Do you use an alarm clock?</label>
+        <p class="lq-q-desc">This helps us know if your alarm might disturb a roommate.</p>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="uses_alarm" value="YES" {% if profile.uses_alarm == 'YES' %}checked{% endif %} required> <span>Yes, I rely on an alarm</span></label>
+          <label class="lq-radio"><input type="radio" name="uses_alarm" value="NO" {% if profile.uses_alarm == 'NO' %}checked{% endif %}> <span>No, I wake naturally</span></label>
+          <label class="lq-radio"><input type="radio" name="uses_alarm" value="SOMETIMES" {% if profile.uses_alarm == 'SOMETIMES' %}checked{% endif %}> <span>Sometimes</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 4: How active are you at night after 10pm?</label>
+        <p class="lq-q-desc">This tells us about noise and shared space usage at night.</p>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="night_activity_level" value="MINIMAL" {% if profile.night_activity_level == 'MINIMAL' %}checked{% endif %} required> <span>Minimal &mdash; Usually in bed or completely quiet</span></label>
+          <label class="lq-radio"><input type="radio" name="night_activity_level" value="MODERATE" {% if profile.night_activity_level == 'MODERATE' %}checked{% endif %}> <span>Moderate &mdash; Some activity like quiet studying</span></label>
+          <label class="lq-radio"><input type="radio" name="night_activity_level" value="ACTIVE" {% if profile.night_activity_level == 'ACTIVE' %}checked{% endif %}> <span>Active &mdash; I study, watch content, or socialize at night</span></label>
+          <label class="lq-radio"><input type="radio" name="night_activity_level" value="VERY_ACTIVE" {% if profile.night_activity_level == 'VERY_ACTIVE' %}checked{% endif %}> <span>Very Active &mdash; I often have guests or stay busy late</span></label>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- Screen 2: Cleanliness, Noise and Visitors -->
+    {% if step|default:1 == 2 %}
+    <div class="lq-screen" data-step="2">
+      <h2>Cleanliness, Noise and Visitors</h2>
+      
+      <div class="lq-question">
+        <label>Question 5: How would you rate your personal cleanliness?</label>
+        <p class="lq-q-desc">Your hygiene habits affect the shared environment. Rate yourself honestly.</p>
+        <div class="lq-star-rating">
+          <input type="radio" id="star5" name="personal_cleanliness_level" value="5" {% if profile.personal_cleanliness_level == 5 %}checked{% endif %} required><label for="star5" title="5 stars"></label>
+          <input type="radio" id="star4" name="personal_cleanliness_level" value="4" {% if profile.personal_cleanliness_level == 4 %}checked{% endif %}><label for="star4" title="4 stars"></label>
+          <input type="radio" id="star3" name="personal_cleanliness_level" value="3" {% if profile.personal_cleanliness_level == 3 %}checked{% endif %}><label for="star3" title="3 stars"></label>
+          <input type="radio" id="star2" name="personal_cleanliness_level" value="2" {% if profile.personal_cleanliness_level == 2 %}checked{% endif %}><label for="star2" title="2 stars"></label>
+          <input type="radio" id="star1" name="personal_cleanliness_level" value="1" {% if profile.personal_cleanliness_level == 1 %}checked{% endif %}><label for="star1" title="1 star"></label>
+        </div>
+        <div id="starDesc" class="lq-star-desc"></div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 6: How often do you clean shared spaces?</label>
+        <p class="lq-q-desc">Bathroom and common areas need regular cleaning.</p>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="shared_space_cleaning_frequency" value="RARELY" {% if profile.shared_space_cleaning_frequency == 'RARELY' %}checked{% endif %} required> <span>Rarely (once a month or less)</span></label>
+          <label class="lq-radio"><input type="radio" name="shared_space_cleaning_frequency" value="WEEKLY" {% if profile.shared_space_cleaning_frequency == 'WEEKLY' %}checked{% endif %}> <span>Weekly (once a week or as needed)</span></label>
+          <label class="lq-radio"><input type="radio" name="shared_space_cleaning_frequency" value="VERY_FREQUENT" {% if profile.shared_space_cleaning_frequency == 'VERY_FREQUENT' %}checked{% endif %}> <span>Very Frequently (2-3 times per week)</span></label>
+          <label class="lq-radio"><input type="radio" name="shared_space_cleaning_frequency" value="OBSESSIVE" {% if profile.shared_space_cleaning_frequency == 'OBSESSIVE' %}checked{% endif %}> <span>Obsessively (deep clean multiple times per week)</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 7: What is your noise tolerance?</label>
+        <p class="lq-q-desc">Critical for compatibility. How much noise bothers you?</p>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="noise_tolerance" value="LOW" {% if profile.noise_tolerance == 'LOW' %}checked{% endif %} required> <span>Low &mdash; I need quiet to sleep and study. Noise is very disruptive.</span></label>
+          <label class="lq-radio"><input type="radio" name="noise_tolerance" value="MODERATE" {% if profile.noise_tolerance == 'MODERATE' %}checked{% endif %}> <span>Moderate &mdash; Some noise is fine but not late at night</span></label>
+          <label class="lq-radio"><input type="radio" name="noise_tolerance" value="HIGH" {% if profile.noise_tolerance == 'HIGH' %}checked{% endif %}> <span>High &mdash; I am not easily bothered by noise</span></label>
+          <label class="lq-radio"><input type="radio" name="noise_tolerance" value="VERY_HIGH" {% if profile.noise_tolerance == 'VERY_HIGH' %}checked{% endif %}> <span>Very High &mdash; Noise does not bother me at all</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 8: What noise level do you prefer in the room?</label>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="preferred_noise_level" value="QUIET" {% if profile.preferred_noise_level == 'QUIET' %}checked{% endif %} required> <span>Quiet &mdash; Generally quiet, minimal background noise okay</span></label>
+          <label class="lq-radio"><input type="radio" name="preferred_noise_level" value="VERY_QUIET" {% if profile.preferred_noise_level == 'VERY_QUIET' %}checked{% endif %}> <span>Very Quiet &mdash; Complete silence at all times</span></label>
+          <label class="lq-radio"><input type="radio" name="preferred_noise_level" value="MODERATE" {% if profile.preferred_noise_level == 'MODERATE' %}checked{% endif %}> <span>Moderate &mdash; Some activity and conversation is fine</span></label>
+          <label class="lq-radio"><input type="radio" name="preferred_noise_level" value="LIVELY" {% if profile.preferred_noise_level == 'LIVELY' %}checked{% endif %}> <span>Lively &mdash; I like an active, social atmosphere</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 9: How often do you have visitors or guests?</label>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="visitor_frequency" value="RARE" id="vfRare" {% if profile.visitor_frequency == 'RARE' %}checked{% endif %} required> <span>Rarely (few times a semester or less)</span></label>
+          <label class="lq-radio"><input type="radio" name="visitor_frequency" value="OCCASIONAL" id="vfOccasional" {% if profile.visitor_frequency == 'OCCASIONAL' %}checked{% endif %}> <span>Occasionally (monthly or a few times per month)</span></label>
+          <label class="lq-radio"><input type="radio" name="visitor_frequency" value="FREQUENT" id="vfFrequent" {% if profile.visitor_frequency == 'FREQUENT' %}checked{% endif %}> <span>Frequently (weekly)</span></label>
+          <label class="lq-radio"><input type="radio" name="visitor_frequency" value="VERY_FREQUENT" id="vfVeryFrequent" {% if profile.visitor_frequency == 'VERY_FREQUENT' %}checked{% endif %}> <span>Very Frequently (multiple times per week)</span></label>
+        </div>
+      </div>
+      
+      <div id="visitorFollowUp" style="display: none; padding-left: 20px; border-left: 2px solid #E11D48; margin-top: 20px; margin-bottom: 30px;">
+        <div class="lq-question" style="margin-bottom: 20px; box-shadow: none; border: none; padding: 0;">
+          <label style="font-size: 15px;">Follow-up: Do your guests ever stay overnight?</label>
+          <div class="lq-radio-list">
+            <label class="lq-radio"><input type="radio" name="visitor_overnight_preference" value="NEVER" {% if profile.visitor_overnight_preference == 'NEVER' %}checked{% endif %}> <span>Never &mdash; only daytime visits</span></label>
+            <label class="lq-radio"><input type="radio" name="visitor_overnight_preference" value="RARELY" {% if profile.visitor_overnight_preference == 'RARELY' %}checked{% endif %}> <span>Rarely &mdash; occasional overnight, but rare</span></label>
+            <label class="lq-radio"><input type="radio" name="visitor_overnight_preference" value="SOMETIMES" {% if profile.visitor_overnight_preference == 'SOMETIMES' %}checked{% endif %}> <span>Sometimes &mdash; yes, sometimes overnight</span></label>
+            <label class="lq-radio"><input type="radio" name="visitor_overnight_preference" value="FREQUENTLY" {% if profile.visitor_overnight_preference == 'FREQUENTLY' %}checked{% endif %}> <span>Frequently &mdash; guests often stay overnight</span></label>
+          </div>
+        </div>
+        
+        <div class="lq-question" style="margin-bottom: 0; box-shadow: none; border: none; padding: 0;">
+          <label style="font-size: 15px;">Follow-up: Do you prefer advance notice when your roommate has guests?</label>
+          <div class="lq-radio-list">
+            <label class="lq-radio"><input type="radio" name="visitor_notice_preference" value="NOTICE_24H" {% if profile.visitor_notice_preference == 'NOTICE_24H' %}checked{% endif %}> <span>Yes &mdash; 24-48 hours notice preferred</span></label>
+            <label class="lq-radio"><input type="radio" name="visitor_notice_preference" value="SHORT_NOTICE" {% if profile.visitor_notice_preference == 'SHORT_NOTICE' %}checked{% endif %}> <span>Yes &mdash; any notice appreciated</span></label>
+            <label class="lq-radio"><input type="radio" name="visitor_notice_preference" value="NO_NOTICE" {% if profile.visitor_notice_preference == 'NO_NOTICE' %}checked{% endif %}> <span>No &mdash; guests are fine anytime</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- Screen 3: Study Habits, Food and Environment -->
+    {% if step|default:1 == 3 %}
+    <div class="lq-screen" data-step="3">
+      <h2>Study Habits, Food and Environment</h2>
+      
+      <div class="lq-question">
+        <label>Question 10: Where do you prefer to study?</label>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="study_location" value="OUTSIDE" id="studyOutside" {% if profile.study_location == 'OUTSIDE' %}checked{% endif %} required> <span>Mainly Outside &mdash; Library, cafe, or on campus</span></label>
+          <label class="lq-radio"><input type="radio" name="study_location" value="MIXED" id="studyMixed" {% if profile.study_location == 'MIXED' %}checked{% endif %}> <span>Mixed &mdash; Both in room and outside</span></label>
+          <label class="lq-radio"><input type="radio" name="study_location" value="ROOM" id="studyRoom" {% if profile.study_location == 'ROOM' %}checked{% endif %}> <span>Mainly in Room &mdash; I prefer studying in my room</span></label>
+        </div>
+      </div>
+      
+      <div id="studyFollowUp" style="display: none; padding-left: 20px; border-left: 2px solid #E11D48; margin-top: 20px; margin-bottom: 30px;">
+        <div class="lq-question" style="margin-bottom: 20px; box-shadow: none; border: none; padding: 0;">
+          <label style="font-size: 15px;">Follow-up: Do you still need quiet hours in the room?</label>
+          <div class="lq-radio-list">
+            <label class="lq-radio"><input type="radio" name="quiet_hours_still_needed" value="YES" {% if profile.quiet_hours_still_needed == 'YES' %}checked{% endif %}> <span>Yes, definitely &mdash; even when studying outside, I need quiet to sleep</span></label>
+            <label class="lq-radio"><input type="radio" name="quiet_hours_still_needed" value="SOMEWHAT" {% if profile.quiet_hours_still_needed == 'SOMEWHAT' %}checked{% endif %}> <span>Somewhat &mdash; some quiet is helpful</span></label>
+            <label class="lq-radio"><input type="radio" name="quiet_hours_still_needed" value="NOT_REALLY" {% if profile.quiet_hours_still_needed == 'NOT_REALLY' %}checked{% endif %}> <span>Not really &mdash; I can manage with noise</span></label>
+            <label class="lq-radio"><input type="radio" name="quiet_hours_still_needed" value="NO" {% if profile.quiet_hours_still_needed == 'NO' %}checked{% endif %}> <span>No &mdash; I study elsewhere and am not in the room much</span></label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>When do you need quiet? (Select all that apply):</label>
+        <div class="lq-checkbox-list">
+          <label class="lq-checkbox"><input type="checkbox" name="quiet_times" value="EVENINGS" {% if 'EVENINGS' in profile.quiet_times %}checked{% endif %}> <span>Evenings (6pm onwards)</span></label>
+          <label class="lq-checkbox"><input type="checkbox" name="quiet_times" value="EXAMS" {% if 'EXAMS' in profile.quiet_times %}checked{% endif %}> <span>Before exams</span></label>
+          <label class="lq-checkbox"><input type="checkbox" name="quiet_times" value="ALWAYS" {% if 'ALWAYS' in profile.quiet_times %}checked{% endif %}> <span>Always</span></label>
+          <label class="lq-checkbox"><input type="checkbox" name="quiet_times" value="WEEKENDS" {% if 'WEEKENDS' in profile.quiet_times %}checked{% endif %}> <span>Weekends only</span></label>
+          <label class="lq-checkbox"><input type="checkbox" name="quiet_times" value="NO_TIME" {% if 'NO_TIME' in profile.quiet_times %}checked{% endif %}> <span>No specific time</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 11: How often do you cook or prepare food?</label>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="cooking_frequency" value="NEVER" {% if profile.cooking_frequency == 'NEVER' %}checked{% endif %} required> <span>Never &mdash; I don't cook</span></label>
+          <label class="lq-radio"><input type="radio" name="cooking_frequency" value="WEEKLY" {% if profile.cooking_frequency == 'WEEKLY' %}checked{% endif %}> <span>Weekly &mdash; I cook 1-3 times per week</span></label>
+          <label class="lq-radio"><input type="radio" name="cooking_frequency" value="FREQUENTLY" {% if profile.cooking_frequency == 'FREQUENTLY' %}checked{% endif %}> <span>Frequently &mdash; 4-5 times per week</span></label>
+          <label class="lq-radio"><input type="radio" name="cooking_frequency" value="DAILY" {% if profile.cooking_frequency == 'DAILY' %}checked{% endif %}> <span>Daily &mdash; I cook most days</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 12: Are you comfortable sharing a kitchen with your roommate?</label>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="shared_kitchen_comfort" value="YES" {% if profile.shared_kitchen_comfort == 'YES' %}checked{% endif %} required> <span>Yes, totally &mdash; we can coordinate schedules</span></label>
+          <label class="lq-radio"><input type="radio" name="shared_kitchen_comfort" value="SET_TIMES" {% if profile.shared_kitchen_comfort == 'SET_TIMES' %}checked{% endif %}> <span>Yes, but I prefer set times</span></label>
+          <label class="lq-radio"><input type="radio" name="shared_kitchen_comfort" value="MINIMAL" {% if profile.shared_kitchen_comfort == 'MINIMAL' %}checked{% endif %}> <span>Minimal &mdash; prefer limited kitchen interaction</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 13: What is your temperature preference?</label>
+        <div class="lq-radio-list" style="display: flex; flex-wrap: wrap; gap: 15px;">
+          <label class="lq-radio"><input type="radio" name="preferred_temperature" value="16" {% if profile.preferred_temperature == 16 %}checked{% endif %} required> <span>Very Cold &mdash; 16-18°C</span></label>
+          <label class="lq-radio"><input type="radio" name="preferred_temperature" value="18" {% if profile.preferred_temperature == 18 %}checked{% endif %}> <span>Cool &mdash; 18-20°C</span></label>
+          <label class="lq-radio"><input type="radio" name="preferred_temperature" value="20" {% if profile.preferred_temperature == 20 %}checked{% endif %}> <span>Moderate &mdash; 20-23°C</span></label>
+          <label class="lq-radio"><input type="radio" name="preferred_temperature" value="23" {% if profile.preferred_temperature == 23 %}checked{% endif %}> <span>Warm &mdash; 23-25°C</span></label>
+          <label class="lq-radio"><input type="radio" name="preferred_temperature" value="25" {% if profile.preferred_temperature == 25 %}checked{% endif %}> <span>Very Warm &mdash; Above 25°C</span></label>
+        </div>
+        
+        <label style="margin-top: 20px;">Cooling preference:</label>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="air_con_preference" value="FAN" {% if profile.air_con_preference == 'FAN' %}checked{% endif %} required> <span>Fan preferred</span></label>
+          <label class="lq-radio"><input type="radio" name="air_con_preference" value="AC" {% if profile.air_con_preference == 'AC' %}checked{% endif %}> <span>Air conditioning if available</span></label>
+          <label class="lq-radio"><input type="radio" name="air_con_preference" value="BOTH" {% if profile.air_con_preference == 'BOTH' %}checked{% endif %}> <span>Both depending on weather</span></label>
+          <label class="lq-radio"><input type="radio" name="air_con_preference" value="NONE" {% if profile.air_con_preference == 'NONE' %}checked{% endif %}> <span>No preference</span></label>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- Screen 4: Personal Boundaries and Review -->
+    {% if step|default:1 == 4 %}
+    <div class="lq-screen" data-step="4">
+      <h2>Personal Boundaries and Review</h2>
+      
+      <div class="lq-question">
+        <label>Question 14: Are you comfortable with your roommate borrowing your items?</label>
+        <p class="lq-q-desc">Examples: charging cables, toiletries, study materials, kitchen items</p>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="shared_items_comfort" value="ALWAYS" {% if profile.shared_items_comfort == 'ALWAYS' %}checked{% endif %} required> <span>Always &mdash; we can freely share</span></label>
+          <label class="lq-radio"><input type="radio" name="shared_items_comfort" value="ASK_FIRST" {% if profile.shared_items_comfort == 'ASK_FIRST' %}checked{% endif %}> <span>Ask First &mdash; I am okay with sharing if they ask</span></label>
+          <label class="lq-radio"><input type="radio" name="shared_items_comfort" value="RARELY" {% if profile.shared_items_comfort == 'RARELY' %}checked{% endif %}> <span>Rarely &mdash; I prefer minimal borrowing</span></label>
+          <label class="lq-radio"><input type="radio" name="shared_items_comfort" value="NEVER" {% if profile.shared_items_comfort == 'NEVER' %}checked{% endif %}> <span>Never &mdash; I prefer not to share my things</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 15: How important is personal privacy to you?</label>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="personal_space_importance" value="VERY_IMPORTANT" {% if profile.personal_space_importance == 'VERY_IMPORTANT' %}checked{% endif %} required> <span>Very Important &mdash; I value my space and personal time highly</span></label>
+          <label class="lq-radio"><input type="radio" name="personal_space_importance" value="IMPORTANT" {% if profile.personal_space_importance == 'IMPORTANT' %}checked{% endif %}> <span>Important &mdash; privacy matters but I am flexible</span></label>
+          <label class="lq-radio"><input type="radio" name="personal_space_importance" value="SOMEWHAT" {% if profile.personal_space_importance == 'SOMEWHAT' %}checked{% endif %}> <span>Somewhat &mdash; some privacy is nice but not critical</span></label>
+          <label class="lq-radio"><input type="radio" name="personal_space_importance" value="NOT_IMPORTANT" {% if profile.personal_space_importance == 'NOT_IMPORTANT' %}checked{% endif %}> <span>Not Important &mdash; I am very social and open</span></label>
+        </div>
+        
+        <label style="margin-top: 20px;">Privacy means what to you? (Select all that apply):</label>
+        <div class="lq-checkbox-list">
+          <label class="lq-checkbox"><input type="checkbox" name="privacy_meaning" value="ROUTINES" {% if 'ROUTINES' in profile.privacy_meaning %}checked{% endif %}> <span>Privacy during personal routines (bathroom, dressing)</span></label>
+          <label class="lq-checkbox"><input type="checkbox" name="privacy_meaning" value="ALONE_TIME" {% if 'ALONE_TIME' in profile.privacy_meaning %}checked{% endif %}> <span>Quiet personal time alone in the room</span></label>
+          <label class="lq-checkbox"><input type="checkbox" name="privacy_meaning" value="BELONGINGS" {% if 'BELONGINGS' in profile.privacy_meaning %}checked{% endif %}> <span>No one going through my belongings</span></label>
+          <label class="lq-checkbox"><input type="checkbox" name="privacy_meaning" value="SOCIAL_LIFE" {% if 'SOCIAL_LIFE' in profile.privacy_meaning %}checked{% endif %}> <span>Separate social life from roommate</span></label>
+          <label class="lq-checkbox"><input type="checkbox" name="privacy_meaning" value="LIMITED_INTERACTION" {% if 'LIMITED_INTERACTION' in profile.privacy_meaning %}checked{% endif %}> <span>Limited interaction overall</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>Question 16: How do you prefer to handle disagreements?</label>
+        <div class="lq-radio-list">
+          <label class="lq-radio"><input type="radio" name="conflict_resolution_preference" value="DIRECT" {% if profile.conflict_resolution_preference == 'DIRECT' %}checked{% endif %} required> <span>Direct conversation &mdash; I prefer talking it out calmly</span></label>
+          <label class="lq-radio"><input type="radio" name="conflict_resolution_preference" value="MEDIATOR" {% if profile.conflict_resolution_preference == 'MEDIATOR' %}checked{% endif %}> <span>Mediator &mdash; I would like someone neutral to help</span></label>
+          <label class="lq-radio"><input type="radio" name="conflict_resolution_preference" value="SPACE" {% if profile.conflict_resolution_preference == 'SPACE' %}checked{% endif %}> <span>Give space &mdash; I prefer time before discussing</span></label>
+          <label class="lq-radio"><input type="radio" name="conflict_resolution_preference" value="ADMIN" {% if profile.conflict_resolution_preference == 'ADMIN' %}checked{% endif %}> <span>Admin &mdash; I would involve property management</span></label>
+        </div>
+      </div>
+      
+      <div class="lq-question">
+        <label>A note about yourself (Optional &mdash; 300 characters):</label>
+        <textarea name="notes" rows="4" maxlength="300" placeholder="e.g. Early riser, need quiet especially in the evenings...">{{ profile.notes|default:'' }}</textarea>
+      </div>
+
+      <!-- REVIEW SUMMARY -->
+      <div class="lq-review-summary" id="reviewSummary">
+        <h3>YOUR PREFERENCES SUMMARY</h3>
+        <div class="lq-review-grid">
+          <div class="lq-review-item"><strong>Sleep:</strong> <span id="revSleep">-</span></div>
+          <div class="lq-review-item"><strong>Wake:</strong> <span id="revWake">-</span></div>
+          <div class="lq-review-item"><strong>Cleanliness:</strong> <span id="revClean">-</span>/5</div>
+          <div class="lq-review-item"><strong>Shared Spaces:</strong> <span id="revSharedClean">-</span></div>
+          <div class="lq-review-item"><strong>Noise Tolerance:</strong> <span id="revNoiseTol">-</span></div>
+          <div class="lq-review-item"><strong>Room Preference:</strong> <span id="revNoisePref">-</span></div>
+          <div class="lq-review-item"><strong>Visitors:</strong> <span id="revVis">-</span></div>
+          <div class="lq-review-item"><strong>Overnight:</strong> <span id="revOvernight">-</span></div>
+          <div class="lq-review-item"><strong>Study:</strong> <span id="revStudy">-</span></div>
+          <div class="lq-review-item"><strong>Quiet Hours:</strong> <span id="revQuiet">-</span></div>
+          <div class="lq-review-item"><strong>Cooking:</strong> <span id="revCook">-</span></div>
+          <div class="lq-review-item"><strong>Kitchen:</strong> <span id="revKitchen">-</span></div>
+          <div class="lq-review-item"><strong>Temperature:</strong> <span id="revTemp">-</span></div>
+          <div class="lq-review-item"><strong>Cooling:</strong> <span id="revCool">-</span></div>
+          <div class="lq-review-item"><strong>Shared Items:</strong> <span id="revItems">-</span></div>
+          <div class="lq-review-item"><strong>Privacy:</strong> <span id="revPrivacy">-</span></div>
+          <div class="lq-review-item" style="grid-column: 1 / -1;"><strong>Conflict Style:</strong> <span id="revConflict">-</span></div>
+        </div>
+      </div>
+      
+      <div id="processingState" style="display: none; text-align: center; padding: 20px;">
+        <div class="lq-spinner"></div>
+        <p style="margin-top: 15px; font-weight: 600; color: #E11D48;" id="processingText">Saving your preferences...</p>
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- Navigation Buttons -->
+    <div class="lq-actions" id="actionButtons">
+      {% if step|default:1 > 1 %}
+      <button type="button" id="prevBtn" class="lq-btn lq-btn-secondary">Previous</button>
+      {% endif %}
+      
+      {% if step|default:1 < 4 %}
+      <button type="submit" id="nextBtn" class="lq-btn lq-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important;">Next &rarr;</button>
+      {% else %}
+      <button type="button" id="editAnswersBtn" class="lq-btn lq-btn-secondary">Edit Answers</button>
+      <button type="submit" id="submitBtn" class="lq-btn lq-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important;">Submit My Preferences</button>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<style>
+.lq-container { max-width: 800px; margin: 40px auto; padding: 0 20px; font-family: 'Inter', sans-serif; }
+.lq-header-top { margin-bottom: 30px; text-align: center; }
+.lq-step-title { font-size: 14px; font-weight: 800; color: #71717A; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px; }
+.lq-progress-wrapper { display: flex; align-items: center; gap: 15px; justify-content: center; margin-bottom: 15px; }
+.lq-progress-bar-container { width: 300px; height: 12px; background: var(--border); border-radius: 6px; overflow: hidden; }
+.lq-progress-bar { height: 100%; background: var(--charcoal); transition: width 0.5s ease; }
+.lq-progress-text { font-size: 14px; font-weight: 700; color: #18181B; }
+.lq-reassure-text { font-size: 15px; color: #18181B; font-weight: 500; }
+
+.lq-form { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+.lq-screen h2 { font-size: 24px; font-weight: 800; margin: 0 0 30px 0; color: #18181B; border-bottom: 2px solid var(--bg); padding-bottom: 15px; }
+.lq-question { margin-bottom: 30px; }
+.lq-question label { display: block; font-size: 16px; font-weight: 700; color: #18181B; margin-bottom: 6px; }
+.lq-q-desc { font-size: 14px; color: #71717A; margin: 0 0 16px 0; }
+
+/* Radio List Styling */
+.lq-radio-list { display: flex; flex-direction: column; gap: 12px; }
+.lq-radio { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; background: #FAFAFA; padding: 16px; border-radius: 12px; border: 2px solid transparent; transition: all 0.2s; }
+.lq-radio:hover { background: #FAFAFA; }
+.lq-radio input[type="radio"] { margin-top: 3px; accent-color: #E11D48; transform: scale(1.2); }
+.lq-radio span { font-size: 15px; font-weight: 500; color: #18181B; }
+.lq-radio input[type="radio"]:checked + span { font-weight: 700; color: #E11D48; }
+.lq-radio:has(input[type="radio"]:checked) { border-color: #E11D48; background: #FFF1F2; }
+
+/* Checkbox List Styling */
+.lq-checkbox-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+.lq-checkbox { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; background: #FAFAFA; padding: 12px 16px; border-radius: 8px; border: 1px solid #E4E4E7; }
+.lq-checkbox input[type="checkbox"] { margin-top: 2px; accent-color: #E11D48; transform: scale(1.2); }
+.lq-checkbox:has(input[type="checkbox"]:checked) { border-color: #E11D48; background: #FFF1F2; }
+
+textarea, input[type="number"] { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #E4E4E7; background: #FAFAFA; font-family: inherit; font-size: 15px; resize: vertical; }
+textarea:focus, input[type="number"]:focus { outline: none; border-color: #E11D48; background: white; }
+
+/* 5 Star Rating */
+.lq-star-rating { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 8px; margin-bottom: 8px; }
+.lq-star-rating input { display: none; }
+.lq-star-rating label { cursor: pointer; width: 40px; height: 40px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23CBD5E1" stroke="%23CBD5E1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'); background-size: cover; display: inline-block; transition: transform 0.2s; }
+.lq-star-rating label:hover,
+.lq-star-rating label:hover ~ label,
+.lq-star-rating input:checked ~ label { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23FDE047" stroke="%23EAB308" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'); transform: scale(1.1); }
+.lq-star-desc { font-weight: 700; color: #E11D48; font-size: 15px; min-height: 20px; }
+
+/* Review Summary */
+.lq-review-summary { background: #FAFAFA; border: 1px solid #E4E4E7; border-radius: 16px; padding: 24px; margin-top: 40px; }
+.lq-review-summary h3 { font-size: 16px; font-weight: 800; margin: 0 0 20px 0; color: #18181B; text-align: center; }
+.lq-review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.lq-review-item { font-size: 14px; color: #18181B; }
+.lq-review-item strong { color: #71717A; }
+
+/* Buttons */
+.lq-actions { display: flex; gap: 15px; margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--border); }
+.lq-btn { flex: 1; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; }
+.lq-btn-primary { background: var(--charcoal); color: white; border: none; }
+.lq-btn-primary:hover { background: #000; transform: translateY(-2px); }
+.lq-btn-secondary { background: white; color: #18181B; border: 1px solid #E4E4E7; }
+.lq-btn-secondary:hover { background: #FAFAFA; }
+
+.lq-spinner {
+  width: 40px; height: 40px; border: 4px solid rgba(225, 29, 72, 0.2);
+  border-left-color: #E11D48; border-radius: 50%;
+  animation: spin 1s linear infinite; margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 600px) { .lq-review-grid { grid-template-columns: 1fr; } .lq-actions { flex-direction: column-reverse; } }
+</style>
+
+<script>
+/* init */
+  const closeBtn = document.getElementById('questionnaireModalClose');
+  if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+          const overlay = document.getElementById('questionnaireModalOverlay');
+          if (overlay) {
+              overlay.style.animation = 'bmFadeOut 0.3s forwards';
+              setTimeout(() => {
+                  const mc = document.getElementById('bookingModalContainer');
+                  if (mc) mc.innerHTML = '';
+              }, 300);
+          }
+      });
+  }
+  
+  // Logic for Follow-ups (Screen 2)
+  const vfRadios = document.querySelectorAll('input[name="visitor_frequency"]');
+  const vfFollowUp = document.getElementById('visitorFollowUp');
+  if (vfRadios.length && vfFollowUp) {
+    function checkVF() {
+      const checked = document.querySelector('input[name="visitor_frequency"]:checked');
+      if (checked && ['OCCASIONAL', 'FREQUENT', 'VERY_FREQUENT'].includes(checked.value)) {
+        vfFollowUp.style.display = 'block';
+      } else {
+        vfFollowUp.style.display = 'none';
+      }
+    }
+    vfRadios.forEach(r => r.addEventListener('change', checkVF));
+    checkVF(); // initial
+  }
+
+  // Logic for Follow-ups (Screen 3)
+  const slRadios = document.querySelectorAll('input[name="study_location"]');
+  const slFollowUp = document.getElementById('studyFollowUp');
+  if (slRadios.length && slFollowUp) {
+    function checkSL() {
+      const checked = document.querySelector('input[name="study_location"]:checked');
+      if (checked && checked.value === 'OUTSIDE') {
+        slFollowUp.style.display = 'block';
+      } else {
+        slFollowUp.style.display = 'none';
+      }
+    }
+    slRadios.forEach(r => r.addEventListener('change', checkSL));
+    checkSL(); // initial
+  }
+  
+  // Logic for 5 Star Rating Descriptions
+  const stars = document.querySelectorAll('input[name="personal_cleanliness_level"]');
+  const starDesc = document.getElementById('starDesc');
+  const descMap = {
+    "5": "5 out of 5 — Obsessively Clean",
+    "4": "4 out of 5 — Very Clean",
+    "3": "3 out of 5 — Average/Moderate",
+    "2": "2 out of 5 — A bit messy",
+    "1": "1 out of 5 — Not a priority"
+  };
+  if (stars.length && starDesc) {
+    stars.forEach(s => s.addEventListener('change', function() {
+      starDesc.textContent = descMap[this.value];
+    }));
+    const checkedStar = document.querySelector('input[name="personal_cleanliness_level"]:checked');
+    if (checkedStar) {
+      starDesc.textContent = descMap[checkedStar.value];
+    }
+  }
+
+  // Populate Review Summary on Screen 4
+  const step = document.querySelector('input[name="step"]').value;
+  if (step === '4') {
+    // Assuming backend passes the previous answers via the `profile` object, we can render the text directly or let Django template tags handle it.
+    // We will inject the data using Django template syntax inside JS to populate the spans.
+    document.getElementById('revSleep').textContent = "{{ profile.get_sleep_time_display|default:'-' }}".split('—')[0];
+    document.getElementById('revWake').textContent = "{{ profile.get_wake_time_display|default:'-' }}".split('—')[0];
+    document.getElementById('revClean').textContent = "{{ profile.personal_cleanliness_level|default:'-' }}";
+    document.getElementById('revSharedClean').textContent = "{{ profile.get_shared_space_cleaning_frequency_display|default:'-' }}".split('(')[0];
+    document.getElementById('revNoiseTol').textContent = "{{ profile.get_noise_tolerance_display|default:'-' }}".split('—')[0];
+    document.getElementById('revNoisePref').textContent = "{{ profile.get_preferred_noise_level_display|default:'-' }}".split('—')[0];
+    document.getElementById('revVis').textContent = "{{ profile.get_visitor_frequency_display|default:'-' }}".split('(')[0];
+    document.getElementById('revOvernight').textContent = "{{ profile.get_visitor_overnight_preference_display|default:'-' }}".split('—')[0];
+    document.getElementById('revStudy').textContent = "{{ profile.get_study_location_display|default:'-' }}".split('—')[0];
+    document.getElementById('revQuiet').textContent = "{{ profile.quiet_times|join:', ' }}";
+    document.getElementById('revCook').textContent = "{{ profile.get_cooking_frequency_display|default:'-' }}".split('—')[0];
+    document.getElementById('revKitchen').textContent = "{{ profile.get_shared_kitchen_comfort_display|default:'-' }}".split('—')[0];
+    
+    // For Temp and Cooling which are inputs on step 3:
+    document.getElementById('revTemp').textContent = "{{ profile.preferred_temperature|default:'-' }}";
+    document.getElementById('revCool').textContent = "{{ profile.get_air_con_preference_display|default:'-' }}";
+    
+    // Step 4 items are on the same page, we need to dynamically update them as the user selects.
+    function updateStep4Review() {
+      const items = document.querySelector('input[name="shared_items_comfort"]:checked');
+      document.getElementById('revItems').textContent = items ? items.nextElementSibling.textContent.split('—')[0] : '-';
+      
+      const priv = document.querySelector('input[name="personal_space_importance"]:checked');
+      document.getElementById('revPrivacy').textContent = priv ? priv.nextElementSibling.textContent.split('—')[0] : '-';
+      
+      const conf = document.querySelector('input[name="conflict_resolution_preference"]:checked');
+      document.getElementById('revConflict').textContent = conf ? conf.nextElementSibling.textContent.split('—')[0] : '-';
+    }
+    
+    document.querySelectorAll('input[type="radio"]').forEach(el => el.addEventListener('change', updateStep4Review));
+    updateStep4Review();
+  }
+
+  // Form Submission Logic
+  document.getElementById('lifestyleForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const btn = document.getElementById('submitBtn') || document.getElementById('nextBtn');
+    
+    if (step === '4') {
+      document.getElementById('actionButtons').style.display = 'none';
+      document.getElementById('processingState').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('processingText').textContent = "Done.";
+      }, 1500); // Visual flair
+    } else {
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+    }
+    
+    const formData = new FormData(this);
+    
+    fetch('{% url "bookings:lifestyle-questionnaire" booking.id %}', {
+      method: 'POST',
+      body: formData,
+      headers: { 'X-CSRFToken': getCookie('csrftoken') }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        if (data.next_step) {
+          // Fetch the next step partial and replace modal content
+          let baseAction = document.getElementById('lifestyleForm').action || window.location.href;
+          let fetchUrl = baseAction.split('?')[0] + '?step=' + data.next_step;
+          if (typeof loadModalSequence === 'function') {
+            loadModalSequence(fetchUrl);
+          } else {
+            window.location.href = fetchUrl;
+          }
+        } else if (data.action === 'open_success') {
+          setTimeout(() => {
+            if (typeof loadModalSequence === 'function') {
+                loadModalSequence(data.success_url);
+            } else {
+                window.location.href = data.success_url;
+            }
+          }, step === '4' ? 1800 : 0);
+        } else if (data.redirect_url) {
+          setTimeout(() => {
+            window.location.href = data.redirect_url;
+          }, step === '4' ? 1800 : 0);
+        }
+      } else {
+        alert('An error occurred. Please try again.');
+        if (step === '4') {
+          document.getElementById('actionButtons').style.display = 'flex';
+          document.getElementById('processingState').style.display = 'none';
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Next →';
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+      if (step === '4') {
+        document.getElementById('actionButtons').style.display = 'flex';
+        document.getElementById('processingState').style.display = 'none';
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Next →';
+      }
+    });
+  });
+
+  document.getElementById('prevBtn')?.addEventListener('click', function() {
+    const currentStep = parseInt(document.querySelector('input[name="step"]').value);
+    if (currentStep > 1) {
+      let baseAction = document.getElementById('lifestyleForm').action || window.location.href;
+      let fetchUrl = baseAction.split('?')[0] + '?step=' + (currentStep - 1);
+      if (typeof loadModalSequence === 'function') {
+        loadModalSequence(fetchUrl);
+      } else {
+        window.location.href = fetchUrl;
+      }
+    }
+  });
+
+  document.getElementById('editAnswersBtn')?.addEventListener('click', function() {
+    let baseAction = document.getElementById('lifestyleForm').action || window.location.href;
+    let fetchUrl = baseAction.split('?')[0] + '?step=1&mode=edit';
+    if (typeof loadModalSequence === 'function') {
+        loadModalSequence(fetchUrl);
+    } else {
+        window.location.href = fetchUrl;
+    }
+  });
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+/* end */
+</script>
+
+    </div>
+  </div>
+</div>

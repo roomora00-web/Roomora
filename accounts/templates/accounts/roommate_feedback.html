@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Roommate Feedback - StayMatch{% endblock %}
+
+{% block content %}
+<div class="feedback-container">
+    <div class="feedback-header">
+        <h1>Roommate Feedback</h1>
+        <p class="feedback-subtitle">Help us improve our matching system by sharing your experience</p>
+    </div>
+
+    <div class="feedback-form-container">
+        <form method="post" id="feedback-form">
+            {% csrf_token %}
+            
+            <div class="rating-section">
+                <h2>Rate Your Roommate Experience</h2>
+                
+                <div class="rating-group">
+                    <label class="rating-label">Overall Experience</label>
+                    <div class="star-rating" data-rating="overall_rating">
+                        {% for i in "12345" %}
+                        <button type="button" class="star-btn" data-value="{{ i }}" aria-label="{{ i }} stars">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                        </button>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" name="overall_rating" id="overall_rating" required>
+                </div>
+
+                <div class="rating-group">
+                    <label class="rating-label">Cleanliness & Hygiene</label>
+                    <div class="star-rating" data-rating="cleanliness_rating">
+                        {% for i in "12345" %}
+                        <button type="button" class="star-btn" data-value="{{ i }}" aria-label="{{ i }} stars">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                        </button>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" name="cleanliness_rating" id="cleanliness_rating" required>
+                </div>
+
+                <div class="rating-group">
+                    <label class="rating-label">Communication</label>
+                    <div class="star-rating" data-rating="communication_rating">
+                        {% for i in "12345" %}
+                        <button type="button" class="star-btn" data-value="{{ i }}" aria-label="{{ i }} stars">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                        </button>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" name="communication_rating" id="communication_rating" required>
+                </div>
+
+                <div class="rating-group">
+                    <label class="rating-label">Respect for Boundaries</label>
+                    <div class="star-rating" data-rating="respect_rating">
+                        {% for i in "12345" %}
+                        <button type="button" class="star-btn" data-value="{{ i }}" aria-label="{{ i }} stars">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                        </button>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" name="respect_rating" id="respect_rating" required>
+                </div>
+            </div>
+
+            <div class="text-feedback-section">
+                <h2>Additional Feedback</h2>
+                <div class="form-group">
+                    <label for="feedback_text">Share your experience (optional)</label>
+                    <textarea 
+                        id="feedback_text" 
+                        name="feedback_text" 
+                        class="feedback-textarea"
+                        rows="6"
+                        placeholder="Tell us about your experience with your roommate. What went well? What could be improved?"></textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'accounts:profile' %}" class="btn btn-secondary">Skip for Now</a>
+                <button type="submit" class="btn btn-primary">Submit Feedback</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.feedback-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.feedback-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.feedback-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.feedback-subtitle {
+    font-size: 18px;
+    color: #666;
+    margin: 0;
+}
+
+.feedback-form-container {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.rating-section {
+    margin-bottom: 32px;
+}
+
+.rating-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 24px;
+}
+
+.rating-group {
+    margin-bottom: 24px;
+}
+
+.rating-label {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.star-rating {
+    display: flex;
+    gap: 8px;
+}
+
+.star-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.star-btn:hover,
+.star-btn.active {
+    color: #fbbf24;
+}
+
+.star-btn.active svg {
+    fill: #fbbf24;
+}
+
+.text-feedback-section {
+    margin-bottom: 32px;
+    padding-top: 32px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.text-feedback-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 24px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.feedback-textarea {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: inherit;
+    resize: vertical;
+    transition: all 0.2s ease;
+}
+
+.feedback-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+.btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #f0f0f0;
+    border-color: #667eea;
+}
+
+@media (max-width: 768px) {
+    .feedback-container {
+        padding: 20px 16px;
+    }
+
+    .feedback-header h1 {
+        font-size: 24px;
+    }
+
+    .rating-section h2, .text-feedback-section h2 {
+        font-size: 20px;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const starRatings = document.querySelectorAll('.star-rating');
+    
+    starRatings.forEach(rating => {
+        const ratingName = rating.dataset.rating;
+        const hiddenInput = document.getElementById(ratingName);
+        const starBtns = rating.querySelectorAll('.star-btn');
+        
+        starBtns.forEach((btn, index) => {
+            btn.addEventListener('click', function() {
+                const value = parseInt(this.dataset.value);
+                hiddenInput.value = value;
+                
+                // Update visual state
+                starBtns.forEach((starBtn, starIndex) => {
+                    if (starIndex < value) {
+                        starBtn.classList.add('active');
+                    } else {
+                        starBtn.classList.remove('active');
+                    }
+                });
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

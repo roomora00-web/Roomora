@@ -1,0 +1,326 @@
+{% extends "bookings/base_checkout.html" %}
+{% load static %}
+
+{% block title %}Roommate Match Review — Roomora{% endblock %}
+
+{% block extra_css %}
+<style>
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.72);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 16px;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: 520px;
+        background-color: rgba(10, 17, 41, 0.98);
+        padding: 30px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+        text-align: left;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        margin-bottom: 18px;
+        color: #ffffff;
+    }
+
+    .modal-desc {
+        color: #cbd5e1;
+        line-height: 1.75;
+        margin-bottom: 22px;
+    }
+
+    .modal-desc ul {
+        padding-left: 20px;
+        margin: 14px 0;
+        color: #cbd5e1;
+    }
+
+    .modal-desc ul li {
+        margin-bottom: 10px;
+    }
+
+    .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        font-size: 0.88rem;
+        line-height: 1.3;
+        background: rgba(255, 255, 255, 0.08);
+        color: #f8fafc;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .pill.green {
+        background: rgba(16, 185, 129, 0.14);
+        border-color: rgba(16, 185, 129, 0.22);
+    }
+
+    .pill.blue {
+        background: rgba(59, 130, 246, 0.14);
+        border-color: rgba(59, 130, 246, 0.24);
+    }
+
+    .detail-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+        color: #f8fafc;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 0.85rem;
+    }
+
+    .outline-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-[calc(100vh-80px)] bg-[radial-gradient(circle_at_top_right,rgba(56,189,248,0.12)_0%,transparent_28%),radial-gradient(circle_at_bottom_left,rgba(168,85,247,0.10)_0%,transparent_22%),linear-gradient(180deg,#020617_0%,#050811_100%)] px-4 py-8 sm:px-6 sm:py-10">
+    <div class="mx-auto w-full max-w-[1080px] space-y-6">
+        <section class="glass-card border border-white/10 p-6 sm:p-8 shadow-[0_40px_120px_rgba(0,0,0,0.32)] rounded-[2rem]">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <div class="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-2 text-[11px] uppercase tracking-[0.24em] text-slate-200">Roommate match review</div>
+                    <h1 class="mt-5 text-3xl font-semibold text-white sm:text-4xl">Review your roommate match</h1>
+                    <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-300">Review compatibility highlights and decide whether to accept the shared-room pairing.</p>
+                </div>
+                <div class="rounded-[1.75rem] border border-white/10 bg-white/[0.04] px-4 py-3 text-center text-sm text-slate-300">
+                    <div class="uppercase tracking-[0.24em] text-slate-400">Match verdict</div>
+                    <div class="mt-2 text-lg font-semibold text-white">{{ match_verdict }}</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid gap-6 lg:grid-cols-[1.3fr_0.9fr]">
+            <section class="space-y-6">
+                <div class="glass-card border border-white/10 p-6 sm:p-8 rounded-[2rem]">
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-sm uppercase tracking-[0.24em] text-slate-400">Overall compatibility</p>
+                            <div class="mt-4 flex flex-wrap items-end gap-4">
+                                <div class="flex h-32 w-32 items-center justify-center rounded-[1.75rem] border border-white/10 bg-white/5 text-4xl font-semibold text-white">{{ match_score }}%</div>
+                                <div class="space-y-2">
+                                    <h2 class="text-2xl font-semibold text-white">{{ match_verdict }}</h2>
+                                    <p class="text-sm leading-7 text-slate-300">This score reflects the strength of your lifestyle alignment with the current occupant(s).</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% if roommate %}
+                        <div class="rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-300">
+                            <div class="text-[11px] uppercase tracking-[0.24em] text-slate-400">Matched occupant</div>
+                            <div class="mt-3 text-white font-semibold">{{ roommate.get_full_name|default:roommate.username|default:"Your future roommate" }}</div>
+                            <div class="mt-1 text-slate-400 text-sm">Primary shared occupant for this room.</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="glass-card border border-white/10 p-6 sm:p-8 rounded-[2rem]">
+                    <h2 class="text-xl font-semibold text-white mb-4">Why this matters</h2>
+                    <p class="text-sm leading-7 text-slate-300">Accepting confirms this shared room pairing and signals that you are comfortable with the lifestyle overlaps and differences shown below. Rejecting triggers a search for a better roommate fit.</p>
+                </div>
+
+                <div class="glass-card border border-white/10 p-6 sm:p-8 rounded-[2rem]">
+                    <h2 class="text-xl font-semibold text-white mb-5">Room summary</h2>
+                    <div class="space-y-4 text-sm text-slate-300">
+                        <div class="rounded-[1.75rem] border border-white/10 bg-white/5 p-4">
+                            <div class="font-semibold text-white">{{ booking.accommodation_property.title }} — Room {{ booking.assigned_room.room_number|default:'Assigned' }}</div>
+                            <div class="mt-1 text-slate-400">Property and room allocation details for this booking.</div>
+                        </div>
+                        <div class="rounded-[1.75rem] border border-white/10 bg-white/5 p-4">
+                            <div class="flex items-center justify-between gap-4">
+                                <span class="font-semibold text-white">Match score</span>
+                                <span class="text-slate-300">{{ match_score }}%</span>
+                            </div>
+                            <div class="mt-2 text-slate-400">Higher scores indicate stronger lifestyle compatibility.</div>
+                        </div>
+                        <div class="rounded-[1.75rem] border border-white/10 bg-white/5 p-4">
+                            <div class="font-semibold text-white">Booking review</div>
+                            <div class="mt-2 text-slate-400">This consent step finalizes the roommate pairing and secures the room.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="space-y-6">
+                <div class="glass-card border border-white/10 p-6 sm:p-8 rounded-[2rem]">
+                    <h2 class="text-xl font-semibold text-white mb-4">Alignment highlights</h2>
+                    <ul class="space-y-4 text-sm text-slate-300">
+                        {% if alignment_factors %}
+                            {% for align in alignment_factors %}
+                            <li class="rounded-[1.75rem] border border-white/10 bg-white/5 p-4">
+                                <div class="font-semibold text-white">{{ align }}</div>
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="rounded-[1.75rem] border border-white/10 bg-white/5 p-4"><div class="font-semibold text-white">Cleanliness expectations</div></li>
+                            <li class="rounded-[1.75rem] border border-white/10 bg-white/5 p-4"><div class="font-semibold text-white">Study and focus routines</div></li>
+                            <li class="rounded-[1.75rem] border border-white/10 bg-white/5 p-4"><div class="font-semibold text-white">Privacy preferences</div></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="glass-card border border-white/10 p-6 sm:p-8 rounded-[2rem]">
+                    <h2 class="text-xl font-semibold text-white mb-4">Potential differences</h2>
+                    <ul class="space-y-4 text-sm text-slate-300">
+                        {% if difference_factors %}
+                            {% for diff in difference_factors %}
+                            <li class="rounded-[1.75rem] border border-white/10 bg-white/5 p-4">
+                                <div class="font-semibold text-white">{{ diff.category }}</div>
+                                <div class="mt-2 text-slate-400">You: {{ diff.your_pref }} | Them: {{ diff.roommate_pref }}</div>
+                                {% if diff.tip %}
+                                <div class="mt-2 text-slate-400 text-sm">Tip: {{ diff.tip }}</div>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="rounded-[1.75rem] border border-white/10 bg-white/5 p-4"><div class="font-semibold text-white">Sleep schedule</div><div class="mt-2 text-slate-400">You: Early | Them: Late</div></li>
+                            <li class="rounded-[1.75rem] border border-white/10 bg-white/5 p-4"><div class="font-semibold text-white">Visitor habits</div><div class="mt-2 text-slate-400">You: Rare visitors | Them: Frequent visitors</div></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </aside>
+        </div>
+
+        <div class="glass-card border border-white/10 p-6 sm:p-8 rounded-[2rem]">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-[11px] uppercase tracking-[0.24em] text-slate-400">Reservation hold</p>
+                    <p class="mt-2 text-white font-semibold">This room is held while you decide.</p>
+                </div>
+                {% if consent_timeout %}
+                <div class="rounded-[1.75rem] border border-white/10 bg-white/[0.03] px-4 py-3 text-center text-sm text-slate-300">
+                    <div class="uppercase tracking-[0.24em] text-slate-400">Decision window</div>
+                    <div class="mt-1 text-white font-semibold" id="consentTimer"><span id="timeRemaining">--:--:--</span></div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                <button type="button" class="ds-btn bg-white text-slate-950" onclick="showModal('acceptModal')">Accept this match</button>
+                <button type="button" class="ds-btn bg-slate-900 text-white hover:bg-slate-800" onclick="showModal('rejectModal')">Reject & find alternatives</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="acceptModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-title">Confirm acceptance</h2>
+        <div class="modal-desc">
+            <p>Confirm your roommate match for:</p>
+            <p class="mt-3 font-semibold text-white">{{ booking.accommodation_property.title }} — Room {{ booking.assigned_room.room_number|default:'Assigned' }}</p>
+            <p class="mt-4">By accepting, you agree to move forward with this roommate pairing and the lifestyle expectations shown above.</p>
+            <ul>
+                <li>✓ The room is reserved for you</li>
+                <li>✓ Your lifestyle preferences will be locked for this stay</li>
+                <li>✓ Standard cancellation terms apply</li>
+            </ul>
+        </div>
+        <div class="flex flex-col gap-4 sm:flex-row sm:justify-end">
+            <button class="ds-btn bg-slate-900 text-white hover:bg-slate-800" onclick="hideModal('acceptModal')">Go back</button>
+            <button class="ds-btn bg-white text-slate-950" onclick="submitConsent('accept')">Confirm acceptance</button>
+        </div>
+    </div>
+</div>
+
+<div id="rejectModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-title">Confirm rejection</h2>
+        <div class="modal-desc">
+            <p>If you reject this match, we will search for an alternative roommate or room option. Your current booking may be temporarily paused while we find a better fit.</p>
+        </div>
+        <div class="flex flex-col gap-4 sm:flex-row sm:justify-end">
+            <button class="ds-btn bg-slate-900 text-white hover:bg-slate-800" onclick="hideModal('rejectModal')">Cancel</button>
+            <button class="ds-btn bg-white text-slate-950" onclick="submitConsent('reject')">Reject this match</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    {% if consent_timeout %}
+    const timeoutDate = new Date("{{ consent_timeout.isoformat }}").getTime();
+
+    function updateTimer() {
+        const now = new Date().getTime();
+        const distance = timeoutDate - now;
+        const timerText = document.getElementById('timeRemaining');
+        if (!timerText) return;
+
+        if (distance < 0) {
+            timerText.innerText = 'EXPIRED';
+            return;
+        }
+
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        timerText.innerText = `${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+    {% endif %}
+
+    function showModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.style.display = 'flex';
+    }
+
+    function hideModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.style.display = 'none';
+    }
+
+    function submitConsent(action) {
+        const buttons = document.querySelectorAll('.ds-btn, .btn');
+        buttons.forEach(b => b.disabled = true);
+
+        fetch("{% url 'bookings:user-consent' booking.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ action: action })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(text || 'Request failed'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect_url;
+            } else {
+                alert(data.error || 'An error occurred. Please try again.');
+                buttons.forEach(b => b.disabled = false);
+            }
+        })
+        .catch(() => {
+            alert('A network error occurred. Please try again.');
+            buttons.forEach(b => b.disabled = false);
+        });
+    }
+</script>
+{% endblock %}

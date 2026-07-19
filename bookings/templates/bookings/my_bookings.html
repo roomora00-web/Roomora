@@ -1,0 +1,564 @@
+{% extends 'accounts/dashboard_base.html' %}
+{% block dashboard_title %}My Bookings — Roomora{% endblock %}
+
+
+{% block dashboard_extra_css %}
+<style>
+.mb-header {
+  margin-bottom: 24px;
+}
+.mb-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-head);
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+.mb-subtitle {
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+.mb-section {
+  margin-bottom: 32px;
+}
+.mb-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-head);
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 8px;
+}
+
+.mb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.mb-card {
+  background: #FAFAFA;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: all 0.15s ease;
+  position: relative;
+}
+.mb-card:hover {
+  border: 1px solid #E4E4E7;
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+.mb-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.mb-status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.status-active { background: #e0e7ff; color: #4338ca; }
+.status-pending { background: #fef3c7; color: #b45309; }
+.status-approved { background: #F4F4F5; color: #000000; }
+.status-cancelled { background: #fee2e2; color: #b91c1c; }
+.status-temp-cancelled { background: #fef3c7; color: #d97706; }
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: #FFFFFF;
+    padding: 30px;
+    border-radius: var(--radius-lg);
+    max-width: 500px;
+    width: 90%;
+    box-shadow: var(--shadow-lg);
+}
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--text-head);
+}
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+
+.mb-prop-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-head);
+  margin-bottom: 4px;
+}
+.mb-room-type {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.mb-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-mid);
+  margin-bottom: 20px;
+}
+.mb-detail-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mb-actions {
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 16px;
+}
+.mb-btn {
+  flex: 1;
+  text-align: center;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.mb-btn-primary {
+  background: #000000;
+  color: #FFFFFF;
+}
+.mb-btn-primary:hover { background: var(--brand-mid); }
+
+.mb-btn-secondary {
+  background: var(--bg-input);
+  color: var(--text-head);
+  border: 1px solid #E4E4E7;
+}
+.mb-btn-secondary:hover { background: var(--border-light); }
+
+.mb-empty {
+  padding: 40px;
+  text-align: center;
+  background: var(--bg-input);
+  border-radius: var(--radius-lg);
+  border: 1px solid #E4E4E7;
+  color: var(--text-muted);
+}
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<!-- Reinstate Modal -->
+<div id="reinstateModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-title">REINSTATE YOUR BOOKING</h2>
+        <div style="margin-bottom: 15px;">
+            <p>Are you sure you want to reinstate your booking?</p>
+            <p style="font-weight: 600; margin: 10px 0;"><span id="modalPropName"></span> — Room <span id="modalRoomNum"></span> (<span id="modalRoomType"></span>)</p>
+            <p>By reinstating:</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>✓ Your booking will be reactivated</li>
+                <li>✓ You will return to the compatibility confirmation screen</li>
+                <li>✓ Your lifestyle preferences will be locked after you confirm</li>
+            </ul>
+        </div>
+        <div class="modal-actions">
+            <button class="mb-btn mb-btn-secondary" onclick="document.getElementById('reinstateModal').style.display='none'">No, keep cancelled</button>
+            <button class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important;" id="confirmReinstateBtn">Yes, reinstate my booking</button>
+        </div>
+    </div>
+</div>
+
+<div class="mb-header">
+  <h1 class="mb-title">My Bookings</h1>
+  <p class="mb-subtitle">Manage your accommodation reservations and applications.</p>
+</div>
+
+{% if total_bookings == 0 %}
+<div class="mb-empty">
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 16px; opacity: 0.5;">
+    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+    <polyline points="7 3 7 8 15 8"></polyline>
+  </svg>
+  <h3>No Bookings Found</h3>
+  <p style="margin-top: 8px; margin-bottom: 16px; font-size: 14px;">You haven't made any bookings yet.</p>
+  <a href="{% url 'landing:properties' %}" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; display: inline-block; padding: 10px 24px;">Discover Properties</a>
+</div>
+{% else %}
+
+  {% if active_bookings or approved_bookings %}
+  <div class="mb-section">
+    <h2 class="mb-section-title">Active & Confirmed</h2>
+    <div class="mb-grid">
+      {% for booking in active_bookings|add:approved_bookings %}
+      
+      <!-- Spec Part 13.2: Vacation Reserve Card -->
+      {% if booking.status == 'VACATION_RESERVE' %}
+      <div class="mb-card" style="border-color: var(--warning); box-shadow: 0 4px 12px rgba(239, 159, 39, 0.15);">
+        <div style="background: var(--warning-light); color: #92400e; padding: 10px 15px; margin: -20px -20px 20px -20px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            VACATION — YOUR ROOM IS HELD FOR YOU
+        </div>
+        
+        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
+        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
+        
+        <div style="margin: 20px 0; padding: 15px; background: var(--bg-input); border-radius: var(--radius-md); text-align: center;">
+            <div style="font-size: 24px; font-weight: 800; color: var(--warning); margin-bottom: 5px;">
+                {{ booking.days_until_s2|default:"--" }} Days
+            </div>
+            <div style="font-size: 13px; color: var(--text-mid); font-weight: 600;">Until Semester 2 begins</div>
+        </div>
+        
+        <div class="mb-details">
+            <div class="mb-detail-row">
+                <span>Semester 2 Start</span>
+                <span style="font-weight: 600; color: var(--text-head);">{{ booking.semester2_start|date:"M d, Y"|default:"TBD" }}</span>
+            </div>
+            <div class="mb-detail-row">
+                <span>Semester 2 End</span>
+                <span style="font-weight: 600; color: var(--text-head);">{{ booking.semester2_end|date:"M d, Y"|default:"TBD" }}</span>
+            </div>
+        </div>
+        
+        <div class="mb-actions" style="flex-wrap: wrap;">
+            <a href="{% url 'bookings:vacation-reserve-update' booking.id %}" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; flex-basis: 100%;">Update Semester 2 Date</a>
+            <a href="#" class="mb-btn mb-btn-secondary" style="color: var(--error);">Cancel Semester 2</a>
+            <a href="#" class="mb-btn mb-btn-secondary">Contact Admin</a>
+        </div>
+      </div>
+      
+      <!-- Spec Part 13.3: Grace Period Card -->
+      {% elif booking.status == 'GRACE_PERIOD' %}
+      <div class="mb-card" style="border-color: var(--error); box-shadow: 0 4px 12px rgba(226, 75, 74, 0.15);">
+        <div style="background: var(--error-light); color: var(--error); padding: 10px 15px; margin: -20px -20px 20px -20px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            GRACE PERIOD — ACTION REQUIRED
+        </div>
+        
+        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
+        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
+        
+        <div style="margin: 20px 0; padding: 15px; background: var(--bg-input); border-radius: var(--radius-md); text-align: center;">
+            <div style="font-size: 24px; font-weight: 800; color: var(--error); margin-bottom: 5px;">
+                {{ booking.grace_days_remaining|default:"7" }} Days
+            </div>
+            <div style="font-size: 13px; color: var(--text-mid); font-weight: 600;">Remaining to rebook or vacate</div>
+        </div>
+        
+        <div style="font-size: 13px; color: var(--text-mid); text-align: center; margin-bottom: 20px;">
+            Slot opens to public on <strong>{{ booking.slot_open_date|date:"M d, Y"|default:"TBD" }}</strong>
+        </div>
+        
+        <div class="mb-actions" style="flex-wrap: wrap;">
+            <a href="#" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; flex-basis: 100%; background: var(--success);">Rebook My Room</a>
+            <a href="#" class="mb-btn mb-btn-secondary">Confirm Moving Out</a>
+            <a href="#" class="mb-btn mb-btn-secondary">Contact Admin</a>
+        </div>
+      </div>
+      
+      <!-- Spec Part 13.1: Active Semester Card -->
+      {% else %}
+      <div class="mb-card" style="border-top: 4px solid var(--success);">
+        <div class="mb-card-header">
+          <div class="mb-status status-active">
+            {% if booking.billing_allocation and booking.billing_allocation.billing_model == 'SEMESTER_BASED' or booking.billing_allocation and booking.billing_allocation.billing_model == 'ACADEMIC_YEAR' %}
+                SEMESTER {{ booking.current_semester|default:"1" }} OF {{ booking.billing_allocation.num_semesters|default:"1" }} — ACTIVE
+            {% else %}
+                ACTIVE
+            {% endif %}
+          </div>
+        </div>
+        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
+        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
+        
+        <!-- Progress Bar -->
+        <div style="margin: 20px 0;">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--text-mid);">
+                <span>Progress</span>
+                <span>{{ booking.days_remaining|default:"--" }} days left</span>
+            </div>
+            <div style="height: 8px; background: var(--border-light); border-radius: 4px; overflow: hidden;">
+                <div class="progress-bar-fill" data-progress="{{ booking.progress_percentage|default_if_none:'0' }}" style="height: 100%; background: var(--success); border-radius: 4px; width: 0%;"></div>
+            </div>
+        </div>
+        
+        <div class="mb-details">
+          <div class="mb-detail-row">
+            <span>Move In</span>
+            <span style="font-weight: 600; color: var(--text-head);">{{ booking.move_in_date|date:"M d, Y"|default:"TBD" }}</span>
+          </div>
+          <div class="mb-detail-row">
+            <span>Move Out</span>
+            <span style="font-weight: 600; color: var(--text-head);">{{ booking.calculated_move_out|date:"M d, Y"|default:"TBD" }}</span>
+          </div>
+        </div>
+        
+        <div class="mb-actions" style="flex-wrap: wrap;">
+          <a href="/api/bookings/booking/{{ booking.id }}/" class="mb-btn mb-btn-secondary" style="flex-basis: 100%;">View Details</a>
+          {% if booking.semester_structure == 'SPLIT_STAY' and booking.current_semester == 1 %}
+              <a href="{% url 'bookings:vacation-reserve-update' booking.id %}" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; flex-basis: 100%; margin-top: -5px;">Update S2 Date</a>
+          {% elif booking.status == 'ACTIVE' and booking.can_rebook %}
+              <a href="#" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; flex-basis: 100%; margin-top: -5px;">Rebook Options</a>
+          {% endif %}
+          
+          {% if booking.room_type and booking.room_type.occupancy_type == 'DOUBLE' or booking.room_type.occupancy_type == 'TRIPLE' or booking.room_type.occupancy_type == 'QUAD' %}
+              <a href="/api/bookings/booking/{{ booking.id }}/roommate-dashboard/" class="mb-btn mb-btn-secondary" style="flex-basis: 100%; margin-top: 5px;">Roommates</a>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+      
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if pending_bookings or awaiting_consent %}
+  <div class="mb-section">
+    <h2 class="mb-section-title">Pending & Review</h2>
+    <div class="mb-grid">
+      {% for booking in pending_bookings|add:awaiting_consent %}
+      <div class="mb-card">
+        <div class="mb-card-header">
+          <div class="mb-status status-pending">{{ booking.get_status_display }}</div>
+          <div style="font-weight: 700; color: var(--text-head);">GH₵ {{ booking.total_amount }}</div>
+        </div>
+        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
+        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
+        
+        <div class="mb-details">
+          <div class="mb-detail-row">
+            <span>Move In</span>
+            <span style="font-weight: 600; color: var(--text-head);">{{ booking.move_in_date|date:"M d, Y"|default:"TBD" }}</span>
+          </div>
+        </div>
+        
+        <div class="mb-actions">
+          <a href="/api/bookings/booking/{{ booking.id }}/" class="mb-btn mb-btn-secondary">View Details</a>
+          {% if booking.status == 'COMPATIBILITY_REVIEW' or booking.status == 'WAITING_CONSENT' or booking.status == 'ASSIGNED_AWAITING' %}
+          <a href="/api/bookings/booking/{{ booking.id }}/user-consent/" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; background: var(--warning); color: #18181B;">Review & Consent</a>
+          {% endif %}
+          {% if booking.status == 'INITIATED' %}
+          <a href="/api/bookings/booking/{{ booking.id }}/initiated/" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important;">Resume Booking</a>
+          <form method="POST" action="{% url 'bookings:cancel-booking' booking.id %}" style="flex-basis: 100%; display: flex; margin-top: 5px;">
+              {% csrf_token %}
+              <input type="hidden" name="cancellation_reason" value="User cancelled from dashboard">
+              <button type="submit" class="mb-btn mb-btn-secondary" style="flex: 1; border: 1px solid #ef4444; color: #ef4444; background: transparent; cursor: pointer;">Cancel Booking</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  
+  {% if completed_bookings %}
+  <div class="mb-section">
+    <h2 class="mb-section-title">Past Stays & Completed</h2>
+    <div class="mb-grid">
+      {% for booking in completed_bookings %}
+      <div class="mb-card" style="opacity: 0.85;">
+        <div class="mb-card-header">
+          <div class="mb-status" style="background: #e5e7eb; color: #4b5563;">{{ booking.get_status_display }}</div>
+        </div>
+        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
+        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
+        
+        <div class="mb-details">
+          <div class="mb-detail-row">
+            <span>Moved In</span>
+            <span style="font-weight: 600; color: var(--text-head);">{{ booking.move_in_date|date:"M d, Y"|default:"TBD" }}</span>
+          </div>
+        </div>
+        
+        <div class="mb-actions">
+          <a href="/api/bookings/booking/{{ booking.id }}/" class="mb-btn mb-btn-secondary">View Details</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if cancelled_bookings %}
+  <div class="mb-section">
+    <h2 class="mb-section-title">Past & Cancelled</h2>
+    <div class="mb-grid">
+      {% for booking in cancelled_bookings %}
+      <div class="mb-card" {% if booking.status != 'TEMPORARILY_CANCELLED' %}style="opacity: 0.7;"{% endif %}>
+        <div class="mb-card-header">
+          <div class="mb-status {% if booking.status == 'TEMPORARILY_CANCELLED' %}status-temp-cancelled{% else %}status-cancelled{% endif %}">{{ booking.get_status_display }}</div>
+        </div>
+        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
+        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
+        
+        {% if booking.status == 'TEMPORARILY_CANCELLED' %}
+        <div class="mb-details" style="background: #fffbeb; padding: 12px; border-radius: 6px; border: 1px solid #fef3c7;">
+          <div style="color: #b45309; font-weight: 600; font-size: 13px; margin-bottom: 4px;">Time Remaining to Reinstate</div>
+          <div style="color: #92400e; font-size: 12px; margin-bottom: 8px;">You have until {{ booking.temp_cancel_expires_at|date:"M d, Y g:i A"|default:"TBD" }} to change your mind.</div>
+          <div style="font-weight: 700; color: var(--danger-red); font-size: 16px;" id="timer_{{ booking.id }}" data-expires="{{ booking.temp_cancel_expires_at|date:'U' }}">{% if booking.temp_cancel_expires_at %}Loading...{% else %}No expiry date{% endif %}</div>
+        </div>
+        {% endif %}
+        
+        <div class="mb-actions">
+          <a href="/api/bookings/booking/{{ booking.id }}/" class="mb-btn mb-btn-secondary">View Details</a>
+          {% if booking.status == 'TEMPORARILY_CANCELLED' %}
+          <button class="mb-btn mb-btn-primary reinstate-btn" style="background-color: #000000 !important; color: #FFFFFF !important;"
+                  data-booking-id="{{ booking.id }}"
+                  data-property-title="{{ booking.accommodation_property.title }}"
+                  data-room-number="{{ booking.assigned_room.room_number|default:'Assigned' }}"
+                  data-room-type="{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}">Reinstate Booking</button>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+{% endif %}
+{% endblock %}
+
+{% block dashboard_js %}
+<script>
+
+let currentReinstateId = null;
+
+// Event delegation for reinstate buttons
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('reinstate-btn')) {
+        const btn = e.target;
+        const id = btn.getAttribute('data-booking-id');
+        const propName = btn.getAttribute('data-property-title');
+        const roomNum = btn.getAttribute('data-room-number');
+        const roomType = btn.getAttribute('data-room-type');
+
+        currentReinstateId = id;
+        document.getElementById('modalPropName').innerText = propName;
+        document.getElementById('modalRoomNum').innerText = roomNum;
+        document.getElementById('modalRoomType').innerText = roomType;
+        document.getElementById('reinstateModal').style.display = 'flex';
+    }
+});
+
+const confirmReinstateBtn = document.getElementById('confirmReinstateBtn');
+if (confirmReinstateBtn) {
+    confirmReinstateBtn.addEventListener('click', function() {
+        if (currentReinstateId) {
+            document.getElementById('reinstateModal').style.display = 'none';
+            fetch(`/api/bookings/booking/${currentReinstateId}/reinstate/`, {
+
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]') ? document.querySelector('[name=csrfmiddlewaretoken]').value : getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.redirect_url) {
+                        window.location.href = data.redirect_url;
+                    } else {
+                        window.location.reload();
+                    }
+                } else {
+                    alert(data.error || 'An error occurred.');
+                }
+            })
+            .catch(err => {
+                alert('A network error occurred.');
+                console.error(err);
+            });
+        }
+    });
+}
+
+// Helper to get CSRF token if not in form
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Setup Progress Bars
+document.querySelectorAll('.progress-bar-fill').forEach(bar => {
+    const progress = bar.getAttribute('data-progress');
+    if (progress) {
+        bar.style.width = progress + '%';
+    }
+});
+
+// Setup Countdown Timers
+document.querySelectorAll('[id^="timer_"]').forEach(timerEl => {
+    const expiresAttr = timerEl.getAttribute('data-expires');
+    console.log('Timer element:', timerEl.id, 'data-expires:', expiresAttr);
+
+    if (expiresAttr && expiresAttr !== 'None' && expiresAttr !== '') {
+        // Handle Unix timestamp (seconds) or ISO date string
+        const timestamp = parseInt(expiresAttr);
+        const timeoutDate = isNaN(timestamp) ? new Date(expiresAttr).getTime() : timestamp * 1000;
+
+        console.log('Timeout date:', timeoutDate);
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const distance = timeoutDate - now;
+
+            if (distance < 0) {
+                timerEl.innerHTML = "EXPIRED";
+                return;
+            }
+
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            timerEl.innerHTML = hours + "h " + minutes + "m " + seconds + "s remaining";
+        }
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    } else {
+        timerEl.innerHTML = "No expiry date";
+    }
+});
+</script>
+
+{% endblock %}

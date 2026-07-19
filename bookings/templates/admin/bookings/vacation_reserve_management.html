@@ -1,0 +1,279 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Vacation Reserve Management</h2>
+        
+        <!-- Booking Details -->
+        <div class="booking-details">
+            <h3>Booking Details</h3>
+            <table class="admin-table">
+                <tr>
+                    <th>Booking ID:</th>
+                    <td>{{ booking.id }}</td>
+                </tr>
+                <tr>
+                    <th>Student:</th>
+                    <td>{{ booking.tenant.full_name }} ({{ booking.tenant.email }})</td>
+                </tr>
+                <tr>
+                    <th>Property:</th>
+                    <td>{{ booking.accommodation_property.title }}</td>
+                </tr>
+                <tr>
+                    <th>Room Number:</th>
+                    <td>{{ booking.room_assignment.assigned_room_number if booking.room_assignment else 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <th>Billing Model:</th>
+                    <td>{{ booking.billing_model }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Vacation Reserve Status -->
+        <div class="vacation-status">
+            <h3>Vacation Reserve Status</h3>
+            
+            {% if vacation_status.in_vacation_reserve %}
+            <div class="status-box active">
+                <span class="status-label">Status:</span>
+                <span class="status-value active">ACTIVE</span>
+            </div>
+            {% else %}
+            <div class="status-box inactive">
+                <span class="status-label">Status:</span>
+                <span class="status-value">{{ vacation_status.status }}</span>
+            </div>
+            {% endif %}
+            
+            <table class="admin-table">
+                <tr>
+                    <th>Semester 1 Start:</th>
+                    <td>{{ semester1_start|date:"F d, Y" }}</td>
+                </tr>
+                <tr>
+                    <th>Semester 1 End:</th>
+                    <td>{{ semester1_end|date:"F d, Y" }}</td>
+                </tr>
+                <tr>
+                    <th>Vacation Reserve Start:</th>
+                    <td>{{ vacation_status.vacation_start|date:"F d, Y" if vacation_status.vacation_start else 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <th>Vacation Reserve End:</th>
+                    <td>{{ vacation_status.vacation_end|date:"F d, Y" if vacation_status.vacation_end else 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <th>Semester 2 Start:</th>
+                    <td>{{ semester2_start|date:"F d, Y" if semester2_start else 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <th>Semester 2 End:</th>
+                    <td>{{ semester2_end|date:"F d, Y" if semester2_end else 'N/A' }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Escalation Status -->
+        {% if escalation_status.escalation_required %}
+        <div class="escalation-warning">
+            <h3>⚠️ Escalation Required</h3>
+            <p>{{ escalation_status.reason }}</p>
+            <p>Days past Semester 2 start: {{ escalation_status.days_past_semester2 }}</p>
+        </div>
+        {% endif %}
+        
+        <!-- Admin Actions -->
+        <div class="admin-actions">
+            <h3>Admin Actions</h3>
+            
+            <!-- Update Semester 2 Date -->
+            <div class="action-section">
+                <h4>Update Semester 2 Date</h4>
+                <form method="post" action="" class="action-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_semester2_date">
+                    <label for="new_semester2_start">New Semester 2 Start Date:</label>
+                    <input type="date" name="new_semester2_start" id="new_semester2_start" 
+                           value="{{ semester2_start|date:'Y-m-d' if semester2_start else '' }}" required>
+                    <button type="submit" class="btn btn-primary">Update Date</button>
+                </form>
+            </div>
+            
+            <!-- Cancel Semester 2 -->
+            <div class="action-section">
+                <h4>Cancel Semester 2</h4>
+                <form method="post" action="" class="action-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="cancel_semester2">
+                    <label for="reason">Reason for cancellation:</label>
+                    <textarea name="reason" id="reason" rows="3" required></textarea>
+                    <button type="submit" class="btn btn-warning">Cancel Semester 2 (Refund)</button>
+                </form>
+            </div>
+            
+            <!-- Cancel Full Booking -->
+            <div class="action-section">
+                <h4>Cancel Full Booking</h4>
+                <form method="post" action="" class="action-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="cancel_full_booking">
+                    <label for="refund_type">Refund Type:</label>
+                    <select name="refund_type" id="refund_type">
+                        <option value="no_refund">No Refund</option>
+                        <option value="full_refund">Full Refund</option>
+                    </select>
+                    <label for="cancel_reason">Reason:</label>
+                    <textarea name="reason" id="cancel_reason" rows="3" required></textarea>
+                    <button type="submit" class="btn btn-danger">Cancel Full Booking</button>
+                </form>
+            </div>
+            
+            <!-- Add Note -->
+            <div class="action-section">
+                <h4>Add Internal Note</h4>
+                <form method="post" action="" class="action-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_note">
+                    <label for="note">Note:</label>
+                    <textarea name="note" id="note" rows="3" required></textarea>
+                    <button type="submit" class="btn btn-secondary">Add Note</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.booking-details,
+.vacation-status,
+.admin-actions {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 10px;
+    background: #e0e0e0;
+    border-bottom: 2px solid #ddd;
+}
+
+.admin-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.status-box {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.status-box.active {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.status-box.inactive {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+.status-label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.status-value.active {
+    color: #155724;
+    font-weight: bold;
+}
+
+.escalation-warning {
+    padding: 15px;
+    margin-bottom: 20px;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+}
+
+.escalation-warning h3 {
+    color: #856404;
+    margin-top: 0;
+}
+
+.action-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.action-section h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.action-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.action-form input[type="date"],
+.action-form select,
+.action-form textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.action-form textarea {
+    resize: vertical;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #333;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+</style>
+{% endblock %}

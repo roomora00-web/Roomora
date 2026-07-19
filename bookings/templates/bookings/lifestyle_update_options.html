@@ -1,0 +1,186 @@
+{% extends "bookings/base_checkout.html" %}
+
+{% block title %}Update Living Preferences{% endblock %}
+
+{% block content %}
+<div class="lq-update-container">
+  <div class="lq-update-header">
+    <h1>UPDATE YOUR LIFESTYLE PROFILE</h1>
+    <p class="lq-subtitle">Your previous profile is saved. Has anything changed since then?</p>
+  </div>
+
+  <div class="lq-saved-preview">
+    <h3>Your Previous Preferences:</h3>
+    <ul class="lq-saved-list">
+      <li><strong>Sleep:</strong> {{ profile.get_sleep_time_display|default:"Not set" }}</li>
+      <li><strong>Wake:</strong> {{ profile.get_wake_time_display|default:"Not set" }}</li>
+      <li><strong>Cleanliness:</strong> {{ profile.personal_cleanliness_level|default:"Not set" }}/5</li>
+      <li><strong>Noise:</strong> {{ profile.get_noise_tolerance_display|default:"Not set" }}</li>
+      <li><strong>Study:</strong> {{ profile.get_quiet_hours_needed_display|default:"Not set" }}</li>
+      <li><strong>Privacy:</strong> {{ profile.get_privacy_preference_display|default:"Not set" }}</li>
+      <li><strong>Temperature:</strong> {{ profile.preferred_temperature|default:"Not set" }}°C</li>
+    </ul>
+  </div>
+
+  <div class="lq-update-options">
+    <div class="lq-option-card">
+      <div class="lq-option-icon">✓</div>
+      <h3>Use My Saved Profile As Is</h3>
+      <p>"Everything is still accurate. Proceed with matching using my previous preferences."</p>
+      <a href="{% url 'bookings:use-saved-preferences' booking.id %}" class="lq-btn lq-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important;">Use Saved Profile</a>
+    </div>
+
+    <div class="lq-option-card">
+      <div class="lq-option-icon">⚙️</div>
+      <h3>Edit Specific Categories</h3>
+      <p>"Some things have changed. Let me update specific areas."</p>
+      
+      <form method="GET" action="{% url 'bookings:lifestyle-questionnaire' booking.id %}" class="lq-category-form">
+        <input type="hidden" name="mode" value="edit">
+        <div class="lq-category-select">
+          <label><input type="radio" name="step" value="1" checked> Sleep & Daily Routine</label>
+          <label><input type="radio" name="step" value="2"> Cleanliness & Noise</label>
+          <label><input type="radio" name="step" value="3"> Visitors & Social</label>
+          <label><input type="radio" name="step" value="4"> Study & Environment</label>
+        </div>
+        <button type="submit" class="lq-btn lq-btn-secondary">Edit Selected</button>
+      </form>
+    </div>
+
+    <div class="lq-option-card">
+      <div class="lq-option-icon">🔄</div>
+      <h3>Re-Complete Full Profile</h3>
+      <p>"A lot has changed. Let me start fresh."</p>
+      <a href="{% url 'bookings:lifestyle-questionnaire' booking.id %}?mode=re_complete&step=1" class="lq-btn lq-btn-secondary">Complete Full Profile</a>
+    </div>
+  </div>
+</div>
+
+<style>
+.lq-update-container {
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+.lq-update-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.lq-update-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 10px;
+}
+.lq-saved-preview {
+  background: #FAFAFA;
+  border: 1px solid #E4E4E7;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 40px;
+}
+.lq-saved-preview h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 0;
+  color: #18181B;
+}
+.lq-saved-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.lq-saved-list li {
+  font-size: 15px;
+  color: #71717A;
+}
+.lq-saved-list strong {
+  color: #0F172A;
+}
+.lq-update-options {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.lq-option-card {
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.lq-option-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  border-color: rgba(255,255,255,0.15);
+}
+.lq-option-icon {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.lq-option-card h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 10px 0;
+}
+.lq-option-card p {
+  font-size: 15px;
+  color: #71717A;
+  margin: 0 0 20px 0;
+}
+.lq-category-select {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.lq-category-select label {
+  font-size: 14px;
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.lq-btn {
+  display: inline-block;
+  text-align: center;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: none;
+  width: fit-content;
+}
+.lq-btn-primary {
+  background: #E11D48;
+  color: white;
+}
+.lq-btn-primary:hover {
+  background: #BE123C;
+  color: white;
+}
+.lq-btn-secondary {
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  color: #71717A;
+}
+.lq-btn-secondary:hover {
+  background: #FAFAFA;
+  border-color: rgba(255,255,255,0.15);
+}
+@media (max-width: 768px) {
+  .lq-saved-list, .lq-category-select {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,616 @@
+{% extends "landing/base.html" %}
+{% load static %}
+
+{% block title %}Compare Properties - StayMatch{% endblock %}
+
+{% block content %}
+<div class="comparison-container">
+    <div class="comparison-header">
+        <a href="{% url 'properties:saved-properties' %}" class="back-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Saved
+        </a>
+        <h1>COMPARE PROPERTIES</h1>
+    </div>
+
+    {% if properties.count < 2 %}
+    <div class="empty-comparison">
+        <div class="empty-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+        </div>
+        <h2>Select Properties to Compare</h2>
+        <p>You need at least 2 properties to compare. Go to your saved properties and select up to 3 properties to compare.</p>
+        <a href="{% url 'properties:saved-properties' %}" class="btn btn-primary">Go to Saved Properties</a>
+    </div>
+    {% else %}
+
+    <div class="comparison-table-wrapper">
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th class="feature-column">Feature</th>
+                    {% for property in properties %}
+                    <th class="property-column">
+                        <div class="property-header">
+                            {% with main_img=property.images.first %}
+                            {% if main_img %}
+                                <img src="{{ main_img.image.url }}" alt="{{ property.title }}" class="property-thumb">
+                            {% else %}
+                                <div class="property-thumb-placeholder">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                        <polyline points="9 22 9 12 15 12 15 22"/>
+                                    </svg>
+                                </div>
+                            {% endif %}
+                            {% endwith %}
+                            <h3>{{ property.title }}</h3>
+                            <a href="{% url 'landing:property_detail' property.id %}" class="view-link">View Details</a>
+                        </div>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="rating-row">
+                    <td class="feature-label">Rating</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="rating">⭐ {{ property.average_rating|floatformat:1 }}/5 ({{ property.total_reviews }})</span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="price-row">
+                    <td class="feature-label">Price</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        {% if property.pricing %}
+                            <span class="price">GH₵ {{ property.pricing.monthly_price|default:property.pricing.semester_price|default:property.pricing.yearly_price|floatformat:0 }}/{% if property.pricing.monthly_price %}mo{% elif property.pricing.semester_price %}sem{% else %}yr{% endif %}</span>
+                        {% else %}
+                            <span class="price">Contact</span>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="location-row">
+                    <td class="feature-label">Location</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="location">{{ property.city }}</span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="distance-row">
+                    <td class="feature-label">Distance to {{ property.nearest_institution }}</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="distance">{{ property.distance_to_institution|default:"N/A" }}</span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="type-row">
+                    <td class="feature-label">Property Type</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="property-type">{{ property.get_property_type_display }}</span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="room-types-row">
+                    <td class="feature-label">Room Types</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <div class="room-types-list">
+                            {% for room_type in property.room_types.all %}
+                                <span>{{ room_type.room_type_name }}</span>
+                            {% empty %}
+                                <span>N/A</span>
+                            {% endfor %}
+                        </div>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="occupancy-row">
+                    <td class="feature-label">Occupancy</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        {% if property.property_type == 'HOSTEL' %}
+                            <span class="occupancy">Shared (2-3)</span>
+                        {% else %}
+                            <span class="occupancy">Shared/Single</span>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="amenities-row">
+                    <td class="feature-label">WiFi</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="amenity {% if property.has_wifi %}available{% else %}not-available{% endif %}">
+                            {% if property.has_wifi %}✓ Included{% else %}✗ Not available{% endif %}
+                        </span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="amenities-row">
+                    <td class="feature-label">Water</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="amenity {% if property.has_water %}available{% else %}not-available{% endif %}">
+                            {% if property.has_water %}✓ 24-hour{% else %}✗ Not available{% endif %}
+                        </span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="amenities-row">
+                    <td class="feature-label">Electricity</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="amenity {% if property.has_electricity %}available{% else %}not-available{% endif %}">
+                            {% if property.has_electricity %}✓ Included{% else %}✗ Not available{% endif %}
+                        </span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="amenities-row">
+                    <td class="feature-label">Cleaning Service</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="amenity {% if property.cleaning_service %}available{% else %}not-available{% endif %}">
+                            {% if property.cleaning_service %}✓ {{ property.cleaning_frequency|default:"Included" }}{% else %}✗ Not available{% endif %}
+                        </span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="amenities-row">
+                    <td class="feature-label">Security</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="amenity {% if property.has_security %}available{% else %}not-available{% endif %}">
+                            {% if property.has_security %}✓ {{ property.security_type|default:"Gate access" }}{% else %}✗ Not available{% endif %}
+                        </span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="amenities-row">
+                    <td class="feature-label">Parking</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="amenity {% if property.has_parking %}available{% else %}not-available{% endif %}">
+                            {% if property.has_parking %}✓ {{ property.parking_type|default:"Free parking" }}{% else %}✗ Not available{% endif %}
+                        </span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="amenities-row">
+                    <td class="feature-label">Kitchen</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="amenity {% if property.has_kitchen %}available{% else %}not-available{% endif %}">
+                            {% if property.has_kitchen %}✓ {{ property.kitchen_type|default:"Shared" }}{% else %}✗ Not available{% endif %}
+                        </span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="amenities-row">
+                    <td class="feature-label">Gym/Facilities</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="amenity {% if property.has_gym %}available{% else %}not-available{% endif %}">
+                            {% if property.has_gym %}✓ Gym access{% else %}✗ None{% endif %}
+                        </span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="verified-row">
+                    <td class="feature-label">Verified Status</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        {% if property.is_verified %}
+                            <span class="verified">✓ Verified {{ property.verified_date|date:"M d, Y" }}</span>
+                        {% else %}
+                            <span class="not-verified">✗ Not verified</span>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="stats-row">
+                    <td class="feature-label">Avg. Stay</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="stat">{{ property.avg_stay_duration|default:"N/A" }} months</span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="stats-row">
+                    <td class="feature-label">Recommend Rate</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <span class="stat">{{ property.recommendation_rate|default:"N/A" }}%</span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="actions-row">
+                    <td class="feature-label">Actions</td>
+                    {% for property in properties %}
+                    <td class="feature-value">
+                        <div class="action-buttons">
+                            <a href="{% url 'landing:property_detail' property.id %}" class="btn btn-secondary btn-small">View Details</a>
+                        </div>
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="comparison-footer">
+        <div class="legend">
+            <h3>Legend</h3>
+            <div class="legend-item">
+                <span class="legend-symbol">✓</span>
+                <span>Available/Better option</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-symbol">✗</span>
+                <span>Not available</span>
+            </div>
+        </div>
+        <a href="{% url 'properties:saved-properties' %}" class="btn btn-secondary">Back to Saved Properties</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.comparison-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.comparison-header {
+    margin-bottom: 32px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.back-link:hover {
+    color: #0C1424;
+}
+
+.comparison-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+.empty-comparison {
+    text-align: center;
+    padding: 80px 40px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: #f8f9fa;
+    border-radius: 50%;
+    color: #999;
+    margin-bottom: 24px;
+}
+
+.empty-comparison h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.empty-comparison p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+.comparison-table-wrapper {
+    background: white;
+    border-radius: 16px;
+    overflow-x: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 32px;
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.comparison-table thead tr th.feature-column {
+    width: 200px;
+    text-align: left;
+    padding: 24px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: 700;
+    color: #333;
+    font-size: 16px;
+}
+
+.comparison-table thead tr th.property-column {
+    padding: 24px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #e0e0e0;
+    min-width: 250px;
+}
+
+.property-header {
+    text-align: center;
+}
+
+.property-thumb {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.property-thumb-placeholder {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    border-radius: 8px;
+    color: #999;
+    margin-bottom: 12px;
+}
+
+.property-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.view-link {
+    color: #0C1424;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.view-link:hover {
+    text-decoration: underline;
+}
+
+.comparison-table tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.comparison-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.comparison-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.feature-label {
+    padding: 16px 24px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+    background: #f8f9fa;
+}
+
+.feature-value {
+    padding: 16px 24px;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.rating {
+    font-weight: 600;
+    color: #333;
+}
+
+.price {
+    font-weight: 700;
+    color: #0C1424;
+    font-size: 16px;
+}
+
+.location,
+.distance,
+.property-type,
+.occupancy {
+    font-weight: 500;
+    color: #333;
+}
+
+.room-types-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.room-types-list span {
+    display: block;
+}
+
+.amenity.available {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.amenity.not-available {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.verified {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.not-verified {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.stat {
+    font-weight: 600;
+    color: #333;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.comparison-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.legend h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.legend-symbol {
+    font-weight: 700;
+    color: #333;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+}
+
+.btn-small {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+.btn-primary {
+    background: #0C1424;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1a2744;
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #f0f0f0;
+    border-color: #0C1424;
+}
+
+@media (max-width: 1024px) {
+    .comparison-table-wrapper {
+        overflow-x: scroll;
+    }
+    
+    .comparison-table {
+        min-width: 1000px;
+    }
+}
+
+@media (max-width: 768px) {
+    .comparison-container {
+        padding: 20px 16px;
+    }
+    
+    .comparison-header h1 {
+        font-size: 24px;
+    }
+    
+    .comparison-footer {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+    
+    .action-buttons {
+        flex-direction: row;
+    }
+    
+    .btn-primary, .btn-secondary {
+        flex: 1;
+    }
+}
+</style>
+{% endblock %}

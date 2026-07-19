@@ -1,0 +1,702 @@
+{% extends 'landing/base.html' %}
+{% block title %}Property Map — StayMatch{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<!-- MarkerCluster CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+<style>
+:root {
+  --accent: #0A0302;
+  --accent-light: #F3F3F3;
+  --charcoal: #0A0302;
+  --dark: #1E293B;
+  --mid: #475569;
+  --muted: #666666;
+  --border: #E5E7EB;
+  --border-light: #F3F3F3;
+  --surface: #FFFFFF;
+  --canvas: #F8F9FA;
+  --green: #059669;
+  --green-light: #D1FAE5;
+  --shadow-md: 0 4px 16px rgba(0,0,0,.07);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.10);
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --font: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: #FFFFFF;
+  color: var(--charcoal);
+  line-height: 1.6;
+}
+
+.pm-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.pm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.pm-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--charcoal);
+}
+
+.pm-header p {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.pm-header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.pm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all .2s;
+}
+
+.pm-btn-primary {
+  background: var(--charcoal);
+  color: #fff;
+  border: none;
+}
+
+.pm-btn-primary:hover {
+  background: var(--accent);
+}
+
+.pm-btn-secondary {
+  background: var(--surface);
+  color: var(--charcoal);
+  border: 1px solid var(--border);
+}
+
+.pm-btn-secondary:hover {
+  border-color: var(--charcoal);
+  background: var(--charcoal);
+  color: #fff;
+}
+
+.pm-workspace {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  height: calc(100vh - 180px);
+}
+
+.pm-sidebar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.pm-filter-section {
+  margin-bottom: 24px;
+}
+
+.pm-filter-section h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--charcoal);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.pm-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pm-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.pm-filter-item:hover {
+  background: var(--canvas);
+}
+
+.pm-filter-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.pm-filter-item label {
+  font-size: 14px;
+  color: var(--dark);
+  cursor: pointer;
+}
+
+.pm-filter-item.active {
+  background: var(--accent-light);
+}
+
+.pm-filter-item.active label {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.pm-map-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+}
+
+.pm-map {
+  width: 100%;
+  height: 100%;
+}
+
+.pm-map-overlay {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+}
+
+.pm-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--charcoal);
+  background: transparent;
+}
+
+.pm-search-input::placeholder {
+  color: var(--muted);
+}
+
+.pm-results-count {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--charcoal);
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+}
+
+.pm-property-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.pm-property-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--charcoal);
+}
+
+.pm-property-card.active {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.pm-card-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+}
+
+.pm-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--charcoal);
+  margin-bottom: 4px;
+}
+
+.pm-card-location {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.pm-card-price {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--charcoal);
+}
+
+.pm-card-availability {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.pm-card-availability.available {
+  background: var(--green-light);
+  color: #065F46;
+}
+
+.pm-card-availability.low {
+  background: var(--amber-light);
+  color: #92400E;
+}
+
+.pm-card-availability.full {
+  background: var(--red-light);
+  color: #991B1B;
+}
+
+@media (max-width: 1024px) {
+  .pm-workspace {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    height: auto;
+  }
+  
+  .pm-sidebar {
+    max-height: 300px;
+  }
+  
+  .pm-map-container {
+    height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pm-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .pm-header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .pm-workspace {
+    grid-template-columns: 1fr;
+  }
+  
+  .pm-sidebar {
+    max-height: 250px;
+  }
+}
+
+/* Map Popups and Custom Leaflet Elements */
+.custom-leaflet-popup .leaflet-popup-content-wrapper {
+    padding: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+.custom-leaflet-popup .leaflet-popup-content {
+    margin: 0;
+    width: 240px !important;
+}
+.map-popup-card {
+    display: flex;
+    flex-direction: column;
+}
+.map-popup-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+.map-popup-body {
+    padding: 12px 16px;
+}
+.map-popup-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 2px;
+    font-family: var(--font);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.map-popup-price {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--charcoal);
+    margin-bottom: 4px;
+}
+.map-popup-btn {
+    display: block;
+    text-align: center;
+    background: var(--charcoal);
+    color: white !important;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    margin-top: 8px;
+    font-family: var(--font);
+}
+.map-popup-btn:hover {
+    background: var(--accent);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pm-container">
+  <!-- Header -->
+  <div class="pm-header">
+    <div>
+      <h1>Property Map</h1>
+      <p>Explore properties across Ghana on an interactive map</p>
+    </div>
+    <div class="pm-header-actions">
+      <a href="/properties" class="pm-btn pm-btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        List View
+      </a>
+      <button onclick="locateUser()" class="pm-btn pm-btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        My Location
+      </button>
+    </div>
+  </div>
+
+  <!-- Workspace -->
+  <div class="pm-workspace">
+    <!-- Sidebar Filters -->
+    <div class="pm-sidebar">
+      <div class="pm-filter-section">
+        <h3>Property Type</h3>
+        <div class="pm-filter-group">
+          {% for type_value, type_label in property_types %}
+          <div class="pm-filter-item">
+            <input type="checkbox" id="type_{{ type_value }}" value="{{ type_value }}" onchange="filterProperties()">
+            <label for="type_{{ type_value }}">{{ type_label }}</label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="pm-filter-section">
+        <h3>City</h3>
+        <div class="pm-filter-group">
+          {% for city in cities %}
+          <div class="pm-filter-item">
+            <input type="checkbox" id="city_{{ city }}" value="{{ city }}" onchange="filterProperties()">
+            <label for="city_{{ city }}">{{ city }}</label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="pm-filter-section">
+        <h3>Availability</h3>
+        <div class="pm-filter-group">
+          <div class="pm-filter-item">
+            <input type="checkbox" id="avail_available" value="available" onchange="filterProperties()">
+            <label for="avail_available">Available Now</label>
+          </div>
+          <div class="pm-filter-item">
+            <input type="checkbox" id="avail_low" value="low" onchange="filterProperties()">
+            <label for="avail_low">Low Availability</label>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="resetFilters()" class="pm-btn pm-btn-secondary" style="width: 100%; justify-content: center;">
+        Reset Filters
+      </button>
+    </div>
+
+    <!-- Map Container -->
+    <div class="pm-map-container">
+      <div class="pm-map-overlay">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" class="pm-search-input" placeholder="Search location, property name..." id="mapSearch" onkeyup="searchProperties()">
+      </div>
+      
+      <div id="map" class="pm-map"></div>
+      
+      <div class="pm-results-count">
+        <span id="resultsCount">{{ properties|length }}</span> properties found
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let map;
+let markerCluster;
+let markerList = [];
+let propertyData = {{ properties_json|safe }};
+
+function initMap() {
+  if (!propertyData || propertyData.length === 0) {
+    document.getElementById('map').innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--muted);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><p>No properties with coordinates available</p></div>';
+    return;
+  }
+
+  const defaultCenter = propertyData.length > 0 
+    ? [propertyData[0].latitude, propertyData[0].longitude]
+    : [6.6885, -1.5708]; // Default Kumasi
+
+  map = L.map('map', {
+    center: defaultCenter,
+    zoom: 13,
+    scrollWheelZoom: true
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20
+  }).addTo(map);
+
+  markerCluster = L.markerClusterGroup({
+      chunkedLoading: true,
+      maxClusterRadius: 50
+  });
+
+  renderMapMarkers();
+}
+
+function renderMapMarkers() {
+  markerCluster.clearLayers();
+  markerList = [];
+
+  let bounds = L.latLngBounds();
+
+  propertyData.forEach(prop => {
+    if (prop.latitude && prop.longitude) {
+      const latLng = [prop.latitude, prop.longitude];
+      bounds.extend(latLng);
+
+      // Custom price marker
+      const customIcon = L.divIcon({
+          className: 'custom-map-marker',
+          html: `<div style="background-color: #e11d48; color: white; border-radius: 20px; padding: 4px 8px; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); white-space: nowrap; font-size: 12px; text-align: center;">${prop.price}</div>`,
+          iconSize: [null, null],
+          iconAnchor: [30, 15]
+      });
+
+      const marker = L.marker(latLng, { icon: customIcon });
+
+      const popupContent = `
+          <div class="map-popup-card">
+              <img src="${prop.image}" alt="${prop.title}">
+              <div class="map-popup-body">
+                  <div class="map-popup-title">${prop.title}</div>
+                  <div class="map-popup-price">${prop.price}</div>
+                  <div style="font-size: 11px; color: #64748B; margin-bottom: 8px;">${prop.property_type} • ${prop.address}</div>
+                  <a href="/properties/${prop.id}/" class="map-popup-btn">View Details</a>
+              </div>
+          </div>
+      `;
+
+      marker.bindPopup(popupContent, { minWidth: 240, className: 'custom-leaflet-popup' });
+      marker.propertyData = prop; // Store data on marker for filtering
+
+      markerCluster.addLayer(marker);
+      markerList.push(marker);
+    }
+  });
+
+  map.addLayer(markerCluster);
+
+  if (propertyData.length > 0) {
+    map.fitBounds(bounds, { padding: [50, 50] });
+  }
+}
+
+function filterProperties() {
+  const selectedTypes = Array.from(document.querySelectorAll('input[id^="type_"]:checked')).map(el => el.value);
+  const selectedCities = Array.from(document.querySelectorAll('input[id^="city_"]:checked')).map(el => el.value);
+  const showAvailable = document.getElementById('avail_available').checked;
+  const showLow = document.getElementById('avail_low').checked;
+
+  markerCluster.clearLayers();
+  let visibleCount = 0;
+
+  markerList.forEach(marker => {
+    let visible = true;
+    const prop = marker.propertyData;
+
+    if (selectedTypes.length > 0 && !selectedTypes.includes(prop.property_type)) {
+      visible = false;
+    }
+
+    if (selectedCities.length > 0 && !selectedCities.includes(prop.city)) {
+      visible = false;
+    }
+
+    if (showAvailable || showLow) {
+      const hasAvailability = checkAvailability(prop);
+      if (showAvailable && !hasAvailability.available) visible = false;
+      if (showLow && !hasAvailability.low) visible = false;
+    }
+
+    if (visible) {
+      markerCluster.addLayer(marker);
+      visibleCount++;
+    }
+  });
+
+  document.getElementById('resultsCount').textContent = visibleCount;
+}
+
+function checkAvailability(property) {
+  if (property.property_type === 'HOSTEL') {
+    const totalSlots = property.room_types.reduce((sum, rt) => sum + rt.available_slots, 0);
+    return {
+      available: totalSlots > 3,
+      low: totalSlots > 0 && totalSlots <= 3
+    };
+  } else {
+    const totalUnits = property.unit_types.reduce((sum, ut) => sum + ut.available_units, 0);
+    return {
+      available: totalUnits > 3,
+      low: totalUnits > 0 && totalUnits <= 3
+    };
+  }
+}
+
+function resetFilters() {
+  document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+  markerCluster.clearLayers();
+  markerList.forEach(marker => {
+    markerCluster.addLayer(marker);
+  });
+  document.getElementById('resultsCount').textContent = markerList.length;
+}
+
+function searchProperties() {
+  const query = document.getElementById('mapSearch').value.toLowerCase();
+  
+  markerCluster.clearLayers();
+  let visibleCount = 0;
+
+  markerList.forEach(marker => {
+    const prop = marker.propertyData;
+    const matches = prop.title.toLowerCase().includes(query) ||
+                   prop.city.toLowerCase().includes(query) ||
+                   prop.address.toLowerCase().includes(query);
+    
+    // Combine text search with existing checkbox filters
+    const selectedTypes = Array.from(document.querySelectorAll('input[id^="type_"]:checked')).map(el => el.value);
+    const selectedCities = Array.from(document.querySelectorAll('input[id^="city_"]:checked')).map(el => el.value);
+    const showAvailable = document.getElementById('avail_available').checked;
+    const showLow = document.getElementById('avail_low').checked;
+    
+    let visibleByFilters = true;
+    if (selectedTypes.length > 0 && !selectedTypes.includes(prop.property_type)) visibleByFilters = false;
+    if (selectedCities.length > 0 && !selectedCities.includes(prop.city)) visibleByFilters = false;
+    if (showAvailable || showLow) {
+      const hasAvailability = checkAvailability(prop);
+      if (showAvailable && !hasAvailability.available) visibleByFilters = false;
+      if (showLow && !hasAvailability.low) visibleByFilters = false;
+    }
+
+    if (matches && visibleByFilters) {
+      markerCluster.addLayer(marker);
+      visibleCount++;
+    }
+  });
+
+  document.getElementById('resultsCount').textContent = visibleCount;
+}
+
+function locateUser() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latLng = [position.coords.latitude, position.coords.longitude];
+        
+        map.setView(latLng, 14);
+        
+        // Add user location marker
+        L.marker(latLng, {
+          icon: L.divIcon({
+            className: 'user-location-marker',
+            html: `<div style="background-color: #3b82f6; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);"></div>`,
+            iconSize: [16, 16],
+            iconAnchor: [8, 8]
+          })
+        }).addTo(map).bindPopup("You are here").openPopup();
+      },
+      (error) => {
+        alert('Unable to get your location. Please enable location services.');
+      }
+    );
+  } else {
+    alert('Geolocation is not supported by your browser.');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initMap);
+</script>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- MarkerCluster JS -->
+<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+{% endblock %}

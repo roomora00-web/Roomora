@@ -1,0 +1,63 @@
+{% if reviews %}
+<div class="pd-review-cards">
+  {% for review in reviews %}
+  <div class="pd-review-card">
+    <div class="pd-review-header">
+      <div class="pd-reviewer-info">
+        <div class="pd-reviewer-avatar">{{ review.reviewer.get_full_name|default:review.reviewer.email|make_list|first|upper }}</div>
+        <div>
+          <div class="pd-reviewer-name">{{ review.reviewer.get_full_name|default:review.reviewer.email|slice:":1" }}.</div>
+          <div class="pd-reviewer-meta">
+            {% if review.guest_type %}
+            <span style="font-size:12px;color:var(--muted);">{{ review.get_guest_type_display }}</span>
+            {% endif %}
+            · {{ review.created_at|date:"M Y" }}
+            {% if review.verification_level == 'VERIFIED_GUEST' %}
+            · <span class="pd-verified-guest" style="color:var(--green);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Verified guest
+            </span>
+            {% elif review.verification_level == 'VERIFIED_THIRD_PARTY' %}
+            · <span class="pd-verified-guest" style="color:#F59E0B;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Verified
+            </span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="pd-review-rating">
+        {% for i in "12345" %}
+        <span class="pd-star {% if review.rating >= forloop.counter %}filled{% endif %}" style="font-size:15px;">★</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% if review.title %}
+    <div class="pd-review-title">"{{ review.title }}"</div>
+    {% endif %}
+    <div class="pd-review-content">{{ review.content }}</div>
+    
+    {% if review.response %}
+    <div style="background:var(--accent-light);border-left:3px solid var(--charcoal);padding:12px 16px;margin-top:12px;border-radius:4px;">
+      <div style="font-size:12px;font-weight:700;color:var(--charcoal);margin-bottom:4px;">📌 Property Response</div>
+      <div style="font-size:13px;color:var(--dark);">{{ review.response }}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">— {{ property.title }} Management</div>
+    </div>
+    {% endif %}
+    
+    <div class="pd-review-footer">
+      <button class="pd-helpful-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+        Helpful ({{ review.helpful_count }})
+      </button>
+      <span style="font-size:12px;color:var(--muted);">{{ review.rating }}.0 / 5.0</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="pd-no-reviews" style="padding: 40px; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);">
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" style="margin: 0 auto 16px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+  <p style="color: var(--muted); font-size: 15px;">No reviews match your filters.</p>
+</div>
+{% endif %}

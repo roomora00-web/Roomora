@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Expiry Reminder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 0 0 5px 5px;
+        }
+        .reminder-type {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .booking-details {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .booking-details table {
+            width: 100%;
+        }
+        .booking-details td {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .booking-details td:first-child {
+            font-weight: bold;
+            width: 40%;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Booking Expiry Reminder</h1>
+    </div>
+    
+    <div class="content">
+        <p>Dear {{ student_name }},</p>
+        
+        <div class="reminder-type">
+            <strong>{{ reminder_type }}</strong>
+        </div>
+        
+        <p>This is a reminder that your booking at <strong>{{ property_name }}</strong> is coming to an end.</p>
+        
+        <div class="booking-details">
+            <h3>Booking Details</h3>
+            <table>
+                <tr>
+                    <td>Property:</td>
+                    <td>{{ property_name }}</td>
+                </tr>
+                <tr>
+                    <td>Room Number:</td>
+                    <td>{{ room_number }}</td>
+                </tr>
+                <tr>
+                    <td>Move-Out Date:</td>
+                    <td>{{ move_out_date|date:"F d, Y" }}</td>
+                </tr>
+                <tr>
+                    <td>Billing Model:</td>
+                    <td>{{ billing_model }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <p><strong>What you can do:</strong></p>
+        <ul>
+            <li>Confirm your departure date</li>
+            <li>Request a booking extension (if available)</li>
+            <li>Book another semester with priority rebooking</li>
+        </ul>
+        
+        <a href="#" class="cta-button">View My Bookings</a>
+        
+        <p>If you have any questions or need assistance, please contact our support team.</p>
+        
+        <div class="footer">
+            <p>This is an automated email. Please do not reply directly.</p>
+            <p>&copy; 2026 Roomora. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

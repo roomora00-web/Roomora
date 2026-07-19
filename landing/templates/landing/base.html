@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Roomora - Find Your Perfect Home{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="icon" href="{% static 'landing/images/logo-black.png' %}" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="{% static 'landing/css/main.css' %}">
+    <style>
+        /* Fallback critical styling if main.css fails to load */
+        body { background: #080808; color: #F8FAFC; font-family: 'Plus Jakarta Sans', Inter, sans-serif; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .btn { display: inline-block; padding: 8px 12px; border-radius: 8px; text-decoration: none; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body{% block extra_body_attr %}{% endblock %}>
+    {% block content %}{% endblock %}
+    
+    <!-- Notification Toast Container -->
+    <div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+    <script src="{% static 'landing/js/accordion.js' %}"></script>
+    
+    {% if user.is_authenticated %}
+    <script>
+        const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+        const notificationSocket = new WebSocket(
+            wsScheme + '://' + window.location.host + '/ws/notifications/'
+        );
+
+        notificationSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            showNotification(data.title, data.message, data.type);
+        };
+
+        notificationSocket.onclose = function(e) {
+            console.error('Notification socket closed unexpectedly');
+        };
+
+        function showNotification(title, message, type) {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                background: white;
+                border-left: 4px solid #3B82F6;
+                padding: 16px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                width: 300px;
+                transform: translateX(100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+            `;
+            
+            if (type === 'SYSTEM' || type === 'CONFLICT') {
+                toast.style.borderLeftColor = '#EF4444';
+            } else if (type === 'MATCH_FOUND' || type === 'PAYMENT') {
+                toast.style.borderLeftColor = '#10B981';
+            }
+            
+            toast.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; font-size: 14px; color: #111827;">${title}</h4>
+                        <p style="margin: 0; font-size: 13px; color: #4B5563;">${message}</p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 0;">×</button>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+                toast.style.opacity = '1';
+            }, 10);
+            
+            // Auto dismiss
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+    </script>
+    {% endif %}
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

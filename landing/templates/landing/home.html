@@ -1,0 +1,2052 @@
+{% extends 'landing/base.html' %}
+{% load static %}
+{% block title %}Roomora - Find Your Perfect Home{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Premium Hero Background Animations */
+    .hero-bg-slider {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        background-color: #0F172A; /* Fallback */
+    }
+
+    .hero-bg-slide {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        animation: kenBurnsCrossfade 21s linear infinite;
+        will-change: transform, opacity;
+    }
+
+    .hero-bg-slide:nth-child(1) { animation-delay: 0s; }
+    .hero-bg-slide:nth-child(2) { animation-delay: 7s; }
+    .hero-bg-slide:nth-child(3) { animation-delay: 14s; }
+
+    @keyframes kenBurnsCrossfade {
+        0% { opacity: 0; transform: scale(1); }
+        10% { opacity: 1; }
+        33.33% { opacity: 1; }
+        43.33% { opacity: 0; transform: scale(1.15); }
+        100% { opacity: 0; transform: scale(1.15); }
+    }
+
+    /* Text Entrance Animations */
+    .animate-fade-up {
+        opacity: 0;
+        animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Desktop: hide the mobile-only hero */
+    .mhero { display: none; }
+
+    /* Desktop logo - large with negative margins to crop transparent space */
+    .hero-logo-img {
+        height: 200px;
+        width: auto;
+        object-fit: contain;
+        margin: -50px 0 -80px -40px;
+        transform: scale(1.2);
+        transform-origin: left center;
+        pointer-events: none;
+    }
+
+    /* =============================================
+       MOBILE HERO — Separate clean block
+       ============================================= */
+    @media (max-width: 768px) {
+
+        /* Hide the desktop hero entirely */
+        .hero-viewport-canvas { display: none !important; }
+
+        /* ---- Mobile Hero ---- */
+        .mhero {
+            position: relative;
+            width: 100%;
+            height: 100svh;
+            max-height: 620px;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+        }
+
+        .mhero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.75) 100%);
+        }
+
+        /* Top nav */
+        .mhero-nav {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px 12px;
+        }
+
+        .mhero-brand {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.03em;
+            text-decoration: none;
+        }
+
+        .mhero-menu-btn {
+            width: 42px;
+            height: 42px;
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+        }
+
+        /* Content block */
+        .mhero-body {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 20px 24px;
+        }
+
+        .mhero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 14px;
+            width: fit-content;
+            backdrop-filter: blur(8px);
+        }
+
+        .mhero-eyebrow span {
+            width: 6px; height: 6px;
+            background: #4ade80;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .mhero-title {
+            font-size: 34px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.15;
+            letter-spacing: -0.025em;
+            margin: 0 0 10px;
+        }
+
+        .mhero-sub {
+            font-size: 14px;
+            color: rgba(255,255,255,0.75);
+            line-height: 1.55;
+            margin: 0 0 24px;
+        }
+
+        /* Search bar */
+        .mhero-search {
+            background: #fff;
+            border-radius: 14px;
+            padding: 8px 8px 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .mhero-search-icon { color: #9CA3AF; flex-shrink: 0; }
+
+        .mhero-search input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+            color: #111827;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .mhero-search input::placeholder { color: #9CA3AF; }
+
+        .mhero-search button {
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .mhero-search button:active { background: #333; }
+
+        /* Stats strip */
+        .mhero-stats {
+            display: flex;
+            gap: 0;
+            margin-top: 16px;
+        }
+
+        .mhero-stat {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            border-right: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .mhero-stat:last-child { border-right: none; }
+
+        .mhero-stat-num {
+            display: block;
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+
+        .mhero-stat-label {
+            display: block;
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* ---- Mobile Nav Drawer ---- */
+        .mobile-nav-drawer {
+            position: fixed;
+            inset: 0;
+            background: rgba(8,8,8,0.97);
+            z-index: 99999;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 24px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .drawer-brand { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.03em; }
+
+        .drawer-close-btn {
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .drawer-content { display: flex; flex-direction: column; padding: 20px 24px; }
+
+        .drawer-link {
+            font-size: 24px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.45);
+            text-decoration: none;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: color 0.2s;
+        }
+
+        .drawer-link.active, .drawer-link:active { color: #fff; }
+        .drawer-link:last-of-type { border-bottom: none; }
+
+        .drawer-btn-primary {
+            display: block;
+            background: #fff;
+            color: #000;
+            text-align: center;
+            padding: 18px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 16px;
+            margin-top: 24px;
+        }
+
+        /* ---- Testimonials ---- */
+        .avatar-wave-grid { display: none !important; }
+        .mobile-testimonials-slider {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            scrollbar-width: none !important;
+            gap: 16px !important;
+            padding: 0 20px 24px !important;
+        }
+        .mobile-testimonials-slider::-webkit-scrollbar { display: none; }
+        .testimonial-card-slide {
+            flex: 0 0 82vw !important;
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            border-radius: 20px !important;
+            padding: 22px !important;
+            scroll-snap-align: start !important;
+            text-align: left !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+        }
+        .testimonial-rating { color: #F59E0B !important; font-size: 15px !important; margin-bottom: 10px !important; }
+        .testimonial-quote { color: #F8FAFC !important; font-size: 14px !important; line-height: 1.55 !important; margin-bottom: 18px !important; font-style: italic !important; }
+        .testimonial-author { display: flex !important; align-items: center !important; gap: 10px !important; }
+        .testimonial-author img { width: 40px !important; height: 40px !important; border-radius: 50% !important; object-fit: cover !important; }
+        .testimonial-author h4 { margin: 0 !important; font-size: 13px !important; color: #F8FAFC !important; font-weight: 700 !important; }
+        .testimonial-author span { font-size: 11px !important; color: #94A3B8 !important; }
+    }
+
+/* Mobile Navbar Fix */
+@media (max-width: 768px) {
+  .prop-navbar {
+    padding: 16px 0 !important;
+  }
+  .prop-logo-img {
+    height: 120px !important;
+    margin: -30px 0 -50px -20px !important;
+    transform: scale(1) !important;
+  }
+  .hero-logo-img {
+    height: 120px !important;
+    margin: -30px 0 -50px -20px !important;
+    transform: scale(1) !important;
+  }
+  .prop-center-nav {
+    display: none !important;
+  }
+  .prop-right-panel {
+    display: none !important;
+  }
+  .prop-mobile-menu-btn {
+    display: flex !important;
+  }
+  .app-workspace-wrapper {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+
+<style>
+    .custom-map-marker {
+        background: #E11D48;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 13px;
+        box-shadow: 0 4px 10px rgba(225, 29, 72, 0.4);
+        position: relative;
+        white-space: nowrap;
+        text-align: center;
+        border: 2px solid white;
+    }
+
+    .custom-map-marker .marker-pointer {
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 6px 6px 0;
+        border-style: solid;
+        border-color: #E11D48 transparent transparent transparent;
+    }
+
+    .custom-leaflet-popup .leaflet-popup-content-wrapper {
+        padding: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .custom-leaflet-popup .leaflet-popup-content {
+        margin: 0;
+        width: 240px !important;
+    }
+
+    .map-popup-card img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+    }
+
+    .map-popup-card .popup-info {
+        padding: 15px;
+    }
+
+    .map-popup-card .popup-type {
+        font-size: 11px;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: #E11D48;
+        margin-bottom: 5px;
+    }
+
+    .map-popup-card h4 {
+        font-size: 15px;
+        font-weight: 800;
+        color: #0F172A;
+        margin: 0 0 5px 0;
+    }
+
+    .map-popup-card .popup-address {
+        font-size: 12px;
+        color: #64748B;
+        margin: 0 0 10px 0;
+    }
+
+    .map-popup-card .popup-price {
+        font-size: 16px;
+        font-weight: 800;
+        color: #0F172A;
+        margin-bottom: 12px;
+    }
+
+    .map-popup-card .popup-price span {
+        font-size: 12px;
+        font-weight: 500;
+        color: #64748B;
+    }
+
+    .map-popup-card .popup-btn {
+        display: block;
+        text-align: center;
+        background: #0F172A;
+        color: white;
+        text-decoration: none;
+        padding: 8px 0;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 13px;
+        transition: background 0.2s;
+    }
+
+    .map-popup-card .popup-btn:hover {
+        background: #E11D48;
+    }
+</style>
+
+<!-- =====================================================
+     MOBILE HERO — only shown below 768px
+     Desktop hero is shown above 768px (see below)
+     ===================================================== -->
+<section class="mhero" id="mhero-section">
+    <!-- Animated Background Slider -->
+    <div class="hero-bg-slider">
+        <div class="hero-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+        <div class="hero-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1554995207-c18c203602cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+        <div class="hero-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="mhero-nav">
+        <a href="{% url 'landing:home' %}" class="mhero-brand animate-fade-up">Roomora</a>
+        <button class="mhero-menu-btn animate-fade-up" id="mhero-menu-btn" aria-label="Open menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Body: eyebrow + title + sub + search -->
+    <div class="mhero-body">
+        <div class="mhero-eyebrow animate-fade-up delay-100">
+            <span></span> 500+ Verified Listings
+        </div>
+        <h1 class="mhero-title animate-fade-up delay-200">Discover Premium<br>Living Spaces</h1>
+        <p class="mhero-sub animate-fade-up delay-300">Verified student hostels &amp; apartments in Ghana — matched to your lifestyle.</p>
+
+        <form action="{% url 'landing:properties' %}" method="GET" class="mhero-search animate-fade-up delay-400">
+            <svg class="mhero-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" name="query" placeholder="Search by area, e.g. Legon, KNUST…">
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="mhero-stats animate-fade-up delay-400">
+            <div class="mhero-stat">
+                <span class="mhero-stat-num">500+</span>
+                <span class="mhero-stat-label">Listings</span>
+            </div>
+            <div class="mhero-stat">
+                <span class="mhero-stat-num">15+</span>
+                <span class="mhero-stat-label">Cities</span>
+            </div>
+            <div class="mhero-stat">
+                <span class="mhero-stat-num">4.9★</span>
+                <span class="mhero-stat-label">Rating</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mobile Nav Drawer (shared, used by mhero hamburger) -->
+<div id="mobile-nav-drawer" style="position:fixed;inset:0;background:rgba(8,8,8,0.97);z-index:99999;display:none;flex-direction:column;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:24px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.08);">
+        <span style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.03em;font-family:'Plus Jakarta Sans',sans-serif;">Roomora</span>
+        <button id="mhero-close-btn" aria-label="Close menu" style="width:40px;height:40px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+    <div style="display:flex;flex-direction:column;padding:20px 24px;gap:0;font-family:'Plus Jakarta Sans',sans-serif;">
+        <a href="{% url 'landing:home' %}" style="font-size:24px;font-weight:700;color:#fff;text-decoration:none;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.07);">Home</a>
+        <a href="{% url 'landing:properties' %}" style="font-size:24px;font-weight:700;color:rgba(255,255,255,0.5);text-decoration:none;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.07);">Properties</a>
+        <a href="#" style="font-size:24px;font-weight:700;color:rgba(255,255,255,0.5);text-decoration:none;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.07);">About Us</a>
+        <a href="#" style="font-size:24px;font-weight:700;color:rgba(255,255,255,0.5);text-decoration:none;padding:16px 0;">Blog</a>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'accounts:dashboard' %}" style="display:block;background:#fff;color:#000;text-align:center;padding:18px;border-radius:14px;text-decoration:none;font-weight:800;font-size:16px;margin-top:24px;">Dashboard</a>
+        <a href="{% url 'accounts:logout' %}" style="display:block;text-align:center;color:rgba(255,255,255,0.5);text-decoration:none;font-size:14px;font-weight:600;padding:16px;">Logout</a>
+        {% else %}
+        <a href="{% url 'accounts:login' %}" style="display:block;text-align:center;color:rgba(255,255,255,0.5);text-decoration:none;font-size:16px;font-weight:700;padding:16px 0;margin-top:8px;">Sign In</a>
+        <a href="{% url 'landing:properties' %}" style="display:block;background:#fff;color:#000;text-align:center;padding:18px;border-radius:14px;text-decoration:none;font-weight:800;font-size:16px;">Find a Place</a>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+(function() {
+    var openBtn = document.getElementById('mhero-menu-btn');
+    var closeBtn = document.getElementById('mhero-close-btn');
+    var drawer = document.getElementById('mobile-nav-drawer');
+    if (openBtn && drawer) {
+        openBtn.addEventListener('click', function() {
+            drawer.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+    }
+    if (closeBtn && drawer) {
+        closeBtn.addEventListener('click', function() {
+            drawer.style.display = 'none';
+            document.body.style.overflow = '';
+        });
+    }
+})();
+</script>
+
+<!-- DESKTOP HERO — hidden on mobile via CSS -->
+<div class="hero-viewport-canvas">
+    
+    <!-- Animated Background Slider -->
+    <div class="hero-bg-slider">
+        <div class="hero-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2075&q=80')"></div>
+        <div class="hero-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1554995207-c18c203602cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=2075&q=80')"></div>
+        <div class="hero-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=2075&q=80')"></div>
+    </div>
+
+    <!-- Overlay to darken background slightly for contrast -->
+    <div class="hero-overlay"
+        style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%); z-index: 1;">
+    </div>
+
+    <!-- Header Navigation Container -->
+    <header class="navbar-container animate-fade-up" style="position: relative; z-index: 10;">
+
+        <!-- Left Brand Logo -->
+        <div class="navbar-brand" style="display: flex; align-items: center;">
+            <a href="{% url 'landing:home' %}" style="display: block;">
+                <img src="{% static 'landing/images/logo-white.png' %}" alt="Roomora Logo" class="hero-logo-img">
+            </a>
+        </div>
+
+        <!-- Center Navigation Pill -->
+        <nav class="center-navigation-pill">
+            <a href="{% url 'landing:home' %}" class="nav-link is-active"
+                style="text-decoration: none; font-size: 14px;">Home</a>
+            <a href="{% url 'landing:properties' %}" class="nav-link"
+                style="text-decoration: none; font-size: 14px; color: #FFFFFF; font-weight: 500;">Properties</a>
+            <a href="#" class="nav-link"
+                style="text-decoration: none; font-size: 14px; color: #FFFFFF; font-weight: 500;">About</a>
+            <a href="#" class="nav-link"
+                style="text-decoration: none; font-size: 14px; color: #FFFFFF; font-weight: 500;">Blog</a>
+        </nav>
+
+        <!-- Right Action Panel -->
+        <div class="right-auth-panel glass-panel-base mobile-clean-auth"
+            style="display: flex; align-items: center; gap: 16px; padding: 6px 6px 6px 20px;">
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'accounts:logout' %}" class="hide-on-mobile"
+                style="color: #FFFFFF; font-size: 14px; text-decoration: none; font-weight: 500;">Logout</a>
+            <a href="{% url 'accounts:dashboard' %}" class="hide-on-mobile"
+                style="background: #FFFFFF; color: #000000; border-radius: 20px; padding: 8px 16px; font-size: 14px; font-weight: 600; text-decoration: none;">Dashboard</a>
+            {% else %}
+            <a href="{% url 'accounts:login' %}" class="hide-on-mobile" style="color: #FFFFFF; font-size: 14px; text-decoration: none; font-weight: 500;">Sign In</a>
+            <a href="{% url 'landing:properties' %}" class="hide-on-mobile"
+                style="background: #FFFFFF; color: #000000; border-radius: 20px; padding: 8px 16px; font-size: 14px; font-weight: 600; text-decoration: none;">Find a Place</a>
+            {% endif %}
+
+        </div>
+    </header>
+
+
+    <!-- Content Workspace -->
+    <div class="hero-content-workspace center-aligned-hero" style="position: relative; z-index: 10;">
+        <h1 class="hero-main-headline animate-fade-up delay-100">Discover Premium<br>Living Spaces</h1>
+        <p class="hero-tagline-copy animate-fade-up delay-200">
+            Verified student hostels and premium apartments in Ghana,<br>matched to your lifestyle.
+        </p>
+    </div>
+
+    <!-- Anchored Search Widget -->
+    <form action="{% url 'landing:properties' %}" method="GET" class="anchored-search-widget-bar animate-fade-up delay-300"
+        style="position: absolute; z-index: 10;">
+        <div class="search-field-pill-box">
+            <label
+                style="font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase;">Category</label>
+            <select name="property_type"
+                style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
+                <option value="">All Types</option>
+                {% for value, label in property_types %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="search-field-pill-box">
+            <label
+                style="font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase;">Location</label>
+            <select name="location"
+                style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
+                <option value="">Any Location</option>
+                {% for city in cities %}
+                <option value="{{ city }}">{{ city }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="search-field-pill-box">
+            <label
+                style="font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase;">Accommodation</label>
+            <select name="accommodation_type"
+                style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
+                <option value="">Any Setup</option>
+                {% for value, label in room_occupancy_types %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="search-field-pill-box">
+            <label style="font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase;">Price
+                Range</label>
+            <select name="price_range"
+                style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
+                <option value="">Any Price</option>
+                {% for range in price_ranges %}
+                <option value="{{ range.min }}-{{ range.max }}">{{ range.label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn-search-execute-black">Search Now</button>
+    </form>
+</div>
+
+<!-- Features & Stats Showcase Section -->
+<section class="features-showcase-section">
+    <div class="showcase-container">
+        
+        <!-- Left: Visuals -->
+        <div class="showcase-visuals">
+            <div class="main-featured-image-wrapper">
+                {% if featured_property and featured_property.images.first %}
+                <img src="{{ featured_property.images.first.image.url }}" alt="{{ featured_property.title }}" class="main-featured-image">
+                {% else %}
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1600&fit=crop" alt="Student Hostel" class="main-featured-image">
+                {% endif %}
+                
+                <!-- Floating Glass Card -->
+                <div class="floating-glass-details">
+                    <div class="floating-header">
+                        <span class="pulse-indicator"></span>
+                        <span class="status-text">Featured Property</span>
+                    </div>
+                    <h3 class="floating-title">{% if featured_property %}{{ featured_property.title }}{% else %}Campus View Hostel{% endif %}</h3>
+                    <div class="floating-price">
+                        <span class="price-label">Starting from</span>
+                        <span class="price-value">
+                            {% if featured_property %}
+                            {% with featured_property.room_types.first.pricing_models.first as hostel_price %}
+                            {% with featured_property.unit_types.first.pricing_models.first as apartment_price %}
+                            {% if featured_property.property_type == 'HOSTEL' and hostel_price %}
+                            GHC {{ hostel_price.semester_price|default:hostel_price.yearly_price|default:hostel_price.monthly_price|default:"—" }}
+                            {% elif featured_property.property_type == 'APARTMENT' and apartment_price %}
+                            GHC {{ apartment_price.monthly_price|default:apartment_price.yearly_price|default:"—" }}
+                            {% else %}
+                            Contact for price
+                            {% endif %}
+                            {% endwith %}
+                            {% endwith %}
+                            {% else %}
+                            GHC 2,500
+                            {% endif %}
+                        </span>
+                    </div>
+                    <a href="{% if featured_property %}{% url 'landing:property_detail' featured_property.pk %}{% else %}{% url 'landing:properties' %}{% endif %}" class="floating-btn">View Property <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Content & Stats -->
+        <div class="showcase-content">
+            <div class="eyebrow-badge">Why Choose Roomora</div>
+            <h2 class="showcase-headline">Your trusted platform for finding safe and compatible living spaces.</h2>
+            <p class="showcase-description">Browse our extensive collection of verified hostels and shared apartments. Each listing is inspected to ensure security, quality, and a comfortable living experience.</p>
+            
+            <div class="action-row">
+                <a href="{% url 'landing:properties' %}" class="btn-primary-solid">Start Searching</a>
+                <button class="btn-video-outline">
+                    <div class="play-icon">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                    </div>
+                    Watch Video
+                </button>
+            </div>
+
+            <!-- Integrated Stats -->
+            <div class="showcase-stats-grid" id="statsGrid">
+                <div class="stat-block">
+                    <h4 class="stat-number" data-target="5000" data-suffix="+">0</h4>
+                    <p class="stat-label">Students Matched</p>
+                </div>
+                <div class="stat-block">
+                    <h4 class="stat-number" data-target="200" data-suffix="+">0</h4>
+                    <p class="stat-label">Verified Hostels</p>
+                </div>
+                <div class="stat-block">
+                    <h4 class="stat-number" data-target="50" data-suffix="+">0</h4>
+                    <p class="stat-label">Partner Institutions</p>
+                </div>
+                <div class="stat-block">
+                    <h4 class="stat-number" data-target="100" data-suffix="%">0</h4>
+                    <p class="stat-label">Secure Bookings</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    // Stats Number Animation
+    document.addEventListener("DOMContentLoaded", () => {
+        const counters = document.querySelectorAll('.stat-number');
+        const speed = 150; // The lower the slower
+
+        const animateCounters = () => {
+            counters.forEach(counter => {
+                const updateCount = () => {
+                    const target = +counter.getAttribute('data-target');
+                    const count = +counter.innerText.replace(/[^0-9]/g, '');
+                    const inc = target / speed;
+                    const suffix = counter.getAttribute('data-suffix') || '';
+
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + inc) + suffix;
+                        setTimeout(updateCount, 15);
+                    } else {
+                        counter.innerText = target.toLocaleString() + suffix;
+                    }
+                };
+                updateCount();
+            });
+        };
+
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    obs.disconnect(); // only animate once
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsGrid = document.getElementById('statsGrid');
+        if (statsGrid) observer.observe(statsGrid);
+    });
+</script>
+
+<!-- Split Map Feature -->
+<section class="map-feature-container">
+    <div class="map-content-column">
+        <h2 class="map-headline">Find Safe Accommodation Near Your Campus or Workplace</h2>
+        <p class="map-description">Explore our curated selection of verified properties tailored for students and young professionals. Our intelligent matching system ensures you find the perfect accommodation and roommates.</p>
+        <div class="map-cta-group">
+            <button class="map-cta-btn map-btn-primary" onclick="window.location.href='{% url 'landing:properties' %}'">Search Hostels & Apartments</button>
+            <button class="map-cta-btn map-btn-secondary" onclick="useLiveLocation()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px; vertical-align: middle;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Use Live Location
+            </button>
+        </div>
+    </div>
+    <div class="map-column">
+        <div id="homeMap" class="interactive-map">
+            <!-- Leaflet map will render here -->
+        </div>
+    </div>
+</section>
+
+<!-- Properties for Rent Section -->
+<section class="rentals-section">
+    <div class="rentals-header">
+        <div class="header-left">
+            <h2 class="rentals-headline">Premium Listings</h2>
+            <p class="rentals-subtext">Affordable and secure student hostels and shared apartments</p>
+        </div>
+        <div class="filter-dropdowns-group">
+            <select class="filter-dropdown">
+                <option>Hostel</option>
+                <option>Apartment</option>
+                <option>Shared Apartment</option>
+                <option>Single Room</option>
+            </select>
+            <select class="filter-dropdown">
+                <option>Featured</option>
+                <option>Newest</option>
+                <option>Price: Low to High</option>
+                <option>Price: High to Low</option>
+            </select>
+            <a href="{% url 'landing:properties' %}" class="all-properties-btn">
+                All properties
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <div class="premium-carousel-container">
+        <div class="premium-carousel-track">
+            <!-- Original Items -->
+            {% for property in premium_listings %}
+            <a class="property-overlay-card"
+                href="{% url 'landing:property_detail' property.pk %}"
+                {% with primary_image=property.images.all|first %}
+                {% if primary_image %}
+                style="background-image: url('{{ primary_image.image.url }}')"
+                {% else %}
+                style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
+                {% endif %}
+                {% endwith %}>
+
+                <div class="card-top-header-row">
+                    <div class="rating-badge-capsule">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        {% if property.average_rating > 0 %}{{ property.average_rating|floatformat:1 }}{% else %}4.8{% endif %}/5
+                    </div>
+                    <button class="favorite-heart-circle" onclick="event.preventDefault()" aria-label="Save">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </button>
+                </div>
+
+                <div class="card-bottom-scrim-workspace">
+                    <h3 class="card-property-title">
+                        {{ property.title }}
+                        {% if property.is_verified %}
+                        <svg style="width:18px;height:18px;flex-shrink:0;" viewBox="0 0 24 24" aria-label="Verified"><g><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.918-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.337 2.25c-.416-.165-.866-.25-1.336-.25-2.21 0-3.918 1.792-3.918 4 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.46.74 2.746 1.867 3.45-.094.373-.146.762-.146 1.15 0 2.21 1.71 4 3.918 4 .51 0 1-.096 1.46-.273C9.432 21.688 10.643 22.5 12 22.5s2.568-.812 3.51-2.023c.46.177.95.273 1.46.273 2.21 0 3.918-1.79 3.918-4 0-.388-.052-.777-.146-1.15 1.127-.704 1.867-1.99 1.867-3.45z" fill="#1d9bf0"></path><path d="M10.73 16.59l-3.32-3.32c-.28-.28-.28-.75 0-1.04.29-.28.75-.28 1.04 0l2.28 2.28 5.75-5.75c.29-.28.75-.28 1.04 0 .28.29.28.76 0 1.04l-6.27 6.27c-.14.14-.33.22-.52.22s-.38-.08-.52-.22z" fill="#ffffff"></path></g></svg>
+                        {% endif %}
+                    </h3>
+                    <p class="property-description-copy">{{ property.city }}, {{ property.region }}{% if property.description %} — {{ property.description }}{% endif %}</p>
+
+                    <div class="amenities-row-wrapper">
+                        {% for amenity in property.amenities.all|slice:":4" %}
+                        <span class="facility-capsule-badge">{{ amenity.name }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="price-baseline-wrap">
+                        <div class="availability-pill {% if property.has_available_rooms %}pill-available{% else %}pill-full{% endif %}">
+                            {% if property.has_available_rooms %}Available{% else %}Fully Booked{% endif %}
+                        </div>
+                        <div class="card-price-block">
+                            <span class="card-price-label">from</span>
+                            {% with property.room_types.first.pricing_models.first as pricing %}
+                            <span class="card-price-value">GHC {{ pricing.semester_price|default:pricing.monthly_price|default:"—" }}</span>
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="no-properties">
+                <p>No premium listings available at the moment.</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+<!-- Amenities Showcase Section -->
+<section class="amenities-section">
+    <h2 class="amenities-headline">Essential Amenities for Comfort & Productivity</h2>
+
+    <div class="amenities-grid">
+        <!-- Amenity Card 1 -->
+        <div class="amenity-card">
+            <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=533&fit=crop"
+                alt="High-Speed Internet">
+            <button class="arrow-overlay-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+            </button>
+            <div class="label-pill">High-Speed Internet</div>
+        </div>
+
+        <!-- Amenity Card 2 -->
+        <div class="amenity-card">
+            <img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=400&h=533&fit=crop"
+                alt="24/7 Security">
+            <button class="arrow-overlay-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+            </button>
+            <div class="label-pill">24/7 Security</div>
+        </div>
+
+        <!-- Amenity Card 3 -->
+        <div class="amenity-card">
+            <img src="https://images.unsplash.com/photo-1554995207-c18c203602cb?w=400&h=533&fit=crop" alt="Study Areas">
+            <button class="arrow-overlay-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+            </button>
+            <div class="label-pill">Study Areas</div>
+        </div>
+
+        <!-- Amenity Card 4 -->
+        <div class="amenity-card">
+            <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400&h=533&fit=crop"
+                alt="Consistent Water Supply">
+            <button class="arrow-overlay-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+            </button>
+            <div class="label-pill">Consistent Water Supply</div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="social-proof-wrapper">
+    <div class="avatar-wave-grid">
+        <!-- Column 1 -->
+        <div class="grid-column col-1">
+            <div class="ghost-placeholder"></div>
+            <div class="avatar-card">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop"
+                    alt="Avatar">
+            </div>
+            <div class="avatar-card">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop"
+                    alt="Avatar">
+            </div>
+        </div>
+        <!-- Column 2 -->
+        <div class="grid-column col-2">
+            <div class="ghost-placeholder"></div>
+            <div class="avatar-card">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop"
+                    alt="Avatar">
+            </div>
+            <div class="avatar-card">
+                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop"
+                    alt="Avatar">
+            </div>
+        </div>
+        <!-- Column 3 -->
+        <div class="grid-column col-3">
+            <div class="ghost-placeholder"></div>
+            <div class="avatar-card portrait">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=267&fit=crop"
+                    alt="Avatar">
+            </div>
+        </div>
+        <!-- Column 4 -->
+        <div class="grid-column col-4">
+            <div class="ghost-placeholder"></div>
+            <div class="avatar-card portrait">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=267&fit=crop"
+                    alt="Avatar">
+            </div>
+        </div>
+        <!-- Column 5 -->
+        <div class="grid-column col-5">
+            <div class="ghost-placeholder"></div>
+            <div class="avatar-card">
+                <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&h=200&fit=crop"
+                    alt="Avatar">
+            </div>
+        </div>
+        <!-- Column 6 -->
+        <div class="grid-column col-6">
+            <div class="ghost-placeholder"></div>
+            <div class="avatar-card portrait">
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&h=267&fit=crop"
+                    alt="Avatar">
+            </div>
+        </div>
+        <!-- Column 7 -->
+        <div class="grid-column col-7">
+            <div class="ghost-placeholder"></div>
+            <div class="avatar-card portrait">
+                <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&h=267&fit=crop"
+                    alt="Avatar">
+            </div>
+        </div>
+        <!-- Column 8 -->
+        <div class="grid-column col-8">
+            <div class="ghost-placeholder"></div>
+            <div class="avatar-card">
+                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop"
+                    alt="Avatar">
+            </div>
+            <div class="avatar-card">
+                <img src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=200&h=200&fit=crop"
+                    alt="Avatar">
+            </div>
+        </div>
+        <!-- Column 9 -->
+        <div class="grid-column col-9">
+            <div class="ghost-placeholder"></div>
+            <div class="avatar-card">
+                <img src="https://images.unsplash.com/photo-1463453091185-61582044d556?w=200&h=200&fit=crop"
+                    alt="Avatar">
+            </div>
+            <div class="avatar-card">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop"
+                    alt="Avatar">
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile-Only Testimonials Slider -->
+    <div class="mobile-testimonials-slider" style="display: none;">
+        <div class="testimonial-card-slide">
+            <div class="testimonial-rating">★★★★★</div>
+            <p class="testimonial-quote">"Roomora made finding a secure hostel near UG Legon incredibly simple. The safety score was spot on!"</p>
+            <div class="testimonial-author">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop" alt="User">
+                <div>
+                    <h4>Judy A.</h4>
+                    <span>UG Legon Student</span>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card-slide">
+            <div class="testimonial-rating">★★★★★</div>
+            <p class="testimonial-quote">"Matching with a compatible roommate saved me so much stress. The lifestyle filters are amazing."</p>
+            <div class="testimonial-author">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop" alt="User">
+                <div>
+                    <h4>Isaac K.</h4>
+                    <span>Young Professional</span>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card-slide">
+            <div class="testimonial-rating">★★★★★</div>
+            <p class="testimonial-quote">"Clean rooms, verified landlords, and secure payment. Best accommodation platform in Ghana."</p>
+            <div class="testimonial-author">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&h=80&fit=crop" alt="User">
+                <div>
+                    <h4>Aminatu Y.</h4>
+                    <span>KNUST Student</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="copy-footer-container">
+        <span class="eyebrow-pill">Testimonials</span>
+        <h2>Trusted by students & professionals across Ghana</h2>
+        <p>Learn why professionals choose StayMatch for their accommodation needs. Join thousands of satisfied users who
+            have found their perfect home with us.</p>
+        <a href="#" class="cta-black-pill">
+            Read Success Stories
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+        </a>
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section class="projects-section">
+    <div class="section-header">
+        <div class="header-text-group">
+            <h2 class="projects-headline">Popular Accommodations</h2>
+            <p class="section-description">
+                Discover verified spaces tailored to your needs. From vibrant, community-driven <strong>Hostels for
+                    Students</strong> to premium, independent <strong>Apartments for Professionals</strong>, find a
+                place you'll love to call home.
+            </p>
+        </div>
+        <div class="toggle-tab-container">
+            <button class="tab-item active" data-tab="hostels">Hostels</button>
+            <button class="tab-item" data-tab="apartments">Apartments</button>
+        </div>
+    </div>
+
+    <div class="projects-grid">
+        <!-- Hostels Grid -->
+        <div id="hostels-grid" class="tab-content accommodation-cards-grid active">
+            {% for property in category_hostels %}
+            <a class="property-overlay-card"
+                href="{% url 'landing:property_detail' property.pk %}"
+                {% with primary_image=property.images.all|first %}
+                {% if primary_image %}
+                style="background-image: url('{{ primary_image.image.url }}')"
+                {% else %}
+                style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=750&fit=crop')"
+                {% endif %}
+                {% endwith %}>
+
+                <div class="card-top-header-row">
+                    <div class="rating-badge-capsule">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        {% if property.average_rating > 0 %}{{ property.average_rating|floatformat:1 }}{% else %}4.8{% endif %}/5
+                    </div>
+                    <button class="favorite-heart-circle" onclick="event.preventDefault()" aria-label="Save">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </button>
+                </div>
+
+                <div class="card-bottom-scrim-workspace">
+                    <h3 class="card-property-title">
+                        {{ property.title }}
+                        {% if property.is_verified %}
+                        <svg style="width:18px;height:18px;flex-shrink:0;" viewBox="0 0 24 24" aria-label="Verified"><g><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.918-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.337 2.25c-.416-.165-.866-.25-1.336-.25-2.21 0-3.918 1.792-3.918 4 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.46.74 2.746 1.867 3.45-.094.373-.146.762-.146 1.15 0 2.21 1.71 4 3.918 4 .51 0 1-.096 1.46-.273C9.432 21.688 10.643 22.5 12 22.5s2.568-.812 3.51-2.023c.46.177.95.273 1.46.273 2.21 0 3.918-1.79 3.918-4 0-.388-.052-.777-.146-1.15 1.127-.704 1.867-1.99 1.867-3.45z" fill="#1d9bf0"></path><path d="M10.73 16.59l-3.32-3.32c-.28-.28-.28-.75 0-1.04.29-.28.75-.28 1.04 0l2.28 2.28 5.75-5.75c.29-.28.75-.28 1.04 0 .28.29.28.76 0 1.04l-6.27 6.27c-.14.14-.33.22-.52.22s-.38-.08-.52-.22z" fill="#ffffff"></path></g></svg>
+                        {% endif %}
+                    </h3>
+                    <p class="property-description-copy">{{ property.city }}, {{ property.region }}{% if property.description %} — {{ property.description }}{% endif %}</p>
+
+                    <div class="amenities-row-wrapper">
+                        {% for amenity in property.amenities.all|slice:":3" %}
+                        <span class="facility-capsule-badge">{{ amenity.name }}</span>
+                        {% endfor %}
+                        <span class="facility-capsule-badge">{{ property.get_property_type_display }}</span>
+                    </div>
+
+                    <div class="price-baseline-wrap">
+                        <div class="availability-pill {% if property.is_available and property.has_available_rooms %}pill-available{% else %}pill-full{% endif %}">
+                            {% if property.is_available and property.has_available_rooms %}Available{% else %}Fully Booked{% endif %}
+                        </div>
+                        {% with property.room_types.first.pricing_models.first as pricing %}
+                        {% if pricing %}
+                        <div class="card-price-block">
+                            <span class="card-price-label">from</span>
+                            <span class="card-price-value">GHC {{ pricing.yearly_price|default:pricing.semester_price|default:pricing.monthly_price }}</span>
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="no-properties">No hostels available at the moment.</div>
+            {% endfor %}
+        </div>
+
+        <!-- Apartments Grid -->
+        <div id="apartments-grid" class="tab-content accommodation-cards-grid">
+            {% for property in category_apartments %}
+            <a class="property-overlay-card"
+                href="{% url 'landing:property_detail' property.pk %}"
+                {% with primary_image=property.images.all|first %}
+                {% if primary_image %}
+                style="background-image: url('{{ primary_image.image.url }}')"
+                {% else %}
+                style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=750&fit=crop')"
+                {% endif %}
+                {% endwith %}>
+
+                <div class="card-top-header-row">
+                    <div class="rating-badge-capsule">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        {% if property.average_rating > 0 %}{{ property.average_rating|floatformat:1 }}{% else %}4.8{% endif %}/5
+                    </div>
+                    <button class="favorite-heart-circle" onclick="event.preventDefault()" aria-label="Save">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </button>
+                </div>
+
+                <div class="card-bottom-scrim-workspace">
+                    <h3 class="card-property-title">
+                        {{ property.title }}
+                        {% if property.is_verified %}
+                        <svg style="width:18px;height:18px;flex-shrink:0;" viewBox="0 0 24 24" aria-label="Verified"><g><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.918-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.337 2.25c-.416-.165-.866-.25-1.336-.25-2.21 0-3.918 1.792-3.918 4 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.46.74 2.746 1.867 3.45-.094.373-.146.762-.146 1.15 0 2.21 1.71 4 3.918 4 .51 0 1-.096 1.46-.273C9.432 21.688 10.643 22.5 12 22.5s2.568-.812 3.51-2.023c.46.177.95.273 1.46.273 2.21 0 3.918-1.79 3.918-4 0-.388-.052-.777-.146-1.15 1.127-.704 1.867-1.99 1.867-3.45z" fill="#1d9bf0"></path><path d="M10.73 16.59l-3.32-3.32c-.28-.28-.28-.75 0-1.04.29-.28.75-.28 1.04 0l2.28 2.28 5.75-5.75c.29-.28.75-.28 1.04 0 .28.29.28.76 0 1.04l-6.27 6.27c-.14.14-.33.22-.52.22s-.38-.08-.52-.22z" fill="#ffffff"></path></g></svg>
+                        {% endif %}
+                    </h3>
+                    <p class="property-description-copy">{{ property.city }}, {{ property.region }}{% if property.description %} — {{ property.description }}{% endif %}</p>
+
+                    <div class="amenities-row-wrapper">
+                        {% for amenity in property.amenities.all|slice:":3" %}
+                        <span class="facility-capsule-badge">{{ amenity.name }}</span>
+                        {% endfor %}
+                        <span class="facility-capsule-badge">{{ property.get_property_type_display }}</span>
+                    </div>
+
+                    <div class="price-baseline-wrap">
+                        <div class="availability-pill {% if property.is_available and property.has_available_rooms %}pill-available{% else %}pill-full{% endif %}">
+                            {% if property.is_available and property.has_available_rooms %}Available{% else %}Fully Booked{% endif %}
+                        </div>
+                        {% with property.unit_types.first.pricing_models.first as pricing %}
+                        {% if pricing %}
+                        <div class="card-price-block">
+                            <span class="card-price-label">from</span>
+                            <span class="card-price-value">GHC {{ pricing.monthly_price|default:pricing.yearly_price }}</span>
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="no-properties">No apartments available at the moment.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="projects-footer" style="text-align: center; margin-top: 48px;">
+        <a href="{% url 'landing:properties' %}" class="cta-button"
+            style="text-decoration: none; padding: 16px 36px; border-radius: 30px; font-weight: 600;">
+            Explore Properties
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+        </a>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section-wrapper">
+    <div class="faq-header-block">
+        <span class="faq-eyebrow-badge">FAQ</span>
+        <h2 class="faq-main-title">Frequently Asked <span class="serif-accent-word">Questions</span></h2>
+    </div>
+
+    <div class="faq-content-grid">
+        <!-- Left Panel -->
+        <div class="faq-left-panel-card">
+            <div class="contact-header-row">
+                <div class="email-info">
+                    <span class="email-label">Email</span>
+                    <a href="mailto:hello@staymatch.com" class="email-link">hello@staymatch.com</a>
+                </div>
+                <button class="get-in-touch-btn">
+                    Get in touch
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="accordion-list-group">
+                <details class="accordion-item">
+                    <summary class="accordion-trigger">
+                        <h3 class="question-title">How does the roommate matching work?</h3>
+                        <div class="toggle-icon-circle">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="accordion-content">
+                        <p>Our intelligent system analyzes your lifestyle preferences, study habits, and personal traits
+                            to match you with compatible roommates, reducing conflicts and improving your living
+                            experience.</p>
+                    </div>
+                </details>
+
+                <details class="accordion-item">
+                    <summary class="accordion-trigger">
+                        <h3 class="question-title">Are the listings verified and safe?</h3>
+                        <div class="toggle-icon-circle">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="accordion-content">
+                        <p>Yes. To reduce fraud, we incorporate property verification systems and landlord
+                            authentication. Verified properties receive trust indicators ensuring authenticity and
+                            reliability.</p>
+                    </div>
+                </details>
+
+                <details class="accordion-item">
+                    <summary class="accordion-trigger">
+                        <h3 class="question-title">Can I view the accommodation virtually?</h3>
+                        <div class="toggle-icon-circle">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="accordion-content">
+                        <p>Absolutely. Our system supports digital property viewing through images and virtual tours,
+                            allowing you to evaluate accommodation remotely before making decisions.</p>
+                    </div>
+                </details>
+
+                <details class="accordion-item">
+                    <summary class="accordion-trigger">
+                        <h3 class="question-title">How do community reviews work?</h3>
+                        <div class="toggle-icon-circle">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="accordion-content">
+                        <p>Users can provide reviews regarding security, water availability, electricity reliability,
+                            and landlord behavior. This creates transparency and helps future users make informed
+                            decisions.</p>
+                    </div>
+                </details>
+
+                <details class="accordion-item">
+                    <summary class="accordion-trigger">
+                        <h3 class="question-title">Who can use this platform?</h3>
+                        <div class="toggle-icon-circle">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="accordion-content">
+                        <p>While ideal for students, the platform also caters to workers, young professionals, and
+                            national service personnel seeking shared or individual apartments.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+
+    </div>
+</section>
+
+<!-- Explore Locations Carousel Section -->
+<section class="locations-carousel-section">
+    <div class="section-header">
+        <span class="eyebrow-text">EXPLORE LOCATIONS</span>
+        <h2 class="section-headline">Discover all 16 regions of Ghana</h2>
+        <div class="carousel-nav-buttons">
+            <button class="nav-btn prev-btn" onclick="scrollLocations(-1)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="nav-btn next-btn" onclick="scrollLocations(1)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="locations-carousel-viewport" id="locationsCarousel">
+        <div class="locations-carousel-track">
+            
+            <!-- Ashanti Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Kumasi</span>
+                    <h3>Ashanti Region</h3>
+                    <p>Known for its rich cultural heritage and the historic Manhyia Palace.</p>
+                    <a href="{% url 'landing:properties' %}?location=Ashanti" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bono Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Sunyani</span>
+                    <h3>Bono Region</h3>
+                    <p>A region of agricultural abundance and traditional crafts.</p>
+                    <a href="{% url 'landing:properties' %}?location=Bono" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bono East Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Techiman</span>
+                    <h3>Bono East Region</h3>
+                    <p>Home to the famous Techiman Market and agricultural hubs.</p>
+                    <a href="{% url 'landing:properties' %}?location=Bono East" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Ahafo Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Goaso</span>
+                    <h3>Ahafo Region</h3>
+                    <p>Rich in cocoa production and forest reserves.</p>
+                    <a href="{% url 'landing:properties' %}?location=Ahafo" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Central Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Cape Coast</span>
+                    <h3>Central Region</h3>
+                    <p>Historic castles, forts, and beautiful coastal beaches.</p>
+                    <a href="{% url 'landing:properties' %}?location=Central" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Eastern Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Koforidua</span>
+                    <h3>Eastern Region</h3>
+                    <p>Known for waterfalls, botanical gardens, and cocoa farms.</p>
+                    <a href="{% url 'landing:properties' %}?location=Eastern" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Greater Accra Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Accra</span>
+                    <h3>Greater Accra Region</h3>
+                    <p>The vibrant capital city with modern amenities and coastal attractions.</p>
+                    <a href="{% url 'landing:properties' %}?location=Greater Accra" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- North East Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Nalerigu</span>
+                    <h3>North East Region</h3>
+                    <p>Home to the unique Gambaga Escarpment and cultural sites.</p>
+                    <a href="{% url 'landing:properties' %}?location=North East" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Northern Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Tamale</span>
+                    <h3>Northern Region</h3>
+                    <p>The largest region with diverse cultures and wildlife.</p>
+                    <a href="{% url 'landing:properties' %}?location=Northern" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Oti Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Dambai</span>
+                    <h3>Oti Region</h3>
+                    <p>Rich in natural resources and the Volta Lake.</p>
+                    <a href="{% url 'landing:properties' %}?location=Oti" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Savannah Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Damongo</span>
+                    <h3>Savannah Region</h3>
+                    <p>Home to Mole National Park and diverse wildlife.</p>
+                    <a href="{% url 'landing:properties' %}?location=Savannah" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Upper East Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Bolgatanga</span>
+                    <h3>Upper East Region</h3>
+                    <p>Known for the Paga Crocodile Pond and traditional architecture.</p>
+                    <a href="{% url 'landing:properties' %}?location=Upper East" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Upper West Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Wa</span>
+                    <h3>Upper West Region</h3>
+                    <p>Home to the unique Wa Naa's Palace and traditional mud houses.</p>
+                    <a href="{% url 'landing:properties' %}?location=Upper West" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Volta Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Ho</span>
+                    <h3>Volta Region</h3>
+                    <p>Home to the Wli Waterfalls and Mount Afadja.</p>
+                    <a href="{% url 'landing:properties' %}?location=Volta" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Western Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Sekondi-Takoradi</span>
+                    <h3>Western Region</h3>
+                    <p>Oil-rich region with beautiful beaches and forts.</p>
+                    <a href="{% url 'landing:properties' %}?location=Western" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Western North Region -->
+            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&h=800&fit=crop');">
+                <div class="card-gradient-overlay"></div>
+                <div class="card-content">
+                    <span class="capital-tag">Capital: Wiawso</span>
+                    <h3>Western North Region</h3>
+                    <p>Rich in cocoa production and forest reserves.</p>
+                    <a href="{% url 'landing:properties' %}?location=Western North" class="explore-btn">
+                        Explore <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+    function scrollLocations(direction) {
+        const carousel = document.getElementById('locationsCarousel');
+        const scrollAmount = 320; // card width + gap
+        carousel.scrollBy({
+            left: direction * scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+</script>
+
+
+
+<!-- Premium Mega Footer -->
+<div class="landing-footer-wrapper">
+    <div class="footer-branding-hero">
+        <h1 class="mega-brand-text">Roomora</h1>
+    </div>
+
+    <hr class="glowing-divider-line">
+
+    <div class="footer-main-links-mesh">
+        <div class="mesh-left-brand-block">
+            <div class="inline-logo-lockup"
+                style="font-size: 24px; font-weight: 700; color: #FFFFFF; letter-spacing: -0.03em;">Roomora</div>
+            <p class="brand-description">
+                Join the thousands of students who use Roomora to find secure, verified accommodations. Easily browse,
+                book, and match with compatible roommates using <strong>our powerful smart-matching platform.</strong>
+            </p>
+            <div class="social-icons-row" style="display: flex; gap: 16px; margin-top: 8px;">
+                <a href="#" aria-label="Instagram" style="color: #A1A1AA; transition: color 0.2s;"><svg width="24"
+                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg></a>
+                <a href="#" aria-label="TikTok" style="color: #A1A1AA; transition: color 0.2s;"><svg width="24"
+                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                    </svg></a>
+                <a href="#" aria-label="Twitter" style="color: #A1A1AA; transition: color 0.2s;"><svg width="24"
+                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z">
+                        </path>
+                    </svg></a>
+            </div>
+        </div>
+
+        <div class="mesh-right-nav-columns">
+            <div class="nav-link-column">
+                <h4>Explore</h4>
+                <a href="{% url 'landing:properties' %}">Properties</a>
+                <a href="#">Shared Apartments</a>
+                <a href="#">Hostels</a>
+                <a href="#">Pricing</a>
+            </div>
+            <div class="nav-link-column">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Safety Guidelines</a>
+                <a href="#">Partner with us</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-legal-baseline">
+        <div class="copyright-string">
+            Copyright © 2026 Roomora, Inc. All rights reserved.
+        </div>
+        <div class="legal-links-row" style="display: flex; gap: 24px;">
+            <a href="#" style="color: #A1A1AA; text-decoration: none; font-size: 13px; transition: color 0.2s;">Privacy
+                Policy</a>
+            <a href="#" style="color: #A1A1AA; text-decoration: none; font-size: 13px; transition: color 0.2s;">Terms of
+                Use</a>
+            <a href="#" style="color: #A1A1AA; text-decoration: none; font-size: 13px; transition: color 0.2s;">Cookies
+                Policy</a>
+        </div>
+    </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+<script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Tab Switching for Categories Section
+    document.querySelectorAll('.tab-item').forEach(tab => {
+        tab.addEventListener('click', function () {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            this.classList.add('active');
+
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Show selected tab content
+            const tabId = this.getAttribute('data-tab');
+            document.getElementById(tabId + '-grid').classList.add('active');
+        });
+    });
+
+    // Magnetic Button Effect
+    document.querySelectorAll('.magnetic-btn').forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const h = rect.width / 2;
+            const w = rect.height / 2;
+            const x = e.clientX - rect.left - h;
+            const y = e.clientY - rect.top - w;
+
+            gsap.to(btn, {
+                x: x * 0.4,
+                y: y * 0.4,
+                rotationX: -y * 0.15,
+                rotationY: x * 0.15,
+                scale: 1.05,
+                ease: "power2.out",
+                duration: 0.4,
+            });
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            gsap.to(btn, {
+                x: 0,
+                y: 0,
+                rotationX: 0,
+                rotationY: 0,
+                scale: 1,
+                ease: "elastic.out(1, 0.3)",
+                duration: 1.2,
+            });
+        });
+    });
+
+
+
+    // Hero Section Image Carousel
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+
+    if (slides.length > 0) {
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (dots[i]) dots[i].classList.remove('active');
+            });
+            slides[index].classList.add('active');
+            if (dots[index]) dots[index].classList.add('active');
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        // Auto-advance carousel
+        setInterval(nextSlide, 4000);
+
+        // Click on dots to change slide
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+            });
+        });
+    }
+
+    // Content Slider for Property Details
+    const propertyData = [
+        {
+            title: "Shared Apartment",
+            subtext: "2 in a room • Study Area • Wi-Fi",
+            image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&h=400&fit=crop"
+        },
+        {
+            title: "Student Room",
+            subtext: "Private room • Shared kitchen • Laundry",
+            image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=400&fit=crop"
+        },
+        {
+            title: "Studio Apartment",
+            subtext: "Self-contained • Kitchenette • Balcony",
+            image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&h=400&fit=crop"
+        }
+    ];
+
+    let currentProperty = 0;
+    const miniCardTitle = document.querySelector('.mini-card-title');
+    const miniCardSubtext = document.querySelector('.mini-card-subtext');
+    const miniCardImage = document.querySelector('.mini-card-image img');
+
+    if (miniCardTitle && miniCardSubtext && miniCardImage) {
+        function updatePropertyContent() {
+            const property = propertyData[currentProperty];
+            miniCardTitle.textContent = property.title;
+            miniCardSubtext.textContent = property.subtext;
+            miniCardImage.src = property.image;
+        }
+
+        function nextProperty() {
+            currentProperty = (currentProperty + 1) % propertyData.length;
+            updatePropertyContent();
+        }
+
+        // Auto-advance property content
+        setInterval(nextProperty, 5000);
+    }
+
+    // Leaflet Map Logic
+    const mapPropertiesData = {{ map_properties_json|safe|default:"[]" }};
+
+    if (mapPropertiesData.length > 0) {
+        // Wait for Leaflet scripts to load dynamically so we don't block page load
+        const loadScript = (src) => {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        };
+
+        Promise.all([
+            loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"),
+        ]).then(() => {
+            return loadScript("https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js");
+        }).then(() => {
+            initHomeMap();
+        });
+    }
+
+    let homeMapInstance = null;
+    function initHomeMap() {
+        const mapElement = document.getElementById('homeMap');
+        if (!mapElement) return;
+
+        // Default center (Ghana)
+        const map = L.map('homeMap', { scrollWheelZoom: false }).setView([7.9465, -1.0232], 6);
+        homeMapInstance = map;
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+        }).addTo(map);
+
+        const markers = L.markerClusterGroup({
+            showCoverageOnHover: false,
+            maxClusterRadius: 50
+        });
+
+        const bounds = L.latLngBounds();
+        let hasMarkers = false;
+
+        mapPropertiesData.forEach(prop => {
+            if (prop.lat && prop.lng) {
+                hasMarkers = true;
+                const markerHtml = `
+                <div class="custom-map-marker">
+                    <div class="marker-price">₵${prop.price.toLocaleString()}</div>
+                    <div class="marker-pointer"></div>
+                </div>
+            `;
+
+                const customIcon = L.divIcon({
+                    html: markerHtml,
+                    className: '',
+                    iconSize: [60, 36],
+                    iconAnchor: [30, 36],
+                    popupAnchor: [0, -36]
+                });
+
+                const marker = L.marker([prop.lat, prop.lng], { icon: customIcon });
+
+                const popupContent = `
+                <div class="map-popup-card">
+                    <img src="${prop.image}" alt="${prop.title}">
+                    <div class="popup-info">
+                        <div class="popup-type">${prop.type} ${prop.is_verified ? '<span class="verified-tick">✓</span>' : ''}</div>
+                        <h4>${prop.title}</h4>
+                        <p class="popup-address">📍 ${prop.address}</p>
+                        <div class="popup-price">₵${prop.price.toLocaleString()}<span>/month</span></div>
+                        <a href="/properties/${prop.id}/" class="popup-btn">View Details</a>
+                    </div>
+                </div>
+            `;
+
+                marker.bindPopup(popupContent, { minWidth: 220, className: 'custom-leaflet-popup' });
+                markers.addLayer(marker);
+                bounds.extend([prop.lat, prop.lng]);
+            }
+        });
+
+        map.addLayer(markers);
+
+        if (hasMarkers) {
+            map.fitBounds(bounds, { padding: [50, 50], maxZoom: 13 });
+        }
+    }
+
+    let userLocationMarker = null;
+
+    function useLiveLocation() {
+        if (!homeMapInstance) return;
+
+        if ("geolocation" in navigator) {
+            // Change button text temporarily
+            const btn = event.currentTarget;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = 'Locating...';
+            btn.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    // Pan map to user's location
+                    homeMapInstance.flyTo([lat, lng], 13, {
+                        animate: true,
+                        duration: 1.5
+                    });
+
+                    // Add or update user marker
+                    if (userLocationMarker) {
+                        userLocationMarker.setLatLng([lat, lng]);
+                    } else {
+                        const userIcon = L.divIcon({
+                            html: `<div style="background-color: #3B82F6; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3);"></div>`,
+                            className: '',
+                            iconSize: [20, 20],
+                            iconAnchor: [10, 10]
+                        });
+                        userLocationMarker = L.marker([lat, lng], { icon: userIcon, zIndexOffset: 1000 })
+                            .bindPopup('<b>You are here</b>')
+                            .addTo(homeMapInstance);
+                    }
+
+                    userLocationMarker.openPopup();
+
+                    // Restore button
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                },
+                function (error) {
+                    alert("Could not access your location. Please check your browser permissions.");
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by your browser");
+        }
+    }
+
+    // Mobile Drawer Toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const hamburgerBtn = document.querySelector('.mobile-hamburger-btn');
+        const closeBtn = document.getElementById('drawer-close-btn');
+        const drawer = document.getElementById('mobile-nav-drawer');
+
+        if (hamburgerBtn && drawer) {
+            hamburgerBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                drawer.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; // prevent background scrolling
+            });
+        }
+        if (closeBtn && drawer) {
+            closeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                drawer.style.display = 'none';
+                document.body.style.overflow = ''; // restore scrolling
+            });
+        }
+    });
+</script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav">
+        <a href="{% url 'landing:home' %}" class="bottom-nav-item active">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span>Explore</span>
+        </a>
+        <a href="{% url 'landing:properties' %}" class="bottom-nav-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <span>Search</span>
+        </a>
+        <a href="{% url 'accounts:login' %}" class="bottom-nav-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <span>Saved</span>
+        </a>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'accounts:dashboard' %}" class="bottom-nav-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Profile</span>
+        </a>
+        {% else %}
+        <a href="{% url 'accounts:login' %}" class="bottom-nav-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+            <span>Log In</span>
+        </a>
+        {% endif %}
+    </nav>
+{% endblock %}

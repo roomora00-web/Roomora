@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cancel Booking - StayMatch{% endblock %}
+
+{% block content %}
+<div class="cancellation-container">
+    <div class="cancellation-header">
+        <h1>Cancel Booking</h1>
+        <p class="cancellation-subtitle">Review the details before cancelling your booking</p>
+    </div>
+
+    <div class="booking-summary-card">
+        <h2>Booking Summary</h2>
+        <div class="summary-row">
+            <span class="summary-label">Property:</span>
+            <span class="summary-value">{{ booking.slot.property.name }}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Room Type:</span>
+            <span class="summary-value">{{ booking.slot.room_type }}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Move-in Date:</span>
+            <span class="summary-value">{{ booking.move_in_date|date:"F j, Y" }}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Total Price:</span>
+            <span class="summary-value">${{ booking.total_price }}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Days Until Move-in:</span>
+            <span class="summary-value">{{ days_until_movein }} days</span>
+        </div>
+    </div>
+
+    <div class="refund-card">
+        <h2>Refund Information</h2>
+        <div class="refund-info">
+            <div class="refund-percentage">
+                <span class="refund-label">Refund Percentage:</span>
+                <span class="refund-value">{{ refund_percentage }}%</span>
+            </div>
+            <div class="refund-amount">
+                <span class="refund-label">Refund Amount:</span>
+                <span class="refund-value">${{ potential_refund|floatformat:2 }}</span>
+            </div>
+        </div>
+        
+        <div class="refund-policy">
+            <h3>Cancellation Policy</h3>
+            <ul>
+                <li>30+ days before move-in: 100% refund</li>
+                <li>14-29 days before move-in: 75% refund</li>
+                <li>7-13 days before move-in: 50% refund</li>
+                <li>3-6 days before move-in: 25% refund</li>
+                <li>Less than 3 days: No refund</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="cancellation-form-container">
+        <form method="post" id="cancellation-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="cancellation_reason">Reason for Cancellation</label>
+                <textarea 
+                    id="cancellation_reason" 
+                    name="cancellation_reason" 
+                    class="reason-textarea"
+                    rows="4"
+                    placeholder="Please let us know why you're cancelling this booking..."
+                    required></textarea>
+            </div>
+
+            <div class="warning-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <div class="warning-content">
+                    <h4>Important Notice</h4>
+                    <p>Once you cancel this booking, the slot will be released and available for other users. This action cannot be undone.</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'accounts:profile' %}" class="btn btn-secondary">Keep Booking</a>
+                <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.cancellation-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.cancellation-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.cancellation-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.cancellation-subtitle {
+    font-size: 18px;
+    color: #666;
+    margin: 0;
+}
+
+.booking-summary-card, .refund-card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.booking-summary-card h2, .refund-card h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 24px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
+}
+
+.summary-value {
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+}
+
+.refund-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.refund-percentage, .refund-amount {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.refund-label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.refund-value {
+    font-size: 24px;
+    color: #333;
+    font-weight: 700;
+}
+
+.refund-policy {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.refund-policy h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0369a1;
+    margin-bottom: 12px;
+}
+
+.refund-policy ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.refund-policy li {
+    font-size: 14px;
+    color: #0369a1;
+    margin-bottom: 8px;
+}
+
+.refund-policy li:last-child {
+    margin-bottom: 0;
+}
+
+.cancellation-form-container {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.reason-textarea {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: inherit;
+    resize: vertical;
+    transition: all 0.2s ease;
+}
+
+.reason-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.warning-box svg {
+    color: #dc2626;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.warning-content h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #dc2626;
+    margin-bottom: 8px;
+}
+
+.warning-content p {
+    font-size: 14px;
+    color: #991b1b;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+.btn-primary, .btn-secondary, .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #f0f0f0;
+    border-color: #667eea;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+@media (max-width: 768px) {
+    .cancellation-container {
+        padding: 20px 16px;
+    }
+
+    .cancellation-header h1 {
+        font-size: 24px;
+    }
+
+    .refund-info {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .btn-secondary, .btn-danger {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

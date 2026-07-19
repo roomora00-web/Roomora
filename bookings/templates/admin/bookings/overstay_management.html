@@ -1,0 +1,339 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Overstay Management</h2>
+        
+        <!-- Booking Details -->
+        <div class="booking-details">
+            <h3>Booking Details</h3>
+            <table class="admin-table">
+                <tr>
+                    <th>Booking ID:</th>
+                    <td>{{ booking.id }}</td>
+                </tr>
+                <tr>
+                    <th>Student:</th>
+                    <td>{{ booking.tenant.full_name }} ({{ booking.tenant.email }})</td>
+                </tr>
+                <tr>
+                    <th>Property:</th>
+                    <td>{{ booking.accommodation_property.title }}</td>
+                </tr>
+                <tr>
+                    <th>Room Number:</th>
+                    <td>{{ room_number }}</td>
+                </tr>
+                <tr>
+                    <th>Original Move-Out:</th>
+                    <td>{{ booking.move_out_date|date:"F d, Y" }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Overstay Status -->
+        <div class="overstay-status">
+            <h3>Overstay Status</h3>
+            
+            {% if overstay_status.in_overstay %}
+            <div class="status-box overstay">
+                <span class="status-label">Status:</span>
+                <span class="status-value overstay">IN OVERSTAY</span>
+            </div>
+            {% else %}
+            <div class="status-box normal">
+                <span class="status-label">Status:</span>
+                <span class="status-value">NOT IN OVERSTAY</span>
+            </div>
+            {% endif %}
+            
+            <table class="admin-table">
+                <tr>
+                    <th>Days in Overstay:</th>
+                    <td>{{ overstay_status.days_in_overstay }}</td>
+                </tr>
+                <tr>
+                    <th>Overstay Start Date:</th>
+                    <td>{{ overstay_status.overstay_start_date|date:"F d, Y" if overstay_status.overstay_start_date else 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <th>Normal Daily Rate:</th>
+                    <td>GH₵ {{ overstay_status.normal_daily_rate }}</td>
+                </tr>
+                <tr>
+                    <th>Overstay Multiplier:</th>
+                    <td>{{ overstay_status.overstay_multiplier }}×</td>
+                </tr>
+                <tr>
+                    <th>Overstay Daily Rate:</th>
+                    <td>GH₵ {{ overstay_status.overstay_daily_rate }}</td>
+                </tr>
+                <tr>
+                    <th>Total Accumulated Charges:</th>
+                    <td class="total-charge">GH₵ {{ overstay_status.total_charge }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Escalation Status -->
+        {% if escalation_status.escalation_required %}
+        <div class="escalation-warning critical">
+            <h3>🚨 CRITICAL: Escalation Required</h3>
+            <p>{{ escalation_status.reason }}</p>
+            <p>Days in overstay: {{ escalation_status.days_in_overstay }}</p>
+            <p><strong>Action Required:</strong> Admin escalation needed</p>
+        </div>
+        {% endif %}
+        
+        <!-- Admin Actions -->
+        <div class="admin-actions">
+            <h3>Admin Actions</h3>
+            
+            <!-- Mark as Resolved -->
+            <div class="action-section">
+                <h4>Mark as Resolved</h4>
+                <p class="action-description">Student has vacated the room. Mark overstay as resolved.</p>
+                <form method="post" action="" class="action-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="mark_resolved">
+                    <button type="submit" class="btn btn-success">Mark Resolved</button>
+                </form>
+            </div>
+            
+            <!-- Apply Charges -->
+            <div class="action-section">
+                <h4>Apply Overstay Charges</h4>
+                <p class="action-description">Apply accumulated overstay charges to student account.</p>
+                <form method="post" action="" class="action-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="apply_charges">
+                    <div class="charge-info">
+                        <span class="charge-label">Total Charge:</span>
+                        <span class="charge-amount">GH₵ {{ overstay_status.total_charge }}</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Apply Charges</button>
+                </form>
+            </div>
+            
+            <!-- Waive Charges -->
+            <div class="action-section">
+                <h4>Waive Overstay Charges</h4>
+                <p class="action-description">Waive overstay charges for special circumstances.</p>
+                <form method="post" action="" class="action-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="waive_charges">
+                    <label for="reason">Reason for waiver:</label>
+                    <textarea name="reason" id="reason" rows="3" required></textarea>
+                    <button type="submit" class="btn btn-warning">Waive Charges</button>
+                </form>
+            </div>
+            
+            <!-- Suspend Account -->
+            <div class="action-section">
+                <h4>Suspend Student Account</h4>
+                <p class="action-description">Suspend student account pending resolution of overstay.</p>
+                <form method="post" action="" class="action-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="suspend_account">
+                    <button type="submit" class="btn btn-danger">Suspend Account</button>
+                </form>
+            </div>
+            
+            <!-- Notify Landlord -->
+            <div class="action-section">
+                <h4>Notify Landlord</h4>
+                <p class="action-description">Send notification to landlord to take physical action.</p>
+                <form method="post" action="" class="action-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="notify_landlord">
+                    <button type="submit" class="btn btn-secondary">Notify Landlord</button>
+                </form>
+            </div>
+            
+            <!-- Add Case Notes -->
+            <div class="action-section">
+                <h4>Add Case Notes</h4>
+                <form method="post" action="" class="action-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_case_notes">
+                    <label for="notes">Case Notes:</label>
+                    <textarea name="notes" id="notes" rows="4" required></textarea>
+                    <button type="submit" class="btn btn-info">Add Notes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.booking-details,
+.overstay-status,
+.admin-actions {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 10px;
+    background: #e0e0e0;
+    border-bottom: 2px solid #ddd;
+}
+
+.admin-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.total-charge {
+    font-weight: bold;
+    color: #dc3545;
+    font-size: 16px;
+}
+
+.status-box {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.status-box.overstay {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+.status-box.normal {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.status-label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.status-value.overstay {
+    color: #721c24;
+    font-weight: bold;
+}
+
+.escalation-warning {
+    padding: 15px;
+    margin-bottom: 20px;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+}
+
+.escalation-warning.critical {
+    background: #dc3545;
+    color: white;
+    border: none;
+}
+
+.escalation-warning h3 {
+    margin-top: 0;
+}
+
+.action-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.action-section h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.action-description {
+    margin-bottom: 15px;
+    color: #666;
+    font-size: 14px;
+}
+
+.action-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.action-form textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.charge-info {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+.charge-label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.charge-amount {
+    font-weight: bold;
+    color: #dc3545;
+    font-size: 18px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #333;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+</style>
+{% endblock %}

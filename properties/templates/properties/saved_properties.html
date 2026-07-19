@@ -1,0 +1,1378 @@
+{% extends "accounts/dashboard_base.html" %}
+{% load static %}
+
+{% block dashboard_title %}My Saved Properties - StayMatch{% endblock %}
+
+{% block dashboard_content %}
+<div class="saved-properties-container">
+    <div class="saved-header">
+        <a href="{% url 'landing:home' %}" class="back-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Home
+        </a>
+        <h1>MY SAVED PROPERTIES</h1>
+        <p class="saved-count">{{ page_obj.paginator.count }} properties saved</p>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="statistics-section">
+        <h2>Your Saved Properties Insights</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-value">{{ total_saved }}</span>
+                <span class="stat-label">Total Saved</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">{{ hostels_count }}</span>
+                <span class="stat-label">Hostels</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">{{ apartments_count }}</span>
+                <span class="stat-label">Apartments</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">GH₵ {{ lowest_price|floatformat:0 }}-{{ highest_price|floatformat:0 }}</span>
+                <span class="stat-label">Price Range</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">GH₵ {{ avg_price|floatformat:0 }}</span>
+                <span class="stat-label">Avg Price</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">⭐ {{ avg_rating|floatformat:1 }}/5</span>
+                <span class="stat-label">Avg Rating</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters & Sort Bar (Sticky) -->
+    <div class="filters-bar">
+        <div class="filter-controls">
+            <div class="filter-group">
+                <label for="location-filter">Location:</label>
+                <select id="location-filter" name="location" onchange="applyFilters()">
+                    <option value="all">All Locations</option>
+                    {% for location in locations %}
+                        <option value="{{ location }}" {% if current_filters.location == location %}selected{% endif %}>{{ location }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="type-filter">Type:</label>
+                <select id="type-filter" name="property_type" onchange="applyFilters()">
+                    <option value="all">All Types</option>
+                    <option value="HOSTEL" {% if current_filters.property_type == 'HOSTEL' %}selected{% endif %}>Hostels</option>
+                    <option value="APARTMENT" {% if current_filters.property_type == 'APARTMENT' %}selected{% endif %}>Apartments</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="price-filter">Price:</label>
+                <select id="price-filter" name="price_range" onchange="applyFilters()">
+                    <option value="all">All Prices</option>
+                    <option value="0-3000" {% if current_filters.price_min == '0' and current_filters.price_max == '3000' %}selected{% endif %}>Under GH₵ 3,000</option>
+                    <option value="3000-5000" {% if current_filters.price_min == '3000' and current_filters.price_max == '5000' %}selected{% endif %}>GH₵ 3,000 - 5,000</option>
+                    <option value="5000-10000" {% if current_filters.price_min == '5000' and current_filters.price_max == '10000' %}selected{% endif %}>GH₵ 5,000 - 10,000</option>
+                    <option value="10000-999999" {% if current_filters.price_min == '10000' %}selected{% endif %}>GH₵ 10,000+</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="availability-filter">Availability:</label>
+                <select id="availability-filter" name="availability" onchange="applyFilters()">
+                    <option value="all">All</option>
+                    <option value="available" {% if current_filters.availability == 'available' %}selected{% endif %}>Available Now</option>
+                    <option value="sold_out" {% if current_filters.availability == 'sold_out' %}selected{% endif %}>Sold Out</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="rating-filter">Rating:</label>
+                <select id="rating-filter" name="rating" onchange="applyFilters()">
+                    <option value="all">All Ratings</option>
+                    <option value="4.5" {% if current_filters.rating == '4.5' %}selected{% endif %}>4.5+ stars</option>
+                    <option value="4.0" {% if current_filters.rating == '4.0' %}selected{% endif %}>4.0+ stars</option>
+                    <option value="3.5" {% if current_filters.rating == '3.5' %}selected{% endif %}>3.5+ stars</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="sort-controls">
+            <div class="sort-group">
+                <label for="sort-select">Sort by:</label>
+                <select id="sort-select" name="sort" onchange="applyFilters()">
+                    <option value="recent" {% if current_filters.sort == 'recent' %}selected{% endif %}>Most Recent</option>
+                    <option value="oldest" {% if current_filters.sort == 'oldest' %}selected{% endif %}>Oldest Saved</option>
+                    <option value="price_high" {% if current_filters.sort == 'price_high' %}selected{% endif %}>Highest Price</option>
+                    <option value="price_low" {% if current_filters.sort == 'price_low' %}selected{% endif %}>Lowest Price</option>
+                    <option value="rating" {% if current_filters.sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+                    <option value="reviews" {% if current_filters.sort == 'reviews' %}selected{% endif %}>Most Reviewed</option>
+                </select>
+            </div>
+
+            <div class="view-toggle">
+                <button class="view-btn {% if view_mode == 'grid' %}active{% endif %}" onclick="setViewMode('grid')" title="Grid View">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                </button>
+                <button class="view-btn {% if view_mode == 'list' %}active{% endif %}" onclick="setViewMode('list')" title="List View">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="8" y1="6" x2="21" y2="6"/>
+                        <line x1="8" y1="12" x2="21" y2="12"/>
+                        <line x1="8" y1="18" x2="21" y2="18"/>
+                        <line x1="3" y1="6" x2="3.01" y2="6"/>
+                        <line x1="3" y1="12" x2="3.01" y2="12"/>
+                        <line x1="3" y1="18" x2="3.01" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <button class="clear-filters-btn" onclick="clearFilters()">Clear Filters</button>
+        </div>
+    </div>
+
+    <!-- Active Filters -->
+    {% if current_filters.location or current_filters.property_type or current_filters.price_min or current_filters.availability or current_filters.rating %}
+    <div class="active-filters">
+        <span>Active filters:</span>
+        {% if current_filters.location and current_filters.location != 'all' %}
+            <span class="filter-tag">{{ current_filters.location }} <button onclick="removeFilter('location')">×</button></span>
+        {% endif %}
+        {% if current_filters.property_type and current_filters.property_type != 'all' %}
+            <span class="filter-tag">{{ current_filters.property_type }} <button onclick="removeFilter('property_type')">×</button></span>
+        {% endif %}
+        {% if current_filters.price_min %}
+            <span class="filter-tag">GH₵ {{ current_filters.price_min }}-{{ current_filters.price_max }} <button onclick="removeFilter('price')">×</button></span>
+        {% endif %}
+        {% if current_filters.availability and current_filters.availability != 'all' %}
+            <span class="filter-tag">{{ current_filters.availability }} <button onclick="removeFilter('availability')">×</button></span>
+        {% endif %}
+        {% if current_filters.rating %}
+            <span class="filter-tag">{{ current_filters.rating }}+ stars <button onclick="removeFilter('rating')">×</button></span>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Results Count -->
+    <div class="results-count">
+        <p>Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }} saved properties</p>
+    </div>
+
+    <!-- Empty State -->
+    {% if page_obj.paginator.count == 0 %}
+    <div class="empty-state">
+        <div class="empty-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+        </div>
+        <h2>You Haven't Saved Any Properties Yet</h2>
+        <p>Start exploring properties and save your favorites!</p>
+        <div class="empty-reasons">
+            <p>Why save properties?</p>
+            <ul>
+                <li>✓ Quick comparison later</li>
+                <li>✓ Organize your top choices</li>
+                <li>✓ Add personal notes</li>
+                <li>✓ Resume your search anytime</li>
+                <li>✓ Track prices and availability</li>
+            </ul>
+        </div>
+        <div class="empty-actions">
+            <a href="{% url 'landing:properties' %}" class="btn btn-primary">Browse Properties</a>
+        </div>
+    </div>
+    {% else %}
+
+    <!-- Properties Grid -->
+    <div class="properties-grid {% if view_mode == 'list' %}list-view{% endif %}">
+        {% for saved_property in page_obj %}
+            {% with property=saved_property.property %}
+            <div class="property-card" data-property-id="{{ property.id }}" style="border-radius: 20px; overflow: hidden; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; flex-direction: column; padding: 0;">
+                
+                <!-- Premium Card Top (Image + Overlay) -->
+                <div class="premium-rental-card" onclick="window.location.href='{% url 'landing:property_detail' property.pk %}'" style="border-radius: 0; box-shadow: none; width: 100%; aspect-ratio: 4 / 3;">
+                    {% with main_img=property.images.first %}
+                        {% if main_img %}
+                            <img src="{{ main_img.image.url }}" alt="{{ property.title }}" class="card-bg-img">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=400&fit=crop" alt="{{ property.title }}" class="card-bg-img">
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <div class="card-top-tags">
+                        <div class="availability-badge {% if property.room_types.exists or property.unit_types.exists %}available{% else %}unavailable{% endif %}">
+                            {% if property.room_types.exists or property.unit_types.exists %}Available{% else %}Unavailable{% endif %}
+                        </div>
+                    </div>
+                    
+                    <button class="remove-btn" onclick="event.stopPropagation(); removeProperty({{ property.id }})" title="Remove from saved" style="z-index: 10; width: 44px; height: 44px; top: 16px; right: 16px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                    
+                    <div class="premium-content-overlay">
+                        <div class="overlay-header">
+                            <div class="property-type-badge">{{ property.get_property_type_display }}</div>
+                            <div class="safety-rating">
+                                <div class="stars">
+                                    <span class="star {% if property.average_rating|default:0 >= 1 %}filled{% endif %}">★</span>
+                                    <span class="star {% if property.average_rating|default:0 >= 2 %}filled{% endif %}">★</span>
+                                    <span class="star {% if property.average_rating|default:0 >= 3 %}filled{% endif %}">★</span>
+                                    <span class="star {% if property.average_rating|default:0 >= 4 %}filled{% endif %}">★</span>
+                                    <span class="star {% if property.average_rating|default:0 >= 5 %}filled{% endif %}">★</span>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="property-title" style="display: flex; align-items: center; gap: 6px;">
+                            {{ property.title }}
+                            {% if property.is_verified %}
+                            <svg style="width: 20px; height: 20px; flex-shrink: 0;" viewBox="0 0 24 24" aria-label="Verified account">
+                                <g>
+                                    <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.918-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.337 2.25c-.416-.165-.866-.25-1.336-.25-2.21 0-3.918 1.792-3.918 4 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.46.74 2.746 1.867 3.45-.094.373-.146.762-.146 1.15 0 2.21 1.71 4 3.918 4 .51 0 1-.096 1.46-.273C9.432 21.688 10.643 22.5 12 22.5s2.568-.812 3.51-2.023c.46.177.95.273 1.46.273 2.21 0 3.918-1.79 3.918-4 0-.388-.052-.777-.146-1.15 1.127-.704 1.867-1.99 1.867-3.45z" fill="#1d9bf0"></path>
+                                    <path d="M10.73 16.59l-3.32-3.32c-.28-.28-.28-.75 0-1.04.29-.28.75-.28 1.04 0l2.28 2.28 5.75-5.75c.29-.28.75-.28 1.04 0 .28.29.28.76 0 1.04l-6.27 6.27c-.14.14-.33.22-.52.22s-.38-.08-.52-.22z" fill="#ffffff"></path>
+                                </g>
+                            </svg>
+                            {% endif %}
+                        </h3>
+                        <p class="property-address">{{ property.city }} — {{ property.nearest_institution }}</p>
+                        
+                        <div class="overlay-header" style="margin-top: 8px;">
+                            <span class="rating-label">Price Start from</span>
+                            <span class="property-price" style="font-weight:700; color:white; font-size: 16px; margin: 0;">
+                                {% if property.property_type == 'HOSTEL' and property.room_types.exists %}
+                                    {% with pricing=property.room_types.first.pricing_models.first %}
+                                    {% if pricing %}
+                                        GH₵ {{ pricing.monthly_price|default:pricing.semester_price|floatformat:0 }}
+                                    {% else %}
+                                        Contact
+                                    {% endif %}
+                                    {% endwith %}
+                                {% elif property.property_type == 'APARTMENT' and property.unit_types.exists %}
+                                    {% with pricing=property.unit_types.first.pricing_models.first %}
+                                    {% if pricing %}
+                                        GH₵ {{ pricing.monthly_price|default:pricing.yearly_price|floatformat:0 }}
+                                    {% else %}
+                                        Contact
+                                    {% endif %}
+                                    {% endwith %}
+                                {% else %}
+                                    Contact
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="amenities-list">
+                            {% for amenity in property.amenities.all|slice:":4" %}
+                                <span class="amenity-tag">{{ amenity.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Actions Layer -->
+                <div class="saved-actions-bottom" style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+                    <div class="saved-info" style="display: flex; justify-content: space-between; font-size: 13px; color: #666; margin: 0;">
+                        <span>Saved {{ saved_property.created_at|timesince }} ago</span>
+                        <span>⭐ {{ property.average_rating|floatformat:1 }} ({{ property.total_reviews }} reviews)</span>
+                    </div>
+
+                    {% if saved_property.notes %}
+                    <div class="property-note">
+                        <span class="note-label">My note:</span>
+                        <span class="note-text">{{ saved_property.notes|truncatewords:10 }}</span>
+                        <button class="edit-note-btn" onclick="editNote({{ property.id }})">Edit</button>
+                    </div>
+                    {% else %}
+                    <button class="add-note-btn" onclick="editNote({{ property.id }})">+ Add Note</button>
+                    {% endif %}
+
+                    <div class="property-actions">
+                        <a href="{% url 'landing:property_detail' property.id %}" class="btn btn-secondary">View Details</a>
+                    </div>
+
+                    <div class="card-footer" style="margin-top: 0; padding-top: 16px; border-top: 1px solid #f0f0f0;">
+                        <button class="compare-btn" onclick="addToCompare({{ property.id }})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="20" x2="18" y2="10"/>
+                                <line x1="12" y1="20" x2="12" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="14"/>
+                            </svg>
+                            Compare
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="pagination-link">← Previous</a>
+        {% endif %}
+        
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <span class="pagination-link active">{{ num }}</span>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="pagination-link">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="pagination-link">Next →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% endif %}
+</div>
+
+<!-- Note Modal -->
+<div id="note-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Note</h3>
+            <button class="close-modal" onclick="closeNoteModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <textarea id="note-text" rows="4" maxlength="300" placeholder="Add your personal notes about this property..."></textarea>
+            <div class="char-count"><span id="char-count">0</span>/300 characters</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeNoteModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveNote()">Save Note</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.saved-properties-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.saved-header {
+    margin-bottom: 32px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.back-link:hover {
+    color: #0C1424;
+}
+
+.saved-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 8px 0;
+}
+
+.saved-count {
+    color: #666;
+    font-size: 16px;
+}
+
+.statistics-section {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.statistics-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 24px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+
+.stat-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #0C1424;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.filters-bar {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.filter-group select {
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+}
+
+.sort-controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sort-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sort-group label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.sort-group select {
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    color: #666;
+}
+
+.view-btn:hover {
+    background: #f8f9fa;
+}
+
+.view-btn.active {
+    background: #0C1424;
+    color: white;
+    border-color: #0C1424;
+}
+
+.clear-filters-btn {
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    color: #666;
+    font-size: 14px;
+}
+
+.clear-filters-btn:hover {
+    background: #f8f9fa;
+    border-color: #0C1424;
+}
+
+.active-filters {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.active-filters span:first-child {
+    font-size: 14px;
+    color: #666;
+    margin-right: 8px;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: #0C1424;
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.filter-tag button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    line-height: 1;
+}
+
+.results-count {
+    margin-bottom: 24px;
+}
+
+.results-count p {
+    color: #666;
+    font-size: 14px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 40px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: #f8f9fa;
+    border-radius: 50%;
+    color: #999;
+    margin-bottom: 24px;
+}
+
+.empty-state h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.empty-state p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+.empty-reasons {
+    text-align: left;
+    max-width: 400px;
+    margin: 0 auto 32px;
+}
+
+/* Premium Rental Card Styles */
+.premium-rental-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.premium-rental-card:hover .card-bg-img {
+    transform: scale(1.08);
+}
+
+.card-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.card-top-tags {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 2;
+}
+
+.availability-badge {
+    position: static;
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.availability-badge.available {
+    background: #10B981;
+    color: white;
+}
+
+.availability-badge.unavailable {
+    background: #EF4444;
+    color: white;
+}
+
+.premium-content-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.75) 50%, transparent 100%);
+    padding: 60px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    color: #fff;
+    z-index: 1;
+}
+
+.premium-content-overlay .overlay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+}
+
+.premium-content-overlay .property-type-badge {
+    background: rgba(255,255,255,0.25);
+    color: white;
+    backdrop-filter: blur(8px);
+    margin-bottom: 0;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 12px;
+}
+
+.premium-content-overlay .safety-rating .stars {
+    display: flex;
+    gap: 4px;
+}
+
+.premium-content-overlay .safety-rating .star {
+    color: rgba(255,255,255,0.3);
+    font-size: 18px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.premium-content-overlay .safety-rating .star.filled {
+    color: #FFD700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+.premium-content-overlay .property-title {
+    color: #fff;
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.premium-content-overlay .property-address {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    margin: 0;
+}
+
+.premium-content-overlay .amenities-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+}
+
+.premium-content-overlay .amenity-tag {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+
+.empty-reasons p {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.empty-reasons ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.empty-reasons li {
+    padding: 8px 0;
+    color: #666;
+}
+
+.empty-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.properties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.properties-grid.list-view {
+    grid-template-columns: 1fr;
+}
+
+.property-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+}
+
+.property-card:hover {
+    transform: translateY(-4px);
+}
+
+.property-image {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+}
+
+.property-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    color: #999;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    color: #ef4444;
+}
+
+.remove-btn:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.property-content {
+    padding: 24px;
+}
+
+.property-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.property-meta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stars {
+    font-weight: 600;
+    color: #333;
+}
+
+.review-count {
+    color: #666;
+    font-size: 14px;
+}
+
+.verified-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #10b981;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.property-price {
+    margin-bottom: 12px;
+}
+
+.price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0C1424;
+}
+
+.property-location {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.saved-info {
+    margin-bottom: 12px;
+}
+
+.saved-date {
+    color: #666;
+    font-size: 14px;
+}
+
+.property-note {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.note-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.note-text {
+    flex: 1;
+    color: #666;
+    font-size: 14px;
+}
+
+.edit-note-btn {
+    background: none;
+    border: none;
+    color: #0C1424;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.add-note-btn {
+    width: 100%;
+    padding: 8px;
+    border: 1px dashed #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.add-note-btn:hover {
+    border-color: #0C1424;
+    color: #0C1424;
+}
+
+.occupancy-info {
+    margin-bottom: 16px;
+}
+
+.occupancy-info h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.occupancy-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 14px;
+}
+
+.room-type {
+    color: #666;
+}
+
+.available {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.sold-out {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.property-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.card-footer {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 16px;
+}
+
+.compare-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    color: #666;
+    font-size: 14px;
+    width: 100%;
+}
+
+.compare-btn:hover {
+    border-color: #0C1424;
+    color: #0C1424;
+}
+
+.pagination {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.pagination-link {
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    color: #666;
+    text-decoration: none;
+}
+
+.pagination-link:hover {
+    border-color: #0C1424;
+    color: #0C1424;
+}
+
+.pagination-link.active {
+    background: #0C1424;
+    color: white;
+    border-color: #0C1424;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+}
+
+.btn-primary {
+    background: #0C1424;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1a2744;
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #f0f0f0;
+    border-color: #0C1424;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.modal-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-body textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.char-count {
+    text-align: right;
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .properties-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .saved-properties-container {
+        padding: 20px 16px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .filter-controls {
+        flex-direction: column;
+    }
+    
+    .sort-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .property-actions {
+        flex-direction: column;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+let currentPropertyId = null;
+
+function applyFilters() {
+    const location = document.getElementById('location-filter').value;
+    const propertyType = document.getElementById('type-filter').value;
+    const priceRange = document.getElementById('price-filter').value;
+    const availability = document.getElementById('availability-filter').value;
+    const rating = document.getElementById('rating-filter').value;
+    const sort = document.getElementById('sort-select').value;
+    
+    let url = new URL(window.location);
+    
+    if (location && location !== 'all') url.searchParams.set('location', location);
+    if (propertyType && propertyType !== 'all') url.searchParams.set('property_type', propertyType);
+    if (priceRange && priceRange !== 'all') {
+        const [min, max] = priceRange.split('-');
+        url.searchParams.set('price_min', min);
+        url.searchParams.set('price_max', max);
+    }
+    if (availability && availability !== 'all') url.searchParams.set('availability', availability);
+    if (rating && rating !== 'all') url.searchParams.set('rating', rating);
+    if (sort) url.searchParams.set('sort', sort);
+    
+    window.location.href = url.toString();
+}
+
+function clearFilters() {
+    let url = new URL(window.location);
+    url.searchParams.delete('location');
+    url.searchParams.delete('property_type');
+    url.searchParams.delete('price_min');
+    url.searchParams.delete('price_max');
+    url.searchParams.delete('availability');
+    url.searchParams.delete('rating');
+    url.searchParams.delete('sort');
+    window.location.href = url.toString();
+}
+
+function removeFilter(filterName) {
+    let url = new URL(window.location);
+    if (filterName === 'price') {
+        url.searchParams.delete('price_min');
+        url.searchParams.delete('price_max');
+    } else {
+        url.searchParams.delete(filterName);
+    }
+    window.location.href = url.toString();
+}
+
+function setViewMode(mode) {
+    let url = new URL(window.location);
+    url.searchParams.set('view', mode);
+    window.location.href = url.toString();
+}
+
+function removeProperty(propertyId) {
+    if (confirm('Are you sure you want to remove this property from your saved list?')) {
+        const urlTemplate = "{% url 'properties:unsave-property' 0 %}";
+        fetch(urlTemplate.replace('0', propertyId), {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+}
+
+function editNote(propertyId) {
+    currentPropertyId = propertyId;
+    const card = document.querySelector(`[data-property-id="${propertyId}"]`);
+    const noteText = card.querySelector('.note-text');
+    const textarea = document.getElementById('note-text');
+    
+    if (noteText) {
+        textarea.value = noteText.textContent;
+    } else {
+        textarea.value = '';
+    }
+    
+    document.getElementById('note-modal').classList.add('active');
+    updateCharCount();
+}
+
+function closeNoteModal() {
+    document.getElementById('note-modal').classList.remove('active');
+    currentPropertyId = null;
+}
+
+function saveNote() {
+    const note = document.getElementById('note-text').value;
+    const urlTemplate = "{% url 'properties:update-property-note' 0 %}";
+    
+    fetch(urlTemplate.replace('0', currentPropertyId), {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ note: note })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeNoteModal();
+            location.reload();
+        }
+    });
+}
+
+function updateCharCount() {
+    const textarea = document.getElementById('note-text');
+    const charCount = document.getElementById('char-count');
+    charCount.textContent = textarea.value.length;
+}
+
+document.getElementById('note-text').addEventListener('input', updateCharCount);
+
+function addToCompare(propertyId) {
+    // Store property ID for comparison
+    let compareList = JSON.parse(localStorage.getItem('compareList') || '[]');
+    if (!compareList.includes(propertyId)) {
+        if (compareList.length < 3) {
+            compareList.push(propertyId);
+            localStorage.setItem('compareList', JSON.stringify(compareList));
+            showToast('Property added to comparison');
+        } else {
+            showToast('You can compare up to 3 properties');
+        }
+    } else {
+        showToast('Property already in comparison');
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #0C1424;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        z-index: 1001;
+        animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

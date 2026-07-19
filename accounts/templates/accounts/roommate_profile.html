@@ -1,0 +1,596 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ roommate.get_full_name }} - Roommate Profile{% endblock %}
+
+{% block content %}
+<div class="roommate-profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-avatar-large">
+            {% if roommate.profile_photo %}
+                <img src="{{ roommate.profile_photo.url }}" alt="{{ roommate.get_full_name }}">
+            {% else %}
+                <div class="avatar-placeholder-large">{{ roommate.get_full_name|first|upper }}</div>
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h1>{{ roommate.get_full_name }}</h1>
+            <p class="profile-type">{{ roommate.userprofile.get_user_type_display }}</p>
+            <div class="profile-meta">
+                <span class="meta-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    Joined {{ roommate.date_joined|date:"F Y" }}
+                </span>
+                <span class="meta-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <path d="M22 4L12 14.01l-3-3"/>
+                    </svg>
+                    Email Verified
+                </span>
+            </div>
+        </div>
+        <div class="profile-actions">
+            <button class="btn btn-primary">Send Message</button>
+            <button class="btn btn-secondary">Save Profile</button>
+        </div>
+    </div>
+
+    <!-- Compatibility Score -->
+    <div class="compatibility-section">
+        <div class="compatibility-card">
+            <div class="compatibility-score">
+                <div class="score-circle score-{{ compatibility_score|floatformat:0 }}">
+                    {{ compatibility_score|floatformat:0 }}%
+                </div>
+                <div class="score-label">Compatibility Score</div>
+            </div>
+            <div class="compatibility-breakdown">
+                <h3>Compatibility Breakdown</h3>
+                <div class="breakdown-item">
+                    <span class="breakdown-label">Sleep Schedule</span>
+                    <div class="breakdown-bar">
+                        <div class="bar-fill" style="width: 85%"></div>
+                    </div>
+                    <span class="breakdown-value">85%</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="breakdown-label">Cleanliness</span>
+                    <div class="breakdown-bar">
+                        <div class="bar-fill" style="width: 90%"></div>
+                    </div>
+                    <span class="breakdown-value">90%</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="breakdown-label">Noise Tolerance</span>
+                    <div class="breakdown-bar">
+                        <div class="bar-fill" style="width: 75%"></div>
+                    </div>
+                    <span class="breakdown-value">75%</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="breakdown-label">Visitor Habits</span>
+                    <div class="breakdown-bar">
+                        <div class="bar-fill" style="width: 80%"></div>
+                    </div>
+                    <span class="breakdown-value">80%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lifestyle Preferences -->
+    <div class="preferences-section">
+        <h2>Lifestyle Preferences</h2>
+        
+        <div class="preference-group">
+            <h3>
+                <span class="group-icon">🌙</span>
+                Sleep & Daily Routine
+            </h3>
+            <div class="preference-grid">
+                <div class="preference-item">
+                    <span class="pref-label">Sleep Time:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_sleep_time_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Wake Time:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_wake_time_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Night Activity:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_night_activity_level_display }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="preference-group">
+            <h3>
+                <span class="group-icon">🧹</span>
+                Cleanliness
+            </h3>
+            <div class="preference-grid">
+                <div class="preference-item">
+                    <span class="pref-label">Cleanliness Level:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_personal_cleanliness_level_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Cleaning Frequency:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_shared_space_cleaning_frequency_display }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="preference-group">
+            <h3>
+                <span class="group-icon">🔊</span>
+                Noise Preferences
+            </h3>
+            <div class="preference-grid">
+                <div class="preference-item">
+                    <span class="pref-label">Noise Tolerance:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_noise_tolerance_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Preferred Noise:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_preferred_noise_level_display }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="preference-group">
+            <h3>
+                <span class="group-icon">👥</span>
+                Visitors
+            </h3>
+            <div class="preference-grid">
+                <div class="preference-item">
+                    <span class="pref-label">Visitor Frequency:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_visitor_frequency_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Overnight Guests:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_visitor_overnight_preference_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Notice Preference:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_visitor_notice_preference_display }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="preference-group">
+            <h3>
+                <span class="group-icon">📚</span>
+                Study Habits
+            </h3>
+            <div class="preference-grid">
+                <div class="preference-item">
+                    <span class="pref-label">Study Location:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_study_location_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Study Time:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_study_time_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Quiet Hours:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_quiet_hours_needed_display }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="preference-group">
+            <h3>
+                <span class="group-icon">🍳</span>
+                Food & Cooking
+            </h3>
+            <div class="preference-grid">
+                <div class="preference-item">
+                    <span class="pref-label">Cooking Frequency:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_cooking_frequency_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Food Sharing:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_food_sharing_comfort_display }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="preference-group">
+            <h3>
+                <span class="group-icon">🌡️</span>
+                Environment
+            </h3>
+            <div class="preference-grid">
+                <div class="preference-item">
+                    <span class="pref-label">Temperature:</span>
+                    <span class="pref-value">{{ lifestyle_profile.preferred_temperature }}°C</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Air Conditioning:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_air_con_preference_display }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="preference-group">
+            <h3>
+                <span class="group-icon">🚧</span>
+                Boundaries
+            </h3>
+            <div class="preference-grid">
+                <div class="preference-item">
+                    <span class="pref-label">Shared Items:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_shared_items_comfort_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Privacy:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_privacy_preference_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Personal Space:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_personal_space_importance_display }}</span>
+                </div>
+                <div class="preference-item">
+                    <span class="pref-label">Conflict Resolution:</span>
+                    <span class="pref-value">{{ lifestyle_profile.get_conflict_resolution_preference_display }}</span>
+                </div>
+            </div>
+        </div>
+
+        {% if lifestyle_profile.notes %}
+        <div class="preference-group">
+            <h3>
+                <span class="group-icon">📝</span>
+                Additional Notes
+            </h3>
+            <p class="notes-text">{{ lifestyle_profile.notes }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <a href="{% url 'accounts:matching_results' %}" class="btn btn-secondary">Back to Matches</a>
+        <button class="btn btn-primary">Send Introduction Message</button>
+    </div>
+</div>
+
+<style>
+.roommate-profile-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.profile-avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.profile-avatar-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder-large {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.profile-type {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 16px;
+}
+
+.profile-meta {
+    display: flex;
+    gap: 24px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #666;
+}
+
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.compatibility-section {
+    margin-bottom: 32px;
+}
+
+.compatibility-card {
+    display: flex;
+    gap: 32px;
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.compatibility-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.score-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.score-80, .score-90, .score-100 {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.score-70 {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.score-60 {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.score-50 {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.score-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.compatibility-breakdown {
+    flex: 1;
+}
+
+.compatibility-breakdown h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.breakdown-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.breakdown-label {
+    width: 120px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+}
+
+.breakdown-bar {
+    flex: 1;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transition: width 0.3s ease;
+}
+
+.breakdown-value {
+    width: 40px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    text-align: right;
+}
+
+.preferences-section {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.preferences-section h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 32px;
+}
+
+.preference-group {
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.preference-group:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.preference-group h3 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.group-icon {
+    font-size: 24px;
+}
+
+.preference-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.preference-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pref-label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.pref-value {
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+}
+
+.notes-text {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #f0f0f0;
+    border-color: #667eea;
+}
+
+@media (max-width: 768px) {
+    .roommate-profile-container {
+        padding: 20px 16px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+    }
+
+    .profile-meta {
+        justify-content: center;
+    }
+
+    .profile-actions {
+        width: 100%;
+    }
+
+    .compatibility-card {
+        flex-direction: column;
+        padding: 24px;
+    }
+
+    .preference-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

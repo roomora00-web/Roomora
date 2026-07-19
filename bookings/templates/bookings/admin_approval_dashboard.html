@@ -1,0 +1,138 @@
+{% extends "bookings/base_checkout.html" %}
+
+{% block title %}Admin Dashboard - Awaiting Review{% endblock %}
+
+{% block content %}
+<style>
+  .admin-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  .admin-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #18181B;
+  }
+  
+  .table-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #E4E4E7;
+    overflow: hidden;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th {
+    background: #FAFAFA;
+    text-align: left;
+    padding: 16px;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #71717A;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  td {
+    padding: 16px;
+    font-size: 15px;
+    color: #18181B;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  tr:last-child td {
+    border-bottom: none;
+  }
+  
+  tr:hover {
+    background: #FAFAFA;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #fff3cd;
+    color: #856404;
+  }
+  
+  .action-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--charcoal);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .action-btn:hover {
+    background: #1a2744;
+    transform: translateY(-1px);
+  }
+  
+  .empty-state {
+    padding: 48px;
+    text-align: center;
+    color: #71717A;
+  }
+</style>
+
+<div class="admin-container">
+  <div class="admin-header">
+    <h1 class="admin-title">Bookings Awaiting Review</h1>
+  </div>
+  
+  <div class="table-card">
+    {% if pending_bookings %}
+    <table>
+      <thead>
+        <tr>
+          <th>Applicant</th>
+          <th>Property</th>
+          <th>Room Type</th>
+          <th>Date Requested</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in pending_bookings %}
+        <tr>
+          <td><strong>{{ booking.tenant.full_name }}</strong><br><span style="font-size: 13px; color: #71717A;">{{ booking.tenant.email }}</span></td>
+          <td>{{ booking.accommodation_property.title }}</td>
+          <td>{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</td>
+          <td>{{ booking.created_at|date:"M d, Y" }}</td>
+          <td><span class="status-badge">Needs Review</span></td>
+          <td>
+            <a href="{% url 'bookings:admin-booking-detail' booking.id %}" class="action-btn">Review</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <h3>No pending bookings</h3>
+      <p>All bookings have been reviewed.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

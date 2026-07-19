@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reinstate Booking - Roomora{% endblock %}
+
+{% block extra_css %}
+<style>
+    .reinstate-container {
+        max-width: 500px;
+        margin: 40px auto;
+        padding: 24px;
+    }
+
+    .reinstate-card {
+        background: #FFFFFF;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .reinstate-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 16px;
+    }
+
+    .reinstate-desc {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 24px;
+    }
+
+    .reinstate-details {
+        background: #FAFAFA;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 24px;
+    }
+
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        color: #666;
+        font-size: 0.875rem;
+    }
+
+    .detail-value {
+        color: #1a1a1a;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .time-remaining {
+        text-align: center;
+        padding: 12px;
+        background: #fef3c7;
+        border-radius: 8px;
+        color: #92400e;
+        font-weight: 600;
+        margin-bottom: 24px;
+    }
+
+    .action-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 14px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background: #0c1424;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1a2639;
+    }
+
+    .btn-secondary {
+        background: #FAFAFA;
+        color: #666;
+    }
+
+    .btn-secondary:hover {
+        background: var(--border);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="reinstate-container">
+    <div class="reinstate-card">
+        <h1 class="reinstate-title">REINSTATE YOUR BOOKING</h1>
+        
+        <p class="reinstate-desc">Are you sure you want to reinstate your booking?</p>
+        
+        <div class="reinstate-details">
+            <div class="detail-item">
+                <span class="detail-label">Property</span>
+                <span class="detail-value">{{ property.title }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Room Type</span>
+                <span class="detail-value">{{ booking.get_room_type_display|default:'Unit' }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Reference</span>
+                <span class="detail-value">{{ booking.reference_number }}</span>
+            </div>
+        </div>
+        
+        <p class="reinstate-desc">By reinstating:</p>
+        <ul style="color: #666; margin-bottom: 24px; padding-left: 20px;">
+            <li>✓ Your booking will be reactivated</li>
+            <li>✓ You will return to the compatibility confirmation screen</li>
+            <li>✓ Your lifestyle preferences will be locked after you confirm</li>
+        </ul>
+        
+        {% if time_remaining %}
+        <div class="time-remaining">
+            ⏰ {{ time_remaining }}
+        </div>
+        {% endif %}
+        
+        <form method="post" action="{% url 'bookings:reinstate-booking' booking.id %}">
+            {% csrf_token %}
+            <div class="action-buttons">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">No, keep cancelled</button>
+                <button type="submit" class="btn btn-primary">Yes, reinstate my booking</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% for card in cards %}
+<div class="mb-card" style="border-top: 4px solid var(--primary, #007bff);">
+  <div class="mb-card-header">
+    <div class="mb-status" style="font-weight: 700; color: #4b5563;">
+      {{ card.status|default:"UNKNOWN" }}
+    </div>
+  </div>
+  <div class="mb-prop-name">{{ card.property_title|default:"Property" }}</div>
+  <div class="mb-room-type">{{ card.room_type|default:card.unit_type }}</div>
+  
+  <div style="margin: 15px 0;">
+    <h3 style="margin: 0 0 5px 0; font-size: 16px;">{{ card.title|default:"Status Update" }}</h3>
+    <p style="margin: 0; color: #6b7280; font-size: 14px;">{{ card.subtitle|default:"" }}</p>
+  </div>
+  
+  {% if card.progress_percentage %}
+  <div style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 15px;">
+    <div style="height: 100%; background: #007bff; width: {{ card.progress_percentage }}%;"></div>
+  </div>
+  {% endif %}
+  
+  <div class="mb-actions">
+    {% if card.action_url %}
+    <a href="{{ card.action_url }}" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important;">{{ card.action_text|default:"Continue" }}</a>
+    {% else %}
+    <span class="mb-btn mb-btn-secondary" style="opacity: 0.5;">{{ card.action_text|default:"Processing" }}</span>
+    {% endif %}
+  </div>
+</div>
+{% empty %}
+<div class="mb-empty">
+  <p>No status cards available.</p>
+</div>
+{% endfor %}

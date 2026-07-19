@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Roommate Assigned - Roomora</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #18181B; padding: 40px 30px;">
+        <!-- Header -->
+        <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #0C1424;">
+            <h1 style="color: #0C1424; margin: 0; font-size: 28px; font-weight: 800;">Roomora</h1>
+            <p style="color: #6B7280; margin: 5px 0 0; font-size: 14px;">Find Your Perfect Roommate</p>
+        </div>
+
+        <!-- New Roommate Banner -->
+        <div style="background-color: #eff6ff; border: 2px solid #3B82F6; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 30px;">
+            <div style="font-size: 48px; margin-bottom: 10px;">👋</div>
+            <h2 style="color: #1e40af; margin: 0 0 5px; font-size: 22px; font-weight: 700;">New Roommate Assigned!</h2>
+            <p style="color: #1e3a8a; margin: 0; font-size: 15px;">You have a new roommate in your room</p>
+        </div>
+
+        <!-- Main Content -->
+        <div style="margin-bottom: 30px;">
+            <p style="color: #374151; margin: 0 0 20px; font-size: 15px; line-height: 1.6;">
+                Dear {{ user.first_name }},
+            </p>
+            <p style="color: #374151; margin: 0 0 20px; font-size: 15px; line-height: 1.6;">
+                Great news! A new roommate has been assigned to your room at {{ property.title }}. We've matched them based on compatibility with your lifestyle preferences.
+            </p>
+        </div>
+
+        <!-- New Roommate Details -->
+        <div style="background-color: #f0fdfa; border: 1px solid #10b981; border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+            <h3 style="color: #0C1424; margin: 0 0 15px; font-size: 18px; font-weight: 700;">Meet Your New Roommate</h3>
+            
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                <div style="width: 60px; height: 60px; background-color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 700;">
+                    {{ new_roommate.first_name|make_list|first|upper }}
+                </div>
+                <div>
+                    <p style="color: #0C1424; margin: 0 0 5px; font-size: 18px; font-weight: 700;">{{ new_roommate.first_name }} {{ new_roommate.last_name|make_list|first|upper }}.</p>
+                    <p style="color: #6B7280; margin: 0; font-size: 14px;">{{ new_roommate.get_user_type_display }}</p>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <p style="color: #059669; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Compatibility Score</p>
+                <p style="color: #0C1424; margin: 0; font-size: 24px; font-weight: 700;">{{ compatibility_score }}%</p>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <p style="color: #6B7280; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Move-in Date</p>
+                <p style="color: #0C1424; margin: 0; font-size: 16px; font-weight: 500;">{{ new_booking.move_in_date|date:"F j, Y" }}</p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <p style="color: #6B7280; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Room</p>
+                <p style="color: #0C1424; margin: 0; font-size: 16px; font-weight: 500;">Room {{ room.room_number }} ({{ booking.room_type.room_type_name }})</p>
+            </div>
+        </div>
+
+        <!-- Room Information -->
+        <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+            <h3 style="color: #0C1424; margin: 0 0 15px; font-size: 18px; font-weight: 700;">Room Information</h3>
+            
+            <div style="margin-bottom: 15px;">
+                <p style="color: #6B7280; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Property</p>
+                <p style="color: #0C1424; margin: 0; font-size: 16px; font-weight: 500;">{{ property.title }}</p>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <p style="color: #6B7280; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Current Occupancy</p>
+                <p style="color: #0C1424; margin: 0; font-size: 16px; font-weight: 500;">{{ occupied_slots }} of {{ total_slots }} occupants</p>
+            </div>
+
+            <div style="margin-bottom: 0;">
+                <p style="color: #6B7280; margin: 0 0 5px; font-size: 13px; font-weight: 600; text-transform: uppercase;">Your Booking Reference</p>
+                <p style="color: #0C1424; margin: 0; font-size: 16px; font-weight: 500;">{{ booking.reference|default:"SM-BOOKING" }}</p>
+            </div>
+        </div>
+
+        <!-- Getting to Know Each Other -->
+        <div style="margin-bottom: 25px;">
+            <h3 style="color: #0C1424; margin: 0 0 15px; font-size: 18px; font-weight: 700;">Getting to Know Each Other</h3>
+            
+            <div style="margin-bottom: 15px; padding-left: 20px; border-left: 3px solid #3B82F6;">
+                <p style="color: #374151; margin: 0 0 5px; font-size: 15px; font-weight: 600;">Connect Early</p>
+                <p style="color: #6B7280; margin: 0; font-size: 14px;">We encourage you to reach out to {{ new_roommate.first_name }} before move-in to introduce yourself and discuss expectations.</p>
+            </div>
+            
+            <div style="margin-bottom: 15px; padding-left: 20px; border-left: 3px solid #3B82F6;">
+                <p style="color: #374151; margin: 0 0 5px; font-size: 15px; font-weight: 600;">Review Compatibility</p>
+                <p style="color: #6B7280; margin: 0; font-size: 14px;">Your compatibility score of {{ compatibility_score }}% indicates shared lifestyle preferences. Review the detailed breakdown on your roommate dashboard.</p>
+            </div>
+            
+            <div style="margin-bottom: 0; padding-left: 20px; border-left: 3px solid #3B82F6;">
+                <p style="color: #374151; margin: 0 0 5px; font-size: 15px; font-weight: 600;">Set Expectations</p>
+                <p style="color: #6B7280; margin: 0; font-size: 14px;">Discuss quiet hours, guest policies, and shared responsibilities early to ensure a harmonious living environment.</p>
+            </div>
+        </div>
+
+        <!-- Important Notice -->
+        <div style="background-color: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+            <p style="color: #92400e; margin: 0 0 10px; font-size: 15px; font-weight: 600;">Lifestyle Profile Locked</p>
+            <p style="color: #78350f; margin: 0; font-size: 14px; line-height: 1.5;">
+                Your lifestyle profile is now locked for the duration of your tenancy to ensure consistency with all roommates in your room.
+            </p>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div style="display: flex; gap: 15px; margin-bottom: 30px;">
+            <a href="{{ site_url }}/api/bookings/booking/{{ booking.id }}/roommate-dashboard/" style="flex: 1; display: inline-block; background-color: #0C1424; color: #18181B; padding: 14px 20px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; text-align: center;">View Roommate Dashboard</a>
+            <a href="{{ site_url }}/bookings/booking/{{ booking.id }}/" style="flex: 1; display: inline-block; background-color: #18181B; color: #0C1424; border: 2px solid #0C1424; padding: 14px 20px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; text-align: center;">Booking Details</a>
+        </div>
+
+        <!-- Footer -->
+        <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; text-align: center;">
+            <p style="color: #6B7280; margin: 0 0 10px; font-size: 13px;">Need help? Contact us at <a href="mailto:support@roomora.com" style="color: #3B82F6; text-decoration: none;">support@roomora.com</a></p>
+            <p style="color: #9CA3AF; margin: 0; font-size: 12px;">© 2026 Roomora. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

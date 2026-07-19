@@ -1,0 +1,73 @@
+{% for property in properties %}
+<a class="property-overlay-card"
+    href="{% url 'landing:property_detail' property.pk %}"
+    {% with primary_image=property.images.all|first %}
+    {% if primary_image %}
+    style="background-image: url('{{ primary_image.image.url }}')"
+    {% else %}
+    style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
+    {% endif %}
+    {% endwith %}>
+
+    <div class="card-top-header-row">
+        <div class="rating-badge-capsule">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            {% if property.average_rating > 0 %}{{ property.average_rating|floatformat:1 }}{% else %}4.8{% endif %}/5
+        </div>
+        <button class="favorite-heart-circle" onclick="event.preventDefault()" aria-label="Save">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+    </div>
+
+    <div class="card-bottom-scrim-workspace">
+        <h3 class="card-property-title">
+            {{ property.title }}
+            {% if property.is_verified %}
+            <svg style="width:18px;height:18px;flex-shrink:0;" viewBox="0 0 24 24" aria-label="Verified"><g><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.918-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.337 2.25c-.416-.165-.866-.25-1.336-.25-2.21 0-3.918 1.792-3.918 4 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.46.74 2.746 1.867 3.45-.094.373-.146.762-.146 1.15 0 2.21 1.71 4 3.918 4 .51 0 1-.096 1.46-.273C9.432 21.688 10.643 22.5 12 22.5s2.568-.812 3.51-2.023c.46.177.95.273 1.46.273 2.21 0 3.918-1.79 3.918-4 0-.388-.052-.777-.146-1.15 1.127-.704 1.867-1.99 1.867-3.45z" fill="#1d9bf0"></path><path d="M10.73 16.59l-3.32-3.32c-.28-.28-.28-.75 0-1.04.29-.28.75-.28 1.04 0l2.28 2.28 5.75-5.75c.29-.28.75-.28 1.04 0 .28.29.28.76 0 1.04l-6.27 6.27c-.14.14-.33.22-.52.22s-.38-.08-.52-.22z" fill="#ffffff"></path></g></svg>
+            {% endif %}
+        </h3>
+        <p class="property-description-copy">{{ property.city }}, {{ property.region }}</p>
+
+        <div class="amenities-row-wrapper">
+            {% for amenity in property.amenities.all|slice:":4" %}
+            <span class="facility-capsule-badge">{{ amenity.name }}</span>
+            {% endfor %}
+        </div>
+
+        <div class="price-baseline-wrap">
+            <div class="availability-pill {% if property.has_available_rooms %}pill-available{% else %}pill-full{% endif %}">
+                {% if property.has_available_rooms %}Available{% else %}Fully Booked{% endif %}
+            </div>
+            <div class="card-price-block">
+                <span class="card-price-label">from</span>
+                {% if property.property_type == 'HOSTEL' %}
+                    {% with property.room_types.first.pricing_models.first as pricing %}
+                    {% if pricing %}
+                    <span class="card-price-value">GHC {{ pricing.semester_price|default:pricing.monthly_price|default:"—" }}</span>
+                    {% else %}
+                    <span class="card-price-value">GHC —</span>
+                    {% endif %}
+                    {% endwith %}
+                {% else %}
+                    {% with property.unit_types.first.pricing_models.first as pricing %}
+                    {% if pricing %}
+                    <span class="card-price-value">GHC {{ pricing.monthly_price|default:pricing.yearly_price|default:pricing.semester_price|default:"—" }}</span>
+                    {% else %}
+                    <span class="card-price-value">GHC —</span>
+                    {% endif %}
+                    {% endwith %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</a>
+{% empty %}
+<div class="no-properties-message" style="grid-column: 1 / -1;">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.5">
+        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+    </svg>
+    <h3>No properties found</h3>
+    <p>Try adjusting your filters or search criteria</p>
+    <a href="{% url 'landing:properties' %}" class="clear-filters-link">Clear all filters</a>
+</div>
+{% endfor %}
