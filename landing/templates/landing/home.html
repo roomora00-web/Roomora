@@ -640,33 +640,84 @@
 
 
     <!-- Content Workspace -->
-    <div class="hero-content-workspace left-aligned-hero" style="position: relative; z-index: 10; text-align: left; width: 100%; max-width: 1600px; padding: 0 5%; margin: auto 0; padding-bottom: 200px; align-items: flex-start;">
-        <h1 class="hero-main-headline animate-fade-up delay-100" style="font-size: clamp(5rem, 11vw, 13rem); line-height: 0.9; margin: 0; font-weight: 300; letter-spacing: -0.02em; text-transform: uppercase;">
-            Perfect
-            <br>
-            <span style="display: block; margin-left: clamp(40px, 20vw, 350px); font-weight: 500;">Home</span>
-        </h1>
-        
-        <div style="margin-top: 32px; display: flex; flex-direction: column; align-items: flex-start; gap: 40px; margin-left: clamp(40px, 20vw, 350px);" class="animate-fade-up delay-200">
-            <h2 style="font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; line-height: 1.2; color: rgba(255,255,255,0.9); text-transform: uppercase; margin: 0; letter-spacing: 2px;">
-                Where <br>
-                Tranquility Meets <br>
-                Modern Living
-            </h2>
+    <div class="hero-content-workspace" style="
+        position: absolute;
+        z-index: 10;
+        bottom: 120px;
+        left: 0;
+        right: 0;
+        padding: 0 5%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+    ">
+        <!-- Left: Big Typography -->
+        <div class="animate-fade-up delay-100" style="flex: 1; max-width: 75%;">
+            <h1 style="
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                font-size: clamp(4.5rem, 10vw, 12rem);
+                line-height: 0.88;
+                margin: 0 0 40px 0;
+                font-weight: 800;
+                letter-spacing: -0.03em;
+                text-transform: uppercase;
+                color: #FFFFFF;
+                text-shadow: 0 4px 24px rgba(0,0,0,0.4);
+            ">
+                Perfect<br>
+                <span style="padding-left: clamp(30px, 15vw, 240px);">Home</span>
+            </h1>
 
-            <a href="{% url 'landing:properties' %}" style="display: inline-flex; background: #FFFFFF; color: #000000; padding: 16px 40px; border-radius: 40px; font-weight: 600; text-decoration: none; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; transition: transform 0.2s;">
-                New Layouts
-            </a>
+            <div class="animate-fade-up delay-200" style="display: flex; align-items: flex-end; gap: 48px; flex-wrap: wrap;">
+                <div>
+                    <p style="font-size: clamp(0.9rem, 1.5vw, 1.25rem); font-weight: 300; line-height: 1.4; color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 2px; margin: 0 0 32px 0;">
+                        Where Tranquility Meets<br>Modern Living
+                    </p>
+                    <a href="{% url 'landing:properties' %}" style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 10px;
+                        background: #FFFFFF;
+                        color: #000000;
+                        padding: 16px 40px;
+                        border-radius: 40px;
+                        font-weight: 700;
+                        text-decoration: none;
+                        font-size: 13px;
+                        letter-spacing: 1.5px;
+                        text-transform: uppercase;
+                        transition: transform 0.2s, box-shadow 0.2s;
+                        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+                    ">
+                        Explore Listings
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
         </div>
-        
-        <!-- Floating +300 Customers Card -->
-        <div class="hide-on-mobile animate-fade-up delay-300" style="position: absolute; right: 5%; bottom: 140px; background: #FFFFFF; color: #000000; padding: 32px; border-radius: 30px; display: flex; flex-direction: column; gap: 12px; width: 280px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
-            <h3 style="font-size: 2.8rem; font-weight: 400; margin: 0; line-height: 1;">+300</h3>
-            <p style="font-size: 0.95rem; color: #4b5563; margin: 0; line-height: 1.4; font-weight: 500;">customers love our service, always</p>
-            <div style="display: flex; margin-top: 12px;">
-                <img src="https://i.pravatar.cc/100?img=4" style="width: 48px; height: 48px; border-radius: 50%; border: 3px solid #FFF; margin-left: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <img src="https://i.pravatar.cc/100?img=5" style="width: 48px; height: 48px; border-radius: 50%; border: 3px solid #FFF; margin-left: -15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <img src="https://i.pravatar.cc/100?img=6" style="width: 48px; height: 48px; border-radius: 50%; border: 3px solid #FFF; margin-left: -15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+        <!-- Right: Floating +300 Stats Card -->
+        <div class="hide-on-mobile animate-fade-up delay-300" style="
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #111111;
+            padding: 28px 32px;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 260px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            flex-shrink: 0;
+            margin-left: 32px;
+        ">
+            <h3 style="font-size: 3rem; font-weight: 700; margin: 0; line-height: 1; color: #111111;">+300</h3>
+            <p style="font-size: 0.9rem; color: #555555; margin: 0; line-height: 1.4; font-weight: 500;">customers love our<br>service, always</p>
+            <div style="display: flex; margin-top: 8px;">
+                <img src="https://i.pravatar.cc/100?img=4" style="width: 44px; height: 44px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
+                <img src="https://i.pravatar.cc/100?img=5" style="width: 44px; height: 44px; border-radius: 50%; border: 3px solid #fff; margin-left: -14px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
+                <img src="https://i.pravatar.cc/100?img=6" style="width: 44px; height: 44px; border-radius: 50%; border: 3px solid #fff; margin-left: -14px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" alt="">
             </div>
         </div>
     </div>
@@ -711,8 +762,7 @@
         </div>
 
         <div class="search-field-pill-box">
-            <label style="font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase;">Price
-                Range</label>
+            <label style="font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase;">Price Range</label>
             <select name="price_range"
                 style="background: transparent; border: none; font-size: 14px; font-weight: 500; color: #111827; outline: none; width: 100%;">
                 <option value="">Any Price</option>
