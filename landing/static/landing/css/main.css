@@ -4137,6 +4137,7 @@ body {
     top: 70px; /* height of top navbar */
     height: calc(100vh - 70px);
     background: #E5E7EB; /* Placeholder for map tiles loading */
+    border-radius: 0 !important;
 }
 
 .split-map-right {
