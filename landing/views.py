@@ -51,7 +51,7 @@ class HomeView(TemplateView):
         
         # Search Widget Data
         context['property_types'] = Property.PROPERTY_TYPE_CHOICES
-        context['cities'] = Property.objects.filter(status='APPROVED', is_available=True).values_list('city', flat=True).distinct()
+        context['cities'] = Property.objects.filter(status='APPROVED', is_available=True).values_list('city', flat=True).order_by('city').distinct()
         context['price_ranges'] = [
             {'min': 0, 'max': 2000, 'label': 'Under GHC 2,000'},
             {'min': 2000, 'max': 5000, 'label': 'GHC 2,000 - 5,000'},
@@ -500,6 +500,6 @@ class PropertyMapView(TemplateView):
         context['property_types'] = Property.PROPERTY_TYPE_CHOICES
         context['cities'] = Property.objects.filter(
             status='APPROVED', is_available=True
-        ).values_list('city', flat=True).distinct()
+        ).values_list('city', flat=True).order_by('city').distinct()
         
         return context
