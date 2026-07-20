@@ -3438,23 +3438,34 @@ body {
     .amenities-headline, .section-header {
         padding: 0 24px !important;
     }
-    .amenities-grid, .tab-content.active {
-        display: flex !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto !important;
-        scroll-snap-type: x mandatory !important;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+    .amenities-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 16px !important;
-        padding: 0 24px 24px 24px !important;
+        padding: 0 16px !important;
     }
-    .amenities-grid::-webkit-scrollbar, .tab-content::-webkit-scrollbar {
-        display: none;
+    .amenity-card {
+        flex: none !important;
+        width: 100% !important;
+        aspect-ratio: 1 !important; /* Square looks better on mobile */
     }
-    .amenity-card, .category-rental-card {
-        flex: 0 0 80vw !important;
-        scroll-snap-align: start;
-        width: 80vw !important;
+    .amenity-card .label-pill {
+        font-size: 11px !important;
+        padding: 6px 8px !important;
+        bottom: 12px !important;
+        left: 12px !important;
+        right: 12px !important;
+        text-align: center !important;
+    }
+    .tab-content.active {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+        padding: 0 16px 24px 16px !important;
+    }
+    .category-rental-card {
+        width: 100% !important;
+        flex: none !important;
     }
     
     .toggle-tab-container {
