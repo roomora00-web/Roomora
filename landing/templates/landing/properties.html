@@ -143,200 +143,6 @@ body.properties-page .prop-navbar {
     padding: 24px 0 !important;
     display: flex !important;
 }
-
-/* Premium Modern Hero Section Styles */
-.modern-premium-hero {
-    position: relative;
-    overflow: hidden;
-    background-color: #050505;
-    border-radius: 24px;
-    margin: 20px 0 40px;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.hero-bg-elements {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    overflow: hidden;
-    pointer-events: none;
-}
-
-.blur-circle {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.5;
-    animation: float-slow 10s infinite alternate ease-in-out;
-}
-
-.blur-circle-1 {
-    width: 300px;
-    height: 300px;
-    background: #E11D48;
-    top: -100px;
-    left: 10%;
-}
-
-.blur-circle-2 {
-    width: 250px;
-    height: 250px;
-    background: #4F46E5;
-    bottom: -50px;
-    right: 15%;
-    animation-delay: -5s;
-}
-
-.hero-mesh-overlay {
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 30px 30px;
-    opacity: 0.3;
-}
-
-.hero-display-title {
-    font-size: 3.5rem !important;
-    font-weight: 800 !important;
-    color: #ffffff;
-    line-height: 1.1;
-    margin-bottom: 16px;
-    letter-spacing: -0.02em;
-}
-
-.hero-display-title .text-gradient {
-    background: linear-gradient(135deg, #FF4B72, #FF7696);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-}
-
-.hero-subtitle {
-    font-size: 1.25rem;
-    color: rgba(255,255,255,0.7);
-    margin-bottom: 40px;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.premium-search-box {
-    display: flex;
-    align-items: center;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 100px;
-    padding: 8px 8px 8px 24px;
-    max-width: 700px;
-    margin: 0 auto;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    transition: all 0.3s ease;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-}
-
-.premium-search-box:focus-within {
-    border-color: rgba(255,75,114,0.5);
-    background: rgba(255,255,255,0.1);
-    box-shadow: 0 0 0 4px rgba(255,75,114,0.1), 0 20px 40px rgba(0,0,0,0.3);
-}
-
-.search-input-wrapper {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    gap: 16px;
-}
-
-.search-icon {
-    color: rgba(255,255,255,0.5);
-    flex-shrink: 0;
-}
-
-.premium-search-input {
-    background: transparent !important;
-    border: none !important;
-    color: white !important;
-    font-size: 1rem;
-    width: 100%;
-    outline: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-}
-
-.premium-search-input::placeholder {
-    color: rgba(255,255,255,0.4) !important;
-}
-
-.premium-search-btn {
-    background: #E11D48;
-    color: white;
-    border: none;
-    border-radius: 100px;
-    padding: 14px 28px;
-    font-weight: 600;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-}
-
-.premium-search-btn:hover {
-    background: #BE123C;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(225,29,72,0.3);
-}
-
-.hero-stats-row {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 48px;
-    flex-wrap: wrap;
-}
-
-.stat-badge {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 10px 20px;
-    border-radius: 100px;
-    color: rgba(255,255,255,0.8);
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    backdrop-filter: blur(10px);
-}
-
-.stat-badge span {
-    font-weight: 700;
-    color: white;
-}
-
-@keyframes float-slow {
-    0% { transform: translateY(0) scale(1); }
-    100% { transform: translateY(-20px) scale(1.05); }
-}
-
-@media (max-width: 768px) {
-    .hero-display-title { font-size: 2.5rem !important; }
-    .premium-search-box {
-        flex-direction: column;
-        border-radius: 20px;
-        padding: 16px;
-        gap: 16px;
-    }
-    .search-input-wrapper {
-        width: 100%;
-    }
-    .premium-search-btn {
-        width: 100%;
-        justify-content: center;
-    }
-}
 </style>
 {% endblock %}
 
@@ -407,37 +213,25 @@ body.properties-page .prop-navbar {
         </div>
     </div>
 
-    <!-- Ultra Premium Modern Hero Section with Integrated Search -->
-    <section class="properties-hero-section modern-premium-hero">
-        <div class="hero-bg-elements">
-            <div class="blur-circle blur-circle-1"></div>
-            <div class="blur-circle blur-circle-2"></div>
-            <div class="hero-mesh-overlay"></div>
-        </div>
-        <div class="hero-content" style="position: relative; z-index: 2; padding: 80px 20px 100px;">
-            <h1 class="hero-display-title">Find Your <span class="text-gradient">Perfect Space</span></h1>
-            <p class="hero-subtitle">Elevate your living experience with verified premium properties.</p>
+    <!-- Dark Premium Hero Section with Integrated Search -->
+    <section class="properties-hero-section glass-panel-base">
+        <div class="hero-content">
+            <h1>Discover Your Next Home</h1>
+            <p>Explore verified premium hostels and apartments tailored to your lifestyle.</p>
             
             <!-- Integrated Search -->
-            <form method="GET" action="{% url 'landing:properties' %}" class="premium-search-box">
-                <div class="search-input-wrapper">
-                    <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <form method="GET" action="{% url 'landing:properties' %}" class="search-form-horizontal">
+                <div class="search-input-field">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                         <circle cx="12" cy="10" r="3"/>
                     </svg>
-                    <input type="text" name="location" placeholder="Search by location, university, or property name..." value="{{ current_filters.location }}" class="premium-search-input">
+                    <input type="text" name="location" placeholder="Search by location, university, or property name..." value="{{ current_filters.location }}">
                 </div>
-                <button type="submit" class="premium-search-btn">
-                    <span class="btn-text">Explore</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <button type="submit" class="search-submit-btn">
+                    Search
                 </button>
             </form>
-            
-            <div class="hero-stats-row">
-                <div class="stat-badge"><span>100+</span> Premium Spaces</div>
-                <div class="stat-badge"><span>100%</span> Verified listings</div>
-                <div class="stat-badge"><span>24/7</span> Support</div>
-            </div>
         </div>
     </section>
 
@@ -892,13 +686,13 @@ document.addEventListener('click', function(event) {
 /* ── Hero Section ─────────────────────────────────────────────────── */
 .properties-hero-section {
     position: relative;
-    background: linear-gradient(135deg, #111111 0%, #1a1a2e 50%, #16213e 100%);
-    border: none;
-    box-shadow: var(--shadow-lg);
+    background: #0a0a0a;
+    border: 1px solid rgba(245, 245, 245, 0.05);
+    box-shadow: 0 24px 50px rgba(0,0,0,0.5);
     border-radius: var(--radius-lg);
-    padding: 80px 32px;
+    padding: 100px 32px;
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 40px;
     overflow: hidden;
 }
 
@@ -906,8 +700,7 @@ document.addEventListener('click', function(event) {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 30% 50%, rgba(225,29,72,0.08) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 50%, rgba(59,130,246,0.06) 0%, transparent 60%);
+    background: radial-gradient(ellipse at top, rgba(245, 245, 245, 0.07) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -921,18 +714,18 @@ document.addEventListener('click', function(event) {
 }
 
 .hero-content h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #FFFFFF;
-    margin-bottom: 12px;
-    letter-spacing: -0.02em;
+    font-size: 3rem;
+    font-weight: 800;
+    color: #f5f5f5;
+    margin-bottom: 16px;
+    letter-spacing: -0.03em;
     animation: fadeInUp 1s ease-out 0.2s both;
 }
 
 .hero-content p {
-    font-size: 1.1rem;
-    color: rgba(255,255,255,0.7);
-    margin-bottom: 32px;
+    font-size: 1.15rem;
+    color: rgba(245, 245, 245, 0.7);
+    margin-bottom: 40px;
     animation: fadeInUp 1s ease-out 0.4s both;
 }
 
@@ -943,8 +736,8 @@ document.addEventListener('click', function(event) {
 
 /* ── Search Form ──────────────────────────────────────────────────── */
 .search-form-horizontal {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(245, 245, 245, 0.05);
+    border: 1px solid rgba(245, 245, 245, 0.1);
     border-radius: var(--radius-pill);
     padding: 8px 12px;
     display: flex;
