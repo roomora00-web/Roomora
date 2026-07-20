@@ -1,6 +1,22 @@
 {% extends 'landing/base.html' %}
 {% load static %}
-{% block title %}Roomora - Find Your Perfect Home{% endblock %}
+{% block title %}Roomora - Find Your Perfect Home
+<script>
+    // Featured Carousel Animation
+    document.addEventListener('DOMContentLoaded', () => {
+        const slides = document.querySelectorAll('#featuredCarousel .showcase-slide');
+        if(slides.length <= 1) return;
+        
+        let currentIndex = 0;
+        setInterval(() => {
+            slides[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % slides.length;
+            slides[currentIndex].classList.add('active');
+        }, 6000);
+    });
+</script>
+{% endblock %}
+
 
 {% block extra_css %}
 <style>
@@ -82,7 +98,23 @@
         }
     }
 </style>
+
+<script>
+    // Featured Carousel Animation
+    document.addEventListener('DOMContentLoaded', () => {
+        const slides = document.querySelectorAll('#featuredCarousel .showcase-slide');
+        if(slides.length <= 1) return;
+        
+        let currentIndex = 0;
+        setInterval(() => {
+            slides[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % slides.length;
+            slides[currentIndex].classList.add('active');
+        }, 6000);
+    });
+</script>
 {% endblock %}
+
 
 {% block content %}
 <!-- Leaflet CSS -->
@@ -234,30 +266,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-    // Featured Carousel Animation
-    document.addEventListener(DOMContentLoaded, () => {
-        const slides = document.querySelectorAll('#featuredCarousel .showcase-slide');
-        if(slides.length <= 1) return;
-        
-        let currentIndex = 0;
-        setInterval(() => {
-            slides[currentIndex].classList.remove('active');
-            currentIndex = (currentIndex + 1) % slides.length;
-            slides[currentIndex].classList.add('active');
-        }, 6000);
-    });
-    // Featured Carousel Animation
-    document.addEventListener(DOMContentLoaded, () => {
-        const slides = document.querySelectorAll('#featuredCarousel .showcase-slide');
-        if(slides.length <= 1) return;
-        
-        let currentIndex = 0;
-        setInterval(() => {
-            slides[currentIndex].classList.remove('active');
-            currentIndex = (currentIndex + 1) % slides.length;
-            slides[currentIndex].classList.add('active');
-        }, 6000);
-    });
 </script>
 
 <!-- DESKTOP HERO — hidden on mobile via CSS -->
@@ -1808,4 +1816,19 @@ document.addEventListener('DOMContentLoaded', function() {
         </a>
         {% endif %}
     </nav>
+
+<script>
+    // Featured Carousel Animation
+    document.addEventListener('DOMContentLoaded', () => {
+        const slides = document.querySelectorAll('#featuredCarousel .showcase-slide');
+        if(slides.length <= 1) return;
+        
+        let currentIndex = 0;
+        setInterval(() => {
+            slides[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % slides.length;
+            slides[currentIndex].classList.add('active');
+        }, 6000);
+    });
+</script>
 {% endblock %}
