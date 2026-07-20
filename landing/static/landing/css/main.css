@@ -977,7 +977,7 @@ body {
 .price-baseline-wrap {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     margin-top: 4px;
     padding-top: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -3859,9 +3859,13 @@ body {
     }
 
     .property-overlay-card {
-        min-height: 400px !important;
+        min-height: 480px !important;
     }
     .premium-carousel-track .property-overlay-card {
         width: 85vw !important;
+    }
+    .accommodation-cards-grid {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
     }
 }

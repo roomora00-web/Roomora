@@ -633,12 +633,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             {% if property.has_available_rooms %}Available{% else %}Fully Booked{% endif %}
                         </div>
                         <div class="card-price-block">
-                            <span class="card-price-label">from</span>
                             {% with property.room_types.first.pricing_models.first as pricing %}
                             {% if pricing %}
+                            <span class="card-price-label">from</span>
                             <span class="card-price-value">GHC {{ pricing.semester_price|default:pricing.monthly_price|default:"N/A" }}</span>
                             {% else %}
-                            <span class="card-price-value">Price N/A</span>
+                            <span class="card-price-value" style="font-size: 13px; font-weight: 500; opacity: 0.9;">Price on Request</span>
                             {% endif %}
                             {% endwith %}
                         </div>
