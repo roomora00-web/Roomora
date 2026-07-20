@@ -448,12 +448,13 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 if(isMap) {
                     mapPane.style.display = 'block';
-                    listPane.style.flex = '0 0 55%';
-                    listPane.style.borderRight = '1px solid rgba(0,0,0,0.06)';
+                    mapPane.style.flex = '1';
+                    listPane.style.display = 'none';
                     if (typeof initMap === 'function' && !map) initMap();
                     setTimeout(() => map && map.invalidateSize(), 100);
                 } else {
                     mapPane.style.display = 'none';
+                    listPane.style.display = 'block';
                     listPane.style.flex = '0 0 100%';
                     listPane.style.borderRight = 'none';
                 }

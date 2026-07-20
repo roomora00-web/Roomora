@@ -3931,7 +3931,13 @@ body {
     border-bottom: 1px solid rgba(0,0,0,0.06);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1100;
+}
+
+/* Ensure global navbar is also above the map */
+.prop-navbar, .navbar-container {
+    position: relative;
+    z-index: 1100 !important;
 }
 
 .top-tabs-group {
