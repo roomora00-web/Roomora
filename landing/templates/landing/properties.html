@@ -213,6 +213,15 @@ body.properties-page .prop-navbar {
         </div>
     </div>
 
+    <!-- Redesigned Premium Hero Section -->
+    <section class="new-properties-hero">
+        <div class="new-hero-bg"></div>
+        <div class="new-hero-content animate-fade-up">
+            <h1 class="new-hero-title">Find Your Next <span class="highlight-text">Perfect</span> Home</h1>
+            <p class="new-hero-subtitle">Discover premium accommodations tailored to your lifestyle, verified for your peace of mind.</p>
+        </div>
+    </section>
+
     <!-- Top Search & Filter Bar -->
     <div class="split-view-top-bar animate-fade-up">
         <!-- Left Side: Tabs -->
@@ -442,6 +451,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     mapPane.style.display = 'none';
                     listPane.style.display = 'block';
+                }
+            } else {
+                if(isMap) {
+                    mapPane.style.display = 'block';
+                    listPane.style.flex = '0 0 55%';
+                    listPane.style.borderRight = '1px solid rgba(0,0,0,0.06)';
+                    if (typeof initMap === 'function' && !map) initMap();
+                    setTimeout(() => map && map.invalidateSize(), 100);
+                } else {
+                    mapPane.style.display = 'none';
+                    listPane.style.flex = '0 0 100%';
+                    listPane.style.borderRight = 'none';
                 }
             }
         });

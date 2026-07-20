@@ -4064,22 +4064,17 @@ body {
 
 .split-layout {
     display: flex !important;
-    height: calc(100vh - 140px); /* Adjust based on header heights */
-    overflow: hidden;
+    align-items: flex-start;
     margin: 0 !important;
     padding: 0 !important;
 }
 
 /* Left Pane (Listings) */
 .split-listings-pane {
-    flex: 0 0 45%; /* or 50% depending on preference */
-    overflow-y: auto;
+    flex: 0 0 55%; 
     padding: 24px;
     background: #FFFFFF;
     border-right: 1px solid rgba(0,0,0,0.06);
-    /* Custom Scrollbar for cleaner look */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0,0,0,0.15) transparent;
 }
 .split-listings-pane::-webkit-scrollbar {
     width: 6px;
@@ -4137,8 +4132,10 @@ body {
 
 /* Right Pane (Map) */
 .split-map-pane {
-    flex: 1;
-    position: relative;
+    flex: 0 0 45%;
+    position: sticky;
+    top: 70px; /* height of top navbar */
+    height: calc(100vh - 70px);
     background: #E5E7EB; /* Placeholder for map tiles loading */
 }
 
@@ -4160,32 +4157,95 @@ body.properties-page #properties-map {
     border-radius: 0 !important;
 }
 
-/* Hide original properties hero and navbar elements that conflict */
-.properties-hero-section {
-    display: none !important;
-}
+/* Hero section is visible again */
 
 /* Responsive adjustments */
 @media (max-width: 992px) {
     .split-layout {
         flex-direction: column;
-        height: auto;
-        overflow: visible;
     }
     
     .split-listings-pane {
         flex: 1;
         border-right: none;
-        overflow-y: visible;
         display: block;
     }
     
     .split-map-pane {
+        width: 100%;
+        flex: none;
+        position: relative;
+        top: 0;
         height: 80vh;
         display: none; /* Hidden by default on mobile, toggled via JS */
     }
     
     .top-center-search-group {
         display: none;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   NEW PROPERTIES HERO
+   ═══════════════════════════════════════════════════════════════════ */
+.new-properties-hero {
+    position: relative;
+    width: 100%;
+    padding: 60px 24px;
+    background: #0B0F19; /* Deep modern dark blue/black */
+    overflow: hidden;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.new-hero-bg {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(225, 29, 72, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.new-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+}
+
+.new-hero-title {
+    font-size: 42px;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+}
+
+.highlight-text {
+    background: linear-gradient(135deg, #FF4B72 0%, #E11D48 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.new-hero-subtitle {
+    font-size: 18px;
+    color: #94A3B8;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .new-properties-hero {
+        padding: 40px 16px;
+    }
+    .new-hero-title {
+        font-size: 32px;
+    }
+    .new-hero-subtitle {
+        font-size: 16px;
     }
 }
