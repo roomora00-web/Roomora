@@ -3692,3 +3692,18 @@ body {
         justify-content: center;
     }
 }
+
+/* Hamburger Menu Visibility Fixes */
+@media (min-width: 769px) {
+    .hide-on-desktop {
+        display: none !important;
+    }
+}
+@media (max-width: 768px) {
+    .hide-on-desktop {
+        display: flex !important;
+    }
+    .mhero-menu-btn {
+        display: flex !important;
+    }
+}
