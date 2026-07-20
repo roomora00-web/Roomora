@@ -3931,13 +3931,7 @@ body {
     border-bottom: 1px solid rgba(0,0,0,0.06);
     position: sticky;
     top: 0;
-    z-index: 1100;
-}
-
-/* Ensure global navbar is also above the map */
-.prop-navbar, .navbar-container {
-    position: relative;
-    z-index: 1100 !important;
+    z-index: 100;
 }
 
 .top-tabs-group {
@@ -4143,6 +4137,8 @@ body {
     top: 70px; /* height of top navbar */
     height: calc(100vh - 70px);
     background: #E5E7EB; /* Placeholder for map tiles loading */
+    display: flex;
+    flex-direction: column;
 }
 
 .split-map-right {
@@ -4159,11 +4155,9 @@ body {
 
 /* Override existing #properties-map height if applied */
 body.properties-page #properties-map {
-    height: 100% !important;
+    flex: 1 !important;
     width: 100% !important;
-    position: absolute !important;
-    top: 0;
-    left: 0;
+    position: relative !important;
     border-radius: 0 !important;
 }
 
