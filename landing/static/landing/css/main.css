@@ -197,7 +197,7 @@ body {
     }
 
     .navbar-container {
-        justify-content: center;
+        justify-content: space-between;
     }
 
     .hero-content-workspace {
@@ -222,7 +222,7 @@ body {
         height: auto;
         min-height: 85vh;
         padding-bottom: 24px;
-        justify-content: center;
+        justify-content: space-between;
     }
 
     .navbar-container {
@@ -411,7 +411,7 @@ body {
 .floating-btn {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 8px;
     width: 100%;
     background: #111111;
@@ -508,7 +508,7 @@ body {
     border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .showcase-stats-grid {
@@ -677,7 +677,7 @@ body {
     border: 1px solid rgba(0,0,0,0.2);
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .map-btn-secondary:hover {
@@ -888,7 +888,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.12);
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     color: #FFFFFF;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -1129,7 +1129,7 @@ body {
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     transition: all 0.2s ease;
     color: var(--pure-black);
 }
@@ -1327,7 +1327,7 @@ body {
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     transition: all 0.2s ease;
     color: var(--pure-black);
 }
@@ -1489,7 +1489,7 @@ body {
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     transition: all 0.2s ease;
     color: var(--pure-black);
     z-index: 2;
@@ -1656,7 +1656,7 @@ body {
     border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     transition: all 0.2s ease;
     color: var(--muted-gray);
 }
@@ -1707,7 +1707,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     position: relative;
     z-index: 1;
 }
@@ -1843,7 +1843,7 @@ body {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     transition: all 0.2s ease;
 }
 
@@ -2143,7 +2143,7 @@ body {
     }
 
     .filter-pills {
-        justify-content: center;
+        justify-content: space-between;
         flex-wrap: wrap;
     }
 
@@ -2281,7 +2281,7 @@ body {
 
     .all-properties-btn {
         width: 100%;
-        justify-content: center;
+        justify-content: space-between;
     }
 
     .rentals-grid {}
@@ -3017,7 +3017,7 @@ body {
     border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     font-weight: bold;
     font-size: 18px;
     transition: all 0.3s ease;
@@ -3114,7 +3114,7 @@ body {
 
     .get-in-touch-btn {
         width: 100%;
-        justify-content: center;
+        justify-content: space-between;
     }
 
     .faq-right-panel-image {
@@ -3206,7 +3206,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     color: #FFFFFF;
     cursor: pointer;
     backdrop-filter: blur(8px);
@@ -3639,7 +3639,7 @@ body {
 .hero-btn-primary {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     background: #FFFFFF;
     color: #111111;
     padding: 16px 36px;
@@ -3689,7 +3689,7 @@ body {
     
     .hero-btn-secondary {
         width: 100%;
-        justify-content: center;
+        justify-content: space-between;
     }
 }
 

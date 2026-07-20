@@ -66,40 +66,21 @@
         pointer-events: none;
     }
 
-    /* =============================================
-       MOBILE HERO — Separate clean block
-       ============================================= */
+    /* Mobile Navbar Fix */
     @media (max-width: 768px) {
-
-        /* Mobile Navbar Fix */
-@media (max-width: 768px) {
-  .prop-navbar {
-    padding: 16px 0 !important;
-  }
-  .prop-logo-img {
-    height: 120px !important;
-    margin: -30px 0 -50px -20px !important;
-    transform: scale(1) !important;
-  }
-  .hero-logo-img {
-    height: 120px !important;
-    margin: -30px 0 -50px -20px !important;
-    transform: scale(1) !important;
-  }
-  .prop-center-nav {
-    display: none !important;
-  }
-  .prop-right-panel {
-    display: none !important;
-  }
-  .prop-mobile-menu-btn {
-    display: flex !important;
-  }
-  .app-workspace-wrapper {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-  }
-}
+        .hero-logo-img {
+            height: 160px !important;
+            margin: -40px 0 -60px -30px !important;
+            transform: scale(0.8) !important;
+            transform-origin: left center !important;
+        }
+        .prop-center-nav, .prop-right-panel {
+            display: none !important;
+        }
+        .prop-mobile-menu-btn {
+            display: flex !important;
+        }
+    }
 </style>
 {% endblock %}
 
