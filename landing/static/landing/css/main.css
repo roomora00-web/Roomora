@@ -4177,14 +4177,15 @@ body.properties-page #properties-map {
         flex: 1;
         border-right: none;
         overflow-y: visible;
+        display: block;
     }
     
     .split-map-pane {
-        height: 400px;
-        order: -1; /* Map on top in mobile */
+        height: 80vh;
+        display: none; /* Hidden by default on mobile, toggled via JS */
     }
     
     .top-center-search-group {
-        display: none; /* Hide complex search on mobile or show a simplified one */
+        display: none;
     }
 }
