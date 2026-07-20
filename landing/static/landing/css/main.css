@@ -3819,8 +3819,8 @@ body {
 
 @media (max-width: 768px) {
     .hero-bg-text-wrapper {
-        padding-top: 0 !important;
-        align-items: center !important;
+        padding-top: 6vh !important;
+        align-items: flex-start !important;
         opacity: 0.45 !important;
     }
 
