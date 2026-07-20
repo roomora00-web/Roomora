@@ -667,20 +667,9 @@
     </div>
 
     <!-- Hero Content — sits at the bottom of the image -->
-    <div style="
-        position: absolute;
-        z-index: 10;
-        left: 0;
-        right: 0;
-        bottom: 48px;
-        padding: 0 5%;
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 24px;
-    ">
+    <div class="hero-bottom-container">
         <!-- Left: Headline + Tagline + CTA -->
-        <div class="animate-fade-up delay-200" style="flex: 1; max-width: 600px;">
+        <div class="animate-fade-up delay-200 hero-left-content">
 
             <!-- Headline -->
             <h2 style="
@@ -712,26 +701,11 @@
             </p>
 
             <!-- CTA Buttons -->
-            <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
-                <a href="{% url 'landing:properties' %}" style="
-                    display: inline-flex; align-items: center; justify-content: center;
-                    background: #FFFFFF; color: #111111;
-                    padding: 16px 36px; border-radius: 40px;
-                    font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; font-size: 13px;
-                    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-                    transition: all 0.3s ease;
-                ">
+            <div class="hero-cta-group">
+                <a href="{% url 'landing:properties' %}" class="hero-btn-primary">
                     Explore Listings
                 </a>
-                <a href="{% url 'landing:properties' %}" style="
-                    display: inline-flex; align-items: center; gap: 8px;
-                    background: transparent;
-                    color: #FFFFFF;
-                    padding: 16px 0;
-                    font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; font-size: 13px;
-                    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-                    transition: all 0.3s ease;
-                ">
+                <a href="{% url 'landing:properties' %}" class="hero-btn-secondary">
                     Find a Roommate <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
             </div>

@@ -258,19 +258,17 @@ body {
         margin: 0 20px 40px 20px !important;
         border-radius: 24px !important;
         display: flex !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto !important;
-        scroll-snap-type: x mandatory !important;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        padding: 12px !important;
-        gap: 12px !important;
+        flex-direction: column !important;
+        padding: 24px !important;
+        gap: 16px !important;
         background: rgba(255, 255, 255, 0.95) !important;
         backdrop-filter: blur(10px) !important;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
     }
 
-    .anchored-search-widget-bar::-webkit-scrollbar {
-        display: none;
+    .search-field-pill-box {
+        width: 100%;
+        margin-bottom: 8px;
     }
 
     .search-field-pill-box {
@@ -3607,5 +3605,89 @@ body {
     .brand-description {
         max-width: 100% !important;
         font-size: 14px !important;
+    }
+}
+
+
+/* --- Hero Responsive Layout --- */
+.hero-bottom-container {
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    right: 0;
+    bottom: 48px;
+    padding: 0 5%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.hero-left-content {
+    flex: 1;
+    max-width: 600px;
+}
+
+.hero-cta-group {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.hero-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+    color: #111111;
+    padding: 16px 36px;
+    border-radius: 40px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    font-size: 13px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+.hero-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: #FFFFFF;
+    padding: 16px 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    font-size: 13px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .hero-bottom-container {
+        flex-direction: column;
+        align-items: flex-start;
+        bottom: 24px;
+    }
+    
+    .hero-cta-group {
+        flex-direction: column;
+        width: 100%;
+        gap: 16px;
+    }
+    
+    .hero-btn-primary {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .hero-btn-secondary {
+        width: 100%;
+        justify-content: center;
     }
 }
