@@ -4057,22 +4057,40 @@ body {
 }
 
 /* Split Layout Base */
+body.properties-page {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
+.properties-page-wrapper {
+    height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
 .split-layout-wrapper {
     padding: 0 !important;
     background: #FFFFFF !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
 }
 
 .split-layout {
     display: flex !important;
-    align-items: flex-start;
+    align-items: stretch;
+    flex: 1;
     margin: 0 !important;
     padding: 0 !important;
+    overflow: hidden;
 }
 
 /* Left Pane (Listings) */
 .split-listings-pane {
-    flex: 0 0 55%; 
+    flex: 0 0 55%;
     padding: 24px;
+    overflow-y: auto;
     background: #FFFFFF;
     border-right: 1px solid rgba(0,0,0,0.06);
 }
@@ -4133,9 +4151,8 @@ body {
 /* Right Pane (Map) */
 .split-map-pane {
     flex: 0 0 45%;
-    position: sticky;
-    top: 70px; /* height of top navbar */
-    height: calc(100vh - 70px);
+    position: relative;
+    height: 100%;
     background: #E5E7EB; /* Placeholder for map tiles loading */
     border-radius: 0 !important;
 }
