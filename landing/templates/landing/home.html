@@ -233,6 +233,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+    // Featured Carousel Animation
+    document.addEventListener(DOMContentLoaded, () => {
+        const slides = document.querySelectorAll('#featuredCarousel .showcase-slide');
+        if(slides.length <= 1) return;
+        
+        let currentIndex = 0;
+        setInterval(() => {
+            slides[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % slides.length;
+            slides[currentIndex].classList.add('active');
+        }, 6000);
+    });
+    // Featured Carousel Animation
+    document.addEventListener(DOMContentLoaded, () => {
+        const slides = document.querySelectorAll('#featuredCarousel .showcase-slide');
+        if(slides.length <= 1) return;
+        
+        let currentIndex = 0;
+        setInterval(() => {
+            slides[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % slides.length;
+            slides[currentIndex].classList.add('active');
+        }, 6000);
+    });
 </script>
 
 <!-- DESKTOP HERO — hidden on mobile via CSS -->
@@ -411,50 +436,69 @@ document.addEventListener('DOMContentLoaded', function() {
         
         <!-- Left: Visuals -->
         <div class="showcase-visuals">
-            <div class="main-featured-image-wrapper">
-                {% if featured_property and featured_property.images.first %}
-                <img src="{{ featured_property.images.first.image_url }}" alt="{{ featured_property.title }}" class="main-featured-image">
+            <div class="main-featured-image-wrapper" id="featuredCarousel">
+                {% if premium_listings %}
+                    {% for property in premium_listings %}
+                    <div class="showcase-slide {% if forloop.first %}active{% endif %}">
+                        {% if property.images.first %}
+                        <img src="{{ property.images.first.image_url }}" alt="{{ property.title }}" class="main-featured-image">
+                        {% else %}
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1600&fit=crop" alt="{{ property.title }}" class="main-featured-image">
+                        {% endif %}
+
+                        <!-- Floating Glass Card -->
+                        <div class="floating-glass-details">
+                            <div class="floating-header">
+                                <span class="pulse-indicator"></span>
+                                <span class="status-text">Featured Property</span>
+                            </div>
+                            <h3 class="floating-title">{{ property.title }}</h3>
+                            <div class="floating-price">
+                                <span class="price-label">Starting from</span>
+                                <span class="price-value">
+                                    {% if property.property_type == 'HOSTEL' %}
+                                    {% with hostel_price=property.room_types.first.pricing_models.first %}
+                                    {% if hostel_price %}
+                                    GHC {{ hostel_price.semester_price|default:hostel_price.yearly_price|default:hostel_price.monthly_price|default:"—" }}
+                                    {% else %}
+                                    Contact for price
+                                    {% endif %}
+                                    {% endwith %}
+                                    {% elif property.property_type == 'APARTMENT' %}
+                                    {% with apartment_price=property.unit_types.first.pricing_models.first %}
+                                    {% if apartment_price %}
+                                    GHC {{ apartment_price.monthly_price|default:apartment_price.yearly_price|default:"—" }}
+                                    {% else %}
+                                    Contact for price
+                                    {% endif %}
+                                    {% endwith %}
+                                    {% else %}
+                                    Contact for price
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <a href="{% url 'landing:property_detail' property.pk %}" class="floating-btn">View Property <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg></a>
+                        </div>
+                    </div>
+                    {% endfor %}
                 {% else %}
-                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1600&fit=crop" alt="Student Hostel" class="main-featured-image">
+                    <!-- Static Fallback if no properties exist -->
+                    <div class="showcase-slide active">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1600&fit=crop" alt="Student Hostel" class="main-featured-image">
+                        <div class="floating-glass-details">
+                            <div class="floating-header">
+                                <span class="pulse-indicator"></span>
+                                <span class="status-text">Featured Property</span>
+                            </div>
+                            <h3 class="floating-title">Campus View Hostel</h3>
+                            <div class="floating-price">
+                                <span class="price-label">Starting from</span>
+                                <span class="price-value">GHC 2,500</span>
+                            </div>
+                            <a href="{% url 'landing:properties' %}" class="floating-btn">View Property <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg></a>
+                        </div>
+                    </div>
                 {% endif %}
-                
-                <!-- Floating Glass Card -->
-                <div class="floating-glass-details">
-                    <div class="floating-header">
-                        <span class="pulse-indicator"></span>
-                        <span class="status-text">Featured Property</span>
-                    </div>
-                    <h3 class="floating-title">{% if featured_property %}{{ featured_property.title }}{% else %}Campus View Hostel{% endif %}</h3>
-                    <div class="floating-price">
-                        <span class="price-label">Starting from</span>
-                        <span class="price-value">
-                            {% if featured_property %}
-                            {% if featured_property.property_type == 'HOSTEL' %}
-                            {% with hostel_price=featured_property.room_types.first.pricing_models.first %}
-                            {% if hostel_price %}
-                            GHC {{ hostel_price.semester_price|default:hostel_price.yearly_price|default:hostel_price.monthly_price|default:"—" }}
-                            {% else %}
-                            Contact for price
-                            {% endif %}
-                            {% endwith %}
-                            {% elif featured_property.property_type == 'APARTMENT' %}
-                            {% with apartment_price=featured_property.unit_types.first.pricing_models.first %}
-                            {% if apartment_price %}
-                            GHC {{ apartment_price.monthly_price|default:apartment_price.yearly_price|default:"—" }}
-                            {% else %}
-                            Contact for price
-                            {% endif %}
-                            {% endwith %}
-                            {% else %}
-                            Contact for price
-                            {% endif %}
-                            {% else %}
-                            GHC 2,500
-                            {% endif %}
-                        </span>
-                    </div>
-                    <a href="{% if featured_property %}{% url 'landing:property_detail' featured_property.pk %}{% else %}{% url 'landing:properties' %}{% endif %}" class="floating-btn">View Property <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg></a>
-                </div>
             </div>
         </div>
 
