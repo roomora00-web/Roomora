@@ -257,10 +257,10 @@ body {
         width: calc(100% - 40px) !important;
         margin: 0 20px 40px 20px !important;
         border-radius: 24px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        padding: 24px !important;
-        gap: 16px !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        padding: 20px !important;
+        gap: 12px !important;
         background: rgba(255, 255, 255, 0.95) !important;
         backdrop-filter: blur(10px) !important;
         box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
@@ -285,12 +285,11 @@ body {
     }
 
     .btn-search-execute-black {
-        flex: 0 0 auto !important;
-        width: auto !important;
-        margin: 0 !important;
-        padding: 0 32px !important;
+        grid-column: span 2 !important;
+        width: 100% !important;
+        margin: 4px 0 0 0 !important;
+        padding: 16px !important;
         border-radius: 16px !important;
-        scroll-snap-align: start;
         white-space: nowrap;
     }
 }
