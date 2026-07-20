@@ -464,6 +464,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Map for Desktop Split View
     if(document.getElementById('properties-map') && typeof initMap === 'function') {
         initMap();
+        setTimeout(() => {
+            if (map) map.invalidateSize();
+        }, 500);
+        
+        window.addEventListener('resize', () => {
+            if (map) map.invalidateSize();
+        });
     }
 });
 </script>

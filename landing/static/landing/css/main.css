@@ -4137,8 +4137,6 @@ body {
     top: 70px; /* height of top navbar */
     height: calc(100vh - 70px);
     background: #E5E7EB; /* Placeholder for map tiles loading */
-    display: flex;
-    flex-direction: column;
 }
 
 .split-map-right {
@@ -4155,9 +4153,11 @@ body {
 
 /* Override existing #properties-map height if applied */
 body.properties-page #properties-map {
-    flex: 1 !important;
+    height: 100% !important;
     width: 100% !important;
-    position: relative !important;
+    position: absolute !important;
+    top: 0;
+    left: 0;
     border-radius: 0 !important;
 }
 
