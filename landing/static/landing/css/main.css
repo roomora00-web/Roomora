@@ -4154,6 +4154,10 @@ body {
 /* Override existing #properties-map height if applied */
 body.properties-page #properties-map {
     height: 100% !important;
+    width: 100% !important;
+    position: absolute !important;
+    top: 0;
+    left: 0;
     border-radius: 0 !important;
 }
 
@@ -4192,13 +4196,13 @@ body.properties-page #properties-map {
     position: relative;
     width: 100%;
     padding: 60px 24px;
-    background: #0B0F19; /* Deep modern dark blue/black */
+    background: #111111; /* Black */
     overflow: hidden;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .new-hero-bg {
@@ -4207,7 +4211,7 @@ body.properties-page #properties-map {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle at center, rgba(225, 29, 72, 0.15) 0%, transparent 50%);
+    background: radial-gradient(circle at center, rgba(245, 245, 245, 0.05) 0%, transparent 50%);
     pointer-events: none;
 }
 
@@ -4220,20 +4224,18 @@ body.properties-page #properties-map {
 .new-hero-title {
     font-size: 42px;
     font-weight: 800;
-    color: #FFFFFF;
+    color: #F5F5F5; /* Whitesmoke */
     margin-bottom: 16px;
     letter-spacing: -0.02em;
 }
 
 .highlight-text {
-    background: linear-gradient(135deg, #FF4B72 0%, #E11D48 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #FFFFFF;
 }
 
 .new-hero-subtitle {
     font-size: 18px;
-    color: #94A3B8;
+    color: #CCCCCC;
     font-weight: 400;
     line-height: 1.6;
 }
