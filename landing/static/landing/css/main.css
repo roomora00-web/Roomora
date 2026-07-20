@@ -221,8 +221,30 @@ body {
     .hero-viewport-canvas {
         height: auto;
         min-height: 85vh;
-        padding-bottom: 24px;
+        padding-bottom: 0;
+        display: flex;
+        flex-direction: column;
         justify-content: space-between;
+    }
+
+    .hero-bottom-container {
+        position: relative !important;
+        bottom: auto !important;
+        padding-bottom: 32px !important;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .hero-cta-group {
+        flex-direction: column;
+        width: 100%;
+        gap: 16px;
+    }
+
+    .hero-btn-primary, .hero-btn-secondary {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
     }
 
     .navbar-container {
@@ -267,17 +289,11 @@ body {
     }
 
     .search-field-pill-box {
-        width: 100%;
-        margin-bottom: 8px;
-    }
-
-    .search-field-pill-box {
-        flex: 0 0 auto !important;
-        width: 160px !important;
+        width: 100% !important;
         background: #F3F4F6 !important;
-        padding: 8px 16px !important;
+        padding: 8px 12px !important;
         border-radius: 16px !important;
-        scroll-snap-align: start;
+        margin-bottom: 0 !important;
     }
 
     .search-field-pill-box label {
