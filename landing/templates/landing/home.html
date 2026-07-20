@@ -216,7 +216,7 @@
 </div>
 
 <script>
-(function() {
+document.addEventListener('DOMContentLoaded', function() {
     var openBtn = document.getElementById('mhero-menu-btn');
     var closeBtn = document.getElementById('mhero-close-btn');
     var drawer = document.getElementById('mobile-nav-drawer');
@@ -232,7 +232,7 @@
             document.body.style.overflow = '';
         });
     }
-})();
+});
 </script>
 
 <!-- DESKTOP HERO — hidden on mobile via CSS -->
