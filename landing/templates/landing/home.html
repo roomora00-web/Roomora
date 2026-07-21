@@ -648,8 +648,14 @@ document.addEventListener('DOMContentLoaded', function() {
             <a class="property-overlay-card"
                 href="{% url 'landing:property_detail' property.pk %}"
                 {% with primary_image=property.images.all|first %}
-                {% if primary_image and primary_image.image_url %}
-                style="background-image: url('{{ primary_image.image_url }}')"
+                {% if primary_image %}
+                    {% with img_url=primary_image.image_url %}
+                        {% if img_url %}
+                        style="background-image: url('{{ img_url }}')"
+                        {% else %}
+                        style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
+                        {% endif %}
+                    {% endwith %}
                 {% else %}
                 style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
                 {% endif %}
@@ -930,9 +936,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 href="{% url 'landing:property_detail' property.pk %}"
                 {% with primary_image=property.images.all|first %}
                 {% if primary_image %}
-                style="background-image: url('{{ primary_image.image_url }}')"
+                    {% with img_url=primary_image.image_url %}
+                        {% if img_url %}
+                        style="background-image: url('{{ img_url }}')"
+                        {% else %}
+                        style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
+                        {% endif %}
+                    {% endwith %}
                 {% else %}
-                style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=750&fit=crop')"
+                style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
                 {% endif %}
                 {% endwith %}>
 
