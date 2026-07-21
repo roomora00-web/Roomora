@@ -212,14 +212,12 @@ class Property(models.Model):
         
     @property
     def has_available_rooms(self):
-        if self.property_type == 'HOSTEL':
-            return self.room_types.filter(available_slots__gt=0).exists()
-        else:
-            # For apartments and other non-hostel types, check both unit_types and room_types
-            # This handles cases where data might be inconsistent
-            has_units = self.unit_types.filter(available_units__gt=0).exists()
-            has_rooms = self.room_types.filter(available_slots__gt=0).exists()
-            return has_units or has_rooms
+        if not self.is_available:
+            return False
+        has_phys_rooms = self.rooms.filter(status='AVAILABLE').exists()
+        has_slots = self.room_types.filter(available_slots__gt=0).exists()
+        has_units = self.unit_types.filter(available_units__gt=0).exists()
+        return has_phys_rooms or has_slots or has_units or self.is_available
 
 
 class PropertyAmenity(models.Model):
