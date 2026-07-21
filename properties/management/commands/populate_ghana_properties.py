@@ -26,6 +26,8 @@ class Command(BaseCommand):
                 user_type='ADMIN'
             )
         
+        self.stdout.write('Clearing existing properties...')
+        Property.objects.all().delete()
         self.create_amenities()
         properties_data = self.get_all_ghana_properties()
         
@@ -434,56 +436,27 @@ class Command(BaseCommand):
             )
 
     def get_all_ghana_properties(self):
-        """Generate 48 properties (3 per each of Ghana's 16 regions)"""
+        """Generate exactly 20 properties"""
         all_properties = []
         
-        # Ashanti Region
-        all_properties.extend(self.generate_ashanti_properties())
+        all_properties.extend(self.generate_greater_accra_properties()[:3])
+        all_properties.extend(self.generate_ashanti_properties()[:2])
+        all_properties.extend(self.generate_central_properties()[:2])
         
-        # Brong-Ahafo Region
-        all_properties.extend(self.generate_brong_ahafo_properties())
-        
-        # Central Region
-        all_properties.extend(self.generate_central_properties())
-        
-        # Eastern Region
-        all_properties.extend(self.generate_eastern_properties())
-        
-        # Greater Accra Region
-        all_properties.extend(self.generate_greater_accra_properties())
-        
-        # Northern Region
-        all_properties.extend(self.generate_northern_properties())
-        
-        # Upper East Region
-        all_properties.extend(self.generate_upper_east_properties())
-        
-        # Upper West Region
-        all_properties.extend(self.generate_upper_west_properties())
-        
-        # Volta Region
-        all_properties.extend(self.generate_volta_properties())
-        
-        # Western Region
-        all_properties.extend(self.generate_western_properties())
-        
-        # Ahafo Region
-        all_properties.extend(self.generate_ahafo_properties())
-        
-        # Bono East Region
-        all_properties.extend(self.generate_bono_east_properties())
-        
-        # North East Region
-        all_properties.extend(self.generate_north_east_properties())
-        
-        # Oti Region
-        all_properties.extend(self.generate_oti_properties())
-        
-        # Savannah Region
-        all_properties.extend(self.generate_savannah_properties())
-        
-        # Western North Region
-        all_properties.extend(self.generate_western_north_properties())
+        # 1 each for the other 13 regions
+        all_properties.extend(self.generate_brong_ahafo_properties()[:1])
+        all_properties.extend(self.generate_eastern_properties()[:1])
+        all_properties.extend(self.generate_northern_properties()[:1])
+        all_properties.extend(self.generate_upper_east_properties()[:1])
+        all_properties.extend(self.generate_upper_west_properties()[:1])
+        all_properties.extend(self.generate_volta_properties()[:1])
+        all_properties.extend(self.generate_western_properties()[:1])
+        all_properties.extend(self.generate_ahafo_properties()[:1])
+        all_properties.extend(self.generate_bono_east_properties()[:1])
+        all_properties.extend(self.generate_north_east_properties()[:1])
+        all_properties.extend(self.generate_oti_properties()[:1])
+        all_properties.extend(self.generate_savannah_properties()[:1])
+        all_properties.extend(self.generate_western_north_properties()[:1])
         
         return all_properties
 
