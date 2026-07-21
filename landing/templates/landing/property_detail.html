@@ -3209,17 +3209,20 @@ body {
         </div>
 
         {% else %}
-        <div class="pd-no-reviews">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          <p>No reviews yet. Be the first to review this property!</p>
-          <div style="margin-top:16px;">
+        <div class="pd-no-reviews" style="padding: 48px 24px; text-align: center; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 24px; margin-top: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+          <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <h4 style="font-size: 18px; font-weight: 800; color: #111111; margin-bottom: 8px;">No reviews yet</h4>
+          <p style="color: #555555; font-size: 15px; max-width: 320px; margin: 0 auto 24px; line-height: 1.6;">Be the first to share your experience and help others find their perfect place.</p>
+          <div>
             {% if request.user.is_authenticated %}
-            <a href="/api/feedback/write-review/{{ property.id }}/" class="pd-btn-white" style="padding:12px 24px; font-size:14px;">
+            <a href="/api/feedback/write-review/{{ property.id }}/" class="pd-btn-white" style="padding:14px 28px; font-size:14px;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               Write a Review
             </a>
             {% else %}
-            <a href="/login/" class="pd-btn-white" style="padding:12px 24px; font-size:14px;">
+            <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="pd-btn-white" style="padding:14px 28px; font-size:14px;">
               Login to Write a Review
             </a>
             {% endif %}
@@ -3366,15 +3369,15 @@ body {
         </div>
       </div>
       <div class="pd-contact-actions">
-        <button class="pd-contact-btn primary" onclick="showToast('📧 Message sent! Expect a reply within 2 hours.')">
+        <a href="mailto:{{ property.uploaded_by.email }}?subject=Inquiry%20about%20{{ property.title|urlencode }}%20on%20StayMatch" class="pd-contact-btn primary" style="text-decoration:none; display:inline-flex;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           Send Message
-        </button>
+        </a>
         <button class="pd-contact-btn outline" onclick="openVisitModal()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           Schedule a Visit
         </button>
-        <a href="https://wa.me/?text=I'm interested in {{ property.title|urlencode }} on StayMatch" target="_blank" rel="noopener" class="pd-contact-btn outline">
+        <a href="https://wa.me/?text=I'm%20interested%20in%20{{ property.title|urlencode }}%20on%20StayMatch!%20Check%20it%20out:%20{{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener" class="pd-contact-btn outline" style="text-decoration:none;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
           Share via WhatsApp
         </a>
@@ -3845,9 +3848,9 @@ body {
 <script>
 /* ── Gallery Image Data ───────────────────────────────────────────── */
 const galleryImages = [
-  {% if all_images %}
-    {% for img in all_images %}
-    { src: "{{ img.image_url }}", caption: "Photo {{ forloop.counter }}" }{% if not forloop.last %},{% endif %}
+  {% if property.images.all %}
+    {% for img in property.images.all %}
+    { src: "{{ img.image_url|escapejs }}", caption: "Photo {{ forloop.counter }}" }{% if not forloop.last %},{% endif %}
     {% endfor %}
   {% else %}
     { src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=700&fit=crop", caption: "Main View" }
