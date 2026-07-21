@@ -205,6 +205,15 @@ class Property(models.Model):
         if first_img:
             return first_img.image
         return None
+
+    @property
+    def all_gallery_images(self):
+        """Combines property exterior images and room images into a single gallery list."""
+        imgs = list(self.images.all())
+        for room in self.rooms.all():
+            for r_img in room.images.all():
+                imgs.append(r_img)
+        return imgs
         
     @property
     def total_reviews(self):
@@ -783,6 +792,15 @@ class RoomImage(models.Model):
 
     def __str__(self):
         return f"{self.room.room_number} - {self.get_image_type_display()}"
+
+    @property
+    def image_url(self):
+        if self.image:
+            img_str = str(self.image.name) if hasattr(self.image, 'name') else str(self.image)
+            if img_str.startswith('http'):
+                return img_str
+            return self.image.url
+        return ""
 
 
 class ProximityDestination(models.Model):

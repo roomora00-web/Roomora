@@ -2148,7 +2148,7 @@ body {
   <!-- ═══════════════════════════════════════════════════════════════
        SECTION 2: PHOTO GALLERY — Bento Mosaic
   ═══════════════════════════════════════════════════════════════ -->
-  {% with all_images=property.images.all %}
+  {% with all_images=property.all_gallery_images %}
   <div class="scroll-animate pd-gallery-bento animate-fade-up" id="gallery" style="animation-delay: 0.1s;">
     <!-- Main large image -->
     <div class="pd-bento-main" onclick="openLightbox(0)">
@@ -3807,8 +3807,8 @@ body {
 <script>
 /* ── Gallery Image Data ───────────────────────────────────────────── */
 const galleryImages = [
-  {% if property.images.all %}
-    {% for img in property.images.all %}
+  {% if property.all_gallery_images %}
+    {% for img in property.all_gallery_images %}
     { src: "{{ img.image_url|escapejs }}", caption: "Photo {{ forloop.counter }}" }{% if not forloop.last %},{% endif %}
     {% endfor %}
   {% else %}
