@@ -273,9 +273,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     <!-- Animated Background Slider -->
     <div class="hero-bg-slider">
-        <div class="hero-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2075&q=80')"></div>
-        <div class="hero-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1554995207-c18c203602cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=2075&q=80')"></div>
-        <div class="hero-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=2075&q=80')"></div>
+        <div class="hero-bg-slide" style="background-image: url('/media/property_images/hstl_9.jpg')"></div>
+        <div class="hero-bg-slide" style="background-image: url('/media/property_images/apt_5.jpg')"></div>
+        <div class="hero-bg-slide" style="background-image: url('/media/property_images/apartment_9_0.jpg')"></div>
     </div>
 
     <!-- Stronger gradient overlay so text is always readable -->
@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         {% if property.images.first %}
                         <img src="{{ property.images.first.image_url }}" alt="{{ property.title }}" class="main-featured-image">
                         {% else %}
-                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1600&fit=crop" alt="{{ property.title }}" class="main-featured-image">
+                        <img src="/media/property_images/apartment_7_1.jpg" alt="{{ property.title }}" class="main-featured-image">
                         {% endif %}
 
                         <!-- Floating Glass Card -->
@@ -492,7 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 {% else %}
                     <!-- Static Fallback if no properties exist -->
                     <div class="showcase-slide active">
-                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=1600&fit=crop" alt="Student Hostel" class="main-featured-image">
+                        <img src="/media/property_images/apartment_9_2.jpg" alt="Student Hostel" class="main-featured-image">
                         <div class="floating-glass-details">
                             <div class="floating-header">
                                 <span class="pulse-indicator"></span>
@@ -653,11 +653,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         {% if img_url %}
                         style="background-image: url('{{ img_url }}')"
                         {% else %}
-                        style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
+                        style="background-image: url('/media/property_images/oth_7.jpg')"
                         {% endif %}
                     {% endwith %}
                 {% else %}
-                style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
+                style="background-image: url('/media/property_images/hostel_4_0.jpg')"
                 {% endif %}
                 {% endwith %}>
 
@@ -720,7 +720,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="amenities-grid">
         <!-- Amenity Card 1 -->
         <div class="amenity-card">
-            <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=533&fit=crop"
+            <img src="/media/property_images/oth_7.jpg"
                 alt="High-Speed Internet">
             <button class="arrow-overlay-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -732,7 +732,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         <!-- Amenity Card 2 -->
         <div class="amenity-card">
-            <img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=400&h=533&fit=crop"
+            <img src="/media/property_images/oth_0.jpg"
                 alt="24/7 Security">
             <button class="arrow-overlay-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -744,7 +744,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         <!-- Amenity Card 3 -->
         <div class="amenity-card">
-            <img src="https://images.unsplash.com/photo-1554995207-c18c203602cb?w=400&h=533&fit=crop" alt="Study Areas">
+            <img src="/media/property_images/hostel_3_0.jpg" alt="Study Areas">
             <button class="arrow-overlay-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M7 17L17 7M17 7H7M17 7V17" />
@@ -755,7 +755,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         <!-- Amenity Card 4 -->
         <div class="amenity-card">
-            <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400&h=533&fit=crop"
+            <img src="/media/property_images/hostel_3_1.jpg"
                 alt="Consistent Water Supply">
             <button class="arrow-overlay-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -774,11 +774,11 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="grid-column col-1">
             <div class="ghost-placeholder"></div>
             <div class="avatar-card">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop"
+                <img src="/media/property_images/apartment_7_0.jpg"
                     alt="Avatar">
             </div>
             <div class="avatar-card">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop"
+                <img src="/media/property_images/hostel_3_2.jpg"
                     alt="Avatar">
             </div>
         </div>
@@ -786,11 +786,11 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="grid-column col-2">
             <div class="ghost-placeholder"></div>
             <div class="avatar-card">
-                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop"
+                <img src="/media/property_images/apartment_6_1.jpg"
                     alt="Avatar">
             </div>
             <div class="avatar-card">
-                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop"
+                <img src="/media/property_images/hstl_0.jpg"
                     alt="Avatar">
             </div>
         </div>
@@ -798,7 +798,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="grid-column col-3">
             <div class="ghost-placeholder"></div>
             <div class="avatar-card portrait">
-                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=267&fit=crop"
+                <img src="/media/property_images/apartment_7_2.jpg"
                     alt="Avatar">
             </div>
         </div>
@@ -806,7 +806,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="grid-column col-4">
             <div class="ghost-placeholder"></div>
             <div class="avatar-card portrait">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=267&fit=crop"
+                <img src="/media/property_images/apartment_9_1.jpg"
                     alt="Avatar">
             </div>
         </div>
@@ -814,7 +814,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="grid-column col-5">
             <div class="ghost-placeholder"></div>
             <div class="avatar-card">
-                <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&h=200&fit=crop"
+                <img src="/media/property_images/apt_5.jpg"
                     alt="Avatar">
             </div>
         </div>
@@ -822,7 +822,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="grid-column col-6">
             <div class="ghost-placeholder"></div>
             <div class="avatar-card portrait">
-                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&h=267&fit=crop"
+                <img src="/media/property_images/hostel_2_0.jpg"
                     alt="Avatar">
             </div>
         </div>
@@ -830,7 +830,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="grid-column col-7">
             <div class="ghost-placeholder"></div>
             <div class="avatar-card portrait">
-                <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&h=267&fit=crop"
+                <img src="/media/property_images/hostel_2_1.jpg"
                     alt="Avatar">
             </div>
         </div>
@@ -838,11 +838,11 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="grid-column col-8">
             <div class="ghost-placeholder"></div>
             <div class="avatar-card">
-                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop"
+                <img src="/media/property_images/apartment_7_0.jpg"
                     alt="Avatar">
             </div>
             <div class="avatar-card">
-                <img src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=200&h=200&fit=crop"
+                <img src="/media/property_images/hostel_3_2.jpg"
                     alt="Avatar">
             </div>
         </div>
@@ -850,11 +850,11 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="grid-column col-9">
             <div class="ghost-placeholder"></div>
             <div class="avatar-card">
-                <img src="https://images.unsplash.com/photo-1463453091185-61582044d556?w=200&h=200&fit=crop"
+                <img src="/media/property_images/apartment_8_1.jpg"
                     alt="Avatar">
             </div>
             <div class="avatar-card">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop"
+                <img src="/media/property_images/hostel_5_0.jpg"
                     alt="Avatar">
             </div>
         </div>
@@ -866,7 +866,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="testimonial-rating">★★★★★</div>
             <p class="testimonial-quote">"Roomora made finding a secure hostel near UG Legon incredibly simple. The safety score was spot on!"</p>
             <div class="testimonial-author">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop" alt="User">
+                <img src="/media/property_images/hostel_1_0.jpg" alt="User">
                 <div>
                     <h4>Judy A.</h4>
                     <span>UG Legon Student</span>
@@ -877,7 +877,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="testimonial-rating">★★★★★</div>
             <p class="testimonial-quote">"Matching with a compatible roommate saved me so much stress. The lifestyle filters are amazing."</p>
             <div class="testimonial-author">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop" alt="User">
+                <img src="/media/property_images/hstl_5.jpg" alt="User">
                 <div>
                     <h4>Isaac K.</h4>
                     <span>Young Professional</span>
@@ -888,7 +888,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="testimonial-rating">★★★★★</div>
             <p class="testimonial-quote">"Clean rooms, verified landlords, and secure payment. Best accommodation platform in Ghana."</p>
             <div class="testimonial-author">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&h=80&fit=crop" alt="User">
+                <img src="/media/property_images/hostel_5_0.jpg" alt="User">
                 <div>
                     <h4>Aminatu Y.</h4>
                     <span>KNUST Student</span>
@@ -940,11 +940,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         {% if img_url %}
                         style="background-image: url('{{ img_url }}')"
                         {% else %}
-                        style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
+                        style="background-image: url('/media/property_images/hstl_8.jpg')"
                         {% endif %}
                     {% endwith %}
                 {% else %}
-                style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
+                style="background-image: url('/media/property_images/hostel_2_2.jpg')"
                 {% endif %}
                 {% endwith %}>
 
@@ -1003,7 +1003,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 {% if primary_image %}
                 style="background-image: url('{{ primary_image.image_url }}')"
                 {% else %}
-                style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=750&fit=crop')"
+                style="background-image: url('/media/property_images/oth_8.jpg')"
                 {% endif %}
                 {% endwith %}>
 
@@ -1197,7 +1197,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="locations-carousel-track">
             
             <!-- Ashanti Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/apt_5.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Kumasi</span>
@@ -1210,7 +1210,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Bono Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/hstl_1.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Sunyani</span>
@@ -1223,7 +1223,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Bono East Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/hostel_2_0.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Techiman</span>
@@ -1236,7 +1236,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Ahafo Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/apt_9.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Goaso</span>
@@ -1249,7 +1249,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Central Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/hstl_2.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Cape Coast</span>
@@ -1262,7 +1262,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Eastern Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/oth_5.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Koforidua</span>
@@ -1275,7 +1275,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Greater Accra Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/hostel_2_1.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Accra</span>
@@ -1288,7 +1288,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- North East Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/hostel_5_2.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Nalerigu</span>
@@ -1301,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Northern Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/hostel_1_2.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Tamale</span>
@@ -1314,7 +1314,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Oti Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/apartment_10_1.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Dambai</span>
@@ -1327,7 +1327,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Savannah Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/oth_6.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Damongo</span>
@@ -1340,7 +1340,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Upper East Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/campus_view_room.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Bolgatanga</span>
@@ -1353,7 +1353,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Upper West Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/apt_5.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Wa</span>
@@ -1366,7 +1366,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Volta Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/apartment_10_0.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Ho</span>
@@ -1379,7 +1379,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Western Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/hstl_7.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Sekondi-Takoradi</span>
@@ -1392,7 +1392,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Western North Region -->
-            <div class="location-carousel-card" style="background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&h=800&fit=crop');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/hostel_3_2.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Wiawso</span>
@@ -1592,17 +1592,17 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             title: "Shared Apartment",
             subtext: "2 in a room • Study Area • Wi-Fi",
-            image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&h=400&fit=crop"
+            image: "/media/property_images/hostel_3_1.jpg"
         },
         {
             title: "Student Room",
             subtext: "Private room • Shared kitchen • Laundry",
-            image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=400&fit=crop"
+            image: "/media/property_images/hostel_3_2.jpg"
         },
         {
             title: "Studio Apartment",
             subtext: "Self-contained • Kitchenette • Balcony",
-            image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&h=400&fit=crop"
+            image: "/media/property_images/hstl_0.jpg"
         }
     ];
 

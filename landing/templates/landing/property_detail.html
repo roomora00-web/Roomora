@@ -2155,7 +2155,7 @@ body {
       {% if all_images %}
       <img id="gallery-main-img" src="{{ all_images.0.image_url }}" alt="{{ property.title }}">
       {% else %}
-      <img id="gallery-main-img" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=900&h=700&fit=crop" alt="{{ property.title }}">
+      <img id="gallery-main-img" src="/media/property_images/apt_1.jpg" alt="{{ property.title }}">
       {% endif %}
       <!-- Badge -->
       <div class="pd-gallery-badge" onclick="event.stopPropagation(); openLightbox(0)">
@@ -3862,7 +3862,7 @@ const galleryImages = [
     { src: "{{ img.image_url|escapejs }}", caption: "Photo {{ forloop.counter }}" }{% if not forloop.last %},{% endif %}
     {% endfor %}
   {% else %}
-    { src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=700&fit=crop", caption: "Main View" }
+    { src: "/media/property_images/apartment_8_0.jpg", caption: "Main View" }
   {% endif %}
 ];
 let galleryIdx = 0;
