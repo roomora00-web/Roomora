@@ -741,24 +741,9 @@ class Room(models.Model):
     def __str__(self):
         return f"{self.accommodation_property.title} - Room {self.room_number}"
 
-class RoomImage(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='room_images/')
-    image_type = models.CharField(max_length=20, choices=[
-        ('BEDROOM', 'Bedroom/Interior'),
-        ('WASHROOM', 'Washroom'),
-        ('KITCHEN', 'Kitchen'),
-        ('OTHER', 'Other')
-    ], default='BEDROOM')
-    is_primary = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.room.room_number} - {self.get_image_type_display()}"
-
     @property
     def available_slots(self):
-        return self.total_slots - self.occupied_slots - self.pending_slots
+        return max(0, self.total_slots - self.occupied_slots - self.pending_slots)
 
     def recalculate_occupancy(self):
         """
@@ -782,6 +767,22 @@ class RoomImage(models.Model):
         self.pending_slots = min(self.pending_slots, self.total_slots - self.occupied_slots)
         
         self.save(update_fields=['occupied_slots', 'pending_slots'])
+
+
+class RoomImage(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='room_images/')
+    image_type = models.CharField(max_length=20, choices=[
+        ('BEDROOM', 'Bedroom/Interior'),
+        ('WASHROOM', 'Washroom'),
+        ('KITCHEN', 'Kitchen'),
+        ('OTHER', 'Other')
+    ], default='BEDROOM')
+    is_primary = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.room.room_number} - {self.get_image_type_display()}"
 
 
 class ProximityDestination(models.Model):
