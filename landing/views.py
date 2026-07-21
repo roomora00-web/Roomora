@@ -31,12 +31,12 @@ class HomeView(TemplateView):
             # Fetch featured/popular apartments
             context['category_apartments'] = Property.objects.filter(
                 status='APPROVED', is_available=True, property_type='APARTMENT'
-            ).prefetch_related('images', 'unit_types__pricing_models')[:6]
+            ).prefetch_related('images', 'unit_types__pricing_models', 'amenities')[:6]
 
             # Fetch premium/featured listings
             premium_listings = Property.objects.filter(
                 status='APPROVED', is_available=True, is_featured=True
-            ).prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models')
+            ).prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models', 'amenities')
 
             context['premium_listings'] = premium_listings[:6]
             context['featured_property'] = premium_listings.first()
@@ -442,7 +442,7 @@ class PropertyMapView(TemplateView):
             is_available=True,
             latitude__isnull=False,
             longitude__isnull=False
-        ).prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models')
+        ).prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models', 'amenities')
         
         # Serialize properties for JavaScript
         import json

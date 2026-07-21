@@ -324,19 +324,25 @@ class Command(BaseCommand):
             )
 
     def create_property_images(self, property_obj, prop_data):
-        import random
+        import os, random
+        from django.conf import settings
         image_types = ['EXTERIOR', 'INTERIOR', 'ROOM', 'BATHROOM']
-        
+
         if property_obj.property_type in ['APARTMENT', 'FLAT', 'STUDIO']:
             prefix = 'apt_'
         elif property_obj.property_type in ['HOSTEL', 'STUDENT_APARTMENT']:
             prefix = 'hstl_'
         else:
             prefix = 'oth_'
-            
+
+        media_dir = os.path.join(settings.MEDIA_ROOT, 'property_images')
+        available_files = [f for f in os.listdir(media_dir) if f.startswith(prefix) and f.endswith('.jpg')]
+        # Fallback to any images if specific prefix not found
+        if not available_files:
+            available_files = [f for f in os.listdir(media_dir) if f.endswith('.jpg')]
+
         for i, image_type in enumerate(image_types):
-            img_idx = random.randint(0, 9)
-            local_filename = f"{prefix}{img_idx}.jpg"
+            local_filename = random.choice(available_files) if available_files else "apt_1.jpg"
             image_path = f"property_images/{local_filename}"
             
             PropertyImage.objects.create(
