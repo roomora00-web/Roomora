@@ -324,25 +324,26 @@ class Command(BaseCommand):
             )
 
     def create_property_images(self, property_obj, prop_data):
-        # Create unique images for each property using Unsplash source URLs
-        image_types = ['EXTERIOR', 'INTERIOR', 'ROOM', 'KITCHEN', 'BATHROOM', 'AMENITY']
+        import random
+        image_types = ['EXTERIOR', 'INTERIOR', 'ROOM', 'BATHROOM']
         
-        # Generate unique keywords based on property type and region
-        keywords = self.get_image_keywords(property_obj, prop_data)
-        
-        for i, image_type in enumerate(image_types[:4]):  # At least 4 images
-            keyword = keywords[i % len(keywords)]
-            # Use unique identifier to ensure different images
-            unique_id = f"{property_obj.property_code}_{i}"
+        if property_obj.property_type in ['APARTMENT', 'FLAT', 'STUDIO']:
+            prefix = 'apt_'
+        elif property_obj.property_type in ['HOSTEL', 'STUDENT_APARTMENT']:
+            prefix = 'hstl_'
+        else:
+            prefix = 'oth_'
             
-            # Use picsum.photos for reliable placeholder images
-            image_url = f"https://picsum.photos/seed/{unique_id}/800/600"
+        for i, image_type in enumerate(image_types):
+            img_idx = random.randint(0, 9)
+            local_filename = f"{prefix}{img_idx}.jpg"
+            image_path = f"property_images/{local_filename}"
             
             PropertyImage.objects.create(
                 accommodation_property=property_obj,
-                image=image_url,  # Using URL instead of local file
+                image=image_path,
                 image_type=image_type,
-                caption=f'{image_type} view of {property_obj.title} - {keyword}',
+                caption=f'{image_type.capitalize()} view of {property_obj.title}',
                 is_primary=(i == 0),
                 order=i
             )

@@ -262,14 +262,9 @@ class PropertyImage(models.Model):
             img_str = str(self.image.name) if hasattr(self.image, 'name') else str(self.image)
             if img_str.startswith('http'):
                 return img_str
-            try:
-                # For local files, verify it actually exists on disk/storage before returning the URL.
-                # If Railway deleted the file, this prevents returning a broken 404 URL.
-                if self.image.storage.exists(self.image.name):
-                    return self.image.url
-                return ""
-            except Exception:
-                return ""
+            # Return the URL directly since the files are tracked in git and guaranteed to exist.
+            # Railway sometimes fails storage.exists() due to ephemeral disk quirks.
+            return self.image.url
         return ""
 
     class Meta:
