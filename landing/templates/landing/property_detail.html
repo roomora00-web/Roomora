@@ -1194,6 +1194,12 @@ body {
 .pd-bar-fill { height: 100%; background: #111111; border-radius: 4px; transition: width .6s ease; }
 .pd-bar-count { width: 24px; }
 
+.pd-policies-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
 .pd-review-cards { 
   display: grid; 
   grid-template-columns: repeat(2, 1fr); 
@@ -1889,6 +1895,9 @@ body {
   /* Description */
   .pd-description p { font-size: 14px; line-height: 1.75; }
   .pd-left { gap: 32px; }
+
+  /* Policies Grid */
+  .pd-policies-grid { grid-template-columns: 1fr; gap: 24px; }
 
   /* Reviews on Mobile */
   .pd-reviews-summary {
@@ -2966,7 +2975,7 @@ body {
 
         <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 40px;">
           
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+          <div class="pd-policies-grid">
             <!-- Rules -->
             <div>
               <h3 style="font-size: 15px; font-weight: 700; color: var(--charcoal); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
