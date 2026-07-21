@@ -7,11 +7,11 @@
             {% if img_url %}
             style="background-image: url('{{ img_url }}')"
             {% else %}
-            style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
+            style="background-image: url('/static/landing/images/placeholder.jpg')"
             {% endif %}
         {% endwith %}
     {% else %}
-        style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=533&fit=crop')"
+        style="background-image: url('/static/landing/images/placeholder.jpg')"
     {% endif %}
     {% endwith %}>
 
@@ -47,20 +47,24 @@
             <div class="card-price-block">
                 <span class="card-price-label">from</span>
                 {% if property.property_type == 'HOSTEL' %}
-                    {% with property.room_types.first.pricing_models.first as pricing %}
-                    {% if pricing %}
-                    <span class="card-price-value">GHC {% if pricing.semester_price %}{{ pricing.semester_price }}{% elif pricing.monthly_price %}{{ pricing.monthly_price }}{% else %}—{% endif %}</span>
+                    {% with pricing=property.room_types.all|first %}
+                    {% with pricing_model=pricing.pricing_models.all|first %}
+                    {% if pricing_model %}
+                    <span class="card-price-value">GHC {% if pricing_model.semester_price %}{{ pricing_model.semester_price }}{% elif pricing_model.monthly_price %}{{ pricing_model.monthly_price }}{% else %}—{% endif %}</span>
                     {% else %}
                     <span class="card-price-value">GHC —</span>
                     {% endif %}
                     {% endwith %}
+                    {% endwith %}
                 {% else %}
-                    {% with property.unit_types.first.pricing_models.first as pricing %}
-                    {% if pricing %}
-                    <span class="card-price-value">GHC {% if pricing.monthly_price %}{{ pricing.monthly_price }}{% elif pricing.yearly_price %}{{ pricing.yearly_price }}{% elif pricing.semester_price %}{{ pricing.semester_price }}{% else %}—{% endif %}</span>
+                    {% with pricing=property.unit_types.all|first %}
+                    {% with pricing_model=pricing.pricing_models.all|first %}
+                    {% if pricing_model %}
+                    <span class="card-price-value">GHC {% if pricing_model.monthly_price %}{{ pricing_model.monthly_price }}{% elif pricing_model.yearly_price %}{{ pricing_model.yearly_price }}{% elif pricing_model.semester_price %}{{ pricing_model.semester_price }}{% else %}—{% endif %}</span>
                     {% else %}
                     <span class="card-price-value">GHC —</span>
                     {% endif %}
+                    {% endwith %}
                     {% endwith %}
                 {% endif %}
             </div>
