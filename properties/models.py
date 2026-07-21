@@ -733,6 +733,7 @@ class Room(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
     class Meta:
         db_table = 'rooms'
         verbose_name = 'Room'
@@ -741,6 +742,21 @@ class Room(models.Model):
 
     def __str__(self):
         return f"{self.accommodation_property.title} - Room {self.room_number}"
+
+class RoomImage(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='room_images/')
+    image_type = models.CharField(max_length=20, choices=[
+        ('BEDROOM', 'Bedroom/Interior'),
+        ('WASHROOM', 'Washroom'),
+        ('KITCHEN', 'Kitchen'),
+        ('OTHER', 'Other')
+    ], default='BEDROOM')
+    is_primary = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.room.room_number} - {self.get_image_type_display()}"
 
     @property
     def available_slots(self):

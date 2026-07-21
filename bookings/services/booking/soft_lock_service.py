@@ -41,22 +41,22 @@ class SoftLockService:
     """Service for atomic soft lock operations"""
     
     @staticmethod
-    def check_slot_availability(room_type_id: Optional[int], unit_type_id: Optional[int]) -> Tuple[bool, str]:
+    def check_slot_availability(room_id: Optional[int], unit_type_id: Optional[int]) -> Tuple[bool, str]:
         """
         Check real-time slot availability using SELECT FOR UPDATE.
         Returns tuple of (available, message)
         """
         with transaction.atomic():
-            if room_type_id:
+            if room_id:
                 # Lock the room type row
-                room_type = RoomType.objects.select_for_update().filter(id=room_type_id).first()
-                if not room_type:
+                room = Room.objects.select_for_update().filter(id=room_id).first()
+                if not room:
                     return False, "Room type not found"
                 
-                if room_type.available_slots <= 0:
+                if room.available_slots <= 0:
                     return False, "This room type is currently unavailable. Rooms at popular properties fill up quickly."
                 
-                return True, f"{room_type.available_slots} slots available"
+                return True, f"{room.available_slots} slots available"
             
             elif unit_type_id:
                 # Lock the unit type row
@@ -73,15 +73,15 @@ class SoftLockService:
                 return False, "Either room_type_id or unit_type_id must be provided"
     
     @staticmethod
-    def calculate_occupancy_position(room_type_id: Optional[int], unit_type_id: Optional[int]) -> Tuple[int, bool]:
+    def calculate_occupancy_position(room_id: Optional[int], unit_type_id: Optional[int]) -> Tuple[int, bool]:
         """
         Calculate the occupancy position (1=first occupant, 2=second, etc.)
         Returns tuple of (position, is_first_occupant)
         """
-        if room_type_id:
+        if room_id:
             # Count existing bookings for this room type
             existing_count = Booking.objects.filter(
-                room_type_id=room_type_id,
+                room_id=room_id,
                 status__in=['INITIATED', 'UNDER_REVIEW', 'ASSIGNED_AWAITING', 'CONFIRMED_ASSIGNED', 'ACTIVE']
             ).count()
             
@@ -106,7 +106,7 @@ class SoftLockService:
     def execute_atomic_soft_lock(
         user,
         property_id: int,
-        room_type_id: Optional[int],
+        room_id: Optional[int],
         unit_type_id: Optional[int],
         house_rules_acknowledged_at: Optional[timezone.datetime] = None
     ) -> SoftLockResult:
@@ -129,7 +129,7 @@ class SoftLockService:
             existing_booking = Booking.objects.filter(
                 tenant=user,
                 accommodation_property_id=property_id,
-                room_type_id=room_type_id,
+                room_id=room_id,
                 unit_type_id=unit_type_id,
                 status='INITIATED',
                 soft_lock_expires_at__gt=timezone.now()
@@ -143,7 +143,7 @@ class SoftLockService:
                 return SoftLockResult(success=True, booking=existing_booking, message="Resumed existing booking")
 
             # Step 1: Check availability with row lock
-            available, message = SoftLockService.check_slot_availability(room_type_id, unit_type_id)
+            available, message = SoftLockService.check_slot_availability(room_id, unit_type_id)
             if not available:
                 return SoftLockResult(success=False, message=message)
             
@@ -154,14 +154,14 @@ class SoftLockService:
             
             # Step 3: Calculate occupancy position
             occupancy_position, is_first_occupant = SoftLockService.calculate_occupancy_position(
-                room_type_id, unit_type_id
+                room_id, unit_type_id
             )
             
             # Step 4: Create booking with INITIATED status
             booking = Booking.objects.create(
                 tenant=user,
                 accommodation_property=property_obj,
-                room_type_id=room_type_id,
+                room_id=room_id,
                 unit_type_id=unit_type_id,
                 status='INITIATED',
                 house_rules_acknowledged=True,

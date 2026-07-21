@@ -134,7 +134,7 @@
           <form method="post" action="{% url 'bookings:acknowledge_house_rules' %}" class="space-y-4">
             {% csrf_token %}
             <input type="hidden" name="property_id" value="{{ property.id }}">
-            {% if room_type_id %}<input type="hidden" name="room_type_id" value="{{ room_type_id }}">{% endif %}
+            {% if room_id %}<input type="hidden" name="room_id" value="{{ room_id }}">{% endif %}
             {% if unit_type_id %}<input type="hidden" name="unit_type_id" value="{{ unit_type_id }}">{% endif %}
 
             <div id="ackBox" class="rounded-[22px] border border-white/10 bg-white/[0.04] p-4 transition-all duration-300 sm:p-5">

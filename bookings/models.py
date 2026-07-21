@@ -68,6 +68,7 @@ class Booking(models.Model):
     tenant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookings')
     accommodation_property = models.ForeignKey('properties.Property', on_delete=models.CASCADE, related_name='bookings')
     room_type = models.ForeignKey('properties.RoomType', on_delete=models.SET_NULL, null=True, blank=True, related_name='bookings')
+    room = models.ForeignKey('properties.Room', on_delete=models.SET_NULL, null=True, blank=True, related_name='bookings')
     unit_type = models.ForeignKey('properties.UnitType', on_delete=models.SET_NULL, null=True, blank=True, related_name='bookings')
     
     booking_type = models.CharField(max_length=20, choices=BOOKING_TYPE_CHOICES, default='DIRECT')
@@ -1355,6 +1356,7 @@ class BookingDraft(models.Model):
     
     # Room/unit selection
     room_type = models.ForeignKey('properties.RoomType', on_delete=models.SET_NULL, null=True, blank=True)
+    room = models.ForeignKey('properties.Room', on_delete=models.SET_NULL, null=True, blank=True)
     unit_type = models.ForeignKey('properties.UnitType', on_delete=models.SET_NULL, null=True, blank=True)
     
     # Duration selection

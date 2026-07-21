@@ -65,36 +65,23 @@ LIFESTYLE_PRIVACY_MEANING_CHOICES = [
 def initiate_booking(request, property_id):
     """
     Main booking initiation endpoint.
-    Entry points converge here from:
-    - Property Details Page (Primary)
-    - Search Results Page
-    - Saved Properties
-    
-    Flow:
-    1. Validate all 5 prerequisites
-    2. Check house rules acknowledgment
-    3. Execute atomic soft lock
-    4. Schedule Celery tasks
-    5. Send notification
-    6. Show booking initiated screen
     """
+    from properties.models import Room
+    from accounts.models import LifestyleProfile
+    from bookings.services.matching.compatibility_service import CompatibilityService
+    
     user = request.user
     property_obj = get_object_or_404(Property, id=property_id)
     
-    # Step 1: Validate all prerequisites
+    # Step 1: Validate prerequisites
     failed_prerequisite = PrerequisiteService.get_first_failed_prerequisite(user)
     if failed_prerequisite:
         if "active or pending booking" in failed_prerequisite.message:
-            return render(request, 'bookings/active_booking_error.html', {
-                'property': property_obj,
-            })
-            
+            return render(request, 'bookings/active_booking_error.html', {'property': property_obj})
         if failed_prerequisite.redirect_url:
-            # Store the intended booking destination for redirect after login/verification
             request.session['intended_booking'] = {
                 'property_id': property_id,
-                'room_type_id': request.GET.get('room_type_id'),
-                'unit_type_id': request.GET.get('unit_type_id'),
+                'room_id': request.GET.get('room_id'),
             }
             messages.error(request, failed_prerequisite.message)
             return redirect(failed_prerequisite.redirect_url)
@@ -102,14 +89,10 @@ def initiate_booking(request, property_id):
             messages.error(request, failed_prerequisite.message)
             return redirect('landing:property_detail', pk=property_id)
     
-    # Step 1.5: Validate gender restrictions
+    room_id = request.GET.get('room_id')
+    room = get_object_or_404(Room, id=room_id) if room_id else None
+    
     user_gender = user.gender
-    
-    room_type = None
-    if request.GET.get('room_type_id'):
-        room_type = get_object_or_404(RoomType, id=request.GET.get('room_type_id'))
-    
-    # 1. Check Property Level Restriction (Hostels only)
     if property_obj.property_type == 'HOSTEL' and property_obj.hostel_type:
         if property_obj.hostel_type == 'BOYS_ONLY' and user_gender != 'MALE':
             messages.error(request, "This hostel is for males only. You cannot book a room here.")
@@ -118,29 +101,63 @@ def initiate_booking(request, property_id):
             messages.error(request, "This hostel is for females only. You cannot book a room here.")
             return redirect('landing:property_detail', pk=property_id)
             
-    # 2. Check Room Level Restriction
-    if room_type and room_type.gender_restriction:
-        if room_type.gender_restriction == 'MALE_ONLY' and user_gender != 'MALE':
+    if room and room.room_type.gender_restriction:
+        if room.room_type.gender_restriction == 'MALE_ONLY' and user_gender != 'MALE':
             messages.error(request, "This specific room is reserved for males only.")
             return redirect('landing:property_detail', pk=property_id)
-        elif room_type.gender_restriction == 'FEMALE_ONLY' and user_gender != 'FEMALE':
+        elif room.room_type.gender_restriction == 'FEMALE_ONLY' and user_gender != 'FEMALE':
             messages.error(request, "This specific room is reserved for females only.")
             return redirect('landing:property_detail', pk=property_id)
+
+    # --- COMPATIBILITY CHECK FOR PARTIALLY OCCUPIED ROOMS ---
+    if room and room.status == 'PARTIALLY_OCCUPIED' and room.room_type.total_slots > 1:
+        # User hasn't explicitly consented to low compatibility yet
+        if not request.GET.get('force_proceed'):
+            occupants = [b.tenant for b in Booking.objects.filter(room=room, status__in=['ACTIVE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'PAYMENT_COMPLETE'])]
             
-    # Step 2: Check house rules acknowledgment
-    room_type_id = request.GET.get('room_type_id')
-    unit_type_id = request.GET.get('unit_type_id')
-    session_key = request.session.session_key
-    
-    # Only proceed if we JUST acknowledged the rules in this immediate session flow
+            # Simple fallback if no active booking found but status is partially occupied
+            if not occupants:
+                pass 
+            else:
+                user_profile = getattr(user, 'lifestyleprofile', None)
+                if user_profile:
+                    comp_service = CompatibilityService()
+                    # Calculate average compatibility with occupants
+                    scores = comp_service.calculate_compatibility(user_profile, occupants)
+                    # scores is a dict mapping user_id to score
+                    avg_score = sum(scores.values()) / len(scores) if scores else 0
+                    
+                    if avg_score < 60:
+                        # Find alternative partially occupied rooms
+                        alt_rooms = Room.objects.filter(
+                            accommodation_property=property_obj, 
+                            status='PARTIALLY_OCCUPIED'
+                        ).exclude(id=room.id)
+                        
+                        alternatives = []
+                        for alt in alt_rooms:
+                            alt_occupants = [b.tenant for b in Booking.objects.filter(room=alt, status__in=['ACTIVE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'PAYMENT_COMPLETE'])]
+                            alt_scores = comp_service.calculate_compatibility(user_profile, alt_occupants)
+                            alt_avg = sum(alt_scores.values()) / len(alt_scores) if alt_scores else 0
+                            alternatives.append({
+                                'room': alt,
+                                'score': int(alt_avg)
+                            })
+                        
+                        alternatives.sort(key=lambda x: x['score'], reverse=True)
+                        
+                        return render(request, 'bookings/room_compatibility_warning.html', {
+                            'property': property_obj,
+                            'current_room': room,
+                            'current_score': int(avg_score),
+                            'alternatives': alternatives,
+                        })
+
     just_acknowledged = request.session.pop('just_acknowledged_rules', False)
-    
     if not just_acknowledged:
-        # Always force them to see the house rules when starting a fresh booking
         return render(request, 'bookings/house_rules_acknowledgment.html', {
             'property': property_obj,
-            'room_type_id': room_type_id,
-            'unit_type_id': unit_type_id,
+            'room_id': room_id,
         })
     
     # Step 3: Execute atomic soft lock
@@ -153,7 +170,7 @@ def initiate_booking(request, property_id):
     soft_lock_result = SoftLockService.execute_atomic_soft_lock(
         user=user,
         property_id=property_id,
-        room_type_id=int(room_type_id) if room_type_id else None,
+        room_id=int(room_id) if room_id else None,
         unit_type_id=int(unit_type_id) if unit_type_id else None,
         house_rules_acknowledged_at=house_rules_ack.acknowledged_at if house_rules_ack else None
     )
@@ -190,7 +207,7 @@ def acknowledge_house_rules(request):
     Creates acknowledgment record and redirects to booking initiation.
     """
     property_id = request.POST.get('property_id')
-    room_type_id = request.POST.get('room_type_id')
+    room_id = request.POST.get('room_id')
     unit_type_id = request.POST.get('unit_type_id')
     
     property_obj = get_object_or_404(Property, id=property_id)
@@ -209,7 +226,7 @@ def acknowledge_house_rules(request):
     # Redirect to booking initiation
     url = f"/api/bookings/initiate/{property_id}/"
     params = []
-    if room_type_id: params.append(f"room_type_id={room_type_id}")
+    if room_id: params.append(f"room_id={room_id}")
     if unit_type_id: params.append(f"unit_type_id={unit_type_id}")
     if params: url += "?" + "&".join(params)
         
