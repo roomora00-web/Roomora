@@ -225,15 +225,15 @@ SIMPLE_JWT = {
 }
 
 # Email Configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'roomora00@gmail.com'
-EMAIL_HOST_PASSWORD = 'arut ryin fkcx khlq'
-DEFAULT_FROM_EMAIL = 'roomora00@gmail.com'
-SERVER_EMAIL = 'roomora00@gmail.com'
-EMAIL_TIMEOUT = 30
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'roomora00@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'arut ryin fkcx khlq')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'roomora00@gmail.com')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+EMAIL_TIMEOUT = 5
 
 # Site Configuration
 SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')

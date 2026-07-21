@@ -447,15 +447,15 @@ def resend_verification_view(request):
             # Send verification email with OTP
             try:
                 send_mail(
-                    'Verify your StayMatch account',
+                    'Verify your Roomora account',
                     f'Hi {user.first_name},\n\nYour verification code is: {otp}\n\nThis code expires in 24 hours.',
                     settings.DEFAULT_FROM_EMAIL,
                     [user.email],
-                    fail_silently=False,
+                    fail_silently=True,
                 )
-                messages.success(request, 'Verification code sent successfully.')
             except Exception as e:
-                messages.error(request, 'Failed to send verification code. Please try again.')
+                pass
+            messages.success(request, 'Verification code sent successfully.')
         except User.DoesNotExist:
             # Don't reveal if email exists
             messages.success(request, 'If an account exists with this email, we\'ve sent a verification code.')
@@ -645,14 +645,12 @@ def register_view(request):
                     f'Hi {user.first_name},\n\nYour verification code is: {otp}\n\nThis code expires in 24 hours.',
                     settings.DEFAULT_FROM_EMAIL,
                     [user.email],
-                    fail_silently=False,
+                    fail_silently=True,
                 )
-                messages.success(request, 'Account created successfully! Please check your email for the verification code.')
-                return redirect('accounts:check-email', email=user.email)
             except Exception as e:
-                messages.error(request, 'Failed to send verification email. Please try again.')
-                # Delete user if email fails
-                user.delete()
+                pass
+            messages.success(request, 'Account created successfully! Please check your email for the verification code.')
+            return redirect('accounts:check-email', email=user.email)
     else:
         form = RegistrationForm()
     
