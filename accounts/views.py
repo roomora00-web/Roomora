@@ -309,11 +309,14 @@ def check_email_view(request, email):
 
 def verify_email_view(request):
     """Email verification view using OTP"""
+    if request.user.is_authenticated and request.user.email_verified:
+        return redirect('landing:home')
+
     if request.method == 'POST':
         otp = request.POST.get('otp')
         email = request.POST.get('email')
         
-        if not otp or not email:
+        if not email:
             return render(request, 'accounts/verify_email.html', {
                 'status': 'error',
                 'message': 'Invalid request.'
@@ -321,6 +324,21 @@ def verify_email_view(request):
         
         try:
             user = User.objects.get(email=email)
+            if user.email_verified:
+                user.account_status = 'ACTIVE'
+                user.is_active = True
+                user.save()
+                login(request, user)
+                messages.success(request, 'Your email is already verified! Welcome to Roomora.')
+                return redirect('landing:home')
+
+            if not otp:
+                return render(request, 'accounts/verify_email.html', {
+                    'status': 'error',
+                    'message': 'Please enter your 6-digit verification code.',
+                    'email': email
+                })
+
             verification = EmailVerification.objects.filter(
                 user=user,
                 used=False
@@ -331,34 +349,35 @@ def verify_email_view(request):
                 verification.used = True
                 verification.save()
                 
-                # Mark email as verified
+                # Mark email as verified and active
                 user.email_verified = True
-                user.account_status = 'PROFILE_INCOMPLETE'  # Changed from EMAIL_VERIFIED to PROFILE_INCOMPLETE per architecture
+                user.account_status = 'ACTIVE'
+                user.is_active = True
                 user.save()
                 
-                # Log user in
+                # Log user in and redirect to home
                 login(request, user)
-                
-                return render(request, 'accounts/verify_email.html', {
-                    'status': 'success',
-                    'message': 'Email verified! Welcome to Roomora.'
-                })
+                messages.success(request, 'Email verified! Welcome to Roomora.')
+                return redirect('landing:home')
             elif verification.used:
                 return render(request, 'accounts/verify_email.html', {
                     'status': 'error',
-                    'message': 'This verification code has already been used.'
+                    'message': 'This verification code has already been used.',
+                    'email': email
                 })
             elif verification.attempts >= 3:
                 return render(request, 'accounts/verify_email.html', {
                     'status': 'error',
                     'message': 'Too many incorrect attempts. Please request a new code.',
-                    'can_resend': True
+                    'can_resend': True,
+                    'email': email
                 })
             elif timezone.now() > verification.expires_at:
                 return render(request, 'accounts/verify_email.html', {
                     'status': 'error',
                     'message': 'This verification code has expired. Would you like us to send you a new one?',
-                    'can_resend': True
+                    'can_resend': True,
+                    'email': email
                 })
             else:
                 # Increment attempts
@@ -377,11 +396,25 @@ def verify_email_view(request):
             return render(request, 'accounts/verify_email.html', {
                 'status': 'error',
                 'message': 'No active verification code found. Please request a new code.',
-                'can_resend': True
+                'can_resend': True,
+                'email': email
             })
     
-    # GET request - redirect to check email page
-    return redirect('accounts:check-email', email=request.GET.get('email', ''))
+    # GET request - redirect to check email page or home if verified
+    email = request.GET.get('email', '')
+    if email:
+        try:
+            u = User.objects.get(email=email)
+            if u.email_verified:
+                u.account_status = 'ACTIVE'
+                u.is_active = True
+                u.save()
+                login(request, u)
+                messages.success(request, 'Your email is verified! Welcome to Roomora.')
+                return redirect('landing:home')
+        except User.DoesNotExist:
+            pass
+    return redirect('accounts:check-email', email=email)
 
 
 def resend_verification_view(request):
