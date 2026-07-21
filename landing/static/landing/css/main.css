@@ -865,7 +865,8 @@ body {
 
 .premium-carousel-track .property-overlay-card {
     width: 420px;
-    /* Enforce fixed larger width for carousel */
+    min-width: 420px;
+    flex: 0 0 420px;
 }
 
 /* Dark vignette scrim */
@@ -3910,6 +3911,8 @@ body {
     }
     .premium-carousel-track .property-overlay-card {
         width: 85vw !important;
+        min-width: 85vw !important;
+        flex: 0 0 85vw !important;
     }
     .accommodation-cards-grid {
         grid-template-columns: 1fr !important;
