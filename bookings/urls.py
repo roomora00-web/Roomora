@@ -13,6 +13,7 @@ from .views_web import (
     my_bookings_view, booking_detail_view, consent_modal_view,
     accept_consent_view, cancel_booking_view,
     submit_visit_request, report_conflict_view, vacation_reserve_update_view,
+    enter_room_view,
 )
 
 from .dashboard_views import (
@@ -56,6 +57,7 @@ urlpatterns = [
     # Web Routes
     path('visit/request/', submit_visit_request, name='submit-visit-request'),
     path('my-bookings/', my_bookings_view, name='my-bookings'),
+    path('booking/<int:booking_id>/enter-room/', enter_room_view, name='enter-room'),
     path('booking/<int:booking_id>/', booking_detail_view, name='booking-detail'),
     path('booking/<int:booking_id>/consent/', consent_modal_view, name='consent-modal'),
     path('booking/<int:booking_id>/matching/', consent_modal_view, name='matching-alias'),

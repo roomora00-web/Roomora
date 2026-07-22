@@ -25,6 +25,8 @@ def my_bookings_view(request):
         'accommodation_property', 'room_type', 'unit_type'
     ).prefetch_related('roommate_matches')
     
+    total_user_bookings = bookings.count()
+    
     # Filter by status if requested
     status_filter = request.GET.get('status')
     if status_filter:
@@ -76,6 +78,7 @@ def my_bookings_view(request):
         'cancelled_bookings': cancelled_bookings,
         'waitlisted_bookings': waitlisted_bookings,
         'total_bookings': bookings.count() if hasattr(bookings, 'count') else len(bookings),
+        'total_user_bookings': total_user_bookings,
         'status_filter': status_filter,
         'sort_by': sort_by,
     }
@@ -462,3 +465,113 @@ def vacation_reserve_update_view(request, booking_id):
         'min_date': min_date
     }
     return render(request, 'bookings/vacation_reserve_update.html', context)
+
+
+@login_required
+def enter_room_view(request, booking_id):
+    """Phase 6.5: Interactive Room Portal Page"""
+    from .models import Booking, RoomAssignment, RoomMessage
+    from accounts.models import LifestyleProfile
+    from datetime import date
+
+    booking = get_object_or_404(Booking, id=booking_id)
+
+    # Access control: only tenant, admin, or landlord
+    if booking.tenant != request.user and request.user.user_type not in ['ADMIN', 'LANDLORD']:
+        messages.error(request, 'You do not have access to this room portal.')
+        return redirect('bookings:my-bookings')
+
+    prop = booking.accommodation_property
+
+    # Ensure assigned_room exists for the booking if property has rooms
+    if not booking.assigned_room and prop and prop.rooms.exists():
+        room = prop.rooms.filter(room_type=booking.room_type).first() or prop.rooms.first()
+        if room:
+            booking.assigned_room = room
+            booking.save(update_fields=['assigned_room'])
+
+    # Build image gallery combining room images and property images
+    all_showcase_images = []
+    
+    # 1. Assigned room images
+    if booking.assigned_room and hasattr(booking.assigned_room, 'images'):
+        for rimg in booking.assigned_room.images.all():
+            all_showcase_images.append({
+                'url': rimg.image_url,
+                'label': f"Room {booking.assigned_room.room_number} Photo",
+                'badge': rimg.get_image_type_display() if hasattr(rimg, 'get_image_type_display') else 'Room Photo'
+            })
+            
+    # 2. Other rooms in property if room images are scarce
+    if len(all_showcase_images) < 3 and prop:
+        for rm in prop.rooms.exclude(id=booking.assigned_room.id if booking.assigned_room else None):
+            for rimg in rm.images.all():
+                all_showcase_images.append({
+                    'url': rimg.image_url,
+                    'label': 'Room Interior',
+                    'badge': 'Shared Facility'
+                })
+
+    # 3. Property exterior & interior images
+    if prop and prop.images.exists():
+        for pimg in prop.images.all():
+            all_showcase_images.append({
+                'url': pimg.image_url,
+                'label': prop.title,
+                'badge': 'Property Showcase'
+            })
+
+    # Room assignment & discussion messages
+    room_assignment = getattr(booking, 'room_assignment', None)
+    if not room_assignment:
+        room_assignment = RoomAssignment.objects.filter(booking=booking).first()
+
+    if not room_assignment:
+        room_assignment, _ = RoomAssignment.objects.get_or_create(
+            booking=booking,
+            defaults={
+                'assigned_room': booking.assigned_room,
+                'room_type': booking.room_type,
+                'unit_type': booking.unit_type,
+                'is_active': True
+            }
+        )
+
+    room_messages = RoomMessage.objects.filter(room_assignment=room_assignment).order_by('created_at')
+
+    # Lifestyle profile
+    lifestyle_profile = LifestyleProfile.objects.filter(user=request.user).first()
+
+    # Lease progress calculation
+    lease_progress = None
+    today = date.today()
+    if booking.move_in_date and booking.move_out_date:
+        total_days = (booking.move_out_date - booking.move_in_date).days
+        days_elapsed = (today - booking.move_in_date).days if today >= booking.move_in_date else 0
+        days_remaining = (booking.move_out_date - today).days if today <= booking.move_out_date else 0
+        lease_progress = {
+            'percentage': max(0, min(100, int((days_elapsed / total_days) * 100))) if total_days > 0 else 0,
+            'days_elapsed': max(0, days_elapsed),
+            'days_remaining': max(0, days_remaining),
+            'total_days': max(1, total_days)
+        }
+
+    # Roommates list
+    roommates = []
+    if room_assignment and room_assignment.assigned_roommates.exists():
+        roommates = room_assignment.assigned_roommates.exclude(id=request.user.id)
+
+    context = {
+        'booking': booking,
+        'property': prop,
+        'all_showcase_images': all_showcase_images,
+        'room_assignment': room_assignment,
+        'room_messages': room_messages,
+        'lifestyle_profile': lifestyle_profile,
+        'lease_progress': lease_progress,
+        'roommates': roommates,
+        'today': today,
+    }
+
+    return render(request, 'bookings/enter_room.html', context)
+

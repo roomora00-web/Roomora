@@ -348,7 +348,7 @@ class UserProfile(models.Model):
         
         # Base fields for all users
         required_fields.extend([
-            self.user.profile_picture,
+            self.user.profile_picture if self.user.profile_picture else 'HAS_DEFAULT_AVATAR',
             self.bio,
             self.address,
             self.city,
@@ -368,36 +368,31 @@ class UserProfile(models.Model):
                 self.company_name,
                 self.industry,
                 self.employment_status,
-                self.years_of_experience,
             ])
         elif self.user.user_type == 'FAMILY':
             required_fields.extend([
                 self.household_size,
-                self.num_children,
             ])
-        elif self.user.user_type == 'COUPLE':
-            required_fields.append(self.is_couple_searching)
         elif self.user.user_type == 'NATIONAL_SERVICE':
             required_fields.extend([
                 self.nsp_organization,
                 self.nsp_location,
-                self.service_end_date,
             ])
         elif self.user.user_type == 'EXPATRIATE':
             required_fields.extend([
                 self.home_country,
                 self.visa_status,
-                self.purpose_of_stay,
-                self.length_of_stay,
             ])
         
-        completed = sum(1 for field in required_fields if field is not None and field != '')
+        completed = sum(1 for field in required_fields if field is not None and str(field).strip() != '')
         total = len(required_fields)
         
         if total > 0:
             self.profile_completion_percentage = int((completed / total) * 100)
         else:
             self.profile_completion_percentage = 0
+            
+        return self.profile_completion_percentage
         
         self.save()
         return self.profile_completion_percentage

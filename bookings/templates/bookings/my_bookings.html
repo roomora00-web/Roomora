@@ -23,7 +23,7 @@
       </div>
 
       <a href="{% url 'landing:properties' %}" class="ds-btn py-3 px-6 text-xs font-bold shrink-0">
-        <span>+ Book New Hostel</span>
+        <span>+ Explore Properties</span>
       </a>
     </div>
   </div>
@@ -31,8 +31,8 @@
   <!-- Filter & Status Pills Bar -->
   <div class="glass-card p-3 sm:p-4 flex items-center justify-between gap-4 overflow-x-auto">
     <div class="flex items-center gap-2 min-w-max">
-      <a href="{% url 'bookings:my-bookings' %}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {% if not status_filter %}bg-[#111111] text-white shadow-xs{% else %}bg-[#F8F8FA] text-[#6B7280] hover:text-[#111111]{% endif %}">
-        All Reservations ({{ total_bookings|default:0 }})
+      <a href="{% url 'bookings:my-bookings' %}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {% if not status_filter or status_filter == 'ALL' %}bg-[#111111] text-white shadow-xs{% else %}bg-[#F8F8FA] text-[#6B7280] hover:text-[#111111]{% endif %}">
+        All Reservations ({{ total_user_bookings|default:0 }})
       </a>
       <a href="{% url 'bookings:my-bookings' %}?status=PAYMENT_COMPLETE" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {% if status_filter == 'PAYMENT_COMPLETE' %}bg-[#111111] text-white shadow-xs{% else %}bg-[#F8F8FA] text-[#6B7280] hover:text-[#111111]{% endif %}">
         Confirmed & Paid
@@ -54,12 +54,26 @@
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
     </div>
     <div class="space-y-1">
-      <h3 class="font-outfit text-xl font-bold text-[#111111]">No Bookings Found</h3>
-      <p class="text-xs text-[#6B7280] max-w-sm mx-auto">You haven't initiated any hostel bookings yet. Browse top campus hostels to reserve your room.</p>
+      {% if status_filter == 'INITIATED' or status_filter == 'PENDING' %}
+        <h3 class="font-outfit text-xl font-bold text-[#111111]">No Pending Reviews</h3>
+        <p class="text-xs text-[#6B7280] max-w-sm mx-auto">You currently have no reservations awaiting review, approval, or consent from the landlord.</p>
+      {% elif status_filter == 'PAYMENT_COMPLETE' %}
+        <h3 class="font-outfit text-xl font-bold text-[#111111]">No Confirmed Stays</h3>
+        <p class="text-xs text-[#6B7280] max-w-sm mx-auto">You don't have any fully paid or confirmed accommodations at this time.</p>
+      {% else %}
+        <h3 class="font-outfit text-xl font-bold text-[#111111]">No Bookings Found</h3>
+        <p class="text-xs text-[#6B7280] max-w-sm mx-auto">You haven't initiated any bookings yet. Browse top campus accommodations to reserve your room.</p>
+      {% endif %}
     </div>
-    <a href="{% url 'landing:properties' %}" class="ds-btn inline-flex py-3 px-6 text-xs font-bold w-auto">
-      <span>Discover Hostels ➔</span>
+    {% if status_filter and status_filter != 'ALL' %}
+    <a href="{% url 'bookings:my-bookings' %}" class="ds-btn inline-flex py-3 px-6 text-xs font-bold w-auto">
+      <span>View All Reservations ➔</span>
     </a>
+    {% else %}
+    <a href="{% url 'landing:properties' %}" class="ds-btn inline-flex py-3 px-6 text-xs font-bold w-auto">
+      <span>Discover Properties ➔</span>
+    </a>
+    {% endif %}
   </div>
   {% else %}
 
@@ -123,8 +137,8 @@
 
           <div>
             <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Stay Duration</div>
-            <div class="font-bold text-emerald-800 mt-1 text-sm">
-              {{ booking.duration_months|default:"4" }} Mo ({{ booking.duration_days|default:"119" }} Days)
+            <div class="text-xs font-bold text-[#111111] mt-1">
+              {{ booking.calculated_duration_label|title|default:"1 Semester" }}
             </div>
           </div>
 
@@ -138,20 +152,26 @@
           <div>
             <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Total Amount Paid</div>
             <div class="font-bold text-emerald-800 mt-1 text-sm">
-              GH₵ {% if booking.payment_record %}{{ booking.payment_record.amount_total|floatformat:2 }}{% else %}{{ booking.total_price|floatformat:2 }}{% endif %}
+              GH₵ {% if booking.payment_records.first %}{{ booking.payment_records.first.amount_total|floatformat:2 }}{% else %}{{ booking.total_price|floatformat:2 }}{% endif %}
             </div>
           </div>
         </div>
 
         <!-- Action Buttons Strip -->
         <div class="flex flex-wrap items-center justify-between gap-3 border-t border-black/[0.06] pt-4">
-          <div class="flex items-center gap-2">
-            {% if booking.payment_record %}
-            <a href="{% url 'payments:official_receipt' booking.payment_record.id %}" target="_blank" class="inline-flex items-center gap-2 bg-[#111111] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-black/80 transition-all shadow-xs">
+          <div class="flex flex-wrap items-center gap-2">
+            {% if booking.assigned_room or booking.room_type or booking.status in 'PAYMENT_COMPLETE,CONFIRMED,ACTIVE,PAID,PAYMENT_VERIFIED,CONFIRMED_ASSIGNED' %}
+            <a href="{% url 'bookings:enter-room' booking.id %}" class="inline-flex items-center gap-2 bg-emerald-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-emerald-900 transition-all shadow-md">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              <span>Enter Room ➔</span>
+            </a>
+            {% endif %}
+            {% if booking.payment_records.first %}
+            <a href="{% url 'payments:official_receipt' booking.payment_records.first.id %}" target="_blank" class="inline-flex items-center gap-2 bg-[#111111] text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-black/80 transition-all shadow-xs">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               <span>Official Receipt (PDF)</span>
             </a>
-            <a href="{% url 'payments:payment_confirmation' booking.payment_record.id %}" class="inline-flex items-center gap-2 bg-white border border-black/15 px-4 py-2.5 rounded-xl text-xs font-bold text-[#111111] hover:bg-[#F8F8FA] transition-colors">
+            <a href="{% url 'payments:payment_confirmation' booking.payment_records.first.id %}" class="inline-flex items-center gap-2 bg-white border border-black/15 px-4 py-2.5 rounded-xl text-xs font-bold text-[#111111] hover:bg-[#F8F8FA] transition-colors">
               <span>View Confirmation</span>
             </a>
             {% endif %}

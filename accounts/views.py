@@ -1199,12 +1199,19 @@ def profile_management_view(request):
             if personal_form.is_valid():
                 personal_form.save()
                 
-                # Also save bio, emergency contacts from user object but UserProfile has some fields like bio
-                profile.bio = request.POST.get('bio', profile.bio)
+                # Also save bio, address, city to UserProfile
+                if 'bio' in request.POST:
+                    profile.bio = request.POST.get('bio', '').strip()
+                if 'address' in request.POST:
+                    profile.address = request.POST.get('address', '').strip()
+                if 'city' in request.POST:
+                    profile.city = request.POST.get('city', '').strip()
+                
+                profile.calculate_completion()
                 profile.save()
                 
                 messages.success(request, 'Personal information updated successfully.')
-                return redirect('accounts:profile')
+                return redirect('/accounts/profile/?tab=personal')
             else:
                 active_tab = 'personal'
                 
@@ -1212,8 +1219,10 @@ def profile_management_view(request):
             student_form = StudentInfoForm(request.POST, instance=profile)
             if student_form.is_valid():
                 student_form.save()
+                profile.calculate_completion()
+                profile.save()
                 messages.success(request, 'Student information updated successfully.')
-                return redirect('accounts:profile')
+                return redirect('/accounts/profile/?tab=type_info')
             else:
                 active_tab = 'type_info'
                 
