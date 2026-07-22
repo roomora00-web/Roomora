@@ -1,375 +1,204 @@
 {% extends 'accounts/dashboard_base.html' %}
+{% load static %}
+
 {% block dashboard_title %}My Bookings — Roomora{% endblock %}
 
-
-{% block dashboard_extra_css %}
-<style>
-.mb-header {
-  margin-bottom: 24px;
-}
-.mb-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-head);
-  letter-spacing: -0.03em;
-  margin-bottom: 4px;
-}
-.mb-subtitle {
-  font-size: 13.5px;
-  color: var(--text-muted);
-}
-
-.mb-section {
-  margin-bottom: 32px;
-}
-.mb-section-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-head);
-  margin-bottom: 16px;
-  border-bottom: 1px solid var(--border-light);
-  padding-bottom: 8px;
-}
-
-.mb-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-}
-
-.mb-card {
-  background: #FAFAFA;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  transition: all 0.15s ease;
-  position: relative;
-}
-.mb-card:hover {
-  border: 1px solid #E4E4E7;
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-2px);
-}
-
-.mb-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
-}
-
-.mb-status {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 999px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-.status-active { background: #e0e7ff; color: #4338ca; }
-.status-pending { background: #fef3c7; color: #b45309; }
-.status-approved { background: #F4F4F5; color: #000000; }
-.status-cancelled { background: #fee2e2; color: #b91c1c; }
-.status-temp-cancelled { background: #fef3c7; color: #d97706; }
-
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-.modal-content {
-    background: #FFFFFF;
-    padding: 30px;
-    border-radius: var(--radius-lg);
-    max-width: 500px;
-    width: 90%;
-    box-shadow: var(--shadow-lg);
-}
-.modal-title {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 15px;
-    color: var(--text-head);
-}
-.modal-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 25px;
-}
-
-
-.mb-prop-name {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-head);
-  margin-bottom: 4px;
-}
-.mb-room-type {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 16px;
-}
-
-.mb-details {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--text-mid);
-  margin-bottom: 20px;
-}
-.mb-detail-row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.mb-actions {
-  display: flex;
-  gap: 10px;
-  border-top: 1px solid var(--border-light);
-  padding-top: 16px;
-}
-.mb-btn {
-  flex: 1;
-  text-align: center;
-  padding: 8px;
-  border-radius: var(--radius-md);
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.15s;
-}
-.mb-btn-primary {
-  background: #000000;
-  color: #FFFFFF;
-}
-.mb-btn-primary:hover { background: var(--brand-mid); }
-
-.mb-btn-secondary {
-  background: var(--bg-input);
-  color: var(--text-head);
-  border: 1px solid #E4E4E7;
-}
-.mb-btn-secondary:hover { background: var(--border-light); }
-
-.mb-empty {
-  padding: 40px;
-  text-align: center;
-  background: var(--bg-input);
-  border-radius: var(--radius-lg);
-  border: 1px solid #E4E4E7;
-  color: var(--text-muted);
-}
-</style>
-{% endblock %}
-
 {% block dashboard_content %}
-<!-- Reinstate Modal -->
-<div id="reinstateModal" class="modal-overlay">
-    <div class="modal-content">
-        <h2 class="modal-title">REINSTATE YOUR BOOKING</h2>
-        <div style="margin-bottom: 15px;">
-            <p>Are you sure you want to reinstate your booking?</p>
-            <p style="font-weight: 600; margin: 10px 0;"><span id="modalPropName"></span> — Room <span id="modalRoomNum"></span> (<span id="modalRoomType"></span>)</p>
-            <p>By reinstating:</p>
-            <ul style="list-style: none; padding: 0;">
-                <li>✓ Your booking will be reactivated</li>
-                <li>✓ You will return to the compatibility confirmation screen</li>
-                <li>✓ Your lifestyle preferences will be locked after you confirm</li>
-            </ul>
+<div class="space-y-6 sm:space-y-8 w-full animate-fade-in-up">
+
+  <!-- Header & Page Summary -->
+  <div class="glass-card p-6 sm:p-8 bg-gradient-to-br from-white via-[#F8F8FA] to-emerald-50/20">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="space-y-1.5">
+        <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300/80 bg-emerald-50 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-emerald-800">
+          <span class="h-2 w-2 rounded-full bg-emerald-500 pulse-dot"></span>
+          Accommodation Management
         </div>
-        <div class="modal-actions">
-            <button class="mb-btn mb-btn-secondary" onclick="document.getElementById('reinstateModal').style.display='none'">No, keep cancelled</button>
-            <button class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important;" id="confirmReinstateBtn">Yes, reinstate my booking</button>
-        </div>
+        <h1 class="font-outfit text-3xl font-extrabold text-[#111111] tracking-tight">
+          My Accommodation Reservations
+        </h1>
+        <p class="text-xs sm:text-sm text-[#6B7280]">
+          Manage your soft-locked room reservations, active stays, roommate assignments, and official payment receipts.
+        </p>
+      </div>
+
+      <a href="{% url 'landing:properties' %}" class="ds-btn py-3 px-6 text-xs font-bold shrink-0">
+        <span>+ Book New Hostel</span>
+      </a>
     </div>
-</div>
+  </div>
 
-<div class="mb-header">
-  <h1 class="mb-title">My Bookings</h1>
-  <p class="mb-subtitle">Manage your accommodation reservations and applications.</p>
-</div>
+  <!-- Filter & Status Pills Bar -->
+  <div class="glass-card p-3 sm:p-4 flex items-center justify-between gap-4 overflow-x-auto">
+    <div class="flex items-center gap-2 min-w-max">
+      <a href="{% url 'bookings:my-bookings' %}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {% if not status_filter %}bg-[#111111] text-white shadow-xs{% else %}bg-[#F8F8FA] text-[#6B7280] hover:text-[#111111]{% endif %}">
+        All Reservations ({{ total_bookings|default:0 }})
+      </a>
+      <a href="{% url 'bookings:my-bookings' %}?status=PAYMENT_COMPLETE" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {% if status_filter == 'PAYMENT_COMPLETE' %}bg-[#111111] text-white shadow-xs{% else %}bg-[#F8F8FA] text-[#6B7280] hover:text-[#111111]{% endif %}">
+        Confirmed & Paid
+      </a>
+      <a href="{% url 'bookings:my-bookings' %}?status=INITIATED" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {% if status_filter == 'INITIATED' %}bg-[#111111] text-white shadow-xs{% else %}bg-[#F8F8FA] text-[#6B7280] hover:text-[#111111]{% endif %}">
+        Pending Review
+      </a>
+    </div>
 
-{% if total_bookings == 0 %}
-<div class="mb-empty">
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 16px; opacity: 0.5;">
-    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-    <polyline points="17 21 17 13 7 13 7 21"></polyline>
-    <polyline points="7 3 7 8 15 8"></polyline>
-  </svg>
-  <h3>No Bookings Found</h3>
-  <p style="margin-top: 8px; margin-bottom: 16px; font-size: 14px;">You haven't made any bookings yet.</p>
-  <a href="{% url 'landing:properties' %}" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; display: inline-block; padding: 10px 24px;">Discover Properties</a>
-</div>
-{% else %}
+    <div class="text-xs text-[#888888] font-bold hidden md:block">
+      Total Records: {{ total_bookings|default:0 }}
+    </div>
+  </div>
 
-  {% if active_bookings or approved_bookings %}
-  <div class="mb-section">
-    <h2 class="mb-section-title">Active & Confirmed</h2>
-    <div class="mb-grid">
-      {% for booking in active_bookings|add:approved_bookings %}
-      
-      <!-- Spec Part 13.2: Vacation Reserve Card -->
-      {% if booking.status == 'VACATION_RESERVE' %}
-      <div class="mb-card" style="border-color: var(--warning); box-shadow: 0 4px 12px rgba(239, 159, 39, 0.15);">
-        <div style="background: var(--warning-light); color: #92400e; padding: 10px 15px; margin: -20px -20px 20px -20px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            VACATION — YOUR ROOM IS HELD FOR YOU
-        </div>
+  <!-- Empty State -->
+  {% if total_bookings == 0 %}
+  <div class="glass-card p-12 text-center space-y-4">
+    <div class="h-16 w-16 rounded-3xl bg-[#F8F8FA] border border-black/10 flex items-center justify-center mx-auto text-[#888888]">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    </div>
+    <div class="space-y-1">
+      <h3 class="font-outfit text-xl font-bold text-[#111111]">No Bookings Found</h3>
+      <p class="text-xs text-[#6B7280] max-w-sm mx-auto">You haven't initiated any hostel bookings yet. Browse top campus hostels to reserve your room.</p>
+    </div>
+    <a href="{% url 'landing:properties' %}" class="ds-btn inline-flex py-3 px-6 text-xs font-bold w-auto">
+      <span>Discover Hostels ➔</span>
+    </a>
+  </div>
+  {% else %}
+
+  <!-- Active & Confirmed Bookings Section -->
+  {% if approved_bookings or active_bookings %}
+  <div class="space-y-4">
+    <div class="flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-[#888888]">
+      <span class="h-2 w-2 rounded-full bg-emerald-500 pulse-dot"></span>
+      <span>Active & Confirmed Accommodations</span>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6">
+      {% for booking in approved_bookings|add:active_bookings %}
+      <div class="glass-card p-6 sm:p-8 space-y-6 border-l-4 border-l-emerald-600">
         
-        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
-        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
-        
-        <div style="margin: 20px 0; padding: 15px; background: var(--bg-input); border-radius: var(--radius-md); text-align: center;">
-            <div style="font-size: 24px; font-weight: 800; color: var(--warning); margin-bottom: 5px;">
-                {{ booking.days_until_s2|default:"--" }} Days
-            </div>
-            <div style="font-size: 13px; color: var(--text-mid); font-weight: 600;">Until Semester 2 begins</div>
-        </div>
-        
-        <div class="mb-details">
-            <div class="mb-detail-row">
-                <span>Semester 2 Start</span>
-                <span style="font-weight: 600; color: var(--text-head);">{{ booking.semester2_start|date:"M d, Y"|default:"TBD" }}</span>
-            </div>
-            <div class="mb-detail-row">
-                <span>Semester 2 End</span>
-                <span style="font-weight: 600; color: var(--text-head);">{{ booking.semester2_end|date:"M d, Y"|default:"TBD" }}</span>
-            </div>
-        </div>
-        
-        <div class="mb-actions" style="flex-wrap: wrap;">
-            <a href="{% url 'bookings:vacation-reserve-update' booking.id %}" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; flex-basis: 100%;">Update Semester 2 Date</a>
-            <a href="#" class="mb-btn mb-btn-secondary" style="color: var(--error);">Cancel Semester 2</a>
-            <a href="#" class="mb-btn mb-btn-secondary">Contact Admin</a>
-        </div>
-      </div>
-      
-      <!-- Spec Part 13.3: Grace Period Card -->
-      {% elif booking.status == 'GRACE_PERIOD' %}
-      <div class="mb-card" style="border-color: var(--error); box-shadow: 0 4px 12px rgba(226, 75, 74, 0.15);">
-        <div style="background: var(--error-light); color: var(--error); padding: 10px 15px; margin: -20px -20px 20px -20px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            GRACE PERIOD — ACTION REQUIRED
-        </div>
-        
-        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
-        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
-        
-        <div style="margin: 20px 0; padding: 15px; background: var(--bg-input); border-radius: var(--radius-md); text-align: center;">
-            <div style="font-size: 24px; font-weight: 800; color: var(--error); margin-bottom: 5px;">
-                {{ booking.grace_days_remaining|default:"7" }} Days
-            </div>
-            <div style="font-size: 13px; color: var(--text-mid); font-weight: 600;">Remaining to rebook or vacate</div>
-        </div>
-        
-        <div style="font-size: 13px; color: var(--text-mid); text-align: center; margin-bottom: 20px;">
-            Slot opens to public on <strong>{{ booking.slot_open_date|date:"M d, Y"|default:"TBD" }}</strong>
-        </div>
-        
-        <div class="mb-actions" style="flex-wrap: wrap;">
-            <a href="#" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; flex-basis: 100%; background: var(--success);">Rebook My Room</a>
-            <a href="#" class="mb-btn mb-btn-secondary">Confirm Moving Out</a>
-            <a href="#" class="mb-btn mb-btn-secondary">Contact Admin</a>
-        </div>
-      </div>
-      
-      <!-- Spec Part 13.1: Active Semester Card -->
-      {% else %}
-      <div class="mb-card" style="border-top: 4px solid var(--success);">
-        <div class="mb-card-header">
-          <div class="mb-status status-active">
-            {% if booking.billing_allocation and booking.billing_allocation.billing_model == 'SEMESTER_BASED' or booking.billing_allocation and booking.billing_allocation.billing_model == 'ACADEMIC_YEAR' %}
-                SEMESTER {{ booking.current_semester|default:"1" }} OF {{ booking.billing_allocation.num_semesters|default:"1" }} — ACTIVE
+        <!-- Header Row -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-black/[0.06] pb-5">
+          <div class="flex items-center gap-4">
+            {% if booking.accommodation_property.images.all %}
+            <img src="{{ booking.accommodation_property.images.first.image_url }}" class="h-16 w-16 rounded-2xl object-cover border border-black/10 shrink-0" alt="{{ booking.accommodation_property.title }}">
             {% else %}
-                ACTIVE
+            <div class="h-16 w-16 rounded-2xl bg-[#F8F8FA] border border-black/10 flex items-center justify-center font-bold text-xs shrink-0 text-[#888888]">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            </div>
+            {% endif %}
+
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-outfit text-xl font-extrabold text-[#111111]">{{ booking.accommodation_property.title }}</h2>
+              </div>
+              <p class="text-xs text-[#6B7280] mt-0.5 flex items-center gap-1 font-medium">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ booking.accommodation_property.address }}, {{ booking.accommodation_property.city }}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex sm:flex-col items-end justify-between sm:justify-center gap-1 shrink-0">
+            <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-900 border border-emerald-300 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 pulse-dot"></span>
+              {{ booking.get_status_display|default:booking.status }}
+            </span>
+            <span class="font-mono text-xs font-bold text-[#111111]">Ref: {{ booking.reference_number }}</span>
+          </div>
+        </div>
+
+        <!-- 4-Column Particulars Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl text-xs">
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Assigned Space</div>
+            <div class="font-bold text-[#111111] mt-1 text-sm">
+              {% if booking.assigned_room %}
+                Room {{ booking.assigned_room.room_number }}
+              {% elif booking.room_type %}
+                {{ booking.room_type.room_type_name }}
+              {% else %}
+                Standard Unit
+              {% endif %}
+            </div>
+          </div>
+
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Stay Duration</div>
+            <div class="font-bold text-emerald-800 mt-1 text-sm">
+              {{ booking.duration_months|default:"4" }} Mo ({{ booking.duration_days|default:"119" }} Days)
+            </div>
+          </div>
+
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Move-In Date</div>
+            <div class="font-bold text-[#111111] mt-1 text-sm">
+              {{ booking.move_in_date|date:"d M Y"|default:"Jul 23, 2026" }}
+            </div>
+          </div>
+
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Total Amount Paid</div>
+            <div class="font-bold text-emerald-800 mt-1 text-sm">
+              GH₵ {% if booking.payment_record %}{{ booking.payment_record.amount_total|floatformat:2 }}{% else %}{{ booking.total_price|floatformat:2 }}{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons Strip -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-black/[0.06] pt-4">
+          <div class="flex items-center gap-2">
+            {% if booking.payment_record %}
+            <a href="{% url 'payments:official_receipt' booking.payment_record.id %}" target="_blank" class="inline-flex items-center gap-2 bg-[#111111] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-black/80 transition-all shadow-xs">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Official Receipt (PDF)</span>
+            </a>
+            <a href="{% url 'payments:payment_confirmation' booking.payment_record.id %}" class="inline-flex items-center gap-2 bg-white border border-black/15 px-4 py-2.5 rounded-xl text-xs font-bold text-[#111111] hover:bg-[#F8F8FA] transition-colors">
+              <span>View Confirmation</span>
+            </a>
             {% endif %}
           </div>
+
+          <a href="mailto:support@roomora.com" class="text-xs font-bold text-[#6B7280] hover:text-[#111111]">
+            Contact Support ➔
+          </a>
         </div>
-        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
-        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
-        
-        <!-- Progress Bar -->
-        <div style="margin: 20px 0;">
-            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--text-mid);">
-                <span>Progress</span>
-                <span>{{ booking.days_remaining|default:"--" }} days left</span>
-            </div>
-            <div style="height: 8px; background: var(--border-light); border-radius: 4px; overflow: hidden;">
-                <div class="progress-bar-fill" data-progress="{{ booking.progress_percentage|default_if_none:'0' }}" style="height: 100%; background: var(--success); border-radius: 4px; width: 0%;"></div>
-            </div>
-        </div>
-        
-        <div class="mb-details">
-          <div class="mb-detail-row">
-            <span>Move In</span>
-            <span style="font-weight: 600; color: var(--text-head);">{{ booking.move_in_date|date:"M d, Y"|default:"TBD" }}</span>
-          </div>
-          <div class="mb-detail-row">
-            <span>Move Out</span>
-            <span style="font-weight: 600; color: var(--text-head);">{{ booking.calculated_move_out|date:"M d, Y"|default:"TBD" }}</span>
-          </div>
-        </div>
-        
-        <div class="mb-actions" style="flex-wrap: wrap;">
-          <a href="/api/bookings/booking/{{ booking.id }}/" class="mb-btn mb-btn-secondary" style="flex-basis: 100%;">View Details</a>
-          {% if booking.semester_structure == 'SPLIT_STAY' and booking.current_semester == 1 %}
-              <a href="{% url 'bookings:vacation-reserve-update' booking.id %}" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; flex-basis: 100%; margin-top: -5px;">Update S2 Date</a>
-          {% elif booking.status == 'ACTIVE' and booking.can_rebook %}
-              <a href="#" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; flex-basis: 100%; margin-top: -5px;">Rebook Options</a>
-          {% endif %}
-          
-          {% if booking.room_type and booking.room_type.occupancy_type == 'DOUBLE' or booking.room_type.occupancy_type == 'TRIPLE' or booking.room_type.occupancy_type == 'QUAD' %}
-              <a href="/api/bookings/booking/{{ booking.id }}/roommate-dashboard/" class="mb-btn mb-btn-secondary" style="flex-basis: 100%; margin-top: 5px;">Roommates</a>
-          {% endif %}
-        </div>
+
       </div>
-      {% endif %}
-      
       {% endfor %}
     </div>
   </div>
   {% endif %}
 
-  {% if pending_bookings or awaiting_consent %}
-  <div class="mb-section">
-    <h2 class="mb-section-title">Pending & Review</h2>
-    <div class="mb-grid">
-      {% for booking in pending_bookings|add:awaiting_consent %}
-      <div class="mb-card">
-        <div class="mb-card-header">
-          <div class="mb-status status-pending">{{ booking.get_status_display }}</div>
-          <div style="font-weight: 700; color: var(--text-head);">GH₵ {{ booking.total_amount }}</div>
-        </div>
-        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
-        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
-        
-        <div class="mb-details">
-          <div class="mb-detail-row">
-            <span>Move In</span>
-            <span style="font-weight: 600; color: var(--text-head);">{{ booking.move_in_date|date:"M d, Y"|default:"TBD" }}</span>
+  <!-- Pending & Other Bookings Section -->
+  {% if pending_bookings or awaiting_consent or cancelled_bookings %}
+  <div class="space-y-4 pt-4">
+    <div class="text-xs font-extrabold uppercase tracking-widest text-[#888888]">
+      Other Applications & Records
+    </div>
+
+    <div class="grid grid-cols-1 gap-4">
+      {% for booking in pending_bookings|add:awaiting_consent|add:cancelled_bookings %}
+      <div class="glass-card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-sm text-[#111111]">{{ booking.accommodation_property.title }}</span>
+            <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-black/10 bg-[#F8F8FA]">
+              {{ booking.get_status_display|default:booking.status }}
+            </span>
+          </div>
+          <div class="text-xs text-[#6B7280]">
+            Ref: <span class="font-mono font-bold text-[#111111]">{{ booking.reference_number }}</span> • Created {{ booking.created_at|date:"M d, Y" }}
           </div>
         </div>
-        
-        <div class="mb-actions">
-          <a href="/api/bookings/booking/{{ booking.id }}/" class="mb-btn mb-btn-secondary">View Details</a>
-          {% if booking.status == 'COMPATIBILITY_REVIEW' or booking.status == 'WAITING_CONSENT' or booking.status == 'ASSIGNED_AWAITING' %}
-          <a href="/api/bookings/booking/{{ booking.id }}/user-consent/" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important; background: var(--warning); color: #18181B;">Review & Consent</a>
-          {% endif %}
-          {% if booking.status == 'INITIATED' %}
-          <a href="/api/bookings/booking/{{ booking.id }}/initiated/" class="mb-btn mb-btn-primary" style="background-color: #000000 !important; color: #FFFFFF !important;">Resume Booking</a>
-          <form method="POST" action="{% url 'bookings:cancel-booking' booking.id %}" style="flex-basis: 100%; display: flex; margin-top: 5px;">
-              {% csrf_token %}
-              <input type="hidden" name="cancellation_reason" value="User cancelled from dashboard">
-              <button type="submit" class="mb-btn mb-btn-secondary" style="flex: 1; border: 1px solid #ef4444; color: #ef4444; background: transparent; cursor: pointer;">Cancel Booking</button>
-          </form>
+
+        <div>
+          {% if booking.status == 'INITIATED' or booking.status == 'LIFESTYLE_PENDING' %}
+          <a href="{% url 'bookings:resume_booking' booking.id %}" class="bg-[#111111] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-black/80 transition-colors">
+            Resume ➔
+          </a>
+          {% else %}
+          <a href="{% url 'landing:property_detail' booking.accommodation_property.id %}" class="bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:bg-black/5 transition-colors">
+            View Property
+          </a>
           {% endif %}
         </div>
       </div>
@@ -378,187 +207,6 @@
   </div>
   {% endif %}
 
-  
-  {% if completed_bookings %}
-  <div class="mb-section">
-    <h2 class="mb-section-title">Past Stays & Completed</h2>
-    <div class="mb-grid">
-      {% for booking in completed_bookings %}
-      <div class="mb-card" style="opacity: 0.85;">
-        <div class="mb-card-header">
-          <div class="mb-status" style="background: #e5e7eb; color: #4b5563;">{{ booking.get_status_display }}</div>
-        </div>
-        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
-        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
-        
-        <div class="mb-details">
-          <div class="mb-detail-row">
-            <span>Moved In</span>
-            <span style="font-weight: 600; color: var(--text-head);">{{ booking.move_in_date|date:"M d, Y"|default:"TBD" }}</span>
-          </div>
-        </div>
-        
-        <div class="mb-actions">
-          <a href="/api/bookings/booking/{{ booking.id }}/" class="mb-btn mb-btn-secondary">View Details</a>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
   {% endif %}
-
-  {% if cancelled_bookings %}
-  <div class="mb-section">
-    <h2 class="mb-section-title">Past & Cancelled</h2>
-    <div class="mb-grid">
-      {% for booking in cancelled_bookings %}
-      <div class="mb-card" {% if booking.status != 'TEMPORARILY_CANCELLED' %}style="opacity: 0.7;"{% endif %}>
-        <div class="mb-card-header">
-          <div class="mb-status {% if booking.status == 'TEMPORARILY_CANCELLED' %}status-temp-cancelled{% else %}status-cancelled{% endif %}">{{ booking.get_status_display }}</div>
-        </div>
-        <div class="mb-prop-name">{{ booking.accommodation_property.title }}</div>
-        <div class="mb-room-type">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}</div>
-        
-        {% if booking.status == 'TEMPORARILY_CANCELLED' %}
-        <div class="mb-details" style="background: #fffbeb; padding: 12px; border-radius: 6px; border: 1px solid #fef3c7;">
-          <div style="color: #b45309; font-weight: 600; font-size: 13px; margin-bottom: 4px;">Time Remaining to Reinstate</div>
-          <div style="color: #92400e; font-size: 12px; margin-bottom: 8px;">You have until {{ booking.temp_cancel_expires_at|date:"M d, Y g:i A"|default:"TBD" }} to change your mind.</div>
-          <div style="font-weight: 700; color: var(--danger-red); font-size: 16px;" id="timer_{{ booking.id }}" data-expires="{{ booking.temp_cancel_expires_at|date:'U' }}">{% if booking.temp_cancel_expires_at %}Loading...{% else %}No expiry date{% endif %}</div>
-        </div>
-        {% endif %}
-        
-        <div class="mb-actions">
-          <a href="/api/bookings/booking/{{ booking.id }}/" class="mb-btn mb-btn-secondary">View Details</a>
-          {% if booking.status == 'TEMPORARILY_CANCELLED' %}
-          <button class="mb-btn mb-btn-primary reinstate-btn" style="background-color: #000000 !important; color: #FFFFFF !important;"
-                  data-booking-id="{{ booking.id }}"
-                  data-property-title="{{ booking.accommodation_property.title }}"
-                  data-room-number="{{ booking.assigned_room.room_number|default:'Assigned' }}"
-                  data-room-type="{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% else %}{{ booking.unit_type.unit_name }}{% endif %}">Reinstate Booking</button>
-          {% endif %}
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-  {% endif %}
-
-{% endif %}
-{% endblock %}
-
-{% block dashboard_js %}
-<script>
-
-let currentReinstateId = null;
-
-// Event delegation for reinstate buttons
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('reinstate-btn')) {
-        const btn = e.target;
-        const id = btn.getAttribute('data-booking-id');
-        const propName = btn.getAttribute('data-property-title');
-        const roomNum = btn.getAttribute('data-room-number');
-        const roomType = btn.getAttribute('data-room-type');
-
-        currentReinstateId = id;
-        document.getElementById('modalPropName').innerText = propName;
-        document.getElementById('modalRoomNum').innerText = roomNum;
-        document.getElementById('modalRoomType').innerText = roomType;
-        document.getElementById('reinstateModal').style.display = 'flex';
-    }
-});
-
-const confirmReinstateBtn = document.getElementById('confirmReinstateBtn');
-if (confirmReinstateBtn) {
-    confirmReinstateBtn.addEventListener('click', function() {
-        if (currentReinstateId) {
-            document.getElementById('reinstateModal').style.display = 'none';
-            fetch(`/api/bookings/booking/${currentReinstateId}/reinstate/`, {
-
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]') ? document.querySelector('[name=csrfmiddlewaretoken]').value : getCookie('csrftoken'),
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    if (data.redirect_url) {
-                        window.location.href = data.redirect_url;
-                    } else {
-                        window.location.reload();
-                    }
-                } else {
-                    alert(data.error || 'An error occurred.');
-                }
-            })
-            .catch(err => {
-                alert('A network error occurred.');
-                console.error(err);
-            });
-        }
-    });
-}
-
-// Helper to get CSRF token if not in form
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-// Setup Progress Bars
-document.querySelectorAll('.progress-bar-fill').forEach(bar => {
-    const progress = bar.getAttribute('data-progress');
-    if (progress) {
-        bar.style.width = progress + '%';
-    }
-});
-
-// Setup Countdown Timers
-document.querySelectorAll('[id^="timer_"]').forEach(timerEl => {
-    const expiresAttr = timerEl.getAttribute('data-expires');
-    console.log('Timer element:', timerEl.id, 'data-expires:', expiresAttr);
-
-    if (expiresAttr && expiresAttr !== 'None' && expiresAttr !== '') {
-        // Handle Unix timestamp (seconds) or ISO date string
-        const timestamp = parseInt(expiresAttr);
-        const timeoutDate = isNaN(timestamp) ? new Date(expiresAttr).getTime() : timestamp * 1000;
-
-        console.log('Timeout date:', timeoutDate);
-
-        function updateTimer() {
-            const now = new Date().getTime();
-            const distance = timeoutDate - now;
-
-            if (distance < 0) {
-                timerEl.innerHTML = "EXPIRED";
-                return;
-            }
-
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            timerEl.innerHTML = hours + "h " + minutes + "m " + seconds + "s remaining";
-        }
-
-        updateTimer();
-        setInterval(updateTimer, 1000);
-    } else {
-        timerEl.innerHTML = "No expiry date";
-    }
-});
-</script>
-
+</div>
 {% endblock %}

@@ -57,9 +57,9 @@ def my_bookings_view(request):
     
     # Organize by status for display
     active_bookings = [b for b in bookings if b.status == 'ACTIVE']
-    pending_bookings = [b for b in bookings if b.status in ['INITIATED', 'SUBMITTED', 'UNDER_REVIEW', 'COMPATIBILITY_REVIEW']]
-    awaiting_consent = [b for b in bookings if b.status == 'WAITING_CONSENT']
-    approved_bookings = [b for b in bookings if b.status in ['BOTH_ACCEPTED', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'APPROVED']]
+    pending_bookings = [b for b in bookings if b.status in ['INITIATED', 'SUBMITTED', 'UNDER_REVIEW', 'COMPATIBILITY_REVIEW', 'PAYMENT_REQUIRED']]
+    awaiting_consent = [b for b in bookings if b.status in ['WAITING_CONSENT', 'CONSENT_PENDING']]
+    approved_bookings = [b for b in bookings if b.status in ['BOTH_ACCEPTED', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'APPROVED', 'PAYMENT_COMPLETE', 'PAID', 'PAYMENT_VERIFIED']]
     completed_bookings = [b for b in bookings if b.status == 'COMPLETED']
     cancelled_bookings = [b for b in bookings if b.status in ['CANCELLED', 'REJECTED', 'TEMPORARILY_CANCELLED']]
     waitlisted_bookings = [b for b in bookings if b.status == 'WAITLISTED']
