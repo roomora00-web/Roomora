@@ -6,151 +6,159 @@
 {% block extra_css %}{% endblock %}
 
 {% block content %}
-<div class="min-h-[calc(100vh-80px)] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.10)_0%,transparent_24%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.05)_0%,transparent_28%)] px-4 py-8 sm:px-6 lg:px-8">
+<div class="min-h-[calc(100vh-80px)] bg-[#F5F5F5] px-4 py-8 sm:px-6 lg:px-8">
   <div class="mx-auto flex w-full max-w-7xl flex-col gap-6">
-    <section class="glass-card overflow-hidden border border-emerald-400/15">
-      <div class="border-b border-white/10 bg-gradient-to-r from-emerald-400/12 via-white/6 to-transparent px-6 py-7 sm:px-8 lg:px-10">
+    <section class="glass-card overflow-hidden">
+      <!-- Header Banner -->
+      <div class="border-b border-black/5 bg-gradient-to-r from-emerald-50/80 via-white to-white px-6 py-8 sm:px-8 lg:px-10">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div class="max-w-3xl">
-            <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-emerald-300">
-              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
-              Reservation confirmed
+            <div class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-800">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+              Reservation Confirmed
             </div>
-            <h1 class="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Your slot is reserved</h1>
-            <p class="mt-3 text-sm leading-7 text-slate-300 sm:text-[15px]">Your booking request has been successfully initiated and the property is being held for you while you complete the remainder of the flow.</p>
+            <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-[#111111] sm:text-4xl">Your Slot is Reserved</h1>
+            <p class="mt-3 text-sm leading-7 text-[#555555] sm:text-[15px]">Your booking request has been successfully initiated and the space is soft-locked for you while you complete the remaining steps.</p>
           </div>
 
-          <div class="w-full max-w-sm rounded-[24px] border border-white/10 bg-[#0c0c0c]/70 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
-            <div class="flex items-center justify-between text-sm text-slate-300">
-              <span>Booking progress</span>
-              <span class="font-semibold text-white">1 / 4 complete</span>
+          <div class="w-full max-w-sm rounded-[20px] border border-black/5 bg-[#F9FAFB] p-5 shadow-sm">
+            <div class="flex items-center justify-between text-sm text-[#555555]">
+              <span>Booking Progress</span>
+              <span class="font-bold text-[#111111]">Step 1 of 4</span>
             </div>
-            <div class="mt-3 h-2 rounded-full bg-white/10">
-              <div class="h-2 w-1/4 rounded-full bg-white"></div>
+            <div class="mt-3 h-2.5 rounded-full bg-black/10 overflow-hidden">
+              <div class="h-2.5 w-1/4 rounded-full bg-[#111111]"></div>
             </div>
-            <div class="mt-3 text-[12px] uppercase tracking-[0.2em] text-slate-400">Continue to lock in your stay</div>
+            <div class="mt-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">Continue to lock in your stay</div>
           </div>
         </div>
       </div>
 
-      <div class="grid gap-6 p-6 sm:p-8 xl:grid-cols-[1.15fr_0.85fr]">
+      <!-- Main Content Grid -->
+      <div class="grid gap-8 p-6 sm:p-8 xl:grid-cols-[1.15fr_0.85fr]">
+        <!-- Left Pane -->
         <div class="space-y-6">
-          <div class="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-            <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-              <div class="flex items-start gap-4">
+          <!-- Property Overview Card -->
+          <div class="rounded-[20px] border border-black/5 bg-[#F9FAFB] p-5 sm:p-6">
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+              <div class="flex items-center gap-4">
                 {% if property.main_image %}
-                  <img src="{{ property.main_image.url }}" alt="{{ property.title }}" class="h-16 w-16 shrink-0 rounded-2xl object-cover shadow-[0_18px_40px_rgba(0,0,0,0.28)]">
+                  <img src="{{ property.main_image.url }}" alt="{{ property.title }}" class="h-16 w-16 shrink-0 rounded-2xl object-cover shadow-sm">
                 {% else %}
-                  <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/8">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" class="text-slate-300" stroke-width="1.6" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-black/10 bg-white text-[#111111]">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                   </div>
                 {% endif %}
                 <div>
-                  <div class="text-lg font-semibold text-white">{{ property.title }}</div>
-                  <div class="mt-1 text-sm text-slate-400">{{ property.address }}{% if property.city %}, {{ property.city }}{% endif %}</div>
-                  <div class="mt-3 text-sm text-slate-300">
+                  <div class="text-lg font-bold text-[#111111]">{{ property.title }}</div>
+                  <div class="mt-0.5 text-sm text-[#6B7280]">{{ property.address }}{% if property.city %}, {{ property.city }}{% endif %}</div>
+                  <div class="mt-2 text-sm font-semibold text-[#111111]">
                     {% if booking.room_type %}{{ booking.room_type.room_type_name }}{% elif booking.unit_type %}{{ booking.unit_type.unit_name }}{% endif %}
                   </div>
                 </div>
               </div>
-              <div class="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-300">
-                <div class="font-semibold">Reservation status</div>
-                <div class="mt-1">Active and pending completion</div>
+              <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs font-semibold text-emerald-800">
+                <div>Status: Soft Locked</div>
+                <div class="mt-0.5 text-[11px] font-normal text-emerald-700">Reserved for 48 Hours</div>
               </div>
             </div>
           </div>
 
+          <!-- Reference & Next Action -->
           <div class="grid gap-4 lg:grid-cols-2">
-            <div class="rounded-[20px] border border-white/10 bg-white/[0.03] p-4">
-              <div class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Reference</div>
-              <div class="mt-2 font-mono text-lg font-semibold text-white">{{ booking.reference_number }}</div>
+            <div class="rounded-[18px] border border-black/5 bg-[#F9FAFB] p-5">
+              <div class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#6B7280]">Booking Reference</div>
+              <div class="mt-2 font-mono text-lg font-extrabold text-[#111111]">{{ booking.reference_number }}</div>
             </div>
-            <div class="rounded-[20px] border border-white/10 bg-white/[0.03] p-4">
-              <div class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Next action</div>
-              <div class="mt-2 text-sm leading-7 text-slate-400">Choose your stay duration to keep the booking moving forward.</div>
+            <div class="rounded-[18px] border border-black/5 bg-[#F9FAFB] p-5">
+              <div class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#6B7280]">Next Step</div>
+              <div class="mt-2 text-sm leading-6 text-[#555555]">Choose your stay duration to calculate final pricing.</div>
             </div>
           </div>
 
-          <div class="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+          <!-- Flow Guide -->
+          <div class="rounded-[20px] border border-black/5 bg-[#F9FAFB] p-5 sm:p-6">
             <div class="mb-4 flex items-center gap-3">
-              <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-white">
+              <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#111111] text-white">
                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
               </div>
               <div>
-                <h2 class="text-lg font-semibold text-white">What happens next</h2>
-                <p class="text-sm text-slate-400">The remaining flow is now unlocked and ready for you.</p>
+                <h2 class="text-base font-bold text-[#111111]">What Happens Next</h2>
+                <p class="text-xs text-[#6B7280]">Complete these steps to confirm your booking.</p>
               </div>
             </div>
             <div class="grid gap-3 sm:grid-cols-3">
-              <div class="rounded-[18px] border border-white/10 bg-[#0d0d0d]/70 p-4">
-                <div class="text-sm font-semibold text-white">1. Select duration</div>
-                <div class="mt-1 text-sm text-slate-400">Choose the stay length that suits your plans.</div>
+              <div class="rounded-xl border border-black/5 bg-white p-4">
+                <div class="text-xs font-bold text-[#111111]">1. Select Duration</div>
+                <div class="mt-1 text-xs text-[#6B7280]">Choose stay length (semester or year).</div>
               </div>
-              <div class="rounded-[18px] border border-white/10 bg-[#0d0d0d]/70 p-4">
-                <div class="text-sm font-semibold text-white">2. Review details</div>
-                <div class="mt-1 text-sm text-slate-400">Confirm your preference and pricing summary.</div>
+              <div class="rounded-xl border border-black/5 bg-white p-4">
+                <div class="text-xs font-bold text-[#111111]">2. Lifestyle & Rules</div>
+                <div class="mt-1 text-xs text-[#6B7280]">Acknowledge house rules & preference options.</div>
               </div>
-              <div class="rounded-[18px] border border-white/10 bg-[#0d0d0d]/70 p-4">
-                <div class="text-sm font-semibold text-white">3. Confirm booking</div>
-                <div class="mt-1 text-sm text-slate-400">Complete the final review and submit.</div>
+              <div class="rounded-xl border border-black/5 bg-white p-4">
+                <div class="text-xs font-bold text-[#111111]">3. Confirmation</div>
+                <div class="mt-1 text-xs text-[#6B7280]">Review pricing summary & complete booking.</div>
               </div>
             </div>
           </div>
 
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <a href="{% url 'bookings:save_and_continue_later' booking.id %}" class="text-sm font-medium text-slate-400 transition-colors hover:text-white">Save and continue later</a>
-            <a href="{% url 'bookings:duration_selection' booking.id %}" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(255,255,255,0.16)]">
-              Continue to duration
-              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="m5 12 14 0"/><path d="m12 5 7 7-7 7"/></svg>
+          <!-- Bottom Actions -->
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-2">
+            <a href="{% url 'bookings:save_and_continue_later' booking.id %}" class="text-sm font-semibold text-[#6B7280] transition-colors hover:text-[#111111]">Save and continue later</a>
+            <a href="{% url 'bookings:duration_selection' booking.id %}" class="inline-flex items-center justify-center gap-2 rounded-full bg-[#111111] px-6 py-3.5 text-sm font-bold text-white shadow-md transition-all hover:bg-[#222222] hover:shadow-lg">
+              Continue to Duration
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m5 12 14 0"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
           </div>
         </div>
 
+        <!-- Right Pane Sidebar -->
         <aside class="space-y-6">
-          <div class="glass-card p-6">
-            <div class="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Your booking checklist</div>
+          <div class="rounded-[20px] border border-black/5 bg-[#F9FAFB] p-6">
+            <div class="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#6B7280]">Booking Checklist</div>
             <div class="space-y-3">
-              <div class="flex items-start gap-3 rounded-[18px] border border-white/10 bg-white/[0.03] p-4">
-                <div class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300">
-                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+              <div class="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-3.5">
+                <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white">
+                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
                 </div>
                 <div>
-                  <div class="text-sm font-semibold text-white">House rules acknowledged</div>
-                  <div class="mt-1 text-sm text-slate-400">Completed successfully.</div>
+                  <div class="text-xs font-bold text-[#111111]">Initial Reservation</div>
+                  <div class="mt-0.5 text-xs text-emerald-800">Completed successfully</div>
                 </div>
               </div>
-              <div class="flex items-start gap-3 rounded-[18px] border border-white/10 bg-white/[0.03] p-4">
-                <div class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
-                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="m5 12 14 0"/><path d="m12 5 7 7-7 7"/></svg>
+              <div class="flex items-start gap-3 rounded-xl border border-black/5 bg-white p-3.5">
+                <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#111111] text-white">
+                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m5 12 14 0"/><path d="m12 5 7 7-7 7"/></svg>
                 </div>
                 <div>
-                  <div class="text-sm font-semibold text-white">Select your stay duration</div>
-                  <div class="mt-1 text-sm text-slate-400">This is the next step.</div>
+                  <div class="text-xs font-bold text-[#111111]">Select Stay Duration</div>
+                  <div class="mt-0.5 text-xs text-[#6B7280]">Next step</div>
                 </div>
               </div>
-              <div class="flex items-start gap-3 rounded-[18px] border border-white/10 bg-white/[0.03] p-4">
-                <div class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
-                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M2 12h20"/></svg>
+              <div class="flex items-start gap-3 rounded-xl border border-black/5 bg-white p-3.5 opacity-60">
+                <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-black/10 text-[#555555]">
+                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M2 12h20"/></svg>
                 </div>
                 <div>
-                  <div class="text-sm font-semibold text-white">Confirm your booking</div>
-                  <div class="mt-1 text-sm text-slate-400">Final review and submission.</div>
+                  <div class="text-xs font-bold text-[#111111]">Confirm & Finalize</div>
+                  <div class="mt-0.5 text-xs text-[#6B7280]">Pending</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="glass-card p-6">
-            <div class="mb-4 flex items-center gap-3">
-              <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-white">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 5-3.5 8.2-7 9-3.5-.8-7-4-7-9V7l7-4z"/><path d="M9.5 12.5l1.7 1.7 3.3-3.4"/></svg>
+          <div class="rounded-[20px] border border-black/5 bg-[#F9FAFB] p-6">
+            <div class="mb-3 flex items-center gap-3">
+              <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#111111] text-white">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 5-3.5 8.2-7 9-3.5-.8-7-4-7-9V7l7-4z"/><path d="M9.5 12.5l1.7 1.7 3.3-3.4"/></svg>
               </div>
               <div>
-                <h3 class="text-lg font-semibold text-white">Keep moving</h3>
-                <p class="text-sm text-slate-400">Stay ahead of the booking timeline.</p>
+                <h3 class="text-sm font-bold text-[#111111]">Need Assistance?</h3>
+                <p class="text-xs text-[#6B7280]">We're here to help.</p>
               </div>
             </div>
-            <p class="text-sm leading-7 text-slate-300">Completing the next step promptly helps preserve your reservation and keeps everything moving smoothly.</p>
+            <p class="text-xs leading-6 text-[#555555]">If you have any questions about duration choices or pricing, feel free to contact host support at any time during the checkout process.</p>
           </div>
         </aside>
       </div>
@@ -158,3 +166,4 @@
   </div>
 </div>
 {% endblock %}
+
