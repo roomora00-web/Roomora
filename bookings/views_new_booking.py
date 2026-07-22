@@ -162,6 +162,7 @@ def initiate_booking(request, property_id):
         })
     
     # Step 3: Execute atomic soft lock
+    session_key = request.session.session_key
     house_rules_ack = HouseRulesAcknowledgment.objects.filter(
         user=user,
         property=property_obj,
