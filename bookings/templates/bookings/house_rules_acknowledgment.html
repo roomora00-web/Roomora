@@ -4,8 +4,8 @@
 {% block title %}Acknowledge House Rules — {{ property.title }}{% endblock %}
 
 {% block content %}
-<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-8 sm:px-8 lg:px-12 w-full">
-  <div class="w-full flex flex-col gap-8">
+<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-6 sm:px-8 lg:px-12 w-full pb-28 md:pb-12">
+  <div class="w-full flex flex-col gap-6 sm:gap-8">
     
     <!-- Top Stepper Bar -->
     <div class="glass-card p-4 sm:p-6 w-full">
@@ -15,63 +15,75 @@
             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 5-3.5 8.2-7 9-3.5-.8-7-4-7-9V7l7-4z"/><path d="M9.5 12.5l1.7 1.7 3.3-3.4"/></svg>
             Step 1 of 4
           </div>
-          <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] mt-2 tracking-tight">House Rules & Room Review</h1>
+          <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] mt-2 tracking-tight">House Rules & Property Review</h1>
         </div>
         
-        <!-- Step Indicator -->
-        <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 md:pb-0">
+        <!-- Step Indicator (Scrollable on Mobile) -->
+        <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
           <div class="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 rounded-2xl text-xs font-bold shadow-sm shrink-0">
             <div class="h-5 w-5 rounded-full bg-white text-[#111111] flex items-center justify-center text-[10px] font-extrabold">1</div>
-            <span>House Rules</span>
+            <span>1. House Rules</span>
           </div>
           <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
           <div class="flex items-center gap-2 bg-black/[0.04] text-[#6B7280] px-4 py-2 rounded-2xl text-xs font-semibold shrink-0">
             <div class="h-5 w-5 rounded-full bg-black/10 text-[#6B7280] flex items-center justify-center text-[10px]">2</div>
-            <span>Duration</span>
+            <span>2. Duration</span>
           </div>
           <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
           <div class="flex items-center gap-2 bg-black/[0.04] text-[#6B7280] px-4 py-2 rounded-2xl text-xs font-semibold shrink-0">
             <div class="h-5 w-5 rounded-full bg-black/10 text-[#6B7280] flex items-center justify-center text-[10px]">3</div>
-            <span>Preferences</span>
+            <span>3. Preferences</span>
           </div>
           <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
           <div class="flex items-center gap-2 bg-black/[0.04] text-[#6B7280] px-4 py-2 rounded-2xl text-xs font-semibold shrink-0">
             <div class="h-5 w-5 rounded-full bg-black/10 text-[#6B7280] flex items-center justify-center text-[10px]">4</div>
-            <span>Confirm</span>
+            <span>4. Confirm</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Main Content Workspace (Full Width) -->
-    <div class="grid gap-8 lg:grid-cols-[1.3fr_0.7fr] items-start w-full">
+    <!-- Main Content Workspace (Full Width Responsive Grid) -->
+    <div class="grid gap-6 lg:gap-8 lg:grid-cols-[1.3fr_0.7fr] items-start w-full">
       
       <!-- Left Column -->
       <div class="space-y-6 w-full">
         
-        <!-- Selected Room Pictures & Pricing Showcase -->
-        <div class="glass-card p-6 sm:p-8 space-y-6">
+        <!-- Property & Room Primary Details Card -->
+        <div class="glass-card p-5 sm:p-8 space-y-6">
+          
+          <!-- Header with Property Name, Location, Price -->
           <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-black/[0.06] pb-6">
-            <div>
-              <div class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 mb-1">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Verified Room & Property Location
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Verified {{ property.get_property_type_display|default:"Hostel" }}
+                </span>
+                {% if property.category %}
+                <span class="text-xs font-semibold text-[#6B7280] bg-black/5 px-2.5 py-0.5 rounded-full">{{ property.get_category_display }}</span>
+                {% endif %}
               </div>
-              <h2 class="font-outfit text-xl sm:text-2xl font-bold text-[#111111]">
-                {% if room %}Room {{ room.room_number }} — {{ room.room_type.room_type_name }}{% else %}{{ property.title }}{% endif %}
+
+              <!-- Property Name Title -->
+              <h2 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] tracking-tight mt-1">
+                {{ property.title }}
               </h2>
               
-              <!-- Location Line -->
-              <div class="flex items-center gap-2 mt-1.5 text-xs font-semibold text-[#555555]">
+              <!-- Location Line & Landmark -->
+              <div class="flex flex-wrap items-center gap-2 text-xs font-semibold text-[#555555] pt-0.5">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-rose-600 shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 <span>{{ property.address }}, {{ property.city }}, {{ property.region }}</span>
+                {% if property.landmark %}
+                <span class="text-[#888888]">· 📍 Near {{ property.landmark }}</span>
+                {% endif %}
               </div>
             </div>
 
             <!-- Price Highlight Pill -->
-            <div class="bg-[#111111] text-white px-5 py-3 rounded-2xl shrink-0 text-left md:text-right shadow-sm w-full md:w-auto">
-              <div class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Starting Price</div>
-              <div class="font-outfit text-xl font-extrabold text-white mt-0.5">
+            <div class="bg-[#111111] text-white px-5 py-3.5 rounded-2xl shrink-0 text-left md:text-right shadow-sm w-full md:w-auto">
+              <div class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Selected Room Rate</div>
+              <div class="font-outfit text-xl sm:text-2xl font-extrabold text-white mt-0.5">
                 {% if room and room.room_type.pricing_models.first %}
                   GH₵ {{ room.room_type.pricing_models.first.semester_price|default:room.room_type.pricing_models.first.monthly_price }}
                   <span class="text-xs font-normal text-slate-300">/ {% if room.room_type.pricing_models.first.semester_price %}semester{% else %}month{% endif %}</span>
@@ -82,9 +94,41 @@
             </div>
           </div>
 
+          <!-- Room Specification Highlights Grid -->
+          {% if room %}
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F8F8FA] border border-black/10 p-4 rounded-2xl">
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Assigned Room</div>
+              <div class="text-xs sm:text-sm font-bold text-[#111111] mt-0.5">Room {{ room.room_number }}</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Room Type</div>
+              <div class="text-xs sm:text-sm font-bold text-[#111111] mt-0.5">{{ room.room_type.room_type_name }}</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Occupancy</div>
+              <div class="text-xs sm:text-sm font-bold text-[#111111] mt-0.5">{{ room.room_type.get_occupancy_type_display }}</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Availability</div>
+              <div class="text-xs sm:text-sm font-bold text-emerald-700 mt-0.5">{{ room.available_slots }} of {{ room.total_slots }} slots open</div>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- About Property Description Summary -->
+          {% if property.description %}
+          <div class="space-y-1.5">
+            <div class="text-xs font-extrabold uppercase tracking-widest text-[#888888]">About {{ property.title }}</div>
+            <p class="text-xs sm:text-sm text-[#444444] leading-relaxed">
+              {{ property.description }}
+            </p>
+          </div>
+          {% endif %}
+
           <!-- Room Images Grid -->
-          <div class="space-y-3">
-            <div class="text-xs font-extrabold uppercase tracking-widest text-[#888888]">Selected Room & Facility Inspection Photos</div>
+          <div class="space-y-3 pt-2 border-t border-black/[0.06]">
+            <div class="text-xs font-extrabold uppercase tracking-widest text-[#888888]">Selected Room & Shared Facility Photos</div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {% if room and room.images.all %}
                 {% for img in room.images.all %}
@@ -105,14 +149,14 @@
                   </div>
                 {% endfor %}
               {% else %}
-                <div class="col-span-3 h-40 rounded-2xl border border-black/10 bg-[#F8F8FA] flex items-center justify-center text-sm font-semibold text-[#6B7280]">
+                <div class="col-span-3 h-36 rounded-2xl border border-black/10 bg-[#F8F8FA] flex items-center justify-center text-xs font-semibold text-[#6B7280]">
                   No photos available for this room
                 </div>
               {% endif %}
             </div>
           </div>
 
-          <!-- Amenities Badges Showcase -->
+          <!-- Included Amenities & Features Badges Showcase -->
           <div class="space-y-3 pt-2 border-t border-black/[0.06]">
             <div class="text-xs font-extrabold uppercase tracking-widest text-[#888888]">Included Amenities & Features</div>
             <div class="flex flex-wrap gap-2">
@@ -137,30 +181,30 @@
         </div>
 
         <!-- Quick Stats Grid -->
-        <div class="grid grid-cols-3 gap-4">
-          <div class="glass-card p-4 text-center">
-            <div class="text-[10px] font-bold uppercase tracking-wider text-[#888888]">Review Time</div>
-            <div class="font-outfit text-lg font-extrabold text-[#111111] mt-0.5">2 Mins</div>
+        <div class="grid grid-cols-3 gap-3 sm:gap-4">
+          <div class="glass-card p-3.5 sm:p-4 text-center">
+            <div class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#888888]">Review Time</div>
+            <div class="font-outfit text-base sm:text-lg font-extrabold text-[#111111] mt-0.5">2 Mins</div>
           </div>
-          <div class="glass-card p-4 text-center">
-            <div class="text-[10px] font-bold uppercase tracking-wider text-[#888888]">Policy Clarity</div>
-            <div class="font-outfit text-lg font-extrabold text-emerald-700 mt-0.5">100% Outlined</div>
+          <div class="glass-card p-3.5 sm:p-4 text-center">
+            <div class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#888888]">Policy Clarity</div>
+            <div class="font-outfit text-base sm:text-lg font-extrabold text-emerald-700 mt-0.5">100% Outlined</div>
           </div>
-          <div class="glass-card p-4 text-center">
-            <div class="text-[10px] font-bold uppercase tracking-wider text-[#888888]">Student Protection</div>
-            <div class="font-outfit text-lg font-extrabold text-[#111111] mt-0.5">Guaranteed</div>
+          <div class="glass-card p-3.5 sm:p-4 text-center">
+            <div class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#888888]">Student Protection</div>
+            <div class="font-outfit text-base sm:text-lg font-extrabold text-[#111111] mt-0.5">Guaranteed</div>
           </div>
         </div>
 
         <!-- House Rules List Card -->
-        <div class="glass-card p-6 sm:p-8 space-y-6">
+        <div class="glass-card p-5 sm:p-8 space-y-6">
           <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-2xl bg-amber-500/10 text-amber-700 flex items-center justify-center font-bold text-base">
+            <div class="h-10 w-10 rounded-2xl bg-amber-500/10 text-amber-700 flex items-center justify-center font-bold text-base shrink-0">
               📋
             </div>
             <div>
-              <h3 class="font-outfit text-lg font-bold text-[#111111]">Property Expectations & Guidelines</h3>
-              <p class="text-xs text-[#6B7280]">Please review the rules established by the host for {{ property.title }}.</p>
+              <h3 class="font-outfit text-lg font-bold text-[#111111]">Property Expectations & Rules</h3>
+              <p class="text-xs text-[#6B7280]">Host guidelines for {{ property.title }}.</p>
             </div>
           </div>
 
@@ -169,21 +213,21 @@
               <ul class="divide-y divide-black/[0.06]">
                 {% for rule in property.house_rules.splitlines %}
                   {% if rule.strip %}
-                    <li class="flex items-start gap-3.5 px-6 py-4">
-                      <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#111111] text-white font-bold text-[10px]">
+                    <li class="flex items-start gap-3.5 px-5 py-4">
+                      <div class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#111111] text-white font-bold text-[9px]">
                         ✓
                       </div>
-                      <span class="text-sm font-semibold leading-relaxed text-[#222222]">{{ rule.strip }}</span>
+                      <span class="text-xs sm:text-sm font-semibold leading-relaxed text-[#222222]">{{ rule.strip }}</span>
                     </li>
                   {% endif %}
                 {% endfor %}
               </ul>
             {% else %}
-              <div class="flex items-start gap-3.5 px-6 py-5">
-                <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white font-bold text-[10px]">
+              <div class="flex items-start gap-3.5 px-5 py-5">
+                <div class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white font-bold text-[9px]">
                   ✓
                 </div>
-                <span class="text-sm font-semibold leading-relaxed text-[#222222]">No specific house rules provided. Standard community guidelines apply.</span>
+                <span class="text-xs sm:text-sm font-semibold leading-relaxed text-[#222222]">No specific house rules provided. Standard community guidelines apply.</span>
               </div>
             {% endif %}
           </div>
@@ -192,7 +236,7 @@
           {% if property.prohibited_items %}
           <div class="space-y-3 pt-2">
             <div class="flex items-center gap-3">
-              <div class="h-9 w-9 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center font-bold text-sm border border-rose-200">
+              <div class="h-9 w-9 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center font-bold text-sm border border-rose-200 shrink-0">
                 🚫
               </div>
               <div>
@@ -200,23 +244,23 @@
                 <p class="text-xs text-[#6B7280]">Items prohibited on campus.</p>
               </div>
             </div>
-            <div class="rounded-2xl border border-rose-200/80 bg-rose-50/40 p-4 text-sm font-semibold leading-relaxed text-rose-950">
+            <div class="rounded-2xl border border-rose-200/80 bg-rose-50/40 p-4 text-xs sm:text-sm font-semibold leading-relaxed text-rose-950">
               {{ property.prohibited_items }}
             </div>
           </div>
           {% endif %}
 
-          <!-- Acknowledgment Form -->
+          <!-- Main Acknowledgment Form -->
           <form method="post" action="{% url 'bookings:acknowledge_house_rules' %}" class="space-y-6 pt-4 border-t border-black/[0.06]">
             {% csrf_token %}
             <input type="hidden" name="property_id" value="{{ property.id }}">
             {% if room_id %}<input type="hidden" name="room_id" value="{{ room_id }}">{% endif %}
             {% if unit_type_id %}<input type="hidden" name="unit_type_id" value="{{ unit_type_id }}">{% endif %}
 
-            <div id="ackBox" class="rounded-2xl border border-black/10 bg-[#F8F8FA] p-5 transition-all duration-300">
+            <div id="ackBox" class="rounded-2xl border border-black/10 bg-[#F8F8FA] p-4 sm:p-5 transition-all duration-300">
               <label class="flex cursor-pointer items-start gap-3.5">
                 <input type="checkbox" id="ackCheckbox" name="rules_acknowledged" value="yes" required class="mt-1 h-5 w-5 shrink-0 rounded-md border-black/20 text-[#111111] focus:ring-[#111111]">
-                <span class="text-sm font-semibold leading-relaxed text-[#111111]">
+                <span class="text-xs sm:text-sm font-semibold leading-relaxed text-[#111111]">
                   I have read and understood the house rules and policies for {{ property.title }}. I agree to comply with them during my stay.
                 </span>
               </label>
@@ -241,7 +285,7 @@
         
         <!-- Summary Card -->
         <div class="glass-card p-6 space-y-4">
-          <div class="font-outfit text-sm font-extrabold uppercase tracking-widest text-[#888888]">Before You Continue</div>
+          <div class="font-outfit text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#888888]">Before You Continue</div>
           
           <div class="space-y-3">
             <div class="bg-[#F8F8FA] border border-black/[0.05] p-4 rounded-2xl space-y-1">
@@ -264,7 +308,7 @@
         <!-- Student Guarantee Card -->
         <div class="glass-card p-6 space-y-4">
           <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm">
+            <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
               🛡️
             </div>
             <div>
@@ -280,19 +324,37 @@
   </div>
 </div>
 
+<!-- Sticky Action Bar for Mobile Viewports (<768px) -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-black/10 p-3 shadow-lg">
+  <div class="flex items-center justify-between gap-3">
+    <div>
+      <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">{{ property.title }}</div>
+      <div class="text-xs font-bold text-[#111111]">
+        {% if room %}Room {{ room.room_number }}{% else %}Selected Space{% endif %}
+      </div>
+    </div>
+    <button type="button" onclick="document.getElementById('ackSubmitBtn').click()" id="mobileAckBtn" disabled class="ds-btn px-6 py-2.5 text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed">
+      Acknowledge & Reserve
+    </button>
+  </div>
+</div>
+
 <script>
   const cb = document.getElementById('ackCheckbox');
   const btn = document.getElementById('ackSubmitBtn');
+  const mobileBtn = document.getElementById('mobileAckBtn');
   const ackBox = document.getElementById('ackBox');
 
   if (cb && btn && ackBox) {
     cb.addEventListener('change', function () {
       if (this.checked) {
         btn.removeAttribute('disabled');
+        if (mobileBtn) mobileBtn.removeAttribute('disabled');
         ackBox.classList.remove('border-black/10', 'bg-[#F8F8FA]');
         ackBox.classList.add('border-emerald-300', 'bg-emerald-50/60');
       } else {
         btn.setAttribute('disabled', 'true');
+        if (mobileBtn) mobileBtn.setAttribute('disabled', 'true');
         ackBox.classList.add('border-black/10', 'bg-[#F8F8FA]');
         ackBox.classList.remove('border-emerald-300', 'bg-emerald-50/60');
       }
