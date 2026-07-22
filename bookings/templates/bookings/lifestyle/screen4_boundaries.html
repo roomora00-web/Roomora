@@ -235,17 +235,3 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 {% endblock %}
-    </div>
-  </div>
-</div>
-{% include 'bookings/lifestyle/lifestyle_selection_styles.html' %}
-
-<script>
-function togglePrivacy() {
-  const selected = document.querySelector('input[name="personal_space_importance"]:checked');
-  const privacyDiv = document.getElementById('privacy_meaning_subquestion');
-  privacyDiv.classList.toggle('hidden', !(selected && (selected.value === 'VERY_IMPORTANT' || selected.value === 'IMPORTANT')));
-}
-document.addEventListener('DOMContentLoaded', togglePrivacy);
-</script>
-{% endblock %}

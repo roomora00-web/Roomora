@@ -264,21 +264,3 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 {% endblock %}
-function toggleStudyTime() {
-  const loc = document.querySelector('input[name="study_location"]:checked');
-  const studyTimeDiv = document.getElementById('study_time_subquestion');
-  studyTimeDiv.classList.toggle('hidden', !(loc && (loc.value === 'MIXED' || loc.value === 'ROOM')));
-}
-
-function toggleQuietTimes() {
-  const quiet = document.querySelector('input[name="quiet_hours_still_needed"]:checked');
-  const quietTimeDiv = document.getElementById('quiet_times_subquestion');
-  quietTimeDiv.classList.toggle('hidden', !(quiet && (quiet.value === 'YES' || quiet.value === 'SOMEWHAT')));
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  toggleStudyTime();
-  toggleQuietTimes();
-});
-</script>
-{% endblock %}
