@@ -1,71 +1,124 @@
 {% extends "bookings/base_checkout.html" %}
 {% load static %}
 
-{% block title %}Lifestyle Check — {{ property.title }}{% endblock %}
-
-{% block extra_css %}{% endblock %}
+{% block title %}Lifestyle Preferences — {{ property.title }}{% endblock %}
 
 {% block content %}
-<div class="min-h-[calc(100vh-80px)] flex flex-col items-center justify-start pt-[60px] pb-[80px] px-5 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.03)_0%,transparent_40%)]">
-  <div class="w-full max-w-[720px] mb-10 hidden sm:block">
-    <div class="flex gap-0 justify-between relative before:content-[''] before:absolute before:top-4 before:left-[10%] before:right-[10%] before:h-0.5 before:bg-border before:z-0">
-      <div class="flex-1 text-center relative z-10">
-        <div class="w-[34px] h-[34px] rounded-full bg-white text-black border-2 border-white font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">✓</div>
-        <div class="text-[12px] font-bold text-white tracking-[0.02em] transition-all duration-300">House Rules</div>
-      </div>
-      <div class="flex-1 text-center relative z-10">
-        <div class="w-[34px] h-[34px] rounded-full bg-white text-black border-2 border-white font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">✓</div>
-        <div class="text-[12px] font-bold text-white tracking-[0.02em] transition-all duration-300">Duration</div>
-      </div>
-      <div class="flex-1 text-center relative z-10 group">
-        <div class="w-[34px] h-[34px] rounded-full bg-white text-black border-2 border-white font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 shadow-[0_0_0_6px_rgba(255,255,255,0.1)] scale-110 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">3</div>
-        <div class="text-[12px] font-bold text-white tracking-[0.02em] transition-all duration-300">Lifestyle</div>
-      </div>
-      <div class="flex-1 text-center relative z-10">
-        <div class="w-[34px] h-[34px] rounded-full bg-[#111] text-muted border-2 border-border font-bold text-[13px] flex items-center justify-center mx-auto mb-2.5 transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]">4</div>
-        <div class="text-[12px] font-semibold text-muted tracking-[0.02em] transition-all duration-300">Confirm</div>
+<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-6 sm:px-8 lg:px-12 w-full pb-28 md:pb-12">
+  <div class="w-full flex flex-col gap-6 sm:gap-8">
+    
+    <!-- Top Stepper Bar -->
+    <div class="glass-card p-4 sm:p-6 w-full">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300/80 bg-emerald-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-800">
+            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Step 3 of 4 — Lifestyle & Preferences
+          </div>
+          <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] mt-2 tracking-tight">Lifestyle Preferences</h1>
+        </div>
+        
+        <!-- Step Indicator -->
+        <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+          <a href="{% url 'bookings:booking_initiated' booking.id %}" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0 hover:bg-emerald-100 transition-colors">
+            <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
+            <span>1. Soft Lock</span>
+          </a>
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <a href="{% url 'bookings:duration_selection' booking.id %}" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0 hover:bg-emerald-100 transition-colors">
+            <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
+            <span>2. Duration</span>
+          </a>
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <div class="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 rounded-2xl text-xs font-bold shadow-sm shrink-0">
+            <div class="h-5 w-5 rounded-full bg-white text-[#111111] flex items-center justify-center text-[10px] font-extrabold">3</div>
+            <span>3. Preferences</span>
+          </div>
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <div class="flex items-center gap-2 bg-black/[0.04] text-[#6B7280] px-4 py-2 rounded-2xl text-xs font-semibold shrink-0">
+            <div class="h-5 w-5 rounded-full bg-black/10 text-[#6B7280] flex items-center justify-center text-[10px]">4</div>
+            <span>4. Confirm</span>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="glass-card w-full max-w-[720px] animate-slideUp opacity-0">
-    <div class="glass-header px-6 sm:px-10 py-8 sm:py-10 pb-6 sm:pb-8">
-      <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-full text-[12px] font-bold text-white uppercase tracking-[0.05em] mb-5">Step 3 of 4</div>
-      <h1 class="text-[28px] font-extrabold m-0 mb-3 text-white leading-[1.2]">Find Your Perfect Match</h1>
-      <p class="m-0 text-[15px] text-muted leading-relaxed">Your reservation is still holding. A few quick answers help us match you with the right roommate and keep the experience smooth.</p>
-    </div>
+    <!-- Main Workspace Grid -->
+    <div class="grid gap-6 lg:gap-8 lg:grid-cols-[1.3fr_0.7fr] items-start w-full">
+      <div class="space-y-6 w-full">
+        <div class="glass-card p-5 sm:p-8 space-y-6">
+          <div class="flex items-center gap-3 border-b border-black/[0.06] pb-4">
+            <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <h2 class="font-outfit text-xl font-bold text-[#111111]">Match Your Living Preferences</h2>
+              <p class="text-xs text-[#6B7280]">Help us align your quiet hours, study habits, and house expectations.</p>
+            </div>
+          </div>
 
-    <div class="p-6 sm:p-10">
-      <div class="grid gap-3 mb-8">
-        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <div class="text-[14px] font-semibold text-white">Sleep & noise</div>
-          <div class="mt-1 text-sm text-slate-400">Keep your routine and quiet hours aligned.</div>
-        </div>
-        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <div class="text-[14px] font-semibold text-white">Cleanliness & study habits</div>
-          <div class="mt-1 text-sm text-slate-400">Make shared living easier from day one.</div>
-        </div>
-        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <div class="text-[14px] font-semibold text-white">Boundaries & expectations</div>
-          <div class="mt-1 text-sm text-slate-400">Set a healthy tone for the home.</div>
+          <div class="grid gap-3.5">
+            <div class="bg-[#F8F8FA] border border-black/10 p-4.5 rounded-2xl space-y-1">
+              <div class="text-xs font-bold text-[#111111] flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Sleep & Quiet Hours
+              </div>
+              <div class="text-xs text-[#6B7280]">Keep your routine and study schedule aligned with hostel guidelines.</div>
+            </div>
+            <div class="bg-[#F8F8FA] border border-black/10 p-4.5 rounded-2xl space-y-1">
+              <div class="text-xs font-bold text-[#111111] flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                Cleanliness & Study Habits
+              </div>
+              <div class="text-xs text-[#6B7280]">Ensure an ideal environment for academic focus and shared spaces.</div>
+            </div>
+            <div class="bg-[#F8F8FA] border border-black/10 p-4.5 rounded-2xl space-y-1">
+              <div class="text-xs font-bold text-[#111111] flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Guest & Visitor Expectations
+              </div>
+              <div class="text-xs text-[#6B7280]">Set transparent boundaries for visitors and security.</div>
+            </div>
+          </div>
+
+          {% if existing_profile %}
+          <div class="bg-emerald-50/70 border border-emerald-200 p-5 rounded-2xl text-center space-y-3">
+            <h4 class="font-outfit text-base font-extrabold text-emerald-950">Existing Lifestyle Profile Detected</h4>
+            <p class="text-xs text-emerald-800 leading-relaxed">You already completed your lifestyle questionnaire. Re-use your saved profile or update your answers before continuing.</p>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center pt-1">
+              <a href="{% url 'bookings:use_existing_lifestyle' booking.id %}" class="ds-btn px-6 py-3 text-xs font-bold">Use Existing Profile</a>
+              <a href="{% url 'bookings:lifestyle_questionnaire' booking.id 1 %}" class="inline-flex items-center justify-center rounded-full border border-emerald-300 bg-white px-6 py-3 text-xs font-bold text-emerald-900 hover:bg-emerald-100 transition-all">Update Profile</a>
+            </div>
+          </div>
+          {% else %}
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-black/[0.06]">
+            <a href="{% url 'bookings:booking_confirmation' booking.id %}" class="text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-colors">
+              Skip & Continue to Confirmation
+            </a>
+            <a href="{% url 'bookings:lifestyle_questionnaire' booking.id 1 %}" class="ds-btn w-full sm:w-auto px-8">
+              <span>Start Lifestyle Questionnaire ➔</span>
+            </a>
+          </div>
+          {% endif %}
         </div>
       </div>
 
-      {% if existing_profile %}
-      <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-center">
-        <h4 class="m-0 text-[16px] font-semibold text-white">We found your lifestyle profile</h4>
-        <p class="mt-2 text-sm leading-7 text-slate-400">You already completed the questionnaire. You can reuse those answers or update them before continuing.</p>
-        <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <a href="{% url 'bookings:use_existing_lifestyle' booking.id %}" class="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(255,255,255,0.16)]">Use existing profile</a>
-          <a href="{% url 'bookings:lifestyle_questionnaire' booking.id 1 %}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/8">Update profile</a>
+      <!-- Right Column Sidebar -->
+      <div class="space-y-6 w-full">
+        <div class="glass-card p-6 space-y-4">
+          <div class="font-outfit text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#888888]">Property Summary</div>
+          <div class="space-y-3 text-xs">
+            <div class="flex justify-between items-center bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+              <span class="text-[#6B7280]">Property</span>
+              <span class="font-bold text-[#111111]">{{ property.title }}</span>
+            </div>
+            <div class="flex justify-between items-center bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+              <span class="text-[#6B7280]">Room</span>
+              <span class="font-bold text-[#111111]">{% if booking.room %}Room {{ booking.room.room_number }}{% else %}Standard{% endif %}</span>
+            </div>
+          </div>
         </div>
       </div>
-      {% else %}
-      <a href="{% url 'bookings:lifestyle_questionnaire' booking.id 1 %}" class="ds-btn">
-        Start questionnaire
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-      {% endif %}
     </div>
   </div>
 </div>

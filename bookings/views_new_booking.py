@@ -439,11 +439,8 @@ def submit_duration(request, booking_id):
         'rental_period'
     ])
     
-    # If semester billing with 2+ semesters, or academic year → show structure selection
-    if (
-        (billing_model['type'] == 'SEMESTER' and duration_value >= 2) or
-        (billing_model['type'] == 'ACADEMIC_YEAR')
-    ):
+    # If semester billing or academic year → show structure selection (Continuous vs Split/Vacation)
+    if billing_model and billing_model.get('type') in ['SEMESTER', 'ACADEMIC_YEAR']:
         return redirect('bookings:semester_structure_selection', booking_id=booking_id)
 
     # Otherwise, show duration summary
@@ -628,19 +625,8 @@ def confirm_duration(request, booking_id):
             'vacation_reserve_start', 'vacation_reserve_end'
         ])
     
-    occupancy_type = 'SINGLE'
-    if booking.room_type:
-        occupancy_type = booking.room_type.occupancy_type
-    elif booking.unit_type:
-        if booking.unit_type.shared_apartment_allowed or booking.unit_type.roommate_matching_enabled:
-            occupancy_type = 'SHARED'
-    
-    if occupancy_type != 'SINGLE':
-        # Shared room - proceed to lifestyle preferences
-        return redirect('bookings:lifestyle_check', booking_id=booking_id)
-    else:
-        # Single occupancy - proceed to booking confirmation
-        return redirect('bookings:booking_confirmation', booking_id=booking_id)
+    # Always proceed to Step 3: Lifestyle Preferences
+    return redirect('bookings:lifestyle_check', booking_id=booking_id)
 
 
 # PART 4: LIFESTYLE PREFERENCES VIEWS
@@ -653,31 +639,15 @@ def lifestyle_check(request, booking_id):
     """
     booking = get_object_or_404(Booking, id=booking_id, tenant=request.user, status='INITIATED')
     
-    # Check if this is a shared room
-    occupancy_type = 'SINGLE'
-    if booking.room_type:
-        occupancy_type = booking.room_type.occupancy_type
-    elif booking.unit_type:
-        if booking.unit_type.shared_apartment_allowed or booking.unit_type.roommate_matching_enabled:
-            occupancy_type = 'SHARED'
-    
-    if occupancy_type == 'SINGLE':
-        # Single occupancy - skip lifestyle
-        return redirect('bookings:booking_confirmation', booking_id=booking_id)
-    
     # Check for existing lifestyle profile
     existing_profile = LifestyleProfile.objects.filter(user=request.user).first()
     
-    if existing_profile:
-        context = {
-            'booking': booking,
-            'property': booking.accommodation_property,
-            'existing_profile': existing_profile,
-        }
-        return render(request, 'bookings/lifestyle/lifestyle_check.html', context)
-    else:
-        # No existing profile - go directly to questionnaire
-        return redirect('bookings:lifestyle_questionnaire', booking_id=booking_id, screen=1)
+    context = {
+        'booking': booking,
+        'property': booking.accommodation_property,
+        'existing_profile': existing_profile,
+    }
+    return render(request, 'bookings/lifestyle/lifestyle_check.html', context)
 
 
 @login_required
