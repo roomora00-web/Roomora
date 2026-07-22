@@ -97,6 +97,7 @@ urlpatterns = [
     path('initiate/<int:property_id>/', initiate_booking, name='initiate_booking'),
     path('acknowledge-house-rules/', acknowledge_house_rules, name='acknowledge_house_rules'),
     path('booking-initiated/<int:booking_id>/', booking_initiated, name='booking_initiated'),
+    path('booking/<int:booking_id>/initiated/', booking_initiated, name='booking_initiated_alias'),
     path('booking/<int:booking_id>/save-and-continue/', save_and_continue_later, name='save_and_continue_later'),
     path('booking/<int:booking_id>/resume/', resume_booking, name='resume_booking'),
     
