@@ -317,6 +317,14 @@ def duration_selection(request, booking_id):
     """
     booking = get_object_or_404(Booking, id=booking_id, tenant=request.user, status='INITIATED')
     
+    # Auto-resolve room_type / unit_type if missing on booking object but present on room
+    if not booking.room_type and booking.room and booking.room.room_type:
+        booking.room_type = booking.room.room_type
+        booking.save(update_fields=['room_type'])
+    if not booking.unit_type and booking.room and hasattr(booking.room, 'unit_type') and booking.room.unit_type:
+        booking.unit_type = booking.room.unit_type
+        booking.save(update_fields=['unit_type'])
+
     # Get billing model
     billing_model = DurationService.get_billing_model(
         room_type_id=booking.room_type.id if booking.room_type else None,
@@ -355,6 +363,13 @@ def submit_duration(request, booking_id):
     """
     booking = get_object_or_404(Booking, id=booking_id, tenant=request.user, status='INITIATED')
     
+    if not booking.room_type and booking.room and booking.room.room_type:
+        booking.room_type = booking.room.room_type
+        booking.save(update_fields=['room_type'])
+    if not booking.unit_type and booking.room and hasattr(booking.room, 'unit_type') and booking.room.unit_type:
+        booking.unit_type = booking.room.unit_type
+        booking.save(update_fields=['unit_type'])
+
     billing_model = DurationService.get_billing_model(
         room_type_id=booking.room_type.id if booking.room_type else None,
         unit_type_id=booking.unit_type.id if booking.unit_type else None

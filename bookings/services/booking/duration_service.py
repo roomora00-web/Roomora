@@ -47,41 +47,67 @@ class DurationService:
             room_type = RoomType.objects.filter(id=room_type_id).first()
             if room_type:
                 pricing = room_type.pricing_models.first()
+                model_type = (room_type.billing_model or 'SEMESTER_BASED').replace('_BASED', '')
                 if pricing:
-                    model_type = room_type.billing_model.replace('_BASED', '')
                     academic_price = pricing.academic_year_price
                     if academic_price is None:
                         academic_price = (pricing.semester_price * 2) if pricing.semester_price else 0
                         
                     return {
                         'type': model_type,
-                        'semester_price': pricing.semester_price or 0,
-                        'monthly_price': pricing.monthly_price or 0,
-                        'yearly_price': pricing.yearly_price or 0,
-                        'academic_year_price': academic_price,
-                        'minimum_months': pricing.min_months,
+                        'semester_price': pricing.semester_price or 4500,
+                        'monthly_price': pricing.monthly_price or 800,
+                        'yearly_price': pricing.yearly_price or 8000,
+                        'academic_year_price': academic_price or 9000,
+                        'minimum_months': pricing.min_months or 1,
+                    }
+                else:
+                    return {
+                        'type': model_type,
+                        'semester_price': 4500,
+                        'monthly_price': 800,
+                        'yearly_price': 8000,
+                        'academic_year_price': 9000,
+                        'minimum_months': 1,
                     }
         
         elif unit_type_id:
             unit_type = UnitType.objects.filter(id=unit_type_id).first()
             if unit_type:
                 pricing = unit_type.pricing_models.first()
+                model_type = (unit_type.billing_model or 'SEMESTER_BASED').replace('_BASED', '')
                 if pricing:
-                    model_type = unit_type.billing_model.replace('_BASED', '')
                     academic_price = pricing.academic_year_price
                     if academic_price is None:
                         academic_price = (pricing.semester_price * 2) if pricing.semester_price else 0
                         
                     return {
                         'type': model_type,
-                        'semester_price': pricing.semester_price or 0,
-                        'monthly_price': pricing.monthly_price or 0,
-                        'yearly_price': pricing.yearly_price or 0,
-                        'academic_year_price': academic_price,
-                        'minimum_months': pricing.min_months,
+                        'semester_price': pricing.semester_price or 4500,
+                        'monthly_price': pricing.monthly_price or 800,
+                        'yearly_price': pricing.yearly_price or 8000,
+                        'academic_year_price': academic_price or 9000,
+                        'minimum_months': pricing.min_months or 1,
+                    }
+                else:
+                    return {
+                        'type': model_type,
+                        'semester_price': 4500,
+                        'monthly_price': 800,
+                        'yearly_price': 8000,
+                        'academic_year_price': 9000,
+                        'minimum_months': 1,
                     }
         
-        return None
+        # General default fallback if neither room_type nor unit_type could be found
+        return {
+            'type': 'SEMESTER',
+            'semester_price': 4500,
+            'monthly_price': 800,
+            'yearly_price': 8000,
+            'academic_year_price': 9000,
+            'minimum_months': 1,
+        }
     
     @staticmethod
     def calculate_semester_duration(
