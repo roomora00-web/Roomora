@@ -204,8 +204,10 @@
               <div class="font-bold text-[#111111] mt-0.5">{{ current_booking.move_in_date|date:"d M Y"|default:"Jul 23, 2026" }}</div>
             </div>
             <div>
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Total Amount</div>
-              <div class="font-bold text-[#111111] mt-0.5">GH₵ {{ current_booking.total_price|floatformat:2 }}</div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Total Amount Paid</div>
+              <div class="font-bold text-emerald-800 mt-0.5">
+                GH₵ {% if current_booking.payment_record %}{{ current_booking.payment_record.amount_total|floatformat:2 }}{% else %}{{ current_booking.total_price|floatformat:2 }}{% endif %}
+              </div>
             </div>
           </div>
 
@@ -220,8 +222,8 @@
               <span>Proceed to Confirmation & Payment ➔</span>
             </a>
             {% else %}
-            <a href="{% url 'bookings:my-bookings' %}" class="ds-btn w-full py-3.5 text-xs font-bold">
-              <span>Manage Booking Details ➔</span>
+            <a href="{% url 'payments:payment_confirmation' current_booking.payment_record.id %}" class="ds-btn w-full py-3.5 text-xs font-bold">
+              <span>View Official Confirmation & Receipt ➔</span>
             </a>
             {% endif %}
           </div>
@@ -255,7 +257,7 @@
         {% if recommended_properties %}
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {% for prop in recommended_properties %}
-          <div class="glass-card glass-card-hover p-4 space-y-3 overflow-hidden flex flex-col justify-between">
+          <div class="glass-card glass-card-hover p-4 space-y-3 overflow-hidden flex flex-col justify-between {% if current_booking and prop.id == current_booking.accommodation_property.id %}ring-2 ring-emerald-500 bg-emerald-50/10{% endif %}">
             <div class="space-y-3">
               <div class="relative h-36 w-full rounded-2xl overflow-hidden bg-[#F4F4F6]">
                 {% if prop.images.all %}
@@ -265,9 +267,17 @@
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
                   </div>
                 {% endif %}
+                
+                {% if current_booking and prop.id == current_booking.accommodation_property.id %}
+                <span class="absolute top-2.5 left-2.5 bg-emerald-800 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg border border-emerald-600 uppercase flex items-center gap-1 shadow-sm">
+                  <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 pulse-dot"></span>
+                  ✓ Booked & Secured by You
+                </span>
+                {% else %}
                 <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-md text-[#111111] text-[10px] font-extrabold px-2.5 py-1 rounded-lg border border-black/10 uppercase">
                   {{ prop.get_property_type_display|default:prop.property_type }}
                 </span>
+                {% endif %}
               </div>
 
               <div>
@@ -284,9 +294,15 @@
                 <div class="text-[9px] font-extrabold uppercase text-[#888888]">Starting Rate</div>
                 <div class="text-xs font-extrabold text-[#111111]">GH₵ {{ prop.starting_price|default:4500|floatformat:0 }}</div>
               </div>
+              {% if current_booking and prop.id == current_booking.accommodation_property.id %}
+              <a href="{% url 'payments:payment_confirmation' current_booking.payment_record.id %}" class="bg-emerald-800 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold hover:bg-emerald-900 transition-colors shadow-xs">
+                View Receipt
+              </a>
+              {% else %}
               <a href="{% url 'landing:property_detail' prop.id %}" class="bg-[#111111] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold hover:bg-black/80 transition-colors">
                 View Space
               </a>
+              {% endif %}
             </div>
           </div>
           {% endfor %}

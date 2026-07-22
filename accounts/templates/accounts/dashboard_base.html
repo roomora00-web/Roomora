@@ -136,6 +136,11 @@
                 <div class="space-y-1">
                     <div class="px-3 text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Core Workspace</div>
                     
+                    <a href="{% url 'landing:home' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold text-[#6B7280] hover:bg-[#F4F4F6] hover:text-[#111111] transition-all">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span>Main Website Home</span>
+                    </a>
+
                     <a href="{% url 'accounts:dashboard' %}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {% if request.resolver_match.url_name == 'dashboard' %}bg-[#111111] text-white shadow-sm ring-1 ring-black{% else %}text-[#6B7280] hover:bg-[#F4F4F6] hover:text-[#111111]{% endif %}">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
                         <span>Dashboard</span>
@@ -236,6 +241,11 @@
                 </div>
 
                 <div class="flex items-center gap-3">
+                    <a href="{% url 'landing:home' %}" class="hidden sm:inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-3.5 py-2 rounded-xl text-xs font-bold text-[#111111] hover:bg-black/5 transition-all">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span>Main Home</span>
+                    </a>
+
                     <a href="{% url 'landing:properties' %}" class="hidden sm:inline-flex items-center gap-2 bg-[#111111] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-black/80 transition-all shadow-xs">
                         <span>Browse Hostels</span>
                     </a>
