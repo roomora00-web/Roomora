@@ -4,16 +4,16 @@
 {% block dashboard_title %}Student Hub — Roomora{% endblock %}
 
 {% block dashboard_content %}
-<div class="space-y-6 sm:space-y-8 w-full">
+<div class="space-y-6 sm:space-y-8 w-full animate-fade-in-up">
 
-  <!-- Hero Welcome & State Banner -->
+  <!-- Single Hero Welcome Banner (Clean & Crisp, No Duplicate Greeting) -->
   <div class="glass-card p-6 sm:p-8 relative overflow-hidden bg-gradient-to-br from-white via-[#F8F8FA] to-emerald-50/30">
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
       
       <div class="space-y-2 max-w-2xl">
         <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300/80 bg-emerald-50 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-emerald-800">
-          <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          Student Housing Hub
+          <span class="h-2 w-2 rounded-full bg-emerald-500 pulse-dot"></span>
+          Student Accommodation Hub
         </div>
         <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">
           Welcome back, {{ user.first_name|default:"Student" }}! 👋
@@ -48,30 +48,26 @@
     </div>
   </div>
 
-  <!-- Metric Stats Grid (4 Cards) -->
+  <!-- Metric Stats Grid (4 Cards with Active Booking Count & Stay Days) -->
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
     
-    <!-- Stat 1: Active Reservation -->
-    <div class="glass-card p-5 space-y-3">
+    <!-- Stat 1: Active Reservation & Count -->
+    <a href="{% url 'bookings:my-bookings' %}" class="glass-card glass-card-hover p-5 space-y-3 block">
       <div class="flex items-center justify-between">
-        <span class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Reservation Status</span>
+        <span class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Active Bookings</span>
         <div class="h-8 w-8 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center font-bold text-xs">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
         </div>
       </div>
       <div>
-        <div class="font-outfit text-xl font-extrabold text-[#111111]">
-          {% if current_booking %}
-            {{ current_booking.get_status_display|default:current_booking.status|truncatechars:14 }}
-          {% else %}
-            No Active Stay
-          {% endif %}
+        <div class="font-outfit text-2xl font-extrabold text-[#111111]">
+          {{ active_booking_count|default:0 }} Active
         </div>
         <div class="text-[11px] text-[#6B7280] font-medium mt-0.5">
-          {% if current_booking %}{{ current_booking.accommodation_property.title|truncatechars:20 }}{% else %}Ready for booking{% endif %}
+          {% if current_booking %}{{ current_booking.accommodation_property.title|truncatechars:20 }}{% else %}No active stay{% endif %}
         </div>
       </div>
-    </div>
+    </a>
 
     <!-- Stat 2: Saved Properties -->
     <a href="{% url 'properties:saved-properties' %}" class="glass-card glass-card-hover p-5 space-y-3 block">
@@ -87,7 +83,7 @@
       </div>
     </a>
 
-    <!-- Stat 3: Lifestyle Profile Match -->
+    <!-- Stat 3: Roommate Compatibility -->
     <a href="{% url 'accounts:profile-settings' %}" class="glass-card glass-card-hover p-5 space-y-3 block">
       <div class="flex items-center justify-between">
         <span class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Roommate Match</span>
@@ -102,7 +98,7 @@
     </a>
 
     <!-- Stat 4: Protection Escrow -->
-    <div class="glass-card p-5 space-y-3">
+    <div class="glass-card glass-card-hover p-5 space-y-3">
       <div class="flex items-center justify-between">
         <span class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Escrow Protection</span>
         <div class="h-8 w-8 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-bold text-xs">
@@ -122,19 +118,19 @@
       Quick Actions
     </div>
     <div class="flex flex-wrap items-center gap-2.5 w-full">
-      <a href="{% url 'landing:properties' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:border-black/30 transition-all">
+      <a href="{% url 'landing:properties' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:bg-white hover:shadow-xs transition-all">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <span>Find a Hostel</span>
       </a>
-      <a href="{% url 'accounts:profile-settings' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:border-black/30 transition-all">
+      <a href="{% url 'accounts:profile-settings' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:bg-white hover:shadow-xs transition-all">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>Edit Lifestyle Preferences</span>
       </a>
-      <a href="{% url 'bookings:my-bookings' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:border-black/30 transition-all">
+      <a href="{% url 'bookings:my-bookings' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:bg-white hover:shadow-xs transition-all">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         <span>View My Receipts</span>
       </a>
-      <a href="{% url 'accounts:profile' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:border-black/30 transition-all">
+      <a href="{% url 'accounts:profile' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:bg-white hover:shadow-xs transition-all">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span>Account Settings</span>
       </a>
@@ -147,7 +143,7 @@
     <!-- Left Column: Active Booking & Recommended Hostels -->
     <div class="space-y-6 w-full">
       
-      <!-- Active Booking Card -->
+      <!-- Active Booking Card with Stay Duration Count -->
       <div class="glass-card p-6 space-y-5">
         <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
           <div class="flex items-center gap-3">
@@ -156,7 +152,7 @@
             </div>
             <div>
               <h2 class="font-outfit text-xl font-bold text-[#111111]">Active Reservation Particulars</h2>
-              <p class="text-xs text-[#6B7280]">Your current room lock and stay specifications.</p>
+              <p class="text-xs text-[#6B7280]">Your current room lock, stay period, and duration specs.</p>
             </div>
           </div>
           {% if current_booking %}
@@ -168,11 +164,12 @@
 
         {% if current_booking %}
         <div class="space-y-4">
-          <!-- Property Title & Details Grid -->
+          <!-- Property Title & Status -->
           <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="font-outfit text-lg font-extrabold text-[#111111]">{{ current_booking.accommodation_property.title }}</div>
-              <span class="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-50 text-emerald-900 border border-emerald-200 px-3 py-1 rounded-full">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-50 text-emerald-900 border border-emerald-200 px-3 py-1 rounded-full flex items-center gap-1.5">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 pulse-dot"></span>
                 {{ current_booking.get_status_display|default:current_booking.status }}
               </span>
             </div>
@@ -182,7 +179,8 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#F8F8FA] border border-black/10 p-4.5 rounded-2xl text-xs">
+          <!-- 4-Column Particulars Grid with Stay Duration Days Count -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F8F8FA] border border-black/10 p-4.5 rounded-2xl text-xs">
             <div>
               <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Assigned Room</div>
               <div class="font-bold text-[#111111] mt-0.5">
@@ -196,12 +194,18 @@
               </div>
             </div>
             <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Stay Duration</div>
+              <div class="font-bold text-emerald-800 mt-0.5">
+                {{ current_booking.duration_months|default:"4" }} Mo ({{ current_booking.duration_days|default:"119" }} Days)
+              </div>
+            </div>
+            <div>
               <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Move-In Date</div>
-              <div class="font-bold text-[#111111] mt-0.5">{{ current_booking.move_in_date|date:"d M Y"|default:"Scheduled" }}</div>
+              <div class="font-bold text-[#111111] mt-0.5">{{ current_booking.move_in_date|date:"d M Y"|default:"Jul 23, 2026" }}</div>
             </div>
             <div>
               <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Total Amount</div>
-              <div class="font-bold text-emerald-700 mt-0.5">GH₵ {{ current_booking.total_price|floatformat:2 }}</div>
+              <div class="font-bold text-[#111111] mt-0.5">GH₵ {{ current_booking.total_price|floatformat:2 }}</div>
             </div>
           </div>
 
@@ -280,7 +284,7 @@
                 <div class="text-[9px] font-extrabold uppercase text-[#888888]">Starting Rate</div>
                 <div class="text-xs font-extrabold text-[#111111]">GH₵ {{ prop.starting_price|default:4500|floatformat:0 }}</div>
               </div>
-              <a href="{% url 'landing:property_detail' prop.id %}" class="bg-[#111111] text-white px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-black/80 transition-colors">
+              <a href="{% url 'landing:property_detail' prop.id %}" class="bg-[#111111] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold hover:bg-black/80 transition-colors">
                 View Space
               </a>
             </div>
@@ -302,7 +306,7 @@
           </div>
           <div>
             <h3 class="font-outfit text-base font-bold text-[#111111]">Profile Completion</h3>
-            <p class="text-[11px] text-[#6B7280]">Complete profile to get 3× faster roommate matching.</p>
+            <p class="text-[11px] text-[#6B7280]">Complete profile for 3× faster roommate matching.</p>
           </div>
         </div>
 
@@ -311,7 +315,7 @@
           <div class="relative h-14 w-14 shrink-0 flex items-center justify-center">
             <svg class="h-full w-full" viewBox="0 0 36 36">
               <path class="text-black/10" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-              <path class="text-[#111111]" stroke-linecap="round" stroke-width="3.5" stroke-dasharray="{{ completion_percentage|default:0 }}, 100" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path class="text-[#111111] transition-all duration-700" stroke-linecap="round" stroke-width="3.5" stroke-dasharray="{{ completion_percentage|default:0 }}, 100" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
             </svg>
             <span class="absolute font-extrabold text-xs text-[#111111]">{{ completion_percentage|default:0 }}%</span>
           </div>
@@ -349,7 +353,7 @@
         <div class="space-y-2.5">
           {% for notif in notifications %}
           <div class="bg-[#F8F8FA] border border-black/10 p-3.5 rounded-2xl flex items-start gap-3">
-            <div class="h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+            <div class="h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0 pulse-dot"></div>
             <div class="space-y-0.5 text-xs">
               <div class="font-bold text-[#111111]">{{ notif.title }}</div>
               <div class="text-[#6B7280] text-[11px] leading-relaxed">{{ notif.message }}</div>
