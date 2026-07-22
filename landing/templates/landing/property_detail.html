@@ -2690,17 +2690,23 @@ body {
             {% if property.property_type == 'HOSTEL' %}
             {% for room in property.rooms.all %}
             {% if room.status == 'AVAILABLE' or room.status == 'PARTIALLY_OCCUPIED' %}
+            {% with primary_price=room.room_type.pricing_models.first %}
             <div class="pd-room-card">
               <div class="pd-room-card-header">
                 <div>
                   <div class="pd-room-card-title">Room {{ room.room_number }} - {{ room.room_type.name }}</div>
                   <div class="pd-room-card-subtitle">{{ room.room_type.get_occupancy_type_display }}</div>
                 </div>
-                <div class="pd-room-card-header-right">
+                <div class="pd-room-card-header-right" style="display:flex; align-items:center; gap:12px;">
+                  {% if primary_price %}
+                  <div class="pd-room-header-price" style="background:#111111; color:#ffffff; padding:6px 14px; border-radius:12px; font-weight:800; font-size:14px; letter-spacing:-0.02em;">
+                    GH₵ {% if primary_price.semester_price %}{{ primary_price.semester_price|floatformat:0 }}<span style="font-size:10px; font-weight:600; opacity:0.8; margin-left:2px;">/sem</span>{% elif primary_price.monthly_price %}{{ primary_price.monthly_price|floatformat:0 }}<span style="font-size:10px; font-weight:600; opacity:0.8; margin-left:2px;">/mo</span>{% endif %}
+                  </div>
+                  {% endif %}
                   {% if room.available_slots > 2 %}
                     <span class="pd-avail-badge available">✓ {{ room.available_slots }} slots available</span>
                   {% elif room.available_slots > 0 %}
-                    <span class="pd-avail-badge low">⚡ {{ room.available_slots }} person(s) left to occupy</span>
+                    <span class="pd-avail-badge low">⚡ {{ room.available_slots }} slot(s) left</span>
                   {% else %}
                     <span class="pd-avail-badge full">✗ Fully booked</span>
                   {% endif %}
@@ -2738,24 +2744,24 @@ body {
                   </div>
                   
                   <div class="pd-room-pricing-col">
-                    <h4>Pricing Options</h4>
-                    {% with primary_price=room.room_type.pricing_models.first %}
-                    {% if primary_price %}
-                    <div class="pd-price-block">
-                      <div class="pd-price-hero">
-                        <div class="pd-price-top">
-                          <span class="pd-price-pill">{{ primary_price.get_payment_type_display }}</span>
-                          <span class="pd-price-subtle">Choose a plan that fits your stay</span>
+                    <h4>Room Rates & Payment Plans</h4>
+                    {% if room.room_type.pricing_models.all %}
+                      <div class="pd-price-list" style="display:flex; flex-col; gap:8px;">
+                        {% for price in room.room_type.pricing_models.all %}
+                        <div class="pd-price-block" style="background:#F8F8FA; border:1px solid rgba(0,0,0,0.08); padding:12px 16px; border-radius:14px; display:flex; align-items:center; justify-content:space-between;">
+                          <div>
+                            <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#6B7280;">{{ price.get_payment_type_display }}</div>
+                            <div style="font-size:11px; color:#888888; margin-top:1px;">Fixed stay plan</div>
+                          </div>
+                          <div style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#111111;">
+                            GH₵ {% if price.semester_price %}{{ price.semester_price|floatformat:0 }}{% elif price.monthly_price %}{{ price.monthly_price|floatformat:0 }}{% elif price.yearly_price %}{{ price.yearly_price|floatformat:0 }}{% endif %}
+                          </div>
                         </div>
-                        <div class="pd-price-main">
-                          GH₵ {% if primary_price.semester_price %}{{ primary_price.semester_price|floatformat:0 }}{% elif primary_price.monthly_price %}{{ primary_price.monthly_price|floatformat:0 }}{% else %}Contact{% endif %}
-                        </div>
+                        {% endfor %}
                       </div>
-                    </div>
                     {% else %}
                     <div style="font-size:13px;color:var(--muted);">Contact for pricing</div>
                     {% endif %}
-                    {% endwith %}
                   </div>
                 </div>
               </div>
@@ -2790,6 +2796,7 @@ body {
                 {% endif %}
               </div>
             </div>
+            {% endwith %}
             {% endif %}
             {% empty %}
             <div style="padding:24px;text-align:center;color:var(--muted);font-size:14px;">No room types listed yet.</div>
