@@ -25,7 +25,7 @@ def auto_create_units_for_unit_type(sender, instance, created, **kwargs):
     if created:
         for i in range(instance.number_of_units):
             # If it's a shared apartment, slots = capacity. Else 1 slot (the whole unit)
-            slots = instance.capacity if instance.shared_apartment_allowed else 1
+            slots = instance.bedrooms if instance.shared_apartment_allowed else 1
             Room.objects.create(
                 accommodation_property=instance.accommodation_property,
                 unit_type=instance,

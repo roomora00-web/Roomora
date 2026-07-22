@@ -163,7 +163,10 @@ class PropertiesView(TemplateView):
         # Apply filters
         if location:
             properties = properties.filter(
-                Q(city__icontains=location) | Q(region__icontains=location) | Q(title__icontains=location)
+                Q(city__icontains=location) | 
+                Q(region__icontains=location) | 
+                Q(title__icontains=location) |
+                Q(country__icontains=location)
             )
         
         if property_type:

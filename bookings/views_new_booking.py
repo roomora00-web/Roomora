@@ -158,6 +158,7 @@ def initiate_booking(request, property_id):
         return render(request, 'bookings/house_rules_acknowledgment.html', {
             'property': property_obj,
             'room_id': room_id,
+            'room': room,
         })
     
     # Step 3: Execute atomic soft lock
