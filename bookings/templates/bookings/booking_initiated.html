@@ -4,11 +4,11 @@
 {% block title %}Reservation Initiated — {{ property.title }}{% endblock %}
 
 {% block content %}
-<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-8 sm:px-6 lg:px-12">
-  <div class="mx-auto flex w-full max-w-7xl flex-col gap-8">
+<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-8 sm:px-8 lg:px-12 w-full">
+  <div class="w-full flex flex-col gap-8">
     
     <!-- Top Stepper Bar -->
-    <div class="glass-card p-4 sm:p-6">
+    <div class="glass-card p-4 sm:p-6 w-full">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300/60 bg-emerald-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-800">
@@ -20,22 +20,22 @@
         
         <!-- Step Indicator -->
         <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 md:pb-0">
-          <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900">
+          <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0">
             <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
             <span>1. Soft Lock</span>
           </div>
-          <div class="h-0.5 w-4 bg-black/10"></div>
-          <div class="flex items-center gap-2 bg-[#111111] text-white px-3.5 py-2 rounded-2xl text-xs font-bold shadow-sm">
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <div class="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 rounded-2xl text-xs font-bold shadow-sm shrink-0">
             <div class="h-5 w-5 rounded-full bg-white text-[#111111] flex items-center justify-center text-[10px]">2</div>
             <span>Duration</span>
           </div>
-          <div class="h-0.5 w-4 bg-black/10"></div>
-          <div class="flex items-center gap-2 bg-black/[0.04] text-[#6B7280] px-3.5 py-2 rounded-2xl text-xs font-semibold">
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <div class="flex items-center gap-2 bg-black/[0.04] text-[#6B7280] px-4 py-2 rounded-2xl text-xs font-semibold shrink-0">
             <div class="h-5 w-5 rounded-full bg-black/10 text-[#6B7280] flex items-center justify-center text-[10px]">3</div>
             <span>Preferences</span>
           </div>
-          <div class="h-0.5 w-4 bg-black/10"></div>
-          <div class="flex items-center gap-2 bg-black/[0.04] text-[#6B7280] px-3.5 py-2 rounded-2xl text-xs font-semibold">
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <div class="flex items-center gap-2 bg-black/[0.04] text-[#6B7280] px-4 py-2 rounded-2xl text-xs font-semibold shrink-0">
             <div class="h-5 w-5 rounded-full bg-black/10 text-[#6B7280] flex items-center justify-center text-[10px]">4</div>
             <span>Confirm</span>
           </div>
@@ -43,41 +43,62 @@
       </div>
     </div>
 
-    <!-- Main Workspace Grid -->
-    <div class="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] items-start">
+    <!-- Main Workspace Grid (Full Width) -->
+    <div class="grid gap-8 lg:grid-cols-[1.3fr_0.7fr] items-start w-full">
       
       <!-- Left Column -->
-      <div class="space-y-6">
+      <div class="space-y-6 w-full">
         
-        <!-- Property Hero Card -->
+        <!-- Room Pictures Hero Showcase -->
         <div class="glass-card p-6 sm:p-8 space-y-6">
           <div class="flex flex-col sm:flex-row items-start justify-between gap-5 border-b border-black/[0.06] pb-6">
-            <div class="flex items-start gap-4">
-              {% if property.main_image %}
-                <img src="{{ property.main_image.url }}" alt="{{ property.title }}" class="h-20 w-20 shrink-0 rounded-2xl object-cover shadow-sm border border-black/5">
-              {% else %}
-                <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border border-black/10 bg-[#F4F4F6] text-[#111111]">
-                  <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                </div>
-              {% endif %}
-              <div>
-                <div class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 mb-1">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  Verified Property
-                </div>
-                <h2 class="font-outfit text-xl sm:text-2xl font-bold text-[#111111] leading-snug">{{ property.title }}</h2>
-                <div class="flex items-center gap-1.5 mt-1 text-xs text-[#6B7280]">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  <span>{{ property.address }}{% if property.city %}, {{ property.city }}{% endif %}</span>
-                </div>
+            <div>
+              <div class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 mb-1">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Reserved Space Details
+              </div>
+              <h2 class="font-outfit text-xl sm:text-2xl font-bold text-[#111111] leading-snug">{{ property.title }}</h2>
+              <div class="flex items-center gap-1.5 mt-1 text-xs text-[#6B7280]">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>{{ property.address }}{% if property.city %}, {{ property.city }}{% endif %}</span>
               </div>
             </div>
 
             <div class="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-3.5 sm:text-right shrink-0 w-full sm:w-auto">
-              <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-800">Assigned Space</div>
+              <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-800">Assigned Room</div>
               <div class="text-sm font-bold text-emerald-950 mt-0.5">
-                {% if booking.room_type %}{{ booking.room_type.room_type_name }}{% elif booking.unit_type %}{{ booking.unit_type.unit_name }}{% else %}Standard Room{% endif %}
+                {% if booking.room %}{{ booking.room.room_type.room_type_name }} (Room {{ booking.room.room_number }}){% elif booking.unit_type %}{{ booking.unit_type.unit_name }}{% else %}Standard Space{% endif %}
               </div>
+            </div>
+          </div>
+
+          <!-- Selected Room Photos Grid -->
+          <div class="space-y-3">
+            <div class="text-xs font-extrabold uppercase tracking-widest text-[#888888]">Selected Room & Shared Facilities</div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {% if booking.room and booking.room.images.all %}
+                {% for img in booking.room.images.all %}
+                  <div class="relative group overflow-hidden rounded-2xl border border-black/10 bg-[#F4F4F6] aspect-[4/3]">
+                    <img src="{{ img.image_url }}" alt="Room inspection photo" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
+                    <div class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">
+                      {{ img.get_image_type_display|default:"Room Photo" }}
+                    </div>
+                  </div>
+                {% endfor %}
+              {% elif property.all_gallery_images %}
+                {% for img in property.all_gallery_images|slice:":3" %}
+                  <div class="relative group overflow-hidden rounded-2xl border border-black/10 bg-[#F4F4F6] aspect-[4/3]">
+                    <img src="{{ img.image_url }}" alt="Property photo" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
+                    <div class="absolute bottom-2 left-2 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">
+                      {{ img.image_type|default:"Interior" }}
+                    </div>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <div class="col-span-3 h-48 rounded-2xl border border-black/10 bg-[#F8F8FA] flex items-center justify-center text-sm font-semibold text-[#6B7280]">
+                  No photos available for this room
+                </div>
+              {% endif %}
             </div>
           </div>
 
@@ -88,8 +109,8 @@
                 <div class="text-[11px] font-extrabold uppercase tracking-widest text-[#888888]">Reference Code</div>
                 <div class="font-mono text-base font-extrabold text-[#111111] mt-0.5 tracking-tight" id="refCode">{{ booking.reference_number }}</div>
               </div>
-              <button type="button" onclick="copyRefCode()" class="h-9 px-3 bg-white border border-black/10 rounded-xl text-xs font-bold text-[#111111] hover:bg-black hover:text-white transition-all shadow-sm">
-                Copy
+              <button type="button" onclick="copyRefCode()" class="h-9 px-3.5 bg-white border border-black/10 rounded-xl text-xs font-bold text-[#111111] hover:bg-black hover:text-white transition-all shadow-sm">
+                Copy Code
               </button>
             </div>
 
@@ -135,7 +156,7 @@
               Save Progress & Return Later
             </a>
             
-            <a href="{% url 'bookings:duration_selection' booking.id %}" class="ds-btn w-full sm:w-auto px-8">
+            <a href="{% url 'bookings:duration_selection' booking.id %}" class="ds-btn w-full sm:w-auto px-10">
               <span>Continue to Stay Duration</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
@@ -144,7 +165,7 @@
       </div>
 
       <!-- Right Column Sidebar -->
-      <div class="space-y-6">
+      <div class="space-y-6 w-full">
         
         <!-- Checklist Card -->
         <div class="glass-card p-6 space-y-4">
