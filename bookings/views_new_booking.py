@@ -90,6 +90,7 @@ def initiate_booking(request, property_id):
             return redirect('landing:property_detail', pk=property_id)
     
     room_id = request.GET.get('room_id')
+    unit_type_id = request.GET.get('unit_type_id')
     room = get_object_or_404(Room, id=room_id) if room_id else None
     
     user_gender = user.gender
@@ -158,6 +159,7 @@ def initiate_booking(request, property_id):
         return render(request, 'bookings/house_rules_acknowledgment.html', {
             'property': property_obj,
             'room_id': room_id,
+            'unit_type_id': unit_type_id,
             'room': room,
         })
     
