@@ -1,457 +1,379 @@
 {% extends 'accounts/dashboard_base.html' %}
 {% load static %}
 
-{% block dashboard_title %}Student Hub — Roomora Dashboard{% endblock %}
-
-{% block dashboard_extra_css %}
-<style>
-  :root {
-    --bg-page: #F4F4F6;
-    --card-surface: #FFFFFF;
-    --text-primary: #111111;
-    --text-secondary: #6B7280;
-  }
-  body {
-    background-color: #F4F4F6 !important;
-  }
-  .finexa-card {
-    background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    border-radius: 24px;
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.03), 0 4px 12px -2px rgba(0, 0, 0, 0.015);
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .finexa-card:hover {
-    box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.06);
-  }
-  .finexa-stat-card {
-    background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    border-radius: 20px;
-    padding: 20px;
-    position: relative;
-    transition: all 0.2s ease;
-  }
-  .finexa-stat-card:hover {
-    border-color: rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-  }
-  .icon-circle-badge {
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    background: #F8F8FA;
-    border: 1px solid rgba(0,0,0,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #111111;
-  }
-  .tab-pill {
-    padding: 6px 16px;
-    border-radius: 100px;
-    font-size: 12px;
-    font-weight: 700;
-    transition: all 0.2s ease;
-  }
-  .tab-pill-active {
-    background: #111111;
-    color: #FFFFFF;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  }
-  .tab-pill-inactive {
-    color: #6B7280;
-  }
-  .tab-pill-inactive:hover {
-    color: #111111;
-    background: rgba(0,0,0,0.04);
-  }
-</style>
-{% endblock %}
+{% block dashboard_title %}Student Hub — Roomora{% endblock %}
 
 {% block dashboard_content %}
-<div class="min-h-screen bg-[#F4F4F6] p-3 sm:p-6 lg:p-8 space-y-6 w-full pb-20">
-  
-  <!-- 1. Top Pill Navigation Bar (Finexa Header Style) -->
-  <div class="finexa-card p-3 sm:p-4 w-full">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="space-y-6 sm:space-y-8 w-full">
+
+  <!-- Hero Welcome & State Banner -->
+  <div class="glass-card p-6 sm:p-8 relative overflow-hidden bg-gradient-to-br from-white via-[#F8F8FA] to-emerald-50/30">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
       
-      <!-- Logo & Pill Navigation -->
-      <div class="flex items-center gap-4 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
-        <a href="{% url 'landing:home' %}" class="flex items-center gap-2.5 shrink-0 pr-3 border-r border-black/10">
-          <div class="h-9 w-9 rounded-2xl bg-[#111111] text-white font-extrabold flex items-center justify-center text-sm shadow-sm">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          </div>
-          <span class="font-outfit text-xl font-extrabold text-[#111111] tracking-tight">Roomora</span>
-        </a>
-
-        <!-- Pill Nav List -->
-        <div class="flex items-center gap-1 bg-[#F4F4F6] p-1 rounded-full border border-black/5">
-          <a href="{% url 'accounts:dashboard' %}" class="tab-pill tab-pill-active">Overview</a>
-          <a href="{% url 'bookings:my-bookings' %}" class="tab-pill tab-pill-inactive">My Bookings</a>
-          <a href="{% url 'landing:properties' %}" class="tab-pill tab-pill-inactive">Hostels</a>
-          <a href="{% url 'properties:saved-properties' %}" class="tab-pill tab-pill-inactive">Saved</a>
-          <a href="{% url 'accounts:notifications' %}" class="tab-pill tab-pill-inactive flex items-center gap-1.5">
-            <span>Notifications</span>
-            {% if unread_notifications_count > 0 %}
-            <span class="h-2 w-2 rounded-full bg-rose-500"></span>
-            {% endif %}
-          </a>
-          <a href="{% url 'accounts:profile-settings' %}" class="tab-pill tab-pill-inactive">Preferences</a>
-        </div>
-      </div>
-
-      <!-- Right Action Badges -->
-      <div class="flex items-center gap-2 shrink-0 self-end md:self-auto">
-        <a href="{% url 'landing:properties' %}" class="h-9 w-9 rounded-full bg-[#F4F4F6] border border-black/10 flex items-center justify-center text-[#111111] hover:bg-black/5 transition-colors" title="Search Properties">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </a>
-        <a href="{% url 'accounts:profile-settings' %}" class="h-9 w-9 rounded-full bg-[#F4F4F6] border border-black/10 flex items-center justify-center text-[#111111] hover:bg-black/5 transition-colors" title="Settings">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </a>
-        <a href="{% url 'accounts:notifications' %}" class="h-9 w-9 rounded-full bg-[#F4F4F6] border border-black/10 flex items-center justify-center text-[#111111] hover:bg-black/5 transition-colors relative" title="Notifications">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          {% if unread_notifications_count > 0 %}<span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500"></span>{% endif %}
-        </a>
-        <div class="h-9 w-9 rounded-full bg-[#111111] text-white flex items-center justify-center font-extrabold text-xs shadow-sm border border-black/10">
-          {{ user.first_name|default:user.email|slice:":2"|upper }}
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. Header Title & AI Assistant Row -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-    <div>
-      <h1 class="font-outfit text-3xl font-extrabold text-[#111111] tracking-tight">Student Accommodation Hub</h1>
-      <p class="text-xs text-[#6B7280] mt-1">Manage your room reservations, stay timeline, roommate compatibility, and receipts in one place.</p>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="flex items-center gap-3">
-      <a href="{% url 'landing:properties' %}" class="inline-flex items-center gap-2 bg-white border border-black/10 px-4 py-2.5 rounded-full text-xs font-bold text-[#111111] hover:bg-black/5 transition-colors shadow-sm">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span>Find Hostel</span>
-      </a>
-      <button type="button" class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white px-5 py-2.5 rounded-full text-xs font-extrabold shadow-md hover:opacity-90 transition-opacity">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-        <span>Ask Roomora AI</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- 3. Top Section: Active Reservation Card (Left) + 4 Stat Cards Grid (Right) -->
-  <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-6 items-start w-full">
-    
-    <!-- Left Card: Active Reservation Workspace (Finexa "Connected Cards" style) -->
-    <div class="finexa-card p-6 space-y-5 h-full flex flex-col justify-between">
-      <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
-        <div>
-          <h2 class="font-outfit text-xl font-bold text-[#111111]">Active Room Reservation</h2>
-          <p class="text-xs text-[#6B7280]">Your soft-locked space and assigned accommodation.</p>
-        </div>
-        {% if current_booking %}
-        <span class="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full text-xs font-extrabold text-emerald-900">
+      <div class="space-y-2 max-w-2xl">
+        <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300/80 bg-emerald-50 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-emerald-800">
           <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          {{ current_booking.get_status_display }}
-        </span>
+          Student Housing Hub
+        </div>
+        <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">
+          Welcome back, {{ user.first_name|default:"Student" }}! 👋
+        </h1>
+        <p class="text-xs sm:text-sm text-[#6B7280] leading-relaxed">
+          {{ status_message|default:"Manage your room reservations, roommate compatibility preferences, and payment receipts from your personal hub." }}
+        </p>
+      </div>
+
+      <!-- State-Aware CTA Action Buttons -->
+      <div class="flex items-center gap-3 shrink-0">
+        {% if current_booking %}
+          {% if current_booking.status == 'INITIATED' or current_booking.status == 'LIFESTYLE_PENDING' %}
+          <a href="{% url 'bookings:resume_booking' current_booking.id %}" class="ds-btn py-3.5 px-6 text-xs font-bold shadow-md">
+            <span>Resume Booking ➔</span>
+          </a>
+          {% elif current_booking.status == 'PAYMENT_REQUIRED' %}
+          <a href="{% url 'bookings:booking_confirmation' current_booking.id %}" class="ds-btn py-3.5 px-6 text-xs font-bold shadow-md">
+            <span>Proceed to Payment ➔</span>
+          </a>
+          {% else %}
+          <a href="{% url 'bookings:my-bookings' %}" class="ds-btn py-3.5 px-6 text-xs font-bold shadow-md">
+            <span>View Active Stay ➔</span>
+          </a>
+          {% endif %}
         {% else %}
-        <span class="inline-flex items-center gap-1.5 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full text-xs font-extrabold text-blue-900">
-          Ready to Reserve
-        </span>
+        <a href="{% url 'landing:properties' %}" class="ds-btn py-3.5 px-6 text-xs font-bold shadow-md">
+          <span>Explore Available Hostels ➔</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Metric Stats Grid (4 Cards) -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+    
+    <!-- Stat 1: Active Reservation -->
+    <div class="glass-card p-5 space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Reservation Status</span>
+        <div class="h-8 w-8 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center font-bold text-xs">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </div>
+      </div>
+      <div>
+        <div class="font-outfit text-xl font-extrabold text-[#111111]">
+          {% if current_booking %}
+            {{ current_booking.get_status_display|default:current_booking.status|truncatechars:14 }}
+          {% else %}
+            No Active Stay
+          {% endif %}
+        </div>
+        <div class="text-[11px] text-[#6B7280] font-medium mt-0.5">
+          {% if current_booking %}{{ current_booking.accommodation_property.title|truncatechars:20 }}{% else %}Ready for booking{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat 2: Saved Properties -->
+    <a href="{% url 'properties:saved-properties' %}" class="glass-card glass-card-hover p-5 space-y-3 block">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Saved Hostels</span>
+        <div class="h-8 w-8 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 flex items-center justify-center font-bold text-xs">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </div>
+      </div>
+      <div>
+        <div class="font-outfit text-2xl font-extrabold text-[#111111]">{{ saved_properties_count|default:0 }}</div>
+        <div class="text-[11px] text-[#6B7280] font-medium mt-0.5">Bookmarked places</div>
+      </div>
+    </a>
+
+    <!-- Stat 3: Lifestyle Profile Match -->
+    <a href="{% url 'accounts:profile-settings' %}" class="glass-card glass-card-hover p-5 space-y-3 block">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Roommate Match</span>
+        <div class="h-8 w-8 rounded-xl bg-purple-50 border border-purple-200 text-purple-700 flex items-center justify-center font-bold text-xs">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+      </div>
+      <div>
+        <div class="font-outfit text-2xl font-extrabold text-[#111111]">{{ completion_percentage|default:0 }}%</div>
+        <div class="text-[11px] text-[#6B7280] font-medium mt-0.5">Compatibility setup</div>
+      </div>
+    </a>
+
+    <!-- Stat 4: Protection Escrow -->
+    <div class="glass-card p-5 space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Escrow Protection</span>
+        <div class="h-8 w-8 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-bold text-xs">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+      </div>
+      <div>
+        <div class="font-outfit text-2xl font-extrabold text-[#111111]">2% Fee</div>
+        <div class="text-[11px] text-emerald-700 font-extrabold mt-0.5">Safeguarded Deposit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Action Pills Strip -->
+  <div class="glass-card p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4">
+    <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888] shrink-0 sm:border-r border-black/10 sm:pr-4">
+      Quick Actions
+    </div>
+    <div class="flex flex-wrap items-center gap-2.5 w-full">
+      <a href="{% url 'landing:properties' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:border-black/30 transition-all">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Find a Hostel</span>
+      </a>
+      <a href="{% url 'accounts:profile-settings' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:border-black/30 transition-all">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Edit Lifestyle Preferences</span>
+      </a>
+      <a href="{% url 'bookings:my-bookings' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:border-black/30 transition-all">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>View My Receipts</span>
+      </a>
+      <a href="{% url 'accounts:profile' %}" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#111111] hover:border-black/30 transition-all">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Account Settings</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Main 2-Column Dashboard Layout -->
+  <div class="grid gap-6 lg:gap-8 lg:grid-cols-[1.3fr_0.7fr] items-start w-full">
+    
+    <!-- Left Column: Active Booking & Recommended Hostels -->
+    <div class="space-y-6 w-full">
+      
+      <!-- Active Booking Card -->
+      <div class="glass-card p-6 space-y-5">
+        <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <div>
+              <h2 class="font-outfit text-xl font-bold text-[#111111]">Active Reservation Particulars</h2>
+              <p class="text-xs text-[#6B7280]">Your current room lock and stay specifications.</p>
+            </div>
+          </div>
+          {% if current_booking %}
+          <span class="text-xs font-mono font-extrabold bg-black/5 text-[#111111] px-3 py-1 rounded-xl border border-black/10">
+            {{ current_booking.reference_number }}
+          </span>
+          {% endif %}
+        </div>
+
+        {% if current_booking %}
+        <div class="space-y-4">
+          <!-- Property Title & Details Grid -->
+          <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="font-outfit text-lg font-extrabold text-[#111111]">{{ current_booking.accommodation_property.title }}</div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-50 text-emerald-900 border border-emerald-200 px-3 py-1 rounded-full">
+                {{ current_booking.get_status_display|default:current_booking.status }}
+              </span>
+            </div>
+            <div class="text-xs text-[#6B7280] flex items-center gap-1.5 font-medium">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              {{ current_booking.accommodation_property.address }}, {{ current_booking.accommodation_property.city }}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#F8F8FA] border border-black/10 p-4.5 rounded-2xl text-xs">
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Assigned Room</div>
+              <div class="font-bold text-[#111111] mt-0.5">
+                {% if current_booking.assigned_room %}
+                  Room {{ current_booking.assigned_room.room_number }}
+                {% elif current_booking.room_type %}
+                  {{ current_booking.room_type.room_type_name }}
+                {% else %}
+                  Standard Unit
+                {% endif %}
+              </div>
+            </div>
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Move-In Date</div>
+              <div class="font-bold text-[#111111] mt-0.5">{{ current_booking.move_in_date|date:"d M Y"|default:"Scheduled" }}</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Total Amount</div>
+              <div class="font-bold text-emerald-700 mt-0.5">GH₵ {{ current_booking.total_price|floatformat:2 }}</div>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="pt-2">
+            {% if current_booking.status == 'INITIATED' or current_booking.status == 'LIFESTYLE_PENDING' %}
+            <a href="{% url 'bookings:resume_booking' current_booking.id %}" class="ds-btn w-full py-3.5 text-xs font-bold">
+              <span>Continue Booking Journey ➔</span>
+            </a>
+            {% elif current_booking.status == 'PAYMENT_REQUIRED' %}
+            <a href="{% url 'bookings:booking_confirmation' current_booking.id %}" class="ds-btn w-full py-3.5 text-xs font-bold">
+              <span>Proceed to Confirmation & Payment ➔</span>
+            </a>
+            {% else %}
+            <a href="{% url 'bookings:my-bookings' %}" class="ds-btn w-full py-3.5 text-xs font-bold">
+              <span>Manage Booking Details ➔</span>
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        {% else %}
+        <div class="p-8 rounded-2xl border border-black/10 bg-[#F8F8FA] text-center space-y-3">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="mx-auto text-[#888888]"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <div>
+            <div class="text-sm font-extrabold text-[#111111]">No Active Reservation</div>
+            <p class="text-xs text-[#6B7280] mt-1">Explore top-rated hostels near your university campus and soft-lock your space.</p>
+          </div>
+          <a href="{% url 'landing:properties' %}" class="ds-btn inline-flex py-3 px-6 text-xs font-bold w-auto">
+            <span>Browse Available Hostels ➔</span>
+          </a>
+        </div>
         {% endif %}
       </div>
 
-      {% if current_booking %}
-      <!-- Featured Booking Card Component -->
-      <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-4">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div class="flex items-center gap-3.5">
-            <div class="h-12 w-12 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-base shadow-sm shrink-0">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            </div>
-            <div>
-              <div class="text-sm font-extrabold text-[#111111]">{{ current_booking.accommodation_property.title }}</div>
-              <div class="text-xs text-[#6B7280] font-medium">
-                {% if current_booking.assigned_room %}Room {{ current_booking.assigned_room.room_number }}{% else %}Standard Unit{% endif %} • {{ current_booking.accommodation_property.address }}
+      <!-- Recommended Hostels Showcase Grid -->
+      <div class="glass-card p-6 space-y-5">
+        <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+          <div>
+            <h2 class="font-outfit text-xl font-bold text-[#111111]">Recommended Hostels Near Campus</h2>
+            <p class="text-xs text-[#6B7280]">Verified student accommodation matching your preferences.</p>
+          </div>
+          <a href="{% url 'landing:properties' %}" class="text-xs font-bold text-[#111111] hover:underline">
+            View All ➔
+          </a>
+        </div>
+
+        {% if recommended_properties %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {% for prop in recommended_properties %}
+          <div class="glass-card glass-card-hover p-4 space-y-3 overflow-hidden flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="relative h-36 w-full rounded-2xl overflow-hidden bg-[#F4F4F6]">
+                {% if prop.images.all %}
+                  <img src="{{ prop.images.first.image_url }}" alt="{{ prop.title }}" class="h-full w-full object-cover">
+                {% else %}
+                  <div class="h-full w-full flex items-center justify-center text-[#888888]">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                  </div>
+                {% endif %}
+                <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-md text-[#111111] text-[10px] font-extrabold px-2.5 py-1 rounded-lg border border-black/10 uppercase">
+                  {{ prop.get_property_type_display|default:prop.property_type }}
+                </span>
+              </div>
+
+              <div>
+                <div class="font-bold text-sm text-[#111111] truncate">{{ prop.title }}</div>
+                <div class="text-xs text-[#6B7280] flex items-center gap-1 mt-0.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  {{ prop.city }}
+                </div>
               </div>
             </div>
-          </div>
-          <div class="text-right">
-            <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Rent Amount</div>
-            <div class="font-outfit text-base font-extrabold text-[#111111]">GH₵ {{ current_booking.total_price|floatformat:2 }}</div>
-          </div>
-        </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2 text-xs">
-          <div class="bg-white p-2.5 rounded-xl border border-black/10">
-            <div class="text-[10px] font-extrabold uppercase text-[#888888]">Reference Code</div>
-            <div class="font-mono font-bold text-[#111111] mt-0.5">{{ current_booking.reference_number }}</div>
+            <div class="flex items-center justify-between border-t border-black/[0.06] pt-3 mt-2">
+              <div>
+                <div class="text-[9px] font-extrabold uppercase text-[#888888]">Starting Rate</div>
+                <div class="text-xs font-extrabold text-[#111111]">GH₵ {{ prop.starting_price|default:4500|floatformat:0 }}</div>
+              </div>
+              <a href="{% url 'landing:property_detail' prop.id %}" class="bg-[#111111] text-white px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-black/80 transition-colors">
+                View Space
+              </a>
+            </div>
           </div>
-          <div class="bg-white p-2.5 rounded-xl border border-black/10">
-            <div class="text-[10px] font-extrabold uppercase text-[#888888]">Move-In Scheduled</div>
-            <div class="font-bold text-[#111111] mt-0.5">{{ current_booking.move_in_date|date:"d M Y"|default:"Pending" }}</div>
-          </div>
-          <div class="bg-white p-2.5 rounded-xl border border-black/10 col-span-2 sm:col-span-1">
-            <div class="text-[10px] font-extrabold uppercase text-[#888888]">Soft Lock Status</div>
-            <div class="font-bold text-emerald-800 mt-0.5">48h Active Hold</div>
-          </div>
+          {% endfor %}
         </div>
+        {% endif %}
       </div>
-
-      <!-- Action Footer -->
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-        <a href="{% url 'bookings:booking_initiated' current_booking.id %}" class="ds-btn sm:w-auto px-6 py-3 text-xs font-bold">
-          <span>Manage Active Booking ➔</span>
-        </a>
-        <a href="{% url 'bookings:my-bookings' %}" class="text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-colors">
-          View All Bookings
-        </a>
-      </div>
-      {% else %}
-      <div class="bg-[#F8F8FA] border border-black/10 p-8 rounded-2xl text-center space-y-3">
-        <div class="h-12 w-12 rounded-2xl bg-black/5 text-[#111111] flex items-center justify-center mx-auto">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </div>
-        <div>
-          <div class="text-sm font-extrabold text-[#111111]">No Active Reservation Yet</div>
-          <p class="text-xs text-[#6B7280] mt-1 max-w-sm mx-auto">Discover top-rated student hostels near your campus and reserve with a 48-hour soft lock.</p>
-        </div>
-        <a href="{% url 'landing:properties' %}" class="ds-btn max-w-xs mx-auto py-3 text-xs font-bold inline-flex">
-          <span>Browse Available Hostels ➔</span>
-        </a>
-      </div>
-      {% endif %}
     </div>
 
-    <!-- Right 4 Metric Stat Cards (Finexa 2x2 Grid) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4.5 w-full">
+    <!-- Right Column Sidebar: Profile Ring & Notifications -->
+    <div class="space-y-6 w-full">
       
-      <!-- Stat Card 1: Total Balance / Rent -->
-      <div class="finexa-stat-card flex flex-col justify-between space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Total Accommodation Rent</span>
-          <div class="icon-circle-badge">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <!-- Profile Completion Ring Card -->
+      <div class="glass-card p-6 space-y-4">
+        <div class="flex items-center gap-3 border-b border-black/[0.06] pb-3">
+          <div class="h-9 w-9 rounded-xl bg-[#111111] text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <h3 class="font-outfit text-base font-bold text-[#111111]">Profile Completion</h3>
+            <p class="text-[11px] text-[#6B7280]">Complete profile to get 3× faster roommate matching.</p>
           </div>
         </div>
-        <div>
-          <div class="font-outfit text-2xl font-extrabold text-[#111111]">
-            GH₵ {% if current_booking %}{{ current_booking.total_price|floatformat:2 }}{% else %}0.00{% endif %}
+
+        <div class="bg-[#F8F8FA] border border-black/10 p-4 rounded-2xl flex items-center gap-4">
+          <!-- Circular SVG Progress Ring -->
+          <div class="relative h-14 w-14 shrink-0 flex items-center justify-center">
+            <svg class="h-full w-full" viewBox="0 0 36 36">
+              <path class="text-black/10" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path class="text-[#111111]" stroke-linecap="round" stroke-width="3.5" stroke-dasharray="{{ completion_percentage|default:0 }}, 100" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <span class="absolute font-extrabold text-xs text-[#111111]">{{ completion_percentage|default:0 }}%</span>
           </div>
-          <div class="flex items-center gap-1.5 text-xs text-emerald-800 font-extrabold mt-1">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            <span>↗ 100% Secured in Escrow</span>
+
+          <div class="space-y-1">
+            <div class="text-xs font-bold text-[#111111]">
+              {% if completion_percentage >= 100 %}Full Setup Completed{% else %}Action Required{% endif %}
+            </div>
+            <p class="text-[11px] text-[#6B7280]">
+              {% if completion_percentage >= 100 %}Your profile is optimized for roommate matching.{% else %}Fill in missing emergency and student ID info.{% endif %}
+            </p>
           </div>
         </div>
-        <div class="text-[10px] text-[#888888] font-medium border-t border-black/[0.06] pt-2">Across properties & terms</div>
+
+        {% if completion_percentage < 100 %}
+        <a href="{% url 'accounts:profile' %}" class="inline-flex items-center justify-center w-full bg-[#111111] text-white py-3 rounded-2xl text-xs font-bold hover:bg-black/80 transition-colors shadow-sm">
+          Complete Profile Now ➔
+        </a>
+        {% endif %}
       </div>
 
-      <!-- Stat Card 2: Soft Lock Hold Window -->
-      <div class="finexa-stat-card flex flex-col justify-between space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Reservation Hold Window</span>
-          <div class="icon-circle-badge">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <!-- Notifications & Alert Feed Card -->
+      <div class="glass-card p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-black/[0.06] pb-3">
+          <div class="flex items-center gap-2 font-outfit text-sm font-bold text-[#111111]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span>Activity & Notification Feed</span>
           </div>
+          <a href="{% url 'accounts:notifications' %}" class="text-[11px] font-bold text-[#6B7280] hover:text-[#111111]">
+            View All
+          </a>
         </div>
-        <div>
-          <div class="font-outfit text-2xl font-extrabold text-[#111111]">
-            48 Hours Hold
+
+        {% if notifications %}
+        <div class="space-y-2.5">
+          {% for notif in notifications %}
+          <div class="bg-[#F8F8FA] border border-black/10 p-3.5 rounded-2xl flex items-start gap-3">
+            <div class="h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+            <div class="space-y-0.5 text-xs">
+              <div class="font-bold text-[#111111]">{{ notif.title }}</div>
+              <div class="text-[#6B7280] text-[11px] leading-relaxed">{{ notif.message }}</div>
+            </div>
           </div>
-          <div class="flex items-center gap-1.5 text-xs text-blue-800 font-extrabold mt-1">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            <span>↗ Instant Soft Lock</span>
-          </div>
+          {% endfor %}
         </div>
-        <div class="text-[10px] text-[#888888] font-medium border-t border-black/[0.06] pt-2">Guaranteed room availability</div>
+        {% else %}
+        <div class="p-6 rounded-2xl border border-black/10 bg-[#F8F8FA] text-center space-y-1">
+          <div class="text-xs font-bold text-[#111111]">All Caught Up!</div>
+          <p class="text-[11px] text-[#6B7280]">No new notifications or pending alerts.</p>
+        </div>
+        {% endif %}
       </div>
 
-      <!-- Stat Card 3: Roommate Match Rating -->
-      <div class="finexa-stat-card flex flex-col justify-between space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Roommate Compatibility</span>
-          <div class="icon-circle-badge">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
+      <!-- Roomora Support Guarantee -->
+      <div class="glass-card p-6 space-y-3">
+        <div class="flex items-center gap-2 font-bold text-xs text-[#111111]">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          24/7 Student Guarantee
         </div>
-        <div>
-          <div class="font-outfit text-2xl font-extrabold text-[#111111]">
-            94% Trait Match
-          </div>
-          <div class="flex items-center gap-1.5 text-xs text-purple-800 font-extrabold mt-1">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            <span>↗ Sleep & Study Trait Match</span>
-          </div>
-        </div>
-        <div class="text-[10px] text-[#888888] font-medium border-t border-black/[0.06] pt-2">Based on questionnaire</div>
-      </div>
-
-      <!-- Stat Card 4: Active Cards / Bookings Count -->
-      <div class="finexa-stat-card flex flex-col justify-between space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Active Bookings</span>
-          <div class="icon-circle-badge">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          </div>
-        </div>
-        <div>
-          <div class="font-outfit text-2xl font-extrabold text-[#111111]">
-            {{ active_booking_count|default:1 }} Active
-          </div>
-          <div class="flex items-center gap-1.5 text-xs text-emerald-800 font-extrabold mt-1">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            <span>↗ Verified Student</span>
-          </div>
-        </div>
-        <div class="text-[10px] text-[#888888] font-medium border-t border-black/[0.06] pt-2">Current semester stay</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 4. Bottom Section: Scheduled Payments Table (Left) + Analytics Curve Chart (Right) -->
-  <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_1.3fr] gap-6 items-start w-full">
-    
-    <!-- Left Card: Scheduled Payments & History (Finexa Table Style) -->
-    <div class="finexa-card p-6 space-y-5">
-      <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
-        <div>
-          <h3 class="font-outfit text-lg font-bold text-[#111111]">Booking & Payment History</h3>
-          <p class="text-xs text-[#6B7280]">Recent room reservations and payments.</p>
-        </div>
-        <a href="{% url 'bookings:my-bookings' %}" class="text-xs font-bold text-purple-700 hover:text-purple-900 transition-colors">See All</a>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888] border-b border-black/[0.06]">
-              <th class="py-2.5 px-3">Property / Item</th>
-              <th class="py-2.5 px-3">Status</th>
-              <th class="py-2.5 px-3">Date</th>
-              <th class="py-2.5 px-3 text-right">Amount</th>
-            </tr>
-          </thead>
-          <tbody class="text-xs divide-y divide-black/[0.04]">
-            {% if current_booking %}
-            <tr>
-              <td class="py-3 px-3">
-                <div class="font-bold text-[#111111]">{{ current_booking.accommodation_property.title }}</div>
-                <div class="text-[10px] text-[#6B7280]">Ref: {{ current_booking.reference_number }}</div>
-              </td>
-              <td class="py-3 px-3">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                  {{ current_booking.get_status_display }}
-                </span>
-              </td>
-              <td class="py-3 px-3 text-[#6B7280] font-medium">{{ current_booking.created_at|date:"M j" }}</td>
-              <td class="py-3 px-3 text-right font-extrabold text-emerald-700">+GH₵ {{ current_booking.total_price|floatformat:0 }}</td>
-            </tr>
-            {% endif %}
-            <tr>
-              <td class="py-3 px-3">
-                <div class="font-bold text-[#111111]">Roomora Escrow Service Fee</div>
-                <div class="text-[10px] text-[#6B7280]">Platform 2% Fee</div>
-              </td>
-              <td class="py-3 px-3">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-800 border border-blue-200">
-                  Completed
-                </span>
-              </td>
-              <td class="py-3 px-3 text-[#6B7280] font-medium">July 22</td>
-              <td class="py-3 px-3 text-right font-extrabold text-[#111111]">GH₵ 300</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-3">
-                <div class="font-bold text-[#111111]">Pentagon Hostel Security Deposit</div>
-                <div class="text-[10px] text-[#6B7280]">Refundable Deposit</div>
-              </td>
-              <td class="py-3 px-3">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#F8F8FA] text-[#111111] border border-black/10">
-                  Included
-                </span>
-              </td>
-              <td class="py-3 px-3 text-[#6B7280] font-medium">July 20</td>
-              <td class="py-3 px-3 text-right font-extrabold text-[#111111]">GH₵ 0</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Right Card: Balance & Stay Analytics Overview (Finexa Smooth Area Curve Chart) -->
-    <div class="finexa-card p-6 space-y-5">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-black/[0.06] pb-4">
-        <div>
-          <h3 class="font-outfit text-lg font-bold text-[#111111]">Balance & Stay Overview</h3>
-          <div class="flex items-center gap-4 text-xs mt-1">
-            <span class="flex items-center gap-1.5 font-bold text-purple-700">
-              <span class="h-2.5 w-2.5 rounded-full bg-purple-600"></span> Available Rent Balance
-            </span>
-            <span class="flex items-center gap-1.5 font-bold text-slate-700">
-              <span class="h-2.5 w-2.5 rounded-full bg-slate-800"></span> Escrow Deposit
-            </span>
-          </div>
-        </div>
-
-        <!-- Filter Pills -->
-        <div class="flex items-center gap-1 bg-[#F4F4F6] p-1 rounded-full border border-black/5 self-start sm:self-auto">
-          <button class="px-3 py-1 rounded-full text-[11px] font-extrabold bg-[#111111] text-white">1Y</button>
-          <button class="px-3 py-1 rounded-full text-[11px] font-bold text-[#6B7280] hover:text-[#111111]">6M</button>
-          <button class="px-3 py-1 rounded-full text-[11px] font-bold text-[#6B7280] hover:text-[#111111]">1M</button>
-        </div>
-      </div>
-
-      <!-- Interactive Smooth Curve SVG Chart (Finexa Style) -->
-      <div class="relative w-full aspect-[16/9] pt-4">
-        
-        <!-- Hover Callout Tooltip Pill (Finexa April Callout) -->
-        <div class="absolute left-[38%] top-[12%] z-10 bg-white border border-black/10 rounded-2xl p-3 shadow-xl space-y-1 transform -translate-x-1/2">
-          <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">July 2026 Payment</div>
-          <div class="text-xs font-bold text-purple-700 flex items-center gap-1.5">
-            <span class="h-1.5 w-1.5 rounded-full bg-purple-600"></span>
-            Rent Paid: GH₵ 15,300
-          </div>
-          <div class="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
-            <span class="h-1.5 w-1.5 rounded-full bg-slate-800"></span>
-            Platform Fee: GH₵ 300
-          </div>
-        </div>
-
-        <!-- SVG Smooth Curve Chart -->
-        <svg class="w-full h-full overflow-visible" viewBox="0 0 500 200" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="purpleGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.25"/>
-              <stop offset="100%" stop-color="#7C3AED" stop-opacity="0.0"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Grid Lines -->
-          <line x1="0" y1="40" x2="500" y2="40" stroke="rgba(0,0,0,0.05)" stroke-dasharray="4 4"/>
-          <line x1="0" y1="80" x2="500" y2="80" stroke="rgba(0,0,0,0.05)" stroke-dasharray="4 4"/>
-          <line x1="0" y1="120" x2="500" y2="120" stroke="rgba(0,0,0,0.05)" stroke-dasharray="4 4"/>
-          <line x1="0" y1="160" x2="500" y2="160" stroke="rgba(0,0,0,0.05)" stroke-dasharray="4 4"/>
-
-          <!-- Primary Smooth Area Fill -->
-          <path d="M 0 150 Q 80 120, 150 90 T 300 40 T 450 70 L 500 40 L 500 180 L 0 180 Z" fill="url(#purpleGradient)" />
-
-          <!-- Primary Curve Line (Purple) -->
-          <path d="M 0 150 Q 80 120, 150 90 T 300 40 T 450 70 L 500 40" fill="none" stroke="#7C3AED" stroke-width="3" stroke-linecap="round" />
-
-          <!-- Secondary Dashed Curve Line (Dark Slate) -->
-          <path d="M 0 165 Q 100 155, 200 140 T 400 125 L 500 120" fill="none" stroke="#1E293B" stroke-width="2" stroke-dasharray="4 4" />
-
-          <!-- Active Marker Indicator Dot -->
-          <line x1="190" y1="40" x2="190" y2="180" stroke="#7C3AED" stroke-dasharray="2 2" opacity="0.6"/>
-          <circle cx="190" cy="72" r="5" fill="#7C3AED" stroke="#FFFFFF" stroke-width="2"/>
-          <circle cx="190" cy="142" r="4" fill="#1E293B" stroke="#FFFFFF" stroke-width="2"/>
-        </svg>
-
-        <!-- X-Axis Labels -->
-        <div class="flex justify-between items-center text-[10px] font-extrabold text-[#888888] pt-2 px-1">
-          <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
-        </div>
+        <p class="text-xs text-[#6B7280] leading-relaxed">
+          Need assistance with your booking, roommate assignment, or payment receipt? Contact Roomora support directly at <a href="mailto:support@roomora.com" class="font-bold text-[#111111] underline">support@roomora.com</a>.
+        </p>
       </div>
     </div>
   </div>
