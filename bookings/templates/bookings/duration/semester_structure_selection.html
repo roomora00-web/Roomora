@@ -48,7 +48,9 @@
       <div class="space-y-6 w-full">
         <div class="glass-card p-5 sm:p-8 space-y-6">
           <div class="flex items-center gap-3 border-b border-black/[0.06] pb-4">
-            <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">🔄</div>
+            <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </div>
             <div>
               <h2 class="font-outfit text-xl font-bold text-[#111111]">Multi-Semester Arrangement</h2>
               <p class="text-xs text-[#6B7280]">Select how your stay should be managed during inter-semester breaks.</p>
@@ -62,7 +64,9 @@
               <!-- Continuous Stay -->
               <label class="flex items-start gap-4 p-5 rounded-2xl bg-[#F8F8FA] border-2 border-black/10 cursor-pointer transition-all hover:border-black/30 group" id="card-CONTINUOUS" onclick="selectStructure('CONTINUOUS')">
                 <input type="radio" name="structure" value="CONTINUOUS" checked class="hidden">
-                <div class="text-2xl leading-none shrink-0 mt-1">🔄</div>
+                <div class="h-8 w-8 rounded-xl bg-[#111111] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                </div>
                 <div class="flex-1">
                   <div class="text-sm font-extrabold text-[#111111]">Continuous Stay (Recommended)</div>
                   <div class="text-xs text-[#6B7280] mt-1 leading-relaxed">Remain in the room straight through without packing up between semesters.</div>
@@ -77,7 +81,9 @@
               <!-- Split Stay -->
               <label class="flex items-start gap-4 p-5 rounded-2xl bg-[#F8F8FA] border-2 border-black/10 cursor-pointer transition-all hover:border-black/30 group" id="card-SPLIT" onclick="selectStructure('SPLIT')">
                 <input type="radio" name="structure" value="SPLIT" class="hidden">
-                <div class="text-2xl leading-none shrink-0 mt-1">⏸️</div>
+                <div class="h-8 w-8 rounded-xl bg-black/10 text-[#111111] flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                </div>
                 <div class="flex-1">
                   <div class="text-sm font-extrabold text-[#111111]">Split Stay (Vacation Break)</div>
                   <div class="text-xs text-[#6B7280] mt-1 leading-relaxed">Vacate and clear the room during the long academic break.</div>
