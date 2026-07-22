@@ -15,8 +15,8 @@
             <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
             Step 4 of 4 — Final Review & Confirmation
           </div>
-          <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] mt-2 tracking-tight">Confirm Your Booking</h1>
-          <p class="text-xs text-[#6B7280] mt-1">Review your full property specifications, room details, and stay preferences before payment.</p>
+          <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] mt-2 tracking-tight">Confirm Your Room Booking</h1>
+          <p class="text-xs text-[#6B7280] mt-1">Review room inspection photos, property specifications, and stay preferences before payment.</p>
         </div>
         
         <!-- Step Indicator -->
@@ -47,9 +47,127 @@
     <!-- Main Workspace Grid -->
     <div class="grid gap-6 lg:gap-8 lg:grid-cols-[1.35fr_0.65fr] items-start w-full">
       
-      <!-- Left Column: Comprehensive Property & Room Details -->
+      <!-- Left Column: Room Photos & Comprehensive Details -->
       <div class="space-y-6 w-full">
         
+        <!-- Room & Property Inspection Photo Gallery Card -->
+        <div class="glass-card p-5 sm:p-8 space-y-5">
+          <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div>
+                <h2 class="font-outfit text-xl font-bold text-[#111111]">Room & Property Inspection Gallery</h2>
+                <p class="text-xs text-[#6B7280]">Verified inspection photos of the reserved space, interior, and facilities.</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-emerald-900 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+              {% if room %}Room {{ room.room_number }}{% else %}Verified Space{% endif %}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            {% if gallery_images %}
+              {% for img in gallery_images %}
+              <div class="relative group overflow-hidden rounded-2xl border border-black/10 bg-[#F4F4F6] aspect-[4/3] shadow-sm">
+                <img src="{{ img.image_url }}" alt="{{ img.caption|default:'Room inspection photo' }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
+                  <span class="bg-white/90 backdrop-blur-md text-[#111111] text-[10px] font-extrabold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm">
+                    {{ img.get_image_type_display|default:img.image_type|default:"Inspection Photo" }}
+                  </span>
+                  {% if img.caption %}
+                  <span class="text-[10px] text-white/90 font-medium truncate max-w-[120px]">{{ img.caption }}</span>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="col-span-3 p-8 rounded-2xl border border-black/10 bg-[#F8F8FA] text-center space-y-2">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mx-auto text-[#888888]"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <div class="text-xs font-extrabold text-[#111111]">Verified Room Inspection Available</div>
+                <p class="text-[11px] text-[#6B7280]">Room photos will be attached upon admin final confirmation.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Entire Room & Unit Details Card -->
+        <div class="glass-card p-5 sm:p-8 space-y-6">
+          <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              </div>
+              <div>
+                <h2 class="font-outfit text-xl font-bold text-[#111111]">Entire Room & Space Information</h2>
+                <p class="text-xs text-[#6B7280]">Specific room tier, capacity, floor, and layout specifications.</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono font-extrabold bg-[#111111] text-white px-3 py-1 rounded-xl">
+              {% if room %}Room {{ room.room_number }}{% else %}Assigned Space{% endif %}
+            </span>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Room & Tier Highlights -->
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-[#F8F8FA] border border-black/10 p-4.5 rounded-2xl">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Assigned Room</div>
+                <div class="text-sm font-extrabold text-[#111111] mt-0.5">
+                  {% if room %}Room {{ room.room_number }}{% else %}Pre-assigned{% endif %}
+                </div>
+              </div>
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Floor Level</div>
+                <div class="text-sm font-extrabold text-[#111111] mt-0.5">
+                  {% if room and room.floor %}{{ room.floor }} Floor{% else %}Standard Floor{% endif %}
+                </div>
+              </div>
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Room Type Tier</div>
+                <div class="text-sm font-extrabold text-[#111111] mt-0.5">
+                  {% if room_type %}{{ room_type.room_type_name }}{% elif unit_type %}{{ unit_type.unit_name }}{% else %}Standard Hostel Room{% endif %}
+                </div>
+              </div>
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Room Occupancy</div>
+                <div class="text-sm font-extrabold text-[#111111] mt-0.5">
+                  {% if room %}{{ room.total_slots }} Person Capacity ({{ room.occupied_slots }} occupied){% else %}Standard Capacity{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Room Description & Features -->
+            <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-3">
+              <div class="text-xs font-extrabold text-[#111111] uppercase tracking-wider">Room Features & Furnishings</div>
+              <p class="text-xs text-[#555555] leading-relaxed">
+                {% if room_type and room_type.description %}
+                  {{ room_type.description }}
+                {% else %}
+                  Equipped with student study desks, comfortable bedding, personal storage wardrobe, ventilation fan/AC access, and high-speed Wi-Fi access point.
+                {% endif %}
+              </p>
+              
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 text-xs">
+                <div class="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-black/10">
+                  <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-semibold text-[#111111]">Study Desk & Chair</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-black/10">
+                  <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-semibold text-[#111111]">Personal Wardrobe</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-black/10">
+                  <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-semibold text-[#111111]">High-Speed Wi-Fi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Property Deep Details Card -->
         <div class="glass-card p-5 sm:p-8 space-y-6">
           <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
@@ -135,6 +253,158 @@
                 {% for amenity in amenities %}
                 <span class="inline-flex items-center gap-1.5 bg-white border border-black/10 px-3 py-1.5 rounded-xl text-xs font-bold text-[#111111]">
                   <span class="h-1.5 w-1.5 rounded-full bg-[#111111]"></span>
+                  {{ amenity.name }}
+                </span>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Tenant & Stay Duration Details Card -->
+        <div class="glass-card p-5 sm:p-8 space-y-6">
+          <div class="flex items-center gap-3 border-b border-black/[0.06] pb-4">
+            <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div>
+              <h2 class="font-outfit text-xl font-bold text-[#111111]">Tenant & Timeline Details</h2>
+              <p class="text-xs text-[#6B7280]">Primary tenant identity and scheduled move-in timeline.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#F8F8FA] border border-black/10 p-4.5 rounded-2xl">
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Primary Tenant</div>
+              <div class="text-xs sm:text-sm font-bold text-[#111111] mt-0.5">{{ booking.tenant.full_name|default:booking.tenant.email }}</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Move-In Date</div>
+              <div class="text-xs sm:text-sm font-bold text-[#111111] mt-0.5">{{ booking.move_in_date|date:"d M Y"|default:"Pending" }}</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Move-Out Date</div>
+              <div class="text-xs sm:text-sm font-bold text-[#111111] mt-0.5">{{ booking.move_out_date|date:"d M Y"|default:"Pending" }}</div>
+            </div>
+          </div>
+
+          <div class="bg-[#F8F8FA] border border-black/10 p-4 rounded-2xl flex justify-between items-center text-xs">
+            <span class="text-[#6B7280]">Selected Duration Model:</span>
+            <span class="font-extrabold text-[#111111]">{{ booking.calculated_duration_label|default:"Standard Stay" }}</span>
+          </div>
+        </div>
+
+        <!-- House Rules & Policies Card -->
+        {% if property.house_rules or property.curfew_time %}
+        <div class="glass-card p-5 sm:p-8 space-y-4">
+          <div class="flex items-center gap-2 text-sm font-bold text-[#111111]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Property Rules & Regulations
+          </div>
+          {% if property.curfew_time %}
+          <div class="text-xs bg-amber-50 border border-amber-200 text-amber-900 p-3 rounded-xl font-semibold">
+            Hostel Curfew: {{ property.curfew_time|time:"H:i" }} PM
+          </div>
+          {% endif %}
+          {% if property.house_rules %}
+          <p class="text-xs text-[#555555] leading-relaxed whitespace-pre-line bg-[#F8F8FA] border border-black/10 p-4 rounded-xl">
+            {{ property.house_rules }}
+          </p>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Right Column Sidebar: Price Summary & Submission -->
+      <div class="space-y-6 w-full">
+        
+        <!-- Booking Reference & Timer Box -->
+        <div class="glass-card p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-black/[0.06] pb-3">
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Booking Reference</div>
+              <div class="font-mono text-base font-extrabold text-[#111111] mt-0.5">{{ booking.reference_number }}</div>
+            </div>
+            <div class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800">
+              Soft-Locked
+            </div>
+          </div>
+
+          <div id="bc-timer" class="bg-[#F8F8FA] border border-black/10 p-4 rounded-2xl space-y-1" data-expiry="{{ soft_lock_expires_at|default:'' }}">
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Reservation Window Remaining</div>
+            <div id="bc-timer-value" class="text-base font-extrabold text-[#111111]">
+              {% if time_remaining %}{{ time_remaining }}{% elif soft_lock_expires_at %}Loading…{% else %}Active Hold{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Price Breakdown & Checkout Action -->
+        <div class="glass-card p-6 space-y-5">
+          <div class="font-outfit text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#888888]">Payment & Price Breakdown</div>
+          
+          <div class="space-y-2.5 text-xs font-semibold">
+            <div class="flex justify-between py-2 border-b border-black/[0.06]"><span class="text-[#6B7280]">Rent Rate:</span><span class="text-[#111111] font-bold">GH₵ {{ booking.price_per_unit|default:4500|floatformat:2 }}</span></div>
+            <div class="flex justify-between py-2 border-b border-black/[0.06]"><span class="text-[#6B7280]">Security Deposit:</span><span class="text-[#111111] font-bold">GH₵ {{ booking.security_deposit|default:'0.00'|floatformat:2 }}</span></div>
+            <div class="flex justify-between py-2 border-b border-black/[0.06]"><span class="text-[#6B7280]">Duration:</span><span class="text-[#111111] font-bold">{{ booking.calculated_duration_label|default:'1 Semester' }}</span></div>
+          </div>
+
+          <div class="bg-[#111111] text-white p-5 rounded-2xl">
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total Payable Amount</div>
+            <div class="font-outfit text-2xl font-extrabold text-white mt-1">
+              GH₵ {{ booking.total_amount|default:booking.total_price|default:4500|floatformat:2 }}
+            </div>
+          </div>
+
+          {% if booking.status == 'PAYMENT_REQUIRED' or booking.status == 'INITIATED' or booking.status == 'SOFT_LOCKED' %}
+          <form method="post" action="{% url 'bookings:submit_booking' booking.id %}" class="pt-2">
+            {% csrf_token %}
+            <button type="submit" class="ds-btn w-full py-4 text-base shadow-md">
+              <span>Proceed to Payment ➔</span>
+            </button>
+          </form>
+          <p class="text-center text-[11px] font-semibold text-[#6B7280]">Complete payment to finalize your room reservation.</p>
+          {% else %}
+          <div class="bg-emerald-50 border border-emerald-200 text-emerald-950 p-4 rounded-2xl text-center space-y-1">
+            <div class="text-sm font-extrabold text-emerald-900 flex items-center justify-center gap-1.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Payment Completed
+            </div>
+            <div class="text-xs text-emerald-800">Your reservation is under admin review.</div>
+          </div>
+          {% endif %}
+
+          <div class="text-center pt-2">
+            <a href="{% url 'bookings:save_and_continue_later' booking.id %}" class="text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-colors">
+              Save Progress & Exit
+            </a>
+          </div>
+        </div>
+
+        <!-- Protected Student Booking Info -->
+        <div class="glass-card p-6 space-y-3">
+          <div class="flex items-center gap-2 font-bold text-xs text-[#111111]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Roomora Guarantee
+          </div>
+          <p class="text-xs text-[#6B7280] leading-relaxed">
+            Your booking reference code holds your room soft lock exclusively. Once submitted, your reservation will be sent for property manager confirmation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Sticky Action Footer (<768px) -->
+{% if booking.status == 'PAYMENT_REQUIRED' or booking.status == 'INITIATED' or booking.status == 'SOFT_LOCKED' %}
+<div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-black/10 p-3 shadow-lg">
+  <div class="flex items-center justify-between gap-3">
+    <div>
+      <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Total Amount</div>
+      <div class="text-sm font-extrabold text-[#111111]">
+        GH₵ {{ booking.total_amount|default:booking.total_price|default:4500|floatformat:0 }}
+      </div>
     </div>
     <form method="post" action="{% url 'bookings:submit_booking' booking.id %}" class="m-0">
       {% csrf_token %}

@@ -1121,7 +1121,12 @@ def booking_confirmation(request, booking_id):
     from accounts.models import LifestyleProfile
     lifestyle_profile = LifestyleProfile.objects.filter(user=request.user).first()
     
-    room_images = list(room.images.all()) if (room and room.images.exists()) else (list(accommodation_property.images.all()) if accommodation_property else [])
+    # Collect room and property gallery images
+    gallery_images = []
+    if room and hasattr(room, 'images') and room.images.exists():
+        gallery_images = list(room.images.all())
+    if not gallery_images and accommodation_property:
+        gallery_images = accommodation_property.all_gallery_images[:6]
     
     context = {
         'booking': booking,
@@ -1131,7 +1136,7 @@ def booking_confirmation(request, booking_id):
         'unit_type': unit_type,
         'amenities': accommodation_property.amenities.all() if accommodation_property else [],
         'property_images': accommodation_property.images.all()[:6] if accommodation_property else [],
-        'room_images': room_images,
+        'gallery_images': gallery_images,
         'lifestyle_profile': lifestyle_profile,
         'time_remaining': SoftLockService.get_time_remaining(booking),
         'soft_lock_expires_at': booking.soft_lock_expires_at.isoformat() if booking.soft_lock_expires_at else None,
