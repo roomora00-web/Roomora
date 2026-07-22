@@ -1,584 +1,233 @@
-{% extends "landing/base.html" %}
+{% extends "bookings/base_checkout.html" %}
 {% load static %}
 
-{% block title %}Complete Your Booking Payment - Roomora{% endblock %}
-
-{% block extra_css %}
-<style>
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: #fff !important;
-    color: #1f2937 !important;
-}
-
-.checkout-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    min-height: 100vh;
-    margin: 0;
-    position: relative;
-    z-index: 1;
-}
-
-@media (min-width: 768px) {
-    .checkout-container {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 767px) {
-    .checkout-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .left-column {
-        padding: 24px;
-    }
-    
-    .right-column {
-        padding: 24px;
-    }
-    
-    .amount-display {
-        font-size: 36px;
-    }
-    
-    .payment-method-tabs {
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    
-    .payment-tab {
-        flex: 1 1 calc(50% - 8px);
-        min-width: 120px;
-        font-size: 13px;
-    }
-}
-
-/* Left Column - Dark Theme */
-.left-column {
-    background: #000000;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: #fff;
-}
-
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: 500;
-    margin-bottom: 32px;
-    transition: color 0.2s;
-}
-
-.back-button:hover {
-    color: #fff;
-}
-
-.amount-display {
-    font-size: 48px;
-    font-weight: 800;
-    margin-bottom: 12px;
-    color: #ffffff;
-}
-
-.billing-subtext {
-    color: #ffffff;
-    font-size: 16px;
-    margin-bottom: 32px;
-    line-height: 1.5;
-}
-
-.plan-card {
-    background: #000000;
-    border: 1px solid #333333;
-    border-radius: 16px;
-    padding: 24px;
-}
-
-.plan-title {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: #ffffff;
-}
-
-.breakdown-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.breakdown-item:last-child {
-    border-bottom: none;
-}
-
-.breakdown-label {
-    color: #ffffff;
-}
-
-.breakdown-value {
-    color: #fff;
-    font-weight: 600;
-}
-
-.total-due {
-    background: #1a1a1a;
-    border-radius: 12px;
-    padding: 16px;
-    margin-top: 16px;
-    border: 1px solid #333333;
-}
-
-.total-due .breakdown-value {
-    font-size: 24px;
-    font-weight: 800;
-    color: #ffffff;
-}
-
-/* Right Column - White Theme */
-.right-column {
-    background: #ffffff;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-}
-
-.right-column h2 {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 24px;
-}
-
-.payment-method-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-}
-
-.payment-tab {
-    padding: 12px 20px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    background: #fff;
-    color: #6b7280;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 14px;
-}
-
-.payment-tab:hover {
-    border-color: #000000;
-    color: #000000;
-}
-
-.payment-tab.active {
-    background: #000000;
-    border-color: #000000;
-    color: #fff;
-}
-
-.form-section {
-    margin-bottom: 24px;
-}
-
-.form-label {
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 8px;
-}
-
-.form-input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    font-size: 15px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    background: #fff;
-    color: #1f2937;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: #000000;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-}
-
-@media (min-width: 640px) {
-    .form-row {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-.timer-notice {
-    background: #f5f5f5;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 24px;
-}
-
-.timer-notice .timer-label {
-    color: #000000;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 8px;
-}
-
-.timer-notice .timer-value {
-    color: #000000;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.security-notice {
-    background: #f5f5f5;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.security-notice .icon {
-    color: #000000;
-}
-
-.security-notice .text {
-    flex: 1;
-}
-
-.security-notice .text strong {
-    color: #000000;
-    display: block;
-    font-size: 14px;
-}
-
-.security-notice .text small {
-    color: #666666;
-    display: block;
-    font-size: 13px;
-    margin-top: 4px;
-}
-
-.btn-primary {
-    width: 100%;
-    background: #000000;
-    color: #fff;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 16px;
-}
-
-.btn-primary:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.btn-secondary {
-    width: 100%;
-    background: transparent;
-    color: #000000;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 15px;
-    border: 2px solid #000000;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 12px;
-    text-align: center;
-    text-decoration: none;
-}
-
-.btn-secondary:hover {
-    background: #000000;
-    color: #ffffff;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(8px);
-}
-
-.modal.show {
-    display: flex;
-}
-
-.modal-content {
-    background: #fff;
-    border-radius: 24px;
-    padding: 48px;
-    max-width: 440px;
-    text-align: center;
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
-}
-
-.spinner {
-    width: 56px;
-    height: 56px;
-    border: 4px solid #e5e5e5;
-    border-top-color: #000000;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 24px;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.modal-content h4 {
-    color: #1f2937;
-    margin-bottom: 16px;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.modal-content p {
-    color: #6b7280;
-    margin-bottom: 20px;
-    line-height: 1.6;
-}
-
-.status-message {
-    color: #000000;
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
-.benefits-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.benefits-list li {
-    padding: 12px 0;
-    color: #ffffff;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.benefits-list li:last-child {
-    border-bottom: none;
-}
-
-.benefits-list li::before {
-    content: '✓';
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 18px;
-}
-</style>
-{% endblock %}
+{% block title %}Payment Gateway Checkout — {{ booking.accommodation_property.title }}{% endblock %}
 
 {% block content %}
-<div class="checkout-container">
-    <!-- Left Column - Payment Summary -->
-    <div class="left-column">
-        <a href="{% url 'accounts:dashboard' %}" class="back-button">
-            ← Back to Dashboard
-        </a>
-        
-        <div class="amount-display">GH₵ {{ payment.amount_total|floatformat:2 }}</div>
-        <div class="billing-subtext">
-            Complete your booking payment for {{ booking.accommodation_property.title }}
-        </div>
-        
-        <div class="plan-card">
-            <div class="plan-title">
-                {% if booking.assigned_room %}
-                    Room {{ booking.assigned_room.room_number }}
-                {% elif booking.room_type %}
-                    {{ booking.room_type.room_type_name }}
-                {% elif booking.unit_type %}
-                    {{ booking.unit_type.unit_name }}
-                {% else %}
-                    Premium Room
-                {% endif %}
-            </div>
-            
-            <div class="breakdown-item">
-                <span class="breakdown-label">Reference</span>
-                <span class="breakdown-value">{{ booking.reference_number }}</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">Duration</span>
-                <span class="breakdown-value">{{ duration_display }}</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">Move-in</span>
-                <span class="breakdown-value">{{ booking.move_in_date|date:"F j, Y" }}</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">Move-out</span>
-                <span class="breakdown-value">{{ booking.move_out_date|date:"F j, Y" }}</span>
-            </div>
-            
-            <div class="total-due breakdown-item">
-                <span class="breakdown-label">Total Due Today</span>
-                <span class="breakdown-value">GH₵ {{ payment.amount_total|floatformat:2 }}</span>
-            </div>
-        </div>
-        
-        <div style="margin-top: 32px;">
-            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #fff;">What This Pays For</h3>
-            <ul class="benefits-list">
-                <li>
-                    {% if booking.assigned_room %}
-                        Room {{ booking.assigned_room.room_number }}
-                    {% elif booking.room_type %}
-                        {{ booking.room_type.room_type_name }}
-                    {% elif booking.unit_type %}
-                        {{ booking.unit_type.unit_name }}
-                    {% else %}
-                        Premium Room
-                    {% endif %}
-                    at {{ booking.accommodation_property.title }}
-                </li>
-                <li>{{ duration_display }} occupancy</li>
-                <li>All included amenities (WiFi, water, electricity)</li>
-                <li>Platform booking protection and support</li>
-            </ul>
-        </div>
-    </div>
+<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-6 sm:px-8 lg:px-12 w-full pb-28 md:pb-12">
+  <div class="w-full flex flex-col gap-6 sm:gap-8">
     
-    <!-- Right Column - Payment Form -->
-    <div class="right-column">
-        <h2>Choose Payment Method</h2>
-        
-        <div class="payment-method-tabs">
-            <button type="button" class="payment-tab active" data-method="mtn_momo">MTN MoMo</button>
-            <button type="button" class="payment-tab" data-method="vodafone_cash">Vodafone Cash</button>
-            <button type="button" class="payment-tab" data-method="airteltigo_money">AirtelTigo</button>
-            <button type="button" class="payment-tab" data-method="card_visa">Card</button>
-            <button type="button" class="payment-tab" data-method="bank_transfer">Bank Transfer</button>
+    <!-- Top Stepper Bar -->
+    <div class="glass-card p-4 sm:p-6 w-full">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300/80 bg-emerald-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-800">
+            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Payment Gateway — Secured Checkout
+          </div>
+          <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] mt-2 tracking-tight">Complete Your Booking Payment</h1>
+          <p class="text-xs text-[#6B7280] mt-1">Select your preferred payment method below to authorize your reservation deposit.</p>
         </div>
         
-        <form id="payment-form">
+        <!-- Step Indicator -->
+        <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+          <a href="{% url 'bookings:booking_initiated' booking.id %}" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0">
+            <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
+            <span>1. Soft Lock</span>
+          </a>
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <a href="{% url 'bookings:duration_selection' booking.id %}" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0">
+            <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
+            <span>2. Duration</span>
+          </a>
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <a href="{% url 'bookings:lifestyle_check' booking.id %}" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0">
+            <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
+            <span>3. Preferences</span>
+          </a>
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <div class="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 rounded-2xl text-xs font-bold shadow-sm shrink-0">
+            <div class="h-5 w-5 rounded-full bg-white text-[#111111] flex items-center justify-center text-[10px] font-extrabold">4</div>
+            <span>4. Payment</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace Grid -->
+    <div class="grid gap-6 lg:gap-8 lg:grid-cols-[1.2fr_0.8fr] items-start w-full">
+      
+      <!-- Left Column: Payment Form & Method Selection -->
+      <div class="space-y-6 w-full">
+        <div class="glass-card p-5 sm:p-8 space-y-6">
+          
+          <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              </div>
+              <div>
+                <h2 class="font-outfit text-xl font-bold text-[#111111]">Choose Payment Method</h2>
+                <p class="text-xs text-[#6B7280]">Supports Ghana Mobile Money (MTN, Telecel/Vodafone, AirtelTigo) and Visa/Mastercard.</p>
+              </div>
+            </div>
+            <span class="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold text-emerald-900">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Paystack 256-bit Encryption
+            </span>
+          </div>
+
+          <!-- Payment Method Selector Tabs -->
+          <div class="space-y-3">
+            <label class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Select Channel</label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="payment-tabs-container">
+              <button type="button" class="payment-tab active flex flex-col items-center justify-center p-3.5 rounded-2xl border border-[#111111] bg-[#111111] text-white font-bold text-xs gap-1 transition-all shadow-sm" data-method="mtn_momo">
+                <span>MTN Mobile Money</span>
+                <span class="text-[10px] opacity-80">Instant MoMo Push</span>
+              </button>
+              <button type="button" class="payment-tab flex flex-col items-center justify-center p-3.5 rounded-2xl border border-black/10 bg-[#F8F8FA] text-[#111111] hover:border-black/30 font-bold text-xs gap-1 transition-all" data-method="vodafone_cash">
+                <span>Telecel / Vodafone</span>
+                <span class="text-[10px] text-[#6B7280]">Vodafone Cash</span>
+              </button>
+              <button type="button" class="payment-tab flex flex-col items-center justify-center p-3.5 rounded-2xl border border-black/10 bg-[#F8F8FA] text-[#111111] hover:border-black/30 font-bold text-xs gap-1 transition-all" data-method="airteltigo_money">
+                <span>AirtelTigo Money</span>
+                <span class="text-[10px] text-[#6B7280]">AT Money</span>
+              </button>
+              <button type="button" class="payment-tab flex flex-col items-center justify-center p-3.5 rounded-2xl border border-black/10 bg-[#F8F8FA] text-[#111111] hover:border-black/30 font-bold text-xs gap-1 transition-all" data-method="card_visa">
+                <span>Credit / Debit Card</span>
+                <span class="text-[10px] text-[#6B7280]">Visa & Mastercard</span>
+              </button>
+              <button type="button" class="payment-tab flex flex-col items-center justify-center p-3.5 rounded-2xl border border-black/10 bg-[#F8F8FA] text-[#111111] hover:border-black/30 font-bold text-xs gap-1 transition-all col-span-2 sm:col-span-1" data-method="bank_transfer">
+                <span>Bank Transfer</span>
+                <span class="text-[10px] text-[#6B7280]">Direct Wire</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Payment Form -->
+          <form id="payment-form" class="space-y-5">
             {% csrf_token %}
             <input type="hidden" name="payment_id" value="{{ payment.id }}">
             <input type="hidden" name="payment_method" id="selected-payment-method" value="mtn_momo">
-            
-            <!-- Mobile Number Input (for MoMo) -->
-            <div class="form-section" id="mobile-number-section">
-                <label class="form-label">Mobile Number</label>
-                <input type="text" class="form-input" name="mobile_number" placeholder="+233 XX XXX XXXX" id="mobile-number-input">
+
+            <!-- Mobile Number Input Section -->
+            <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-3" id="mobile-number-section">
+              <label class="text-xs font-extrabold text-[#111111] flex items-center justify-between">
+                <span>Mobile Wallet Phone Number</span>
+                <span class="text-[10px] text-[#6B7280] font-normal">e.g. 024XXXXXXX or 050XXXXXXX</span>
+              </label>
+              <input type="tel" class="w-full rounded-xl border border-black/15 bg-white p-3.5 text-sm font-bold text-[#111111] outline-none transition focus:border-[#111111]" name="mobile_number" placeholder="024 000 0000" id="mobile-number-input" value="{{ request.user.phone_number|default:'' }}">
+              <p class="text-[11px] text-[#6B7280]">A approval pop-up prompt will be pushed directly to this phone number.</p>
             </div>
-            
-            <!-- Timer Notice -->
-            <div class="timer-notice">
-                <div class="timer-label">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 8px;">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    Complete payment before: {{ payment.payment_window_closes_at|date:"F j, Y, g:i A" }}
-                </div>
-                <div class="timer-value" id="time-remaining">Loading...</div>
+
+            <!-- Timer Box -->
+            <div class="bg-[#F8F8FA] border border-black/10 p-4 rounded-2xl flex items-center justify-between">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#111111]">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Window Closes: {{ payment.payment_window_closes_at|date:"g:i A" }}
+              </div>
+              <div id="time-remaining" class="font-mono text-sm font-extrabold text-[#111111]">Loading...</div>
             </div>
-            
-            <!-- Security Notice -->
-            <div class="security-notice">
-                <div class="icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
-                </div>
-                <div class="text">
-                    <strong>Secured by Paystack</strong>
-                    <small>Your financial details are never stored on Roomora servers.</small>
-                </div>
-            </div>
-            
-            <button type="button" class="btn-primary" id="proceed-payment-btn">
-                Proceed to Payment
+
+            <!-- Submit Action -->
+            <button type="button" class="ds-btn py-4 text-base shadow-md w-full" id="proceed-payment-btn">
+              <span>Pay GH₵ {{ payment.amount_total|floatformat:2 }} Now ➔</span>
             </button>
             
-            <a href="{% url 'accounts:dashboard' %}" class="btn-secondary">
-                Cancel Booking
-            </a>
-        </form>
+            <div class="text-center">
+              <a href="{% url 'bookings:booking_confirmation' booking.id %}" class="text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-colors">
+                ← Back to Booking Review
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Column Sidebar: Price Breakdown & What You're Paying For -->
+      <div class="space-y-6 w-full">
+        
+        <!-- Summary Box -->
+        <div class="glass-card p-6 space-y-5">
+          <div class="font-outfit text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#888888]">Reservation Summary</div>
+          
+          <div class="bg-[#F8F8FA] border border-black/10 p-4 rounded-2xl space-y-1">
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Property</div>
+            <div class="text-base font-bold text-[#111111]">{{ booking.accommodation_property.title }}</div>
+            <div class="text-xs text-[#6B7280]">{{ booking.accommodation_property.address }}, {{ booking.accommodation_property.city }}</div>
+          </div>
+
+          <div class="space-y-2.5 text-xs font-semibold">
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Reference Code:</span>
+              <span class="text-[#111111] font-mono font-bold">{{ booking.reference_number }}</span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Assigned Space:</span>
+              <span class="text-[#111111] font-bold">{% if booking.assigned_room %}Room {{ booking.assigned_room.room_number }}{% else %}Standard Unit{% endif %}</span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Duration:</span>
+              <span class="text-[#111111] font-bold">{{ duration_display }}</span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Accommodation Fee:</span>
+              <span class="text-[#111111] font-bold">GH₵ {{ payment.amount_accommodation|floatformat:2 }}</span>
+            </div>
+            {% if payment.amount_platform_fee > 0 %}
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Service / Platform Fee:</span>
+              <span class="text-[#111111] font-bold">GH₵ {{ payment.amount_platform_fee|floatformat:2 }}</span>
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="bg-[#111111] text-white p-5 rounded-2xl">
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total Payable Amount</div>
+            <div class="font-outfit text-2xl font-extrabold text-white mt-1">
+              GH₵ {{ payment.amount_total|floatformat:2 }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Security & Guarantee -->
+        <div class="glass-card p-6 space-y-3">
+          <div class="flex items-center gap-2 font-bold text-xs text-[#111111]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Official Paystack Integration
+          </div>
+          <p class="text-xs text-[#6B7280] leading-relaxed">
+            Your payment is securely processed through Paystack. Card and PIN information is encrypted directly with your network operator or bank.
+          </p>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
-<!-- Payment Waiting Modal -->
-<div class="modal" id="paymentWaitingModal">
-    <div class="modal-content">
-        <div class="spinner"></div>
-        <h4>WAITING FOR PAYMENT CONFIRMATION</h4>
-        <p>A payment prompt has been sent to your phone. Check your phone and enter your PIN to approve the payment.</p>
-        <div id="payment-status-message" class="status-message"></div>
-        <button type="button" class="btn-secondary" id="resend-prompt-btn" style="display: none;">
-            Resend Prompt
-        </button>
+<!-- Mobile Money Waiting Modal -->
+<div id="paymentWaitingModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-white border border-black/10 rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center space-y-5 shadow-2xl">
+    <div class="h-14 w-14 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
     </div>
+    <div>
+      <h3 class="font-outfit text-lg font-extrabold text-[#111111]">Awaiting Phone PIN Approval</h3>
+      <p class="text-xs text-[#6B7280] mt-1.5 leading-relaxed">
+        A payment prompt has been sent to your phone. Please check your screen and enter your Mobile Money PIN to authorize payment.
+      </p>
+    </div>
+    <div id="payment-status-message" class="text-xs font-bold text-[#111111] bg-[#F8F8FA] p-3 rounded-xl border border-black/10">
+      Waiting for operator response...
+    </div>
+  </div>
 </div>
 
 <script>
-// Payment method tabs
+// Payment method tabs switcher
 document.querySelectorAll('.payment-tab').forEach(tab => {
     tab.addEventListener('click', function() {
         const method = this.dataset.method;
         
-        // Update active tab
-        document.querySelectorAll('.payment-tab').forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
+        document.querySelectorAll('.payment-tab').forEach(t => {
+            t.classList.remove('active', 'bg-[#111111]', 'text-white', 'border-[#111111]');
+            t.classList.add('bg-[#F8F8FA]', 'text-[#111111]', 'border-black/10');
+        });
         
-        // Update hidden input
+        this.classList.remove('bg-[#F8F8FA]', 'text-[#111111]', 'border-black/10');
+        this.classList.add('active', 'bg-[#111111]', 'text-white', 'border-[#111111]');
+        
         document.getElementById('selected-payment-method').value = method;
         
-        // Show/hide mobile number input
         const mobileSection = document.getElementById('mobile-number-section');
         if (['mtn_momo', 'vodafone_cash', 'airteltigo_money'].includes(method)) {
             mobileSection.style.display = 'block';
@@ -613,7 +262,7 @@ function updateCountdown() {
 setInterval(updateCountdown, 1000);
 updateCountdown();
 
-// Proceed to payment
+// Proceed to payment handler
 document.getElementById('proceed-payment-btn').addEventListener('click', async function() {
     const form = document.getElementById('payment-form');
     const formData = new FormData(form);
@@ -627,17 +276,15 @@ document.getElementById('proceed-payment-btn').addEventListener('click', async f
     }
     
     if (['mtn_momo', 'vodafone_cash', 'airteltigo_money'].includes(paymentMethod) && !mobileNumber) {
-        alert('Please enter your mobile number');
+        alert('Please enter your mobile phone number');
         return;
     }
     
-    // Bank transfer flow
     if (paymentMethod === 'bank_transfer') {
         window.location.href = `/payments/${paymentId}/bank-transfer/`;
         return;
     }
     
-    // Initialize payment with Paystack
     try {
         const response = await fetch(`/api/v1/payments/${paymentId}/initialize/`, {
             method: 'POST',
@@ -655,13 +302,9 @@ document.getElementById('proceed-payment-btn').addEventListener('click', async f
         
         if (data.success) {
             if (data.authorization_url) {
-                // Card payment - redirect to Paystack
                 window.location.href = data.authorization_url;
             } else {
-                // MoMo payment - show waiting modal
-                document.getElementById('paymentWaitingModal').classList.add('show');
-                
-                // Poll for payment status
+                document.getElementById('paymentWaitingModal').classList.remove('hidden');
                 pollPaymentStatus(paymentId);
             }
         } else {
@@ -684,7 +327,7 @@ function pollPaymentStatus(paymentId) {
                 window.location.href = `/payments/${paymentId}/confirmation/`;
             } else if (data.payment_status === 'failed') {
                 clearInterval(interval);
-                document.getElementById('paymentWaitingModal').classList.remove('show');
+                document.getElementById('paymentWaitingModal').classList.add('hidden');
                 alert('Payment failed: ' + (data.failure_reason || 'Unknown error'));
                 window.location.reload();
             }
