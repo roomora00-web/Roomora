@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Receipt #{{ payment.payment_reference|default:booking.reference_number }} — Roomora</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #ffffff !important; padding: 0 !important; }
+            .receipt-card { border: none !important; box-shadow: none !important; }
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F4F4F6;
+            color: #111111;
+        }
+        .font-outfit { font-family: 'Outfit', sans-serif; }
+    </style>
+</head>
+<body class="p-4 sm:p-8 md:p-12 min-h-screen flex flex-col items-center justify-start">
+
+    <!-- Top Floating Actions (Hidden on Print) -->
+    <div class="w-full max-w-3xl flex items-center justify-between mb-6 no-print">
+        <a href="{% url 'payments:payment_confirmation' payment.id %}" class="inline-flex items-center gap-2 text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-colors">
+            ← Back to Confirmation
+        </a>
+        <div class="flex items-center gap-3">
+            <button onclick="window.print()" class="inline-flex items-center gap-2 bg-[#111111] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-md hover:bg-black/80 transition-all cursor-pointer">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span>Print / Save as PDF</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Official Printable Receipt Container -->
+    <div class="receipt-card bg-white border border-black/10 rounded-3xl p-6 sm:p-10 md:p-12 w-full max-w-3xl shadow-xl space-y-8 relative overflow-hidden">
+        
+        <!-- Watermark / Escrow Stamp Background -->
+        <div class="absolute -right-12 -bottom-12 opacity-[0.03] pointer-events-none select-none">
+            <svg width="320" height="320" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+
+        <!-- Receipt Header & Company Details -->
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-6 border-b border-black/10 pb-8">
+            <div class="space-y-3">
+                <div class="flex items-center gap-2.5">
+                    <img src="{% static 'landing/images/logo-black.png' %}" alt="Roomora Logo" class="h-8 w-auto">
+                    <span class="font-outfit text-2xl font-extrabold text-[#111111] tracking-tight">ROOMORA</span>
+                </div>
+                <div class="text-xs text-[#6B7280] space-y-0.5 font-medium">
+                    <p class="font-bold text-[#111111]">Roomora Technologies Limited</p>
+                    <p>Financial Escrow & Housing Services</p>
+                    <p>East Legon Executive Enclave, Accra, Ghana</p>
+                    <p>Support: billing@roomora.com • +233 (0) 30 200 0000</p>
+                </div>
+            </div>
+
+            <div class="sm:text-right space-y-1">
+                <div class="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                    Official Payment Receipt
+                </div>
+                <h1 class="font-mono text-base font-extrabold text-[#111111] pt-1">REC-{{ payment.payment_reference|default:booking.reference_number }}</h1>
+                <p class="text-xs text-[#6B7280]">Date Issued: {{ payment.created_at|date:"F j, Y, g:i A"|default:"July 22, 2026" }}</p>
+                <p class="text-xs text-[#6B7280]">Status: <strong class="text-emerald-700 font-bold uppercase">PAID & SECURED</strong></p>
+            </div>
+        </div>
+
+        <!-- Bill To & Reservation Identity Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-[#F8F8FA] border border-black/10 p-6 rounded-2xl">
+            <div class="space-y-1 text-xs">
+                <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Billed To (Tenant)</div>
+                <div class="text-sm font-bold text-[#111111]">{{ booking.tenant.full_name|default:booking.tenant.email }}</div>
+                <div class="text-[#6B7280] font-medium">{{ booking.tenant.email }}</div>
+                {% if booking.tenant.phone_number %}
+                <div class="text-[#6B7280] font-medium">{{ booking.tenant.phone_number }}</div>
+                {% endif %}
+            </div>
+
+            <div class="space-y-1 text-xs sm:text-right">
+                <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Reservation Particulars</div>
+                <div class="text-sm font-bold text-[#111111]">Ref: {{ booking.reference_number }}</div>
+                <div class="text-[#6B7280] font-medium">{{ property.title }}</div>
+                <div class="text-[#6B7280] font-medium">{% if room %}Room {{ room.room_number }}{% else %}Standard Space{% endif %} • {{ duration_display }}</div>
+            </div>
+        </div>
+
+        <!-- Itemized Financial Breakdown Table -->
+        <div class="space-y-3">
+            <div class="text-xs font-extrabold uppercase tracking-widest text-[#888888]">Itemized Payment Breakdown</div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-black/10 text-[11px] font-extrabold uppercase tracking-wider text-[#6B7280] bg-[#F8F8FA]">
+                            <th class="py-3 px-4 rounded-l-xl">Description & Service Item</th>
+                            <th class="py-3 px-4">Period / Qty</th>
+                            <th class="py-3 px-4 text-right">Rate</th>
+                            <th class="py-3 px-4 text-right rounded-r-xl">Amount (GH₵)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-xs divide-y divide-black/[0.06]">
+                        <tr>
+                            <td class="py-4 px-4 font-bold text-[#111111]">
+                                {{ property.title }} — Rent Fee
+                                <div class="text-[11px] text-[#6B7280] font-normal">
+                                    {% if room %}Room {{ room.room_number }}{% endif %} ({% if room_type %}{{ room_type.room_type_name }}{% else %}Hostel Room{% endif %}) • Move-In: {{ booking.move_in_date|date:"M j, Y" }}
+                                </div>
+                            </td>
+                            <td class="py-4 px-4 text-[#6B7280] font-medium">{{ duration_display }}</td>
+                            <td class="py-4 px-4 text-right font-medium">GH₵ {{ payment.amount_accommodation|floatformat:2 }}</td>
+                            <td class="py-4 px-4 text-right font-bold text-[#111111]">GH₵ {{ payment.amount_accommodation|floatformat:2 }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-bold text-[#111111]">
+                                Roomora Platform Protection & Escrow Fee (2%)
+                                <div class="text-[11px] text-[#6B7280] font-normal">
+                                    Roommate matching engine, 48-hr slot protection, and Paystack gateway integration.
+                                </div>
+                            </td>
+                            <td class="py-4 px-4 text-[#6B7280] font-medium">1 Service</td>
+                            <td class="py-4 px-4 text-right font-medium">GH₵ {{ payment.amount_platform_fee|floatformat:2 }}</td>
+                            <td class="py-4 px-4 text-right font-bold text-[#111111]">GH₵ {{ payment.amount_platform_fee|floatformat:2 }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Total Summary & Payment Method Details -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pt-4 border-t border-black/10">
+            <div class="space-y-2 text-xs">
+                <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Payment Authorization Channel</div>
+                <div class="flex items-center gap-2 bg-[#F8F8FA] border border-black/10 px-3.5 py-2 rounded-xl text-[#111111] font-bold">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <span class="uppercase">{{ payment.payment_method|default:"Paystack Mobile Money" }}</span>
+                </div>
+                <p class="text-[11px] text-[#6B7280]">Paystack Ref: <span class="font-mono text-[#111111] font-bold">{{ payment.paystack_reference|default:payment.payment_reference }}</span></p>
+            </div>
+
+            <div class="bg-[#111111] text-white p-6 rounded-2xl w-full sm:w-72 space-y-1">
+                <div class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total Paid Amount</div>
+                <div class="font-outfit text-3xl font-extrabold text-white">
+                    GH₵ {{ payment.amount_total|floatformat:2 }}
+                </div>
+                <div class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider pt-1 flex items-center gap-1">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    Payment Completed in Full
+                </div>
+            </div>
+        </div>
+
+        <!-- Escrow Stamp Guarantee & Front Desk Code -->
+        <div class="border-t border-black/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center font-bold text-sm shrink-0">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div>
+                    <div class="font-bold text-[#111111]">Roomora Verified Escrow Guarantee</div>
+                    <div class="text-[11px] text-[#6B7280]">This receipt certifies that funds are safely held until check-in confirmation.</div>
+                </div>
+            </div>
+
+            <!-- Visual Scanner Barcode -->
+            <div class="text-center sm:text-right shrink-0">
+                <div class="font-mono text-xs tracking-[0.3em] font-extrabold text-[#111111] bg-black/5 px-3 py-1.5 rounded-lg border border-black/10">
+                    ||||| |||| |||||| |||||
+                </div>
+                <div class="text-[9px] font-mono text-[#888888] mt-1">{{ booking.reference_number }}</div>
+            </div>
+        </div>
+
+        <!-- Official Footer -->
+        <div class="text-center border-t border-black/[0.06] pt-6 text-[11px] text-[#888888] font-medium">
+            This is a computer-generated official receipt issued by Roomora Technologies Ltd. No physical signature is required.
+        </div>
+    </div>
+</body>
+</html>

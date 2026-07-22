@@ -175,3 +175,35 @@ def payment_failed_view(request, payment_id):
     }
     
     return render(request, 'payments/payment_failed.html', context)
+
+
+@login_required
+def official_receipt_view(request, payment_id):
+    """
+    Display printable official payment receipt document.
+    """
+    payment = get_object_or_404(PaymentRecord, id=payment_id)
+    
+    # Verify user owns this payment or is admin
+    if payment.user != request.user and getattr(request.user, 'user_type', None) != 'ADMIN':
+        messages.error(request, 'You do not have permission to view this receipt.')
+        return redirect('accounts:dashboard')
+    
+    booking = payment.booking
+    duration_display = f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)"
+    accommodation_property = booking.accommodation_property
+    room = booking.assigned_room or booking.room
+    room_type = booking.room_type or (room.room_type if room else None)
+    unit_type = booking.unit_type or (room.unit_type if room else None)
+    
+    context = {
+        'payment': payment,
+        'booking': booking,
+        'property': accommodation_property,
+        'room': room,
+        'room_type': room_type,
+        'unit_type': unit_type,
+        'duration_display': duration_display,
+    }
+    
+    return render(request, 'payments/official_receipt.html', context)

@@ -35,4 +35,5 @@ urlpatterns = [
     path('<uuid:payment_id>/confirmation/', template_views.payment_confirmation_view, name='payment_confirmation'),
     path('<uuid:payment_id>/bank-transfer/', template_views.bank_transfer_view, name='bank_transfer'),
     path('<uuid:payment_id>/failed/', template_views.payment_failed_view, name='payment_failed'),
+    path('<uuid:payment_id>/official-receipt/', template_views.official_receipt_view, name='official_receipt'),
 ]
