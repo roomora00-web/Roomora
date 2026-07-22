@@ -221,9 +221,13 @@
             <a href="{% url 'bookings:booking_confirmation' current_booking.id %}" class="ds-btn w-full py-3.5 text-xs font-bold">
               <span>Proceed to Confirmation & Payment ➔</span>
             </a>
-            {% else %}
+            {% elif current_booking.payment_record %}
             <a href="{% url 'payments:payment_confirmation' current_booking.payment_record.id %}" class="ds-btn w-full py-3.5 text-xs font-bold">
               <span>View Official Confirmation & Receipt ➔</span>
+            </a>
+            {% else %}
+            <a href="{% url 'bookings:my-bookings' %}" class="ds-btn w-full py-3.5 text-xs font-bold">
+              <span>Manage Booking Details ➔</span>
             </a>
             {% endif %}
           </div>
@@ -294,9 +298,13 @@
                 <div class="text-[9px] font-extrabold uppercase text-[#888888]">Starting Rate</div>
                 <div class="text-xs font-extrabold text-[#111111]">GH₵ {{ prop.starting_price|default:4500|floatformat:0 }}</div>
               </div>
-              {% if current_booking and prop.id == current_booking.accommodation_property.id %}
+              {% if current_booking and prop.id == current_booking.accommodation_property.id and current_booking.payment_record %}
               <a href="{% url 'payments:payment_confirmation' current_booking.payment_record.id %}" class="bg-emerald-800 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold hover:bg-emerald-900 transition-colors shadow-xs">
                 View Receipt
+              </a>
+              {% elif current_booking and prop.id == current_booking.accommodation_property.id %}
+              <a href="{% url 'bookings:my-bookings' %}" class="bg-emerald-800 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold hover:bg-emerald-900 transition-colors shadow-xs">
+                View Booking
               </a>
               {% else %}
               <a href="{% url 'landing:property_detail' prop.id %}" class="bg-[#111111] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold hover:bg-black/80 transition-colors">
