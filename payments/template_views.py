@@ -83,8 +83,15 @@ def payment_confirmation_view(request, payment_id):
             notification_type='SUCCESS'
         )
     
-    # Redirect to booking confirmation page
-    return redirect('bookings:booking_confirmed', booking_id=booking.id)
+    duration_display = f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)"
+    
+    context = {
+        'payment': payment,
+        'booking': booking,
+        'duration_display': duration_display,
+    }
+    
+    return render(request, 'payments/payment_confirmation.html', context)
 
 
 @login_required
