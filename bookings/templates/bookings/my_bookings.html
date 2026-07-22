@@ -64,7 +64,7 @@
   {% else %}
 
   <!-- Active & Confirmed Bookings Section -->
-  {% if approved_bookings or active_bookings %}
+  {% if confirmed_and_active %}
   <div class="space-y-4">
     <div class="flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-[#888888]">
       <span class="h-2 w-2 rounded-full bg-emerald-500 pulse-dot"></span>
@@ -72,7 +72,7 @@
     </div>
 
     <div class="grid grid-cols-1 gap-6">
-      {% for booking in approved_bookings|add:active_bookings %}
+      {% for booking in confirmed_and_active %}
       <div class="glass-card p-6 sm:p-8 space-y-6 border-l-4 border-l-emerald-600">
         
         <!-- Header Row -->

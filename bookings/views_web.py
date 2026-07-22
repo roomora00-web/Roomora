@@ -64,7 +64,10 @@ def my_bookings_view(request):
     cancelled_bookings = [b for b in bookings if b.status in ['CANCELLED', 'REJECTED', 'TEMPORARILY_CANCELLED']]
     waitlisted_bookings = [b for b in bookings if b.status == 'WAITLISTED']
     
+    confirmed_and_active = approved_bookings + active_bookings
+    
     context = {
+        'confirmed_and_active': confirmed_and_active,
         'active_bookings': active_bookings,
         'pending_bookings': pending_bookings,
         'awaiting_consent': awaiting_consent,
@@ -72,7 +75,7 @@ def my_bookings_view(request):
         'completed_bookings': completed_bookings,
         'cancelled_bookings': cancelled_bookings,
         'waitlisted_bookings': waitlisted_bookings,
-        'total_bookings': bookings.count(),
+        'total_bookings': bookings.count() if hasattr(bookings, 'count') else len(bookings),
         'status_filter': status_filter,
         'sort_by': sort_by,
     }
