@@ -1693,7 +1693,7 @@ body {
     top: 0;
   }
   .pd-key-facts { grid-template-columns: repeat(2, 1fr); }
-  .pd-amenities-grid { grid-template-columns: repeat(2, 1fr); }
+  .pd-amenities-grid { grid-template-columns: 1fr; }
   .pd-reviews-summary { grid-template-columns: 1fr; }
   .pd-contact-grid { grid-template-columns: 1fr; }
   .pd-related-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1940,7 +1940,6 @@ body {
    RESPONSIVE — SMALL MOBILE (≤540px)
    =============================================================== */
 @media (max-width: 540px) {
-  .pd-amenities-grid { grid-template-columns: 1fr; }
   .pd-related-grid { grid-template-columns: 1fr; }
   .pd-secondary-actions { grid-template-columns: 1fr; }
   .pd-trust-banner { grid-template-columns: 1fr; }
@@ -2445,114 +2444,6 @@ body {
         </div>
       </section>
 
-      <!-- ── SECTION 6: AMENITIES ──────────────────────────────────── -->
-      <section id="location">
-        <h2 class="pd-section-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          Location &amp; Proximity
-        </h2>
-
-        <!-- Map -->
-        <div class="pd-map-frame" style="height: 400px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
-          {% if property.latitude and property.longitude %}
-          <div id="property-detail-map" style="width: 100%; height: 100%; z-index: 1;"></div>
-          {% else %}
-          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <p style="font-size:14px;color:var(--muted);">{{ property.address }}, {{ property.city }}, {{ property.region }}</p>
-            <a href="https://maps.google.com/?q={{ property.address|urlencode }},{{ property.city|urlencode }}" target="_blank" rel="noopener" style="font-size:13px;font-weight:700;color:var(--accent);">Open in Google Maps →</a>
-          </div>
-          {% endif %}
-        </div>
-
-        <!-- Map Actions -->
-        {% if property.latitude and property.longitude %}
-        <div class="pd-map-actions-row" style="display:flex;gap:12px;margin-top:16px;">
-          <a href="https://www.google.com/maps/dir/?api=1&destination={{ property.latitude }},{{ property.longitude }}" target="_blank" rel="noopener" class="pd-btn-white" style="padding:10px 20px; font-size:14px; font-weight:600;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-            Get Directions
-          </a>
-          <button id="live-location-btn" onclick="useLiveLocation()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--surface);color:var(--charcoal);border:1px solid var(--border);border-radius:30px;text-decoration:none;font-size:14px;font-weight:600;transition:all .2s; cursor:pointer;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-            <span>My Location</span>
-          </button>
-          <a href="/properties/map" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--surface);color:var(--charcoal);border:1px solid var(--border);border-radius:30px;text-decoration:none;font-size:14px;font-weight:600;transition:all .2s;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            View on Full Map
-          </a>
-        </div>
-        {% endif %}
-
-        <!-- Proximity Table -->
-        <div class="pd-proximity-table-wrapper">
-          <table class="pd-proximity-table">
-            <thead>
-              <tr>
-                <th>Destination</th>
-                <th>Distance</th>
-                <th>Travel Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% if proximity_destinations %}
-                {% for dest in proximity_destinations %}
-                <tr>
-                  <td>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        {% if dest.destination_type == 'INSTITUTION' %}<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                        {% elif dest.destination_type == 'MARKET' %}<path d="M3 3h18v18H3z"/><path d="M9 9h6v6H9z"/>
-                        {% elif dest.destination_type == 'PHARMACY' %}<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                        {% elif dest.destination_type == 'TRANSPORT' %}<rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-                        {% elif dest.destination_type == 'ATM' %}<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
-                        {% elif dest.destination_type == 'HOSPITAL' %}<path d="M3 3h18v18H3z"/><path d="M12 8v8"/><path d="M8 12h8"/>
-                        {% elif dest.destination_type == 'RESTAURANT' %}<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
-                        {% elif dest.destination_type == 'SHOPPING' %}<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
-                        {% else %}<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-                        {% endif %}
-                      </svg>
-                      <strong>{{ dest.destination_name }}</strong>
-                    </div>
-                  </td>
-                  <td>{% if dest.distance_km %}{{ dest.distance_km }} km{% else %}—{% endif %}</td>
-                  <td>{% if dest.travel_time_minutes %}{{ dest.travel_time_minutes }} min{% if dest.travel_mode %} {{ dest.get_travel_mode_display|lower }}{% endif %}{% else %}—{% endif %}</td>
-                </tr>
-                {% endfor %}
-              {% else %}
-                <!-- Fallback to legacy fields if no structured data -->
-                {% if property.nearest_institution %}
-                <tr>
-                  <td>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                      <strong>{{ property.nearest_institution }}</strong>
-                    </div>
-                  </td>
-                  <td>{% if property.distance_to_campus %}{{ property.distance_to_campus }} km{% else %}—{% endif %}</td>
-                  <td>{% if property.walking_time_estimate %}{{ property.walking_time_estimate }} min walk{% else %}—{% endif %}</td>
-                </tr>
-                {% endif %}
-                {% if property.nearby_landmarks %}
-                <tr>
-                  <td>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                      <strong>{{ property.nearby_landmarks }}</strong>
-                    </div>
-                  </td>
-                  <td>—</td>
-                  <td>Nearby</td>
-                </tr>
-                {% endif %}
-              {% endif %}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
       <!-- ── SECTION 5: ROOM / UNIT TYPE CARDS ─────────────────────── -->
       <section id="amenities">
         <h2 class="pd-section-title">
@@ -2905,6 +2796,169 @@ body {
         {% endif %}
       </section>
 
+      <!-- ── SECTION 6: AMENITIES ──────────────────────────────────── -->
+      <section id="location">
+        <h2 class="pd-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Location &amp; Proximity
+        </h2>
+
+        <!-- Map -->
+        <div class="pd-map-frame" style="height: 400px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
+          {% if property.latitude and property.longitude %}
+          <div id="property-detail-map" style="width: 100%; height: 100%; z-index: 1;"></div>
+          {% else %}
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <p style="font-size:14px;color:var(--muted);">{{ property.address }}, {{ property.city }}, {{ property.region }}</p>
+            <a href="https://maps.google.com/?q={{ property.address|urlencode }},{{ property.city|urlencode }}" target="_blank" rel="noopener" style="font-size:13px;font-weight:700;color:var(--accent);">Open in Google Maps →</a>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Map Actions -->
+        {% if property.latitude and property.longitude %}
+        <div class="pd-map-actions-row" style="display:flex;gap:12px;margin-top:16px;">
+          <a href="https://www.google.com/maps/dir/?api=1&destination={{ property.latitude }},{{ property.longitude }}" target="_blank" rel="noopener" class="pd-btn-white" style="padding:10px 20px; font-size:14px; font-weight:600;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Get Directions
+          </a>
+          <button id="live-location-btn" onclick="useLiveLocation()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--surface);color:var(--charcoal);border:1px solid var(--border);border-radius:30px;text-decoration:none;font-size:14px;font-weight:600;transition:all .2s; cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span>My Location</span>
+          </button>
+          <a href="/properties/map" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--surface);color:var(--charcoal);border:1px solid var(--border);border-radius:30px;text-decoration:none;font-size:14px;font-weight:600;transition:all .2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            View on Full Map
+          </a>
+        </div>
+        {% endif %}
+
+        <!-- Proximity Table -->
+        <div class="pd-proximity-table-wrapper">
+          <table class="pd-proximity-table">
+            <thead>
+              <tr>
+                <th>Destination</th>
+                <th>Distance</th>
+                <th>Travel Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if proximity_destinations %}
+                {% for dest in proximity_destinations %}
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        {% if dest.destination_type == 'INSTITUTION' %}<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                        {% elif dest.destination_type == 'MARKET' %}<path d="M3 3h18v18H3z"/><path d="M9 9h6v6H9z"/>
+                        {% elif dest.destination_type == 'PHARMACY' %}<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                        {% elif dest.destination_type == 'TRANSPORT' %}<rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                        {% elif dest.destination_type == 'ATM' %}<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+                        {% elif dest.destination_type == 'HOSPITAL' %}<path d="M3 3h18v18H3z"/><path d="M12 8v8"/><path d="M8 12h8"/>
+                        {% elif dest.destination_type == 'RESTAURANT' %}<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
+                        {% elif dest.destination_type == 'SHOPPING' %}<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                        {% else %}<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                        {% endif %}
+                      </svg>
+                      <strong>{{ dest.destination_name }}</strong>
+                    </div>
+                  </td>
+                  <td>{% if dest.distance_km %}{{ dest.distance_km }} km{% else %}—{% endif %}</td>
+                  <td>{% if dest.travel_time_minutes %}{{ dest.travel_time_minutes }} min{% if dest.travel_mode %} {{ dest.get_travel_mode_display|lower }}{% endif %}{% else %}—{% endif %}</td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <!-- Fallback to legacy fields if no structured data -->
+                {% if property.nearest_institution %}
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                      <strong>{{ property.nearest_institution }}</strong>
+                    </div>
+                  </td>
+                  <td>{% if property.distance_to_campus %}{{ property.distance_to_campus }} km{% else %}—{% endif %}</td>
+                  <td>{% if property.walking_time_estimate %}{{ property.walking_time_estimate }} min walk{% else %}—{% endif %}</td>
+                </tr>
+                {% endif %}
+                {% if property.nearby_landmarks %}
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      <strong>{{ property.nearby_landmarks }}</strong>
+                    </div>
+                  </td>
+                  <td>—</td>
+                  <td>Nearby</td>
+                </tr>
+                {% endif %}
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── SECTION 8: HOUSE RULES & POLICIES ─────────────────────── -->
+      <section id="policies">
+        <h2 class="pd-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+          House Rules &amp; Property Policies
+        </h2>
+
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 40px;">
+          
+          <div class="pd-policies-grid">
+            <!-- Rules -->
+            <div>
+              <h3 style="font-size: 15px; font-weight: 700; color: var(--charcoal); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                General Rules
+              </h3>
+              {% if property.house_rules %}
+              <div style="font-size: 14px; color: var(--mid); line-height: 1.6; white-space: pre-wrap;">{{ property.house_rules }}</div>
+              {% else %}
+              <div style="font-size: 14px; color: var(--muted); font-style: italic;">No specific house rules provided. Standard community guidelines apply.</div>
+              {% endif %}
+
+              {% if property.visitor_policy or property.curfew_time %}
+              <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-light);">
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--charcoal); margin-bottom: 8px;">Visitor Policy &amp; Curfew</h3>
+                {% if property.visitor_policy %}<p style="font-size: 14px; color: var(--mid); margin-bottom: 8px; line-height: 1.5;">{{ property.visitor_policy }}</p>{% endif %}
+                {% if property.curfew_time %}<p style="font-size: 14px; color: var(--mid);"><strong>Curfew:</strong> {{ property.curfew_time|time:"g:i A" }}</p>{% endif %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Prohibited Items & Emergencies -->
+            <div>
+              <h3 style="font-size: 15px; font-weight: 700; color: var(--red); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                Prohibited Appliances
+              </h3>
+              {% if property.prohibited_items %}
+              <div style="font-size: 14px; color: var(--mid); line-height: 1.6; white-space: pre-wrap;">{{ property.prohibited_items }}</div>
+              {% else %}
+              <div style="font-size: 14px; color: var(--muted); font-style: italic;">No specific prohibited appliances listed.</div>
+              {% endif %}
+
+              {% if property.emergency_contacts %}
+              <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-light);">
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--charcoal); margin-bottom: 8px;">Emergency Contacts</h3>
+                <p style="font-size: 14px; color: var(--mid); white-space: pre-wrap; line-height: 1.5;">{{ property.emergency_contacts }}</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
       <!-- ── SECTION 9: REVIEWS ─────────────────────────────────────── -->
       <section id="reviews">
         <h2 class="pd-section-title">
@@ -3122,61 +3176,6 @@ body {
           </div>
         </div>
         {% endif %}
-      </section>
-
-      <!-- ── SECTION 8: HOUSE RULES & POLICIES ─────────────────────── -->
-      <section id="policies">
-        <h2 class="pd-section-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-          House Rules &amp; Property Policies
-        </h2>
-
-        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 40px;">
-          
-          <div class="pd-policies-grid">
-            <!-- Rules -->
-            <div>
-              <h3 style="font-size: 15px; font-weight: 700; color: var(--charcoal); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                General Rules
-              </h3>
-              {% if property.house_rules %}
-              <div style="font-size: 14px; color: var(--mid); line-height: 1.6; white-space: pre-wrap;">{{ property.house_rules }}</div>
-              {% else %}
-              <div style="font-size: 14px; color: var(--muted); font-style: italic;">No specific house rules provided. Standard community guidelines apply.</div>
-              {% endif %}
-
-              {% if property.visitor_policy or property.curfew_time %}
-              <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-light);">
-                <h3 style="font-size: 15px; font-weight: 700; color: var(--charcoal); margin-bottom: 8px;">Visitor Policy &amp; Curfew</h3>
-                {% if property.visitor_policy %}<p style="font-size: 14px; color: var(--mid); margin-bottom: 8px; line-height: 1.5;">{{ property.visitor_policy }}</p>{% endif %}
-                {% if property.curfew_time %}<p style="font-size: 14px; color: var(--mid);"><strong>Curfew:</strong> {{ property.curfew_time|time:"g:i A" }}</p>{% endif %}
-              </div>
-              {% endif %}
-            </div>
-
-            <!-- Prohibited Items & Emergencies -->
-            <div>
-              <h3 style="font-size: 15px; font-weight: 700; color: var(--red); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-                Prohibited Appliances
-              </h3>
-              {% if property.prohibited_items %}
-              <div style="font-size: 14px; color: var(--mid); line-height: 1.6; white-space: pre-wrap;">{{ property.prohibited_items }}</div>
-              {% else %}
-              <div style="font-size: 14px; color: var(--muted); font-style: italic;">No specific prohibited appliances listed.</div>
-              {% endif %}
-
-              {% if property.emergency_contacts %}
-              <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-light);">
-                <h3 style="font-size: 15px; font-weight: 700; color: var(--charcoal); margin-bottom: 8px;">Emergency Contacts</h3>
-                <p style="font-size: 14px; color: var(--mid); white-space: pre-wrap; line-height: 1.5;">{{ property.emergency_contacts }}</p>
-              </div>
-              {% endif %}
-            </div>
-          </div>
-
-        </div>
       </section>
 
       <!-- ── SECTION 9: ROOMMATE MATCHING PREVIEW (REMOVED) ──────────────────── -->
