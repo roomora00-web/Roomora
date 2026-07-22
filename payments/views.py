@@ -20,14 +20,46 @@ logger = logging.getLogger(__name__)
 
 class PaystackWebhookView(View):
     """
-    Receives Paystack webhook events.
+    Receives Paystack webhook events (POST) and browser callback redirects (GET).
     Verifies signature and processes payment events.
     """
     
     @method_decorator(csrf_exempt)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
-    
+        
+    def get(self, request):
+        """
+        Handles browser redirect from Paystack after customer completes checkout.
+        """
+        reference = request.GET.get('reference') or request.GET.get('trxref')
+        if not reference:
+            return redirect('accounts:dashboard')
+        
+        # Find PaymentRecord
+        payment = PaymentRecord.objects.filter(payment_reference=reference).first()
+        if not payment:
+            from bookings.models import Booking
+            booking = Booking.objects.filter(reference_number=reference).first()
+            if booking:
+                payment = PaymentRecord.objects.filter(booking=booking).first()
+        
+        if payment:
+            try:
+                PaymentService().verify_payment_status(payment.id)
+                payment.refresh_from_db()
+            except Exception as e:
+                logger.error(f"Error verifying payment on GET callback: {e}")
+            
+            if payment.payment_status == 'completed':
+                return redirect('payments:payment_confirmation', payment_id=payment.id)
+            elif payment.payment_status == 'failed':
+                return redirect('payments:payment_failed', payment_id=payment.id)
+            else:
+                return redirect('payments:payment_confirmation', payment_id=payment.id)
+        
+        return redirect('accounts:dashboard')
+
     def post(self, request):
         signature = request.headers.get('x-paystack-signature')
         if not signature:
