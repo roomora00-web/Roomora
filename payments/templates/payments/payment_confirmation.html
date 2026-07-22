@@ -1,393 +1,137 @@
-{% extends "landing/base.html" %}
+{% extends "bookings/base_checkout.html" %}
 {% load static %}
 
-{% block title %}Payment Successful - Roomora{% endblock %}
-
-{% block extra_css %}
-<style>
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: #fff !important;
-    color: #1f2937 !important;
-}
-
-.checkout-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    min-height: 100vh;
-    margin: 0;
-    position: relative;
-    z-index: 1;
-}
-
-@media (min-width: 768px) {
-    .checkout-container {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 767px) {
-    .checkout-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .left-column {
-        padding: 24px;
-    }
-    
-    .right-column {
-        padding: 24px;
-    }
-    
-    .amount-display {
-        font-size: 36px;
-    }
-}
-
-/* Left Column - Dark Theme */
-.left-column {
-    background: #000000;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: #fff;
-}
-
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: 500;
-    margin-bottom: 32px;
-    transition: color 0.2s;
-}
-
-.back-button:hover {
-    color: #fff;
-}
-
-.success-icon {
-    font-size: 80px;
-    margin-bottom: 20px;
-    color: #ffffff;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-.success-title {
-    font-size: 32px;
-    font-weight: 800;
-    margin-bottom: 12px;
-    color: #ffffff;
-}
-
-.success-subtitle {
-    color: #ffffff;
-    font-size: 16px;
-    margin-bottom: 32px;
-    line-height: 1.5;
-}
-
-.amount-display {
-    font-size: 48px;
-    font-weight: 800;
-    margin-bottom: 12px;
-    color: #ffffff;
-}
-
-.amount-label {
-    color: #ffffff;
-    font-size: 16px;
-    margin-bottom: 32px;
-}
-
-.plan-card {
-    background: #000000;
-    border: 1px solid #333333;
-    border-radius: 16px;
-    padding: 24px;
-}
-
-.plan-title {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: #ffffff;
-}
-
-.breakdown-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.breakdown-item:last-child {
-    border-bottom: none;
-}
-
-.breakdown-label {
-    color: #ffffff;
-}
-
-.breakdown-value {
-    color: #fff;
-    font-weight: 600;
-}
-
-/* Right Column - White Theme */
-.right-column {
-    background: #ffffff;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-}
-
-.right-column h2 {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 24px;
-}
-
-.detail-card {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 24px;
-}
-
-.detail-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.detail-row:last-child {
-    border-bottom: none;
-}
-
-.detail-label {
-    color: #6b7280;
-    font-size: 14px;
-}
-
-.detail-value {
-    color: #1f2937;
-    font-weight: 600;
-    font-size: 15px;
-}
-
-.next-steps {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.next-steps li {
-    padding: 16px 0;
-    color: #6b7280;
-    border-bottom: 1px solid #e5e7eb;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.next-steps li:last-child {
-    border-bottom: none;
-}
-
-.next-steps li::before {
-    content: attr(data-step);
-    background: #000000;
-    color: #fff;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
-    flex-shrink: 0;
-}
-
-.action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: auto;
-}
-
-.btn-primary {
-    width: 100%;
-    background: #000000;
-    color: #fff;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-align: center;
-    text-decoration: none;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.btn-secondary {
-    width: 100%;
-    background: transparent;
-    color: #6b7280;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 15px;
-    border: 1px solid #e5e7eb;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-align: center;
-    text-decoration: none;
-}
-
-.btn-secondary:hover {
-    background: #f9fafb;
-    color: #1f2937;
-    border-color: #d1d5db;
-}
-</style>
-{% endblock %}
+{% block title %}Payment Successful — Roomora Escrow Confirmation{% endblock %}
 
 {% block content %}
-<div class="checkout-container">
-    <!-- Left Column - Success Summary -->
-    <div class="left-column">
-        <a href="{% url 'accounts:dashboard' %}" class="back-button">
-            ← Back to Dashboard
-        </a>
-        
-        <div class="success-icon">
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-        </div>
-        <div class="success-title">PAYMENT SUCCESSFUL!</div>
-        <div class="success-subtitle">
-            Your payment has been received and your booking is confirmed.
-        </div>
-        
-        <div class="amount-display">GH₵ {{ payment.amount_total|floatformat:2 }}</div>
-        <div class="amount-label">Amount Paid</div>
-        
-        <div class="plan-card">
-            <div class="plan-title">
-                {% if booking.assigned_room %}
-                    Room {{ booking.assigned_room.room_number }}
-                {% elif booking.room_type %}
-                    {{ booking.room_type.room_type_name }}
-                {% elif booking.unit_type %}
-                    {{ booking.unit_type.unit_name }}
-                {% else %}
-                    Premium Room
-                {% endif %}
-            </div>
-            
-            <div class="breakdown-item">
-                <span class="breakdown-label">Reference</span>
-                <span class="breakdown-value">{{ booking.reference_number }}</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">Property</span>
-                <span class="breakdown-value">{{ booking.accommodation_property.title }}</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">Duration</span>
-                <span class="breakdown-value">{{ duration_display }}</span>
-            </div>
-        </div>
-    </div>
+<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-8 sm:px-8 lg:px-12 w-full pb-24">
+  <div class="max-w-4xl mx-auto flex flex-col gap-6 sm:gap-8">
     
-    <!-- Right Column - Booking Details -->
-    <div class="right-column">
-        <h2>Booking Details</h2>
-        
-        <div class="detail-card">
-            <div class="detail-row">
-                <span class="detail-label">Reference Number</span>
-                <span class="detail-value">{{ booking.reference_number }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Property</span>
-                <span class="detail-value">{{ booking.accommodation_property.title }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Room</span>
-                <span class="detail-value">
-                    {% if booking.assigned_room %}
-                        {{ booking.assigned_room.room_number }}
-                    {% elif booking.room_type %}
-                        {{ booking.room_type.room_type_name }}
-                    {% elif booking.unit_type %}
-                        {{ booking.unit_type.unit_name }}
-                    {% else %}
-                        Premium Room
-                    {% endif %}
-                </span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Duration</span>
-                <span class="detail-value">{{ duration_display }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Move-in Date</span>
-                <span class="detail-value">{{ booking.move_in_date|date:"F j, Y" }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Move-out Date</span>
-                <span class="detail-value">{{ booking.move_out_date|date:"F j, Y" }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Amount Paid</span>
-                <span class="detail-value" style="color: #10B981; font-weight: 700;">GH₵ {{ payment.amount_total|floatformat:2 }}</span>
-            </div>
+    <!-- Success Banner Glass Card -->
+    <div class="glass-card p-6 sm:p-10 text-center space-y-6">
+      <div class="h-16 w-16 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+
+      <div class="space-y-2">
+        <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-50 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-emerald-800">
+          Payment Verified & Escrow Soft-Locked
         </div>
-        
-        <h2>What Happens Next</h2>
-        <ul class="next-steps">
-            <li data-step="1">Your booking is now under admin review</li>
-            <li data-step="2">Admin will assign your room within 24-48 hours</li>
-            <li data-step="3">You'll receive confirmation with room details</li>
-            <li data-step="4">Prepare for your move-in date</li>
-        </ul>
-        
-        <div class="action-buttons">
-            <a href="{% url 'bookings:my-bookings' %}" class="btn-primary">
-                View My Bookings
-            </a>
-            <a href="/" class="btn-secondary">
-                Return to Home
-            </a>
+        <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">Payment Received & Confirmed!</h1>
+        <p class="text-xs sm:text-sm text-[#6B7280] max-w-xl mx-auto">
+          Your payment of <strong class="text-[#111111] font-bold">GH₵ {{ payment.amount_total|floatformat:2 }}</strong> has been verified. Your room soft-lock is active and held exclusively for you.
+        </p>
+      </div>
+
+      <!-- Payment Reference & Amount Badge -->
+      <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl max-w-md mx-auto flex justify-between items-center text-left">
+        <div>
+          <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Payment Reference</div>
+          <div class="font-mono text-base font-extrabold text-[#111111] mt-0.5">{{ payment.payment_reference|default:booking.reference_number }}</div>
         </div>
+        <div class="text-right">
+          <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Amount Paid</div>
+          <div class="font-outfit text-lg font-extrabold text-emerald-700 mt-0.5">GH₵ {{ payment.amount_total|floatformat:2 }}</div>
+        </div>
+      </div>
     </div>
+
+    <!-- Booking & Property Details Grid -->
+    <div class="grid gap-6 lg:grid-cols-2 items-start w-full">
+      
+      <!-- Property & Room Info -->
+      <div class="glass-card p-6 space-y-4">
+        <div class="flex items-center gap-3 border-b border-black/[0.06] pb-3">
+          <div class="h-9 w-9 rounded-xl bg-[#111111] text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div>
+            <h3 class="font-outfit text-lg font-bold text-[#111111]">Reservation Summary</h3>
+            <p class="text-[11px] text-[#6B7280]">Property and room tier details.</p>
+          </div>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div class="flex justify-between py-2 border-b border-black/[0.06]">
+            <span class="text-[#6B7280]">Property:</span>
+            <span class="font-bold text-[#111111]">{{ booking.accommodation_property.title }}</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-black/[0.06]">
+            <span class="text-[#6B7280]">Location:</span>
+            <span class="font-bold text-[#111111]">{{ booking.accommodation_property.address }}, {{ booking.accommodation_property.city }}</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-black/[0.06]">
+            <span class="text-[#6B7280]">Assigned Space:</span>
+            <span class="font-bold text-[#111111]">
+              {% if booking.assigned_room %}
+                Room {{ booking.assigned_room.room_number }}
+              {% elif booking.room_type %}
+                {{ booking.room_type.room_type_name }}
+              {% else %}
+                Hostel Room
+              {% endif %}
+            </span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-black/[0.06]">
+            <span class="text-[#6B7280]">Move-In Date:</span>
+            <span class="font-bold text-[#111111]">{{ booking.move_in_date|date:"F j, Y"|default:"Scheduled" }}</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-[#6B7280]">Move-Out Date:</span>
+            <span class="font-bold text-[#111111]">{{ booking.move_out_date|date:"F j, Y"|default:"Scheduled" }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next Steps Checklist -->
+      <div class="glass-card p-6 space-y-4">
+        <div class="flex items-center gap-3 border-b border-black/[0.06] pb-3">
+          <div class="h-9 w-9 rounded-xl bg-[#111111] text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <h3 class="font-outfit text-lg font-bold text-[#111111]">Next Steps for Check-In</h3>
+            <p class="text-[11px] text-[#6B7280]">What happens next in your booking flow.</p>
+          </div>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div class="flex items-start gap-3 bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+            <div class="h-5 w-5 rounded-full bg-[#111111] text-white font-bold flex items-center justify-center text-[10px] shrink-0">1</div>
+            <div>
+              <div class="font-bold text-[#111111]">Admin & Hostel Management Notification</div>
+              <div class="text-[#6B7280] text-[11px] mt-0.5">Your payment is logged and sent for final manager review.</div>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+            <div class="h-5 w-5 rounded-full bg-[#111111] text-white font-bold flex items-center justify-center text-[10px] shrink-0">2</div>
+            <div>
+              <div class="font-bold text-[#111111]">Room Key Assignment</div>
+              <div class="text-[#6B7280] text-[11px] mt-0.5">Hostel management confirms physical key issuance within 24-48 hours.</div>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+            <div class="h-5 w-5 rounded-full bg-[#111111] text-white font-bold flex items-center justify-center text-[10px] shrink-0">3</div>
+            <div>
+              <div class="font-bold text-[#111111]">Move-In Day Welcome</div>
+              <div class="text-[#6B7280] text-[11px] mt-0.5">Present your booking reference code at the hostel reception desk.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+      <a href="{% url 'bookings:my-bookings' %}" class="ds-btn sm:w-auto px-8 py-3.5">
+        <span>Go to My Bookings ➔</span>
+      </a>
+      <a href="{% url 'accounts:dashboard' %}" class="text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-colors">
+        Return to Dashboard
+      </a>
+    </div>
+  </div>
 </div>
 {% endblock %}

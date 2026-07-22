@@ -1,512 +1,144 @@
-{% extends "landing/base.html" %}
+{% extends "bookings/base_checkout.html" %}
 {% load static %}
 
-{% block title %}Bank Transfer Payment - Roomora{% endblock %}
-
-{% block extra_css %}
-<style>
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: #fff !important;
-    color: #1f2937 !important;
-}
-
-.checkout-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    min-height: 100vh;
-    margin: 0;
-    position: relative;
-    z-index: 1;
-}
-
-@media (min-width: 768px) {
-    .checkout-container {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 767px) {
-    .checkout-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .left-column {
-        padding: 24px;
-    }
-    
-    .right-column {
-        padding: 24px;
-    }
-    
-    .amount-display {
-        font-size: 36px;
-    }
-}
-
-/* Left Column - Dark Theme */
-.left-column {
-    background: #000000;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: #fff;
-}
-
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: 500;
-    margin-bottom: 32px;
-    transition: color 0.2s;
-}
-
-.back-button:hover {
-    color: #fff;
-}
-
-.amount-display {
-    font-size: 48px;
-    font-weight: 800;
-    margin-bottom: 12px;
-    color: #ffffff;
-}
-
-.billing-subtext {
-    color: #ffffff;
-    font-size: 16px;
-    margin-bottom: 32px;
-    line-height: 1.5;
-}
-
-.plan-card {
-    background: #000000;
-    border: 1px solid #333333;
-    border-radius: 16px;
-    padding: 24px;
-}
-
-.plan-title {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: #ffffff;
-}
-
-.breakdown-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.breakdown-item:last-child {
-    border-bottom: none;
-}
-
-.breakdown-label {
-    color: #ffffff;
-}
-
-.breakdown-value {
-    color: #fff;
-    font-weight: 600;
-}
-
-.total-due {
-    background: #1a1a1a;
-    border-radius: 12px;
-    padding: 16px;
-    margin-top: 16px;
-    border: 1px solid #333333;
-}
-
-.total-due .breakdown-value {
-    font-size: 24px;
-    font-weight: 800;
-    color: #ffffff;
-}
-
-/* Right Column - White Theme */
-.right-column {
-    background: #ffffff;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-}
-
-.right-column h2 {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 24px;
-}
-
-.bank-detail-card {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 24px;
-}
-
-.bank-detail-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.bank-detail-row:last-child {
-    border-bottom: none;
-}
-
-.bank-detail-label {
-    color: #6b7280;
-    font-size: 14px;
-}
-
-.bank-detail-value {
-    color: #1f2937;
-    font-weight: 600;
-    font-size: 15px;
-}
-
-.bank-detail-value.highlight {
-    color: #000000;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.important-notice {
-    background: #f5f5f5;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    padding: 16px;
-    margin-top: 16px;
-}
-
-.important-notice strong {
-    color: #000000;
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-
-.important-notice .reference {
-    color: #000000;
-    font-weight: 700;
-    font-size: 16px;
-    display: block;
-    margin-top: 8px;
-}
-
-.important-notice small {
-    color: #666666;
-    display: block;
-    margin-top: 8px;
-    line-height: 1.5;
-    font-size: 13px;
-}
-
-.transfer-methods {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.transfer-methods li {
-    padding: 12px 0;
-    color: #6b7280;
-    border-bottom: 1px solid #e5e7eb;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.transfer-methods li:last-child {
-    border-bottom: none;
-}
-
-.transfer-methods li::before {
-    content: '';
-    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-}
-
-.verification-notice {
-    background: #f5f5f5;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 24px;
-}
-
-.verification-notice strong {
-    color: #000000;
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-
-.verification-notice .reference {
-    color: #000000;
-    font-weight: 700;
-    font-size: 16px;
-    display: block;
-    margin-top: 8px;
-}
-
-.verification-notice small {
-    color: #666666;
-    display: block;
-    margin-top: 8px;
-    line-height: 1.5;
-    font-size: 13px;
-}
-
-.action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: auto;
-}
-
-.btn-primary {
-    width: 100%;
-    background: #000000;
-    color: #fff;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-align: center;
-    text-decoration: none;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.btn-secondary {
-    width: 100%;
-    background: transparent;
-    color: #000000;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 15px;
-    border: 2px solid #000000;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-align: center;
-    text-decoration: none;
-}
-
-.btn-secondary:hover {
-    background: #000000;
-    color: #ffffff;
-}
-
-.spinner {
-    width: 56px;
-    height: 56px;
-    border: 4px solid #e5e5e5;
-    border-top-color: #000000;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 24px;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-</style>
-{% endblock %}
+{% block title %}Bank Transfer Payment Instructions — {{ booking.accommodation_property.title }}{% endblock %}
 
 {% block content %}
-<div class="checkout-container">
-    <!-- Left Column - Payment Summary -->
-    <div class="left-column">
-        <a href="{% url 'accounts:dashboard' %}" class="back-button">
-            ← Back to Dashboard
-        </a>
-        
-        <div class="amount-display">GH₵ {{ payment.amount_total|floatformat:2 }}</div>
-        <div class="billing-subtext">
-            Complete your booking payment via bank transfer for {{ booking.accommodation_property.title }}
-        </div>
-        
-        <div class="plan-card">
-            <div class="plan-title">
-                {% if booking.assigned_room %}
-                    Room {{ booking.assigned_room.room_number }}
-                {% elif booking.room_type %}
-                    {{ booking.room_type.room_type_name }}
-                {% elif booking.unit_type %}
-                    {{ booking.unit_type.unit_name }}
-                {% else %}
-                    Premium Room
-                {% endif %}
-            </div>
-            
-            <div class="breakdown-item">
-                <span class="breakdown-label">Reference</span>
-                <span class="breakdown-value">{{ booking.reference_number }}</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">Duration</span>
-                <span class="breakdown-value">{{ duration_display }}</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">Move-in</span>
-                <span class="breakdown-value">{{ booking.move_in_date|date:"F j, Y" }}</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">Move-out</span>
-                <span class="breakdown-value">{{ booking.move_out_date|date:"F j, Y" }}</span>
-            </div>
-            
-            <div class="total-due breakdown-item">
-                <span class="breakdown-label">Total Due Today</span>
-                <span class="breakdown-value">GH₵ {{ payment.amount_total|floatformat:2 }}</span>
-            </div>
-        </div>
-    </div>
+<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-6 sm:px-8 lg:px-12 w-full pb-28 md:pb-12">
+  <div class="w-full flex flex-col gap-6 sm:gap-8">
     
-    <!-- Right Column - Bank Transfer Form -->
-    <div class="right-column">
-        <h2>Bank Transfer Details</h2>
-        
-        <div class="bank-detail-card">
-            <div class="bank-detail-row">
-                <span class="bank-detail-label">Bank</span>
-                <span class="bank-detail-value">Guaranty Trust Bank (GTBank)</span>
-            </div>
-            <div class="bank-detail-row">
-                <span class="bank-detail-label">Account Name</span>
-                <span class="bank-detail-value">Roomora Limited</span>
-            </div>
-            <div class="bank-detail-row">
-                <span class="bank-detail-label">Account Number</span>
-                <span class="bank-detail-value highlight">0123456789</span>
-            </div>
-            <div class="bank-detail-row">
-                <span class="bank-detail-label">Branch</span>
-                <span class="bank-detail-value">Kumasi Main Branch</span>
-            </div>
-            
-            <div class="important-notice">
-                <strong>IMPORTANT:</strong> You MUST include your booking reference as the transfer description.
-                <div class="reference">Reference: {{ booking.reference_number }}</div>
-                <small>This is how we identify your payment.</small>
-            </div>
+    <!-- Top Stepper Bar -->
+    <div class="glass-card p-4 sm:p-6 w-full">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300/80 bg-emerald-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-800">
+            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Direct Bank Wire Instructions
+          </div>
+          <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] mt-2 tracking-tight">Bank Wire Transfer Instructions</h1>
+          <p class="text-xs text-[#6B7280] mt-1">Transfer exact amount to the official Roomora escrow account listed below.</p>
         </div>
         
-        <h2>Transfer Via</h2>
-        <div class="bank-detail-card">
-            <ul class="transfer-methods">
-                <li>Mobile banking app</li>
-                <li>Internet banking</li>
-                <li>Bank branch</li>
-            </ul>
+        <!-- Step Indicator -->
+        <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+          <a href="{% url 'bookings:booking_initiated' booking.id %}" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0">
+            <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
+            <span>1. Soft Lock</span>
+          </a>
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <a href="{% url 'bookings:duration_selection' booking.id %}" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0">
+            <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
+            <span>2. Duration</span>
+          </a>
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <a href="{% url 'bookings:lifestyle_check' booking.id %}" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0">
+            <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
+            <span>3. Preferences</span>
+          </a>
+          <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+          <div class="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 rounded-2xl text-xs font-bold shadow-sm shrink-0">
+            <div class="h-5 w-5 rounded-full bg-white text-[#111111] flex items-center justify-center text-[10px] font-extrabold">4</div>
+            <span>4. Bank Wire</span>
+          </div>
         </div>
-        
-        <div class="verification-notice">
-            <strong>Verification Process:</strong>
-            <div style="color: #3b82f6; margin-top: 8px; line-height: 1.5; font-size: 14px;">
-                After you notify us, our system will verify your transfer within 2 hours (during business hours).
-                Your booking slot remains held during verification.
-            </div>
-            <div class="reference">Reference: {{ booking.reference_number }}</div>
-            <small>You will be notified once payment is verified and your booking is confirmed.</small>
-        </div>
-        
-        <form id="bank-transfer-claim-form">
-            {% csrf_token %}
-            <input type="hidden" name="payment_id" value="{{ payment.id }}">
-            
-            <div class="action-buttons">
-                <button type="submit" class="btn-primary">
-                    I Have Completed the Transfer
-                </button>
-                <a href="{% url 'accounts:dashboard' %}" class="btn-secondary">
-                    Cancel
-                </a>
-            </div>
-        </form>
+      </div>
     </div>
-</div>
 
-<script>
-document.getElementById('bank-transfer-claim-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const paymentId = formData.get('payment_id');
-    
-    try {
-        const response = await fetch(`/api/v1/payments/${paymentId}/bank-transfer-claim/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: JSON.stringify({})
-        });
+    <!-- Main Workspace Grid -->
+    <div class="grid gap-6 lg:gap-8 lg:grid-cols-[1.2fr_0.8fr] items-start w-full">
+      
+      <!-- Left Column: Bank Account Specifications -->
+      <div class="space-y-6 w-full">
+        <div class="glass-card p-5 sm:p-8 space-y-6">
+          <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/><path d="M4 10v11"/><path d="M20 10v11"/><path d="M8 14v3"/><path d="M12 14v3"/><path d="M16 14v3"/></svg>
+              </div>
+              <div>
+                <h2 class="font-outfit text-xl font-bold text-[#111111]">Escrow Bank Account Details</h2>
+                <p class="text-xs text-[#6B7280]">Official bank details for Roomora Ghana escrow transfers.</p>
+              </div>
+            </div>
+            <span class="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold text-emerald-900">
+              Escrow Account
+            </span>
+          </div>
+
+          <!-- Bank Account Details Card -->
+          <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-3.5">
+            <div class="flex justify-between items-center py-2 border-b border-black/10 text-xs">
+              <span class="text-[#6B7280]">Bank Name:</span>
+              <span class="font-extrabold text-[#111111] text-sm">Ecobank Ghana PLC</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-black/10 text-xs">
+              <span class="text-[#6B7280]">Account Name:</span>
+              <span class="font-extrabold text-[#111111] text-sm">Roomora Technologies Ltd (Escrow Account)</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-black/10 text-xs">
+              <span class="text-[#6B7280]">Account Number:</span>
+              <span class="font-mono font-extrabold text-[#111111] text-base bg-white border border-black/15 px-3 py-1 rounded-xl">1441002389101</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-black/10 text-xs">
+              <span class="text-[#6B7280]">Branch / Sort Code:</span>
+              <span class="font-extrabold text-[#111111]">East Legon Branch (130104)</span>
+            </div>
+            <div class="flex justify-between items-center py-2 text-xs">
+              <span class="text-[#6B7280]">Payment Reference (Required):</span>
+              <span class="font-mono font-extrabold text-[#111111] text-sm bg-black/5 border border-black/10 px-3 py-1 rounded-xl">{{ booking.reference_number }}</span>
+            </div>
+          </div>
+
+          <!-- Proof Upload Notice -->
+          <div class="bg-amber-50/70 border border-amber-200 p-4.5 rounded-2xl space-y-2">
+            <div class="text-xs font-extrabold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Important Instructions
+            </div>
+            <p class="text-xs text-amber-950 leading-relaxed">
+              Include your reference code <strong class="font-mono font-bold">{{ booking.reference_number }}</strong> in the bank transfer remarks/memo so our billing system automatically matches your deposit.
+            </p>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+            <a href="{% url 'payments:payment_screen' payment.id %}" class="text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-colors">
+              ← Change Payment Method
+            </a>
+            <a href="{% url 'payments:payment_confirmation' payment.id %}" class="ds-btn sm:w-auto px-8 py-3.5">
+              <span>I Have Sent the Wire ➔</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column Sidebar: Amount Summary -->
+      <div class="space-y-6 w-full">
         
-        const data = await response.json();
-        
-        if (response.ok) {
-            // Show pending verification message
-            document.querySelector('.checkout-container').innerHTML = `
-                <div class="left-column" style="grid-column: 1 / -1; text-align: center;">
-                    <div class="spinner"></div>
-                    <h2 style="color: #fff; margin-bottom: 20px; font-size: 24px; font-weight: 700;">PAYMENT PENDING VERIFICATION</h2>
-                    <p style="color: #9CA3AF; margin-bottom: 16px; line-height: 1.6;">
-                        We have received your notification that you completed a bank transfer of GH₵ {{ payment.amount_total|floatformat:2 }}.
-                    </p>
-                    <p style="color: #9CA3AF; margin-bottom: 16px; line-height: 1.6;">
-                        Our system will verify this transfer within 2 hours (during business hours).
-                    </p>
-                    <p style="color: #9CA3AF; margin-bottom: 16px; line-height: 1.6;">
-                        Your booking slot remains held during verification.
-                    </p>
-                    <p style="margin-bottom: 20px;">
-                        <strong style="color: #60A5FA; font-size: 18px;">Reference: {{ booking.reference_number }}</strong>
-                    </p>
-                    <p style="color: #6B7280; margin-bottom: 28px; line-height: 1.6;">
-                        You will be notified once payment is verified and your booking is confirmed.
-                    </p>
-                    <a href="{% url 'accounts:dashboard' %}" class="btn-primary" style="max-width: 300px; margin: 0 auto;">
-                        View Booking Status
-                    </a>
-                </div>
-            `;
-        } else {
-            alert('Error: ' + (data.error || 'Unknown error'));
-        }
-    } catch (error) {
-        alert('An error occurred: ' + error.message);
-    }
-});
-</script>
+        <!-- Total Payable Box -->
+        <div class="glass-card p-6 space-y-5">
+          <div class="font-outfit text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#888888]">Transfer Breakdown</div>
+          
+          <div class="space-y-2.5 text-xs font-semibold">
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Rent Rate:</span>
+              <span class="text-[#111111] font-bold">GH₵ {{ payment.amount_accommodation|floatformat:2 }}</span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Service Fee (2%):</span>
+              <span class="text-[#111111] font-bold">GH₵ {{ payment.amount_platform_fee|floatformat:2 }}</span>
+            </div>
+          </div>
+
+          <div class="bg-[#111111] text-white p-5 rounded-2xl">
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total Payable Transfer</div>
+            <div class="font-outfit text-2xl font-extrabold text-white mt-1">
+              GH₵ {{ payment.amount_total|floatformat:2 }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -1,458 +1,76 @@
-{% extends "landing/base.html" %}
+{% extends "bookings/base_checkout.html" %}
 {% load static %}
 
-{% block title %}Payment Unsuccessful - Roomora{% endblock %}
-
-{% block extra_css %}
-<style>
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: #fff !important;
-    color: #1f2937 !important;
-}
-
-.checkout-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    min-height: 100vh;
-    margin: 0;
-    position: relative;
-    z-index: 1;
-}
-
-@media (min-width: 768px) {
-    .checkout-container {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 767px) {
-    .checkout-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .left-column {
-        padding: 24px;
-    }
-    
-    .right-column {
-        padding: 24px;
-    }
-    
-    .amount-display {
-        font-size: 36px;
-    }
-}
-
-/* Left Column - Dark Theme */
-.left-column {
-    background: #000000;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: #fff;
-}
-
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: 500;
-    margin-bottom: 32px;
-    transition: color 0.2s;
-}
-
-.back-button:hover {
-    color: #fff;
-}
-
-.failure-icon {
-    font-size: 80px;
-    margin-bottom: 20px;
-    color: #ffffff;
-    animation: shake 0.5s ease-in-out;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
-}
-
-.failure-title {
-    font-size: 32px;
-    font-weight: 800;
-    margin-bottom: 12px;
-    color: #ffffff;
-}
-
-.failure-subtitle {
-    color: #ffffff;
-    font-size: 16px;
-    margin-bottom: 32px;
-    line-height: 1.5;
-}
-
-.amount-display {
-    font-size: 48px;
-    font-weight: 800;
-    margin-bottom: 12px;
-    color: #ffffff;
-}
-
-.amount-label {
-    color: #ffffff;
-    font-size: 16px;
-    margin-bottom: 32px;
-}
-
-.plan-card {
-    background: #000000;
-    border: 1px solid #333333;
-    border-radius: 16px;
-    padding: 24px;
-}
-
-.plan-title {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: #ffffff;
-}
-
-.breakdown-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.breakdown-item:last-child {
-    border-bottom: none;
-}
-
-.breakdown-label {
-    color: #ffffff;
-}
-
-.breakdown-value {
-    color: #fff;
-    font-weight: 600;
-}
-
-/* Right Column - White Theme */
-.right-column {
-    background: #ffffff;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-}
-
-.right-column h2 {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 24px;
-}
-
-.failure-reason-card {
-    background: #f5f5f5;
-    border: 1px solid #e5e5e5;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 24px;
-}
-
-.failure-reason {
-    color: #000000;
-    font-weight: 700;
-    font-size: 16px;
-    margin-bottom: 8px;
-}
-
-.failure-reason small {
-    color: #666666;
-    display: block;
-    margin-top: 8px;
-    line-height: 1.5;
-    font-size: 14px;
-}
-
-.timer-card {
-    background: #f5f5f5;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 24px;
-}
-
-.timer-card .timer-label {
-    color: #000000;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 8px;
-}
-
-.timer-card .timer-value {
-    color: #000000;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.solutions-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.solutions-list li {
-    padding: 12px 0;
-    color: #6b7280;
-    border-bottom: 1px solid #e5e7eb;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.solutions-list li:last-child {
-    border-bottom: none;
-}
-
-.solutions-list li::before {
-    content: '';
-    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-}
-
-.action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: auto;
-}
-
-.btn-primary {
-    width: 100%;
-    background: #000000;
-    color: #fff;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-align: center;
-    text-decoration: none;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.btn-secondary {
-    width: 100%;
-    background: transparent;
-    color: #000000;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 15px;
-    border: 2px solid #000000;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-align: center;
-    text-decoration: none;
-}
-
-.btn-secondary:hover {
-    background: #000000;
-    color: #ffffff;
-}
-
-.divider {
-    text-align: center;
-    color: #9ca3af;
-    margin: 8px 0;
-    font-size: 14px;
-}
-
-.cancel-link {
-    text-align: center;
-    color: #6b7280;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 15px;
-    transition: color 0.3s;
-}
-
-.cancel-link:hover {
-    color: #dc2626;
-}
-</style>
-{% endblock %}
+{% block title %}Payment Unsuccessful — Roomora Support{% endblock %}
 
 {% block content %}
-<div class="checkout-container">
-    <!-- Left Column - Failure Summary -->
-    <div class="left-column">
-        <a href="{% url 'accounts:dashboard' %}" class="back-button">
-            ← Back to Dashboard
-        </a>
-        
-        <div class="failure-icon">
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="15" y1="9" x2="9" y2="15"></line>
-                <line x1="9" y1="9" x2="15" y2="15"></line>
-            </svg>
-        </div>
-        <div class="failure-title">PAYMENT UNSUCCESSFUL</div>
-        <div class="failure-subtitle">
-            Your payment of GH₵ {{ payment.amount_total|floatformat:2 }} was not completed.
-        </div>
-        
-        <div class="amount-display">GH₵ {{ payment.amount_total|floatformat:2 }}</div>
-        <div class="amount-label">Amount Not Charged</div>
-        
-        <div class="plan-card">
-            <div class="plan-title">
-                {% if booking.assigned_room %}
-                    Room {{ booking.assigned_room.room_number }}
-                {% elif booking.room_type %}
-                    {{ booking.room_type.room_type_name }}
-                {% elif booking.unit_type %}
-                    {{ booking.unit_type.unit_name }}
-                {% else %}
-                    Premium Room
-                {% endif %}
-            </div>
-            
-            <div class="breakdown-item">
-                <span class="breakdown-label">Reference</span>
-                <span class="breakdown-value">{{ booking.reference_number }}</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">Property</span>
-                <span class="breakdown-value">{{ booking.accommodation_property.title }}</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">Duration</span>
-                <span class="breakdown-value">{{ duration_display }}</span>
-            </div>
-        </div>
-    </div>
+<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-8 sm:px-8 lg:px-12 w-full pb-24">
+  <div class="max-w-3xl mx-auto flex flex-col gap-6 sm:gap-8">
     
-    <!-- Right Column - Retry Options -->
-    <div class="right-column">
-        <h2>Failure Details</h2>
-        
-        <div class="failure-reason-card">
-            <div class="failure-reason">Reason: {{ payment.failure_reason|default:"Payment failed" }}</div>
-            <small>Your booking is still reserved. You can try again before the deadline.</small>
+    <!-- Failure Banner Glass Card -->
+    <div class="glass-card p-6 sm:p-10 text-center space-y-6">
+      <div class="h-16 w-16 rounded-full bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mx-auto shadow-sm">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+
+      <div class="space-y-2">
+        <div class="inline-flex items-center gap-2 rounded-full border border-rose-300 bg-rose-50 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-rose-800">
+          Transaction Interrupted
         </div>
-        
-        <div class="timer-card">
-            <div class="timer-label">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 8px;">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                Time remaining:
-            </div>
-            <div class="timer-value" id="time-remaining">Loading...</div>
-        </div>
-        
-        <h2>What You Can Do</h2>
-        
-        <div class="action-buttons">
-            <a href="{% url 'payments:payment_screen' payment.id %}" class="btn-primary">
-                Try Again with {{ payment.get_payment_method_display|default:"Selected Method" }}
-            </a>
-            
-            <div class="divider">— or try a different method —</div>
-            
-            {% if payment.payment_method != 'mtn_momo' %}
-            <a href="{% url 'payments:payment_screen' payment.id %}?method=mtn_momo" class="btn-secondary">
-                Pay with MTN MoMo
-            </a>
-            {% endif %}
-            
-            {% if payment.payment_method != 'vodafone_cash' %}
-            <a href="{% url 'payments:payment_screen' payment.id %}?method=vodafone_cash" class="btn-secondary">
-                Pay with Vodafone Cash
-            </a>
-            {% endif %}
-            
-            {% if payment.payment_method != 'card_visa' %}
-            <a href="{% url 'payments:payment_screen' payment.id %}?method=card_visa" class="btn-secondary">
-                Pay with Debit Card
-            </a>
-            {% endif %}
-            
-            <a href="{% url 'payments:bank_transfer' payment.id %}" class="btn-secondary">
-                Pay with Bank Transfer
-            </a>
-        </div>
-        
-        <h2>Common Solutions</h2>
-        <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-            <ul class="solutions-list">
-                <li>Top up your MoMo wallet and try again</li>
-                <li>Use a different payment method</li>
-                <li>Contact your bank if card was declined</li>
-                <li>Check your internet connection and retry</li>
-            </ul>
-        </div>
-        
-        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-            <strong style="color: #1e40af; display: block; margin-bottom: 8px; font-size: 14px;">NEED HELP?</strong>
-            <a href="mailto:support@roomora.com" class="btn-secondary" style="margin-top: 8px;">
-                Contact Support
-            </a>
-        </div>
-        
-        <a href="{% url 'accounts:dashboard' %}" class="cancel-link">
-            Cancel Booking
+        <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">Payment Unsuccessful</h1>
+        <p class="text-xs sm:text-sm text-[#6B7280] max-w-xl mx-auto">
+          We were unable to process your payment for <strong class="text-[#111111] font-bold">{{ booking.accommodation_property.title }}</strong>. Your room soft lock is still active.
+        </p>
+      </div>
+
+      <!-- Failure Reason Box -->
+      {% if payment.failure_reason %}
+      <div class="bg-rose-50/70 border border-rose-200 p-4 rounded-2xl max-w-md mx-auto text-center space-y-1">
+        <div class="text-[10px] font-extrabold uppercase tracking-widest text-rose-800">Reason Provided</div>
+        <div class="text-xs font-bold text-rose-950">{{ payment.failure_reason }}</div>
+      </div>
+      {% endif %}
+
+      <!-- Retry Options -->
+      <div class="space-y-3 pt-2">
+        <a href="{% url 'payments:payment_screen' payment.id %}" class="ds-btn max-w-md mx-auto py-4 text-base shadow-md">
+          <span>Try Payment Again ➔</span>
         </a>
+        <div class="flex items-center justify-center gap-4 text-xs font-semibold">
+          <a href="{% url 'payments:payment_screen' payment.id %}?method=mtn_momo" class="text-[#6B7280] hover:text-[#111111] transition-colors">Use MTN MoMo</a>
+          <span class="text-black/20">•</span>
+          <a href="{% url 'payments:payment_screen' payment.id %}?method=card_visa" class="text-[#6B7280] hover:text-[#111111] transition-colors">Use Visa/Mastercard</a>
+          <span class="text-black/20">•</span>
+          <a href="{% url 'payments:payment_screen' payment.id %}?method=bank_transfer" class="text-[#6B7280] hover:text-[#111111] transition-colors">Bank Wire</a>
+        </div>
+      </div>
     </div>
+
+    <!-- Troubleshooting Guidance -->
+    <div class="glass-card p-6 space-y-4">
+      <div class="flex items-center gap-2 text-sm font-bold text-[#111111]">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Common Reasons & Quick Troubleshooting
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div class="bg-[#F8F8FA] border border-black/10 p-4 rounded-xl space-y-1">
+          <div class="font-bold text-[#111111]">Insufficient MoMo / Bank Balance</div>
+          <div class="text-[#6B7280]">Verify your Mobile Money account has enough funds covering GH₵ {{ payment.amount_total|floatformat:2 }}.</div>
+        </div>
+        <div class="bg-[#F8F8FA] border border-black/10 p-4 rounded-xl space-y-1">
+          <div class="font-bold text-[#111111]">USSD Timeout or Declined PIN</div>
+          <div class="text-[#6B7280]">Ensure your phone screen is unlocked and enter your 4-digit PIN within 60 seconds of prompt.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="text-center pt-2">
+      <a href="{% url 'accounts:dashboard' %}" class="text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-colors">
+        ← Cancel and Return to Dashboard
+      </a>
+    </div>
+  </div>
 </div>
-
-<script>
-// Countdown timer
-function updateCountdown() {
-    const closesAt = new Date('{{ payment.payment_window_closes_at|date:"c" }}');
-    const now = new Date();
-    const diff = closesAt - now;
-    
-    if (diff <= 0) {
-        document.getElementById('time-remaining').textContent = 'EXPIRED';
-        return;
-    }
-    
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-    
-    document.getElementById('time-remaining').textContent = 
-        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-}
-
-setInterval(updateCountdown, 1000);
-updateCountdown();
-</script>
 {% endblock %}
