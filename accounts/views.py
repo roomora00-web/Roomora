@@ -846,7 +846,8 @@ def dashboard_view(request):
     active_bookings = Booking.objects.filter(
         tenant=request.user,
         status__in=['INITIATED', 'SUBMITTED', 'UNDER_REVIEW', 'COMPATIBILITY_REVIEW', 'WAITING_CONSENT', 
-                    'BOTH_ACCEPTED', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ACTIVE', 'TEMPORARILY_CANCELLED']
+                    'BOTH_ACCEPTED', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ACTIVE', 'TEMPORARILY_CANCELLED',
+                    'PAYMENT_COMPLETE', 'PAID', 'PAYMENT_VERIFIED', 'PAYMENT_REQUIRED', 'COMPLETED']
     ).select_related('accommodation_property', 'room_type', 'unit_type').order_by('-created_at')
     
     current_booking = active_bookings.first()
@@ -910,7 +911,7 @@ def determine_user_state(user, profile, saved_properties, recent_searches, curre
     """Determine the user's current state for contextual messaging based on journey stage"""
     # Priority 1: Check if user has multiple active bookings
     if current_booking and hasattr(current_booking, '__iter__'):
-        active_count = len([b for b in current_booking if b.status in ['INITIATED', 'SUBMITTED', 'UNDER_REVIEW', 'COMPATIBILITY_REVIEW', 'WAITING_CONSENT', 'BOTH_ACCEPTED', 'APPROVED_ASSIGNED', 'ACTIVE', 'TEMPORARILY_CANCELLED']])
+        active_count = len([b for b in current_booking if b.status in ['INITIATED', 'SUBMITTED', 'UNDER_REVIEW', 'COMPATIBILITY_REVIEW', 'WAITING_CONSENT', 'BOTH_ACCEPTED', 'APPROVED_ASSIGNED', 'ACTIVE', 'TEMPORARILY_CANCELLED', 'PAYMENT_COMPLETE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'PAID']])
         if active_count > 1:
             return 'multiple_bookings'
     
@@ -918,12 +919,12 @@ def determine_user_state(user, profile, saved_properties, recent_searches, curre
     if current_booking and current_booking.status == 'ACTIVE':
         return 'active_living'
     
-    # Priority 3: Check if user has an approved booking (pre-move-in)
-    if current_booking and current_booking.status == 'APPROVED_ASSIGNED':
+    # Priority 3: Check if user has a paid or approved booking (pre-move-in)
+    if current_booking and current_booking.status in ['PAYMENT_COMPLETE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'PAID', 'APPROVED_ASSIGNED', 'PAYMENT_VERIFIED']:
         return 'approved_pre_movein'
     
     # Priority 4: Check if user has a booking in progress
-    if current_booking and current_booking.status in ['INITIATED', 'SUBMITTED', 'UNDER_REVIEW', 'COMPATIBILITY_REVIEW', 'WAITING_CONSENT', 'BOTH_ACCEPTED']:
+    if current_booking and current_booking.status in ['INITIATED', 'SUBMITTED', 'UNDER_REVIEW', 'COMPATIBILITY_REVIEW', 'WAITING_CONSENT', 'BOTH_ACCEPTED', 'PAYMENT_REQUIRED']:
         return 'booking_in_progress'
     
     # Priority 5: Check if user has a completed booking (post-move-out)
@@ -953,8 +954,15 @@ def determine_user_state(user, profile, saved_properties, recent_searches, curre
 
 def get_status_message(user_state, user, last_search=None, saved_count=0, current_booking=None, roommate_match=None):
     """Get contextual status message and details based on user state"""
-    if user_state == 'new_user':
-        message = f"Welcome to StayMatch, {user.first_name}! 👋"
+    if user_state == 'approved_pre_movein':
+        prop_title = current_booking.accommodation_property.title if current_booking else "your accommodation"
+        message = f"Your reservation and payment at {prop_title} are confirmed. Your room soft-lock is active."
+        details = {
+            'subtitle': "Physical key issuance is handled by hostel management 24-48 hours before move-in day.",
+            'actions': [{'text': 'View Confirmation & Receipt', 'url': f'/api/v1/payments/{current_booking.payment_record.id}/confirmation/' if current_booking and hasattr(current_booking, 'payment_record') else '/bookings/my-bookings/'}]
+        }
+    elif user_state == 'new_user':
+        message = "Manage your room reservations, roommate compatibility preferences, and payment receipts from your personal hub."
         details = {
             'subtitle': "You're 3 steps away from finding your perfect accommodation.",
             'actions': [
@@ -963,8 +971,8 @@ def get_status_message(user_state, user, last_search=None, saved_count=0, curren
             ]
         }
     elif user_state == 'searching':
-        message = f"Welcome back, {user.first_name}! 👋"
-        subtitle = f"You've saved {saved_count} propert{'y' if saved_count == 1 else 'ies'} and searched recently."
+        message = f"You've saved {saved_count} propert{'y' if saved_count == 1 else 'ies'} and searched recently on Roomora."
+        subtitle = "Resume your search or explore top-rated hostels near your university campus."
         details = {
             'subtitle': subtitle,
             'actions': [
