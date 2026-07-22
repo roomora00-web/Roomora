@@ -77,6 +77,9 @@ def initiate_booking(request, property_id):
     failed_prerequisite = PrerequisiteService.get_first_failed_prerequisite(user)
     if failed_prerequisite:
         if "active or pending booking" in failed_prerequisite.message:
+            initiated_booking = Booking.objects.filter(tenant=user, status='INITIATED').first()
+            if initiated_booking:
+                return redirect('bookings:booking_initiated', booking_id=initiated_booking.id)
             return render(request, 'bookings/active_booking_error.html', {'property': property_obj})
         if failed_prerequisite.redirect_url:
             request.session['intended_booking'] = {
