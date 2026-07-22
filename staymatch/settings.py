@@ -250,8 +250,8 @@ LOGIN_REDIRECT_URL = 'accounts:dashboard'
 LOGOUT_REDIRECT_URL = 'landing:home'
 
 # Paystack Payment Configuration
-PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', '')
-PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY', '')
+PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'sk_test_d240060b0f421d2ba7feee5f1d5213cc18f6a7af')
+PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY', 'pk_test_e18fdc11b8f0f703a9553dc136bf49c6b6b5c299')
 PAYSTACK_CALLBACK_URL = f"{os.environ.get('SITE_URL', 'http://127.0.0.1:8000')}/api/v1/payments/webhook/paystack/"
 PAYSTACK_ESCROW_SUBACCOUNT = os.environ.get('PAYSTACK_ESCROW_SUBACCOUNT', '')  # Subaccount code for landlord disbursements
 PAYMENT_WINDOW_HOURS = 2  # Payment window in hours
