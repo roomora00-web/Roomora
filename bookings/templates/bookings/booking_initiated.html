@@ -4,60 +4,62 @@
 {% block title %}Reservation Initiated — {{ property.title }}{% endblock %}
 
 {% block content %}
-<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-8 sm:px-8 lg:px-12 w-full">
-  <div class="w-full flex flex-col gap-8">
+<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-6 sm:px-8 lg:px-12 w-full pb-28 md:pb-12">
+  <div class="w-full flex flex-col gap-6 sm:gap-8">
     
     <!-- Top Stepper Bar -->
     <div class="glass-card p-4 sm:p-6 w-full">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300/60 bg-emerald-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-800">
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300/80 bg-emerald-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-800">
             <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Soft-Lock Active
+            Soft-Lock Active (48 Hours Reserved)
           </div>
           <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] mt-2 tracking-tight">Reservation Initiated</h1>
         </div>
         
-        <!-- Step Indicator -->
-        <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 md:pb-0">
-          <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0">
+        <!-- Step Indicator (Scrollable on Mobile) -->
+        <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+          <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0">
             <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
             <span>1. Soft Lock</span>
           </div>
           <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
           <div class="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 rounded-2xl text-xs font-bold shadow-sm shrink-0">
-            <div class="h-5 w-5 rounded-full bg-white text-[#111111] flex items-center justify-center text-[10px]">2</div>
-            <span>Duration</span>
+            <div class="h-5 w-5 rounded-full bg-white text-[#111111] flex items-center justify-center text-[10px] font-extrabold">2</div>
+            <span>2. Duration</span>
           </div>
           <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
           <div class="flex items-center gap-2 bg-black/[0.04] text-[#6B7280] px-4 py-2 rounded-2xl text-xs font-semibold shrink-0">
             <div class="h-5 w-5 rounded-full bg-black/10 text-[#6B7280] flex items-center justify-center text-[10px]">3</div>
-            <span>Preferences</span>
+            <span>3. Preferences</span>
           </div>
           <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
           <div class="flex items-center gap-2 bg-black/[0.04] text-[#6B7280] px-4 py-2 rounded-2xl text-xs font-semibold shrink-0">
             <div class="h-5 w-5 rounded-full bg-black/10 text-[#6B7280] flex items-center justify-center text-[10px]">4</div>
-            <span>Confirm</span>
+            <span>4. Confirm</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Main Workspace Grid (Full Width) -->
-    <div class="grid gap-8 lg:grid-cols-[1.3fr_0.7fr] items-start w-full">
+    <!-- Main Workspace Grid (Full Width Responsive) -->
+    <div class="grid gap-6 lg:gap-8 lg:grid-cols-[1.3fr_0.7fr] items-start w-full">
       
       <!-- Left Column -->
       <div class="space-y-6 w-full">
         
         <!-- Room Pictures Hero Showcase & Details -->
-        <div class="glass-card p-6 sm:p-8 space-y-6">
+        <div class="glass-card p-5 sm:p-8 space-y-6">
           <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-black/[0.06] pb-6">
-            <div>
-              <div class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 mb-1">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Reserved Space & Property Location
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Reserved Space Details
+                </span>
               </div>
-              <h2 class="font-outfit text-xl sm:text-2xl font-bold text-[#111111] leading-snug">{{ property.title }}</h2>
+              <h2 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] leading-snug tracking-tight mt-1">{{ property.title }}</h2>
               
               <!-- Location Line -->
               <div class="flex items-center gap-2 mt-1.5 text-xs font-semibold text-[#555555]">
@@ -67,9 +69,9 @@
             </div>
 
             <!-- Price Highlight Pill -->
-            <div class="bg-[#111111] text-white px-5 py-3 rounded-2xl shrink-0 text-left md:text-right shadow-sm w-full md:w-auto">
-              <div class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Reserved Rate</div>
-              <div class="font-outfit text-xl font-extrabold text-white mt-0.5">
+            <div class="bg-[#111111] text-white px-5 py-3.5 rounded-2xl shrink-0 text-left md:text-right shadow-sm w-full md:w-auto">
+              <div class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Locked Base Rate</div>
+              <div class="font-outfit text-xl sm:text-2xl font-extrabold text-white mt-0.5">
                 {% if booking.room and booking.room.room_type.pricing_models.first %}
                   GH₵ {{ booking.room.room_type.pricing_models.first.semester_price|default:booking.room.room_type.pricing_models.first.monthly_price }}
                   <span class="text-xs font-normal text-slate-300">/ {% if booking.room.room_type.pricing_models.first.semester_price %}semester{% else %}month{% endif %}</span>
@@ -80,8 +82,53 @@
             </div>
           </div>
 
+          <!-- Room Specifications Card -->
+          {% if booking.room %}
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F8F8FA] border border-black/10 p-4 rounded-2xl">
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Assigned Room</div>
+              <div class="text-xs sm:text-sm font-bold text-[#111111] mt-0.5">Room {{ booking.room.room_number }}</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Room Type</div>
+              <div class="text-xs sm:text-sm font-bold text-[#111111] mt-0.5">{{ booking.room.room_type.room_type_name }}</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Occupancy</div>
+              <div class="text-xs sm:text-sm font-bold text-[#111111] mt-0.5">{{ booking.room.room_type.get_occupancy_type_display }}</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Soft Lock Holding</div>
+              <div class="text-xs sm:text-sm font-bold text-emerald-700 mt-0.5">48 Hours Active</div>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Reference & Countdown Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-[#F8F8FA] border border-black/[0.08] p-4.5 rounded-2xl flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Booking Reference</div>
+                <div class="font-mono text-base sm:text-lg font-extrabold text-[#111111] mt-0.5 tracking-tight" id="refCode">{{ booking.reference_number }}</div>
+              </div>
+              <button type="button" onclick="copyRefCode()" class="h-9 px-4 bg-white border border-black/10 rounded-xl text-xs font-bold text-[#111111] hover:bg-black hover:text-white transition-all shadow-sm shrink-0">
+                Copy Code
+              </button>
+            </div>
+
+            <div class="bg-emerald-50/70 border border-emerald-200 p-4.5 rounded-2xl flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-800">Soft Lock Status</div>
+                <div class="text-base font-extrabold text-emerald-950 mt-0.5 flex items-center gap-1.5">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>Slot Held for 48 Hours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Selected Room Photos Grid -->
-          <div class="space-y-3">
+          <div class="space-y-3 pt-2 border-t border-black/[0.06]">
             <div class="text-xs font-extrabold uppercase tracking-widest text-[#888888]">Selected Room & Shared Facilities</div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {% if booking.room and booking.room.images.all %}
@@ -103,14 +150,14 @@
                   </div>
                 {% endfor %}
               {% else %}
-                <div class="col-span-3 h-40 rounded-2xl border border-black/10 bg-[#F8F8FA] flex items-center justify-center text-sm font-semibold text-[#6B7280]">
+                <div class="col-span-3 h-36 rounded-2xl border border-black/10 bg-[#F8F8FA] flex items-center justify-center text-xs font-semibold text-[#6B7280]">
                   No photos available for this room
                 </div>
               {% endif %}
             </div>
           </div>
 
-          <!-- Amenities Badges Showcase -->
+          <!-- Included Amenities Badges Showcase -->
           <div class="space-y-3 pt-2 border-t border-black/[0.06]">
             <div class="text-xs font-extrabold uppercase tracking-widest text-[#888888]">Included Amenities & Features</div>
             <div class="flex flex-wrap gap-2">
@@ -132,33 +179,9 @@
               {% endfor %}
             </div>
           </div>
-        </div>
-
-          <!-- Reference & Countdown Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="bg-[#F8F8FA] border border-black/[0.05] p-4 rounded-2xl flex items-center justify-between">
-              <div>
-                <div class="text-[11px] font-extrabold uppercase tracking-widest text-[#888888]">Reference Code</div>
-                <div class="font-mono text-base font-extrabold text-[#111111] mt-0.5 tracking-tight" id="refCode">{{ booking.reference_number }}</div>
-              </div>
-              <button type="button" onclick="copyRefCode()" class="h-9 px-3.5 bg-white border border-black/10 rounded-xl text-xs font-bold text-[#111111] hover:bg-black hover:text-white transition-all shadow-sm">
-                Copy Code
-              </button>
-            </div>
-
-            <div class="bg-[#F8F8FA] border border-black/[0.05] p-4 rounded-2xl flex items-center justify-between">
-              <div>
-                <div class="text-[11px] font-extrabold uppercase tracking-widest text-[#888888]">Soft Lock Holding Time</div>
-                <div class="text-base font-extrabold text-emerald-700 mt-0.5 flex items-center gap-1.5">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  <span>48 Hours Reserved</span>
-                </div>
-              </div>
-            </div>
-          </div>
 
           <!-- Flow Guide -->
-          <div class="space-y-4 pt-2">
+          <div class="space-y-4 pt-4 border-t border-black/[0.06]">
             <h3 class="font-outfit text-base font-bold text-[#111111]">Next Steps to Finalize Your Booking</h3>
             
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -201,7 +224,7 @@
         
         <!-- Checklist Card -->
         <div class="glass-card p-6 space-y-4">
-          <div class="font-outfit text-sm font-extrabold uppercase tracking-widest text-[#888888]">Reservation Timeline</div>
+          <div class="font-outfit text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#888888]">Reservation Timeline</div>
           
           <div class="space-y-3">
             <div class="flex items-start gap-3.5 bg-emerald-50/70 border border-emerald-200/80 p-3.5 rounded-2xl">
@@ -241,7 +264,7 @@
         <!-- Trust & Support Card -->
         <div class="glass-card p-6 space-y-4">
           <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm">
+            <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
               🛡️
             </div>
             <div>
@@ -254,6 +277,22 @@
 
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Sticky Mobile Action Bar (<768px) -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-black/10 p-3 shadow-lg">
+  <div class="flex items-center justify-between gap-3">
+    <div>
+      <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">{{ property.title }}</div>
+      <div class="text-xs font-bold text-emerald-800 flex items-center gap-1">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        Soft-Lock Active
+      </div>
+    </div>
+    <a href="{% url 'bookings:duration_selection' booking.id %}" class="ds-btn px-6 py-2.5 text-xs font-bold">
+      <span>Continue ➔</span>
+    </a>
   </div>
 </div>
 
