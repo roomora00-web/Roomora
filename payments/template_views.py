@@ -84,10 +84,31 @@ def payment_confirmation_view(request, payment_id):
         )
     
     duration_display = f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)"
+    accommodation_property = booking.accommodation_property
+    room = booking.assigned_room or booking.room
+    room_type = booking.room_type or (room.room_type if room else None)
+    unit_type = booking.unit_type or (room.unit_type if room else None)
+    
+    from accounts.models import LifestyleProfile
+    lifestyle_profile = LifestyleProfile.objects.filter(user=request.user).first()
+    
+    # Collect room and property gallery images
+    gallery_images = []
+    if room and hasattr(room, 'images') and room.images.exists():
+        gallery_images = list(room.images.all())
+    if not gallery_images and accommodation_property:
+        gallery_images = accommodation_property.all_gallery_images[:6]
     
     context = {
         'payment': payment,
         'booking': booking,
+        'property': accommodation_property,
+        'room': room,
+        'room_type': room_type,
+        'unit_type': unit_type,
+        'amenities': accommodation_property.amenities.all() if accommodation_property else [],
+        'gallery_images': gallery_images,
+        'lifestyle_profile': lifestyle_profile,
         'duration_display': duration_display,
     }
     

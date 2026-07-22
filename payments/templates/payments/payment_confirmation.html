@@ -1,136 +1,320 @@
 {% extends "bookings/base_checkout.html" %}
 {% load static %}
 
-{% block title %}Payment Successful — Roomora Escrow Confirmation{% endblock %}
+{% block title %}Payment Verified & Confirmed — {{ property.title }}{% endblock %}
 
 {% block content %}
-<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-8 sm:px-8 lg:px-12 w-full pb-24">
-  <div class="max-w-4xl mx-auto flex flex-col gap-6 sm:gap-8">
+<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-6 sm:px-8 lg:px-12 w-full pb-28 md:pb-12">
+  <div class="w-full flex flex-col gap-6 sm:gap-8">
     
-    <!-- Success Banner Glass Card -->
-    <div class="glass-card p-6 sm:p-10 text-center space-y-6">
-      <div class="h-16 w-16 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-
-      <div class="space-y-2">
-        <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-50 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-emerald-800">
-          Payment Verified & Escrow Soft-Locked
+    <!-- Top Stepper & Success Header Card -->
+    <div class="glass-card p-6 sm:p-8 w-full space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-black/[0.06] pb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300/80 bg-emerald-50 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-emerald-800">
+            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Payment Verified & Soft-Lock Active
+          </div>
+          <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] mt-2 tracking-tight">Payment Received & Confirmed</h1>
+          <p class="text-xs text-[#6B7280] mt-1">Your room reservation is locked in. Below is your official payment receipt and room details.</p>
         </div>
-        <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">Payment Received & Confirmed!</h1>
-        <p class="text-xs sm:text-sm text-[#6B7280] max-w-xl mx-auto">
-          Your payment of <strong class="text-[#111111] font-bold">GH₵ {{ payment.amount_total|floatformat:2 }}</strong> has been verified. Your room soft-lock is active and held exclusively for you.
-        </p>
+        
+        <!-- Action Buttons in Header -->
+        <div class="flex items-center gap-3">
+          <button onclick="window.print()" class="inline-flex items-center gap-2 bg-white border border-black/15 px-4 py-2.5 rounded-2xl text-xs font-bold text-[#111111] hover:bg-black/5 transition-colors shadow-sm">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            <span>Print Receipt</span>
+          </button>
+          <a href="{% url 'bookings:my-bookings' %}" class="ds-btn px-6 py-2.5 text-xs font-bold w-auto">
+            My Bookings ➔
+          </a>
+        </div>
       </div>
 
-      <!-- Payment Reference & Amount Badge -->
-      <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl max-w-md mx-auto flex justify-between items-center text-left">
+      <!-- Quick Receipt Summary Banner -->
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl">
         <div>
           <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Payment Reference</div>
           <div class="font-mono text-base font-extrabold text-[#111111] mt-0.5">{{ payment.payment_reference|default:booking.reference_number }}</div>
         </div>
-        <div class="text-right">
-          <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Amount Paid</div>
-          <div class="font-outfit text-lg font-extrabold text-emerald-700 mt-0.5">GH₵ {{ payment.amount_total|floatformat:2 }}</div>
+        <div>
+          <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Total Amount Paid</div>
+          <div class="font-outfit text-base font-extrabold text-emerald-700 mt-0.5">GH₵ {{ payment.amount_total|floatformat:2 }}</div>
+        </div>
+        <div>
+          <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Payment Status</div>
+          <div class="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-900 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full mt-1">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+            Paid & Escrow Held
+          </div>
+        </div>
+        <div>
+          <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Move-In Date</div>
+          <div class="text-xs font-bold text-[#111111] mt-1">{{ booking.move_in_date|date:"d M Y"|default:"Scheduled" }}</div>
         </div>
       </div>
     </div>
 
-    <!-- Booking & Property Details Grid -->
-    <div class="grid gap-6 lg:grid-cols-2 items-start w-full">
+    <!-- Main Workspace Grid -->
+    <div class="grid gap-6 lg:gap-8 lg:grid-cols-[1.35fr_0.65fr] items-start w-full">
       
-      <!-- Property & Room Info -->
-      <div class="glass-card p-6 space-y-4">
-        <div class="flex items-center gap-3 border-b border-black/[0.06] pb-3">
-          <div class="h-9 w-9 rounded-xl bg-[#111111] text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          </div>
-          <div>
-            <h3 class="font-outfit text-lg font-bold text-[#111111]">Reservation Summary</h3>
-            <p class="text-[11px] text-[#6B7280]">Property and room tier details.</p>
-          </div>
-        </div>
-
-        <div class="space-y-3 text-xs">
-          <div class="flex justify-between py-2 border-b border-black/[0.06]">
-            <span class="text-[#6B7280]">Property:</span>
-            <span class="font-bold text-[#111111]">{{ booking.accommodation_property.title }}</span>
-          </div>
-          <div class="flex justify-between py-2 border-b border-black/[0.06]">
-            <span class="text-[#6B7280]">Location:</span>
-            <span class="font-bold text-[#111111]">{{ booking.accommodation_property.address }}, {{ booking.accommodation_property.city }}</span>
-          </div>
-          <div class="flex justify-between py-2 border-b border-black/[0.06]">
-            <span class="text-[#6B7280]">Assigned Space:</span>
-            <span class="font-bold text-[#111111]">
-              {% if booking.assigned_room %}
-                Room {{ booking.assigned_room.room_number }}
-              {% elif booking.room_type %}
-                {{ booking.room_type.room_type_name }}
-              {% else %}
-                Hostel Room
-              {% endif %}
+      <!-- Left Column: Room Gallery, Room Specs, & Property Details -->
+      <div class="space-y-6 w-full">
+        
+        <!-- Room & Property Inspection Photo Gallery Card -->
+        <div class="glass-card p-5 sm:p-8 space-y-5">
+          <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div>
+                <h2 class="font-outfit text-xl font-bold text-[#111111]">Room & Property Inspection Gallery</h2>
+                <p class="text-xs text-[#6B7280]">Verified inspection photos of your reserved room interior and shared spaces.</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-emerald-900 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+              {% if room %}Room {{ room.room_number }}{% else %}Reserved Space{% endif %}
             </span>
           </div>
-          <div class="flex justify-between py-2 border-b border-black/[0.06]">
-            <span class="text-[#6B7280]">Move-In Date:</span>
-            <span class="font-bold text-[#111111]">{{ booking.move_in_date|date:"F j, Y"|default:"Scheduled" }}</span>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            {% if gallery_images %}
+              {% for img in gallery_images %}
+              <div class="relative group overflow-hidden rounded-2xl border border-black/10 bg-[#F4F4F6] aspect-[4/3] shadow-sm">
+                <img src="{{ img.image_url }}" alt="{{ img.caption|default:'Room inspection photo' }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
+                  <span class="bg-white/90 backdrop-blur-md text-[#111111] text-[10px] font-extrabold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm">
+                    {{ img.get_image_type_display|default:img.image_type|default:"Inspection Photo" }}
+                  </span>
+                  {% if img.caption %}
+                  <span class="text-[10px] text-white/90 font-medium truncate max-w-[120px]">{{ img.caption }}</span>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="col-span-3 p-8 rounded-2xl border border-black/10 bg-[#F8F8FA] text-center space-y-2">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mx-auto text-[#888888]"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <div class="text-xs font-extrabold text-[#111111]">Verified Room Photos Available</div>
+                <p class="text-[11px] text-[#6B7280]">Inspection photos attached to your booking reference record.</p>
+              </div>
+            {% endif %}
           </div>
-          <div class="flex justify-between py-2">
-            <span class="text-[#6B7280]">Move-Out Date:</span>
-            <span class="font-bold text-[#111111]">{{ booking.move_out_date|date:"F j, Y"|default:"Scheduled" }}</span>
+        </div>
+
+        <!-- Entire Room & Assigned Unit Details -->
+        <div class="glass-card p-5 sm:p-8 space-y-6">
+          <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              </div>
+              <div>
+                <h2 class="font-outfit text-xl font-bold text-[#111111]">Reserved Room & Unit Specifications</h2>
+                <p class="text-xs text-[#6B7280]">Specific room tier, capacity, floor level, and layout details.</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono font-extrabold bg-[#111111] text-white px-3 py-1 rounded-xl">
+              {% if room %}Room {{ room.room_number }}{% else %}Assigned Space{% endif %}
+            </span>
+          </div>
+
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-[#F8F8FA] border border-black/10 p-4.5 rounded-2xl">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Assigned Room</div>
+                <div class="text-sm font-extrabold text-[#111111] mt-0.5">
+                  {% if room %}Room {{ room.room_number }}{% else %}Pre-assigned Space{% endif %}
+                </div>
+              </div>
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Floor Level</div>
+                <div class="text-sm font-extrabold text-[#111111] mt-0.5">
+                  {% if room and room.floor %}{{ room.floor }} Floor{% else %}Standard Floor{% endif %}
+                </div>
+              </div>
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Room Type Tier</div>
+                <div class="text-sm font-extrabold text-[#111111] mt-0.5">
+                  {% if room_type %}{{ room_type.room_type_name }}{% elif unit_type %}{{ unit_type.unit_name }}{% else %}Standard Hostel Room{% endif %}
+                </div>
+              </div>
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Room Capacity</div>
+                <div class="text-sm font-extrabold text-[#111111] mt-0.5">
+                  {% if room %}{{ room.total_slots }} Person Capacity{% else %}Standard Capacity{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-3">
+              <div class="text-xs font-extrabold text-[#111111] uppercase tracking-wider">Furnishings & Features</div>
+              <p class="text-xs text-[#555555] leading-relaxed">
+                {% if room_type and room_type.description %}
+                  {{ room_type.description }}
+                {% else %}
+                  Includes student study desk & ergonomic chair, personal storage wardrobe, ventilation fan/AC access, and high-speed Wi-Fi access point.
+                {% endif %}
+              </p>
+              
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 text-xs">
+                <div class="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-black/10">
+                  <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-semibold text-[#111111]">Study Desk & Chair</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-black/10">
+                  <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-semibold text-[#111111]">Personal Wardrobe</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-black/10">
+                  <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-semibold text-[#111111]">High-Speed Wi-Fi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Property Details Card -->
+        <div class="glass-card p-5 sm:p-8 space-y-6">
+          <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <div>
+                <h2 class="font-outfit text-xl font-bold text-[#111111]">Property & Campus Location</h2>
+                <p class="text-xs text-[#6B7280]">Property address, campus proximity, and safety specifications.</p>
+              </div>
+            </div>
+            {% if property.is_verified %}
+            <span class="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold text-emerald-900">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Verified Listing
+            </span>
+            {% endif %}
+          </div>
+
+          <div class="space-y-4">
+            <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-2">
+              <div class="text-lg font-extrabold text-[#111111]">{{ property.title }}</div>
+              <div class="text-xs font-medium text-[#6B7280] flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ property.address }}, {{ property.city }}, {{ property.region }}{% if property.digital_address %} • <span class="font-mono text-[#111111] font-bold">{{ property.digital_address }}</span>{% endif %}
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#F8F8FA] border border-black/10 p-4.5 rounded-2xl">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Nearest Campus</div>
+                <div class="text-xs font-bold text-[#111111] mt-0.5">{{ property.nearest_institution|default:"Local Campus" }}</div>
+              </div>
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Distance to Campus</div>
+                <div class="text-xs font-bold text-[#111111] mt-0.5">{% if property.distance_to_campus %}{{ property.distance_to_campus }} km{% else %}Walking Distance{% endif %}</div>
+              </div>
+              <div>
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Estimated Walk Time</div>
+                <div class="text-xs font-bold text-[#111111] mt-0.5">{% if property.walking_time_estimate %}{{ property.walking_time_estimate }} minutes{% else %}5–10 mins{% endif %}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Next Steps Checklist -->
-      <div class="glass-card p-6 space-y-4">
-        <div class="flex items-center gap-3 border-b border-black/[0.06] pb-3">
-          <div class="h-9 w-9 rounded-xl bg-[#111111] text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+      <!-- Right Column Sidebar: Official Receipt & Check-in Roadmap -->
+      <div class="space-y-6 w-full">
+        
+        <!-- Official Itemized Receipt Box -->
+        <div class="glass-card p-6 space-y-5">
+          <div class="flex items-center justify-between border-b border-black/[0.06] pb-3">
+            <div class="font-outfit text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#888888]">Official Payment Receipt</div>
+            <span class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">VERIFIED</span>
+          </div>
+          
+          <div class="space-y-2.5 text-xs font-semibold">
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Receipt Reference:</span>
+              <span class="text-[#111111] font-mono font-bold">{{ payment.payment_reference|default:booking.reference_number }}</span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Primary Tenant:</span>
+              <span class="text-[#111111] font-bold">{{ booking.tenant.full_name|default:booking.tenant.email }}</span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Base Accommodation Fee:</span>
+              <span class="text-[#111111] font-bold">GH₵ {{ payment.amount_accommodation|default:booking.total_price|floatformat:2 }}</span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Platform & Escrow Fee (2%):</span>
+              <span class="text-[#111111] font-bold">GH₵ {{ payment.amount_platform_fee|default:300|floatformat:2 }}</span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Payment Channel:</span>
+              <span class="text-[#111111] font-bold uppercase">{{ payment.payment_method|default:"Paystack MoMo" }}</span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-black/[0.06]">
+              <span class="text-[#6B7280]">Duration Model:</span>
+              <span class="text-[#111111] font-bold">{{ duration_display }}</span>
+            </div>
+          </div>
+
+          <div class="bg-[#111111] text-white p-5 rounded-2xl">
+            <div class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total Paid Amount</div>
+            <div class="font-outfit text-2xl font-extrabold text-white mt-1">
+              GH₵ {{ payment.amount_total|floatformat:2 }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Steps Checklist Card -->
+        <div class="glass-card p-6 space-y-4">
+          <div class="flex items-center gap-2 font-outfit text-sm font-extrabold text-[#111111] uppercase tracking-wider border-b border-black/[0.06] pb-3">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            What Happens Next
           </div>
-          <div>
-            <h3 class="font-outfit text-lg font-bold text-[#111111]">Next Steps for Check-In</h3>
-            <p class="text-[11px] text-[#6B7280]">What happens next in your booking flow.</p>
+
+          <div class="space-y-3 text-xs">
+            <div class="flex items-start gap-3 bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+              <div class="h-5 w-5 rounded-full bg-[#111111] text-white font-bold flex items-center justify-center text-[10px] shrink-0">1</div>
+              <div>
+                <div class="font-bold text-[#111111]">Admin Review Notification</div>
+                <div class="text-[#6B7280] text-[11px] mt-0.5">Your payment is recorded in escrow and sent to property managers.</div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+              <div class="h-5 w-5 rounded-full bg-[#111111] text-white font-bold flex items-center justify-center text-[10px] shrink-0">2</div>
+              <div>
+                <div class="font-bold text-[#111111]">Room Key Pickup</div>
+                <div class="text-[#6B7280] text-[11px] mt-0.5">Hostel management authorizes physical key issuance prior to move-in.</div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+              <div class="h-5 w-5 rounded-full bg-[#111111] text-white font-bold flex items-center justify-center text-[10px] shrink-0">3</div>
+              <div>
+                <div class="font-bold text-[#111111]">Move-In Verification</div>
+                <div class="text-[#6B7280] text-[11px] mt-0.5">Show your reference code <span class="font-mono font-bold text-[#111111]">{{ booking.reference_number }}</span> upon arrival.</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="space-y-3 text-xs">
-          <div class="flex items-start gap-3 bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
-            <div class="h-5 w-5 rounded-full bg-[#111111] text-white font-bold flex items-center justify-center text-[10px] shrink-0">1</div>
-            <div>
-              <div class="font-bold text-[#111111]">Admin & Hostel Management Notification</div>
-              <div class="text-[#6B7280] text-[11px] mt-0.5">Your payment is logged and sent for final manager review.</div>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3 bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
-            <div class="h-5 w-5 rounded-full bg-[#111111] text-white font-bold flex items-center justify-center text-[10px] shrink-0">2</div>
-            <div>
-              <div class="font-bold text-[#111111]">Room Key Assignment</div>
-              <div class="text-[#6B7280] text-[11px] mt-0.5">Hostel management confirms physical key issuance within 24-48 hours.</div>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3 bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
-            <div class="h-5 w-5 rounded-full bg-[#111111] text-white font-bold flex items-center justify-center text-[10px] shrink-0">3</div>
-            <div>
-              <div class="font-bold text-[#111111]">Move-In Day Welcome</div>
-              <div class="text-[#6B7280] text-[11px] mt-0.5">Present your booking reference code at the hostel reception desk.</div>
-            </div>
+        <!-- Navigation Buttons -->
+        <div class="space-y-3">
+          <a href="{% url 'bookings:my-bookings' %}" class="ds-btn w-full py-4 text-sm shadow-md">
+            <span>View My Bookings ➔</span>
+          </a>
+          <div class="text-center">
+            <a href="{% url 'accounts:dashboard' %}" class="text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-colors">
+              Return to Student Dashboard
+            </a>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Actions -->
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-      <a href="{% url 'bookings:my-bookings' %}" class="ds-btn sm:w-auto px-8 py-3.5">
-        <span>Go to My Bookings ➔</span>
-      </a>
-      <a href="{% url 'accounts:dashboard' %}" class="text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-colors">
-        Return to Dashboard
-      </a>
     </div>
   </div>
 </div>
