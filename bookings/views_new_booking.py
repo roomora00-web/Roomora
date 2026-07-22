@@ -1113,10 +1113,23 @@ def booking_confirmation(request, booking_id):
     Shows final booking details and next steps
     """
     booking = get_object_or_404(Booking, id=booking_id, tenant=request.user)
+    accommodation_property = booking.accommodation_property
+    room = booking.assigned_room or booking.room
+    room_type = booking.room_type or (room.room_type if room else None)
+    unit_type = booking.unit_type or (room.unit_type if room else None)
+    
+    from accounts.models import LifestyleProfile
+    lifestyle_profile = LifestyleProfile.objects.filter(user=request.user).first()
     
     context = {
         'booking': booking,
-        'property': booking.accommodation_property,
+        'property': accommodation_property,
+        'room': room,
+        'room_type': room_type,
+        'unit_type': unit_type,
+        'amenities': accommodation_property.amenities.all() if accommodation_property else [],
+        'property_images': accommodation_property.images.all()[:6] if accommodation_property else [],
+        'lifestyle_profile': lifestyle_profile,
         'time_remaining': SoftLockService.get_time_remaining(booking),
         'soft_lock_expires_at': booking.soft_lock_expires_at.isoformat() if booking.soft_lock_expires_at else None,
     }
