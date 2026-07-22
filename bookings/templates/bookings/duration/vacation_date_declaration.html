@@ -88,11 +88,31 @@
       <!-- Right Column Sidebar -->
       <div class="space-y-6 w-full">
         <div class="glass-card p-6 space-y-4">
-          <div class="font-outfit text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#888888]">Property Info</div>
+          <div class="font-outfit text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#888888]">Reservation & Property Details</div>
           <div class="space-y-3 text-xs">
             <div class="flex justify-between items-center bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
               <span class="text-[#6B7280]">Property</span>
               <span class="font-bold text-[#111111]">{{ property.title }}</span>
+            </div>
+            <div class="flex justify-between items-center bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+              <span class="text-[#6B7280]">Location</span>
+              <span class="font-bold text-[#111111]">{{ property.address }}, {{ property.city }}</span>
+            </div>
+            <div class="flex justify-between items-center bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+              <span class="text-[#6B7280]">Assigned Room</span>
+              <span class="font-bold text-[#111111]">{% if booking.room %}Room {{ booking.room.room_number }}{% else %}Standard Room{% endif %}</span>
+            </div>
+            <div class="flex justify-between items-center bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+              <span class="text-[#6B7280]">Room Type</span>
+              <span class="font-bold text-[#111111]">{% if booking.room_type %}{{ booking.room_type.room_type_name }}{% elif booking.room and booking.room.room_type %}{{ booking.room.room_type.room_type_name }}{% else %}Hostel Stay{% endif %}</span>
+            </div>
+            <div class="flex justify-between items-center bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+              <span class="text-[#6B7280]">Total Stay Rate</span>
+              <span class="font-extrabold text-[#111111]">GH₵ {{ duration_data.total_price|default:booking.total_price|default:4500|floatformat:2 }}</span>
+            </div>
+            <div class="flex justify-between items-center bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl text-emerald-950">
+              <span class="text-emerald-800">Booking Reference</span>
+              <span class="font-mono font-extrabold">{{ booking.reference_number }}</span>
             </div>
           </div>
         </div>
