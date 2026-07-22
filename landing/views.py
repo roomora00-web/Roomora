@@ -354,6 +354,20 @@ class PropertyDetailView(DetailView):
         )[:4]
         context['related_properties'] = related_properties
 
+        # ── Minimum starting price calculation ─────────────────────────────────
+        min_price = None
+        for rt in property_obj.room_types.all():
+            for pm in rt.pricing_models.all():
+                p_val = pm.semester_price or pm.monthly_price or pm.yearly_price
+                if p_val and (min_price is None or p_val < min_price):
+                    min_price = p_val
+        for ut in property_obj.unit_types.all():
+            for pm in ut.pricing_models.all():
+                p_val = pm.monthly_price or pm.yearly_price or pm.semester_price
+                if p_val and (min_price is None or p_val < min_price):
+                    min_price = p_val
+        context['min_starting_price'] = min_price
+
         # ── Has shared rooms (for roommate matching section) ───────────────────
         context['has_shared_rooms'] = property_obj.room_types.exclude(
             occupancy_type='SINGLE'

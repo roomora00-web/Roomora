@@ -3210,21 +3210,17 @@ body {
 
         <div class="pd-booking-price-display">
           <div class="pd-price-from">Starting from</div>
-          {% with property.room_types.first.pricing_models.first as hostel_price %}
-          {% with property.unit_types.first.pricing_models.first as apt_price %}
-          {% if property.property_type == 'HOSTEL' and hostel_price %}
+          {% if min_starting_price %}
             <div class="pd-price-main">
-              GH₵ {% if hostel_price.semester_price %}{{ hostel_price.semester_price|floatformat:0 }}<span>/semester</span>{% elif hostel_price.monthly_price %}{{ hostel_price.monthly_price|floatformat:0 }}<span>/month</span>{% elif hostel_price.yearly_price %}{{ hostel_price.yearly_price|floatformat:0 }}<span>/year</span>{% endif %}
+              GH₵ {{ min_starting_price|floatformat:0 }}<span>/semester</span>
             </div>
-          {% elif apt_price %}
+          {% elif property.nightly_price %}
             <div class="pd-price-main">
-              GH₵ {% if apt_price.monthly_price %}{{ apt_price.monthly_price|floatformat:0 }}<span>/month</span>{% elif apt_price.yearly_price %}{{ apt_price.yearly_price|floatformat:0 }}<span>/year</span>{% endif %}
+              GH₵ {{ property.nightly_price|floatformat:0 }}<span>/semester</span>
             </div>
           {% else %}
             <div class="pd-price-main" style="font-size:20px;">Contact for pricing</div>
           {% endif %}
-          {% endwith %}
-          {% endwith %}
         </div>
 
         <div class="pd-booking-steps">

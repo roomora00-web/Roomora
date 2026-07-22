@@ -128,10 +128,8 @@
               {% for amenity in property.amenities.all %}
                 <span class="inline-flex items-center gap-1.5 bg-[#F8F8FA] border border-black/10 text-[#111111] px-3.5 py-1.5 rounded-full text-xs font-bold">✓ {{ amenity.name }}</span>
               {% empty %}
-                {% if not room.room_type.wifi_available %}
-                  <span class="inline-flex items-center gap-1.5 bg-[#F8F8FA] border border-black/10 text-[#111111] px-3.5 py-1.5 rounded-full text-xs font-bold">⚡ 24/7 Power Backup</span>
-                  <span class="inline-flex items-center gap-1.5 bg-[#F8F8FA] border border-black/10 text-[#111111] px-3.5 py-1.5 rounded-full text-xs font-bold">🔒 24/7 Security</span>
-                  <span class="inline-flex items-center gap-1.5 bg-[#F8F8FA] border border-black/10 text-[#111111] px-3.5 py-1.5 rounded-full text-xs font-bold">📶 Student Wi-Fi</span>
+                {% if not room.room_type.wifi_available and not room.room_type.air_conditioning and not room.room_type.private_bathroom %}
+                  <span class="inline-flex items-center gap-1.5 bg-[#F8F8FA] border border-black/10 text-[#6B7280] px-3.5 py-1.5 rounded-full text-xs font-semibold">Standard Hostel Accommodations</span>
                 {% endif %}
               {% endfor %}
             </div>
