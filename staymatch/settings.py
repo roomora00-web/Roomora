@@ -255,4 +255,4 @@ PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY', '')
 PAYSTACK_CALLBACK_URL = f"{os.environ.get('SITE_URL', 'http://127.0.0.1:8000')}/api/v1/payments/webhook/paystack/"
 PAYSTACK_ESCROW_SUBACCOUNT = os.environ.get('PAYSTACK_ESCROW_SUBACCOUNT', '')  # Subaccount code for landlord disbursements
 PAYMENT_WINDOW_HOURS = 2  # Payment window in hours
-PLATFORM_FEE_PERCENTAGE = 0.05  # 5% platform fee
+PLATFORM_FEE_PERCENTAGE = 0.02  # 2% platform fee
