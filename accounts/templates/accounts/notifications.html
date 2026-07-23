@@ -7,21 +7,23 @@
 <div class="space-y-6 sm:space-y-8 w-full animate-fade-in-up">
 
   <!-- Header & Action Toolbar -->
-  <div class="glass-card p-6 sm:p-8 bg-white border border-black/10 rounded-3xl shadow-sm space-y-6">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+  <div class="glass-card p-8 sm:p-10 bg-white border border-black/10 rounded-[32px] shadow-sm space-y-8 relative overflow-hidden">
+    <!-- Decorative background element -->
+    <div class="absolute -top-24 -right-24 w-64 h-64 bg-black/5 rounded-full blur-3xl -z-10"></div>
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-6 z-10 relative">
       <div>
         <div class="flex items-center gap-2 mb-1.5">
           <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-black/5 text-[#6B7280]">
             Activity & Notifications
           </span>
-          <span id="notifTotalBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#111111] text-white">
+          <span id="notifTotalBadge" class="px-3 py-1 rounded-full text-[10px] font-extrabold bg-[#111111] text-white shadow-md">
             {{ notifications|length }} Notification{% if notifications|length != 1 %}s{% endif %}
           </span>
         </div>
-        <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] tracking-tight">
+        <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">
           Notifications Center
         </h1>
-        <p class="text-xs sm:text-sm text-[#6B7280] font-medium mt-1">
+        <p class="text-sm sm:text-base text-[#6B7280] font-medium mt-2 max-w-xl leading-relaxed">
           Stay updated on your hostel bookings, roommate matches, payments, and account alerts.
         </p>
       </div>
@@ -38,12 +40,12 @@
 
     <!-- Search & Quick Filters Bar -->
     {% if notifications %}
-    <div class="pt-4 border-t border-black/[0.06] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+    <div class="pt-6 border-t border-black/[0.06] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-5 relative z-10">
       
       <!-- Search Input -->
       <div class="relative flex-1 max-w-md">
-        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="notifSearchInput" placeholder="Search by title or keyword..." class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#F8F8FA] border border-black/10 text-xs font-semibold text-[#111111] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all">
+        <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF]" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="notifSearchInput" placeholder="Search notifications..." class="w-full pl-12 pr-4 py-3 rounded-2xl bg-[#F8F8FA] border border-black/10 text-sm font-semibold text-[#111111] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all shadow-inner">
       </div>
 
       <!-- Filter Tabs -->
@@ -68,9 +70,9 @@
 
   <!-- Notifications List Container -->
   {% if notifications %}
-  <div id="notificationsContainer" class="space-y-3.5">
+  <div id="notificationsContainer" class="space-y-4">
     {% for notif in notifications %}
-    <div class="notif-item glass-card p-5 sm:p-6 bg-white border border-black/10 rounded-2xl shadow-xs transition-all duration-300 relative group hover:border-black/20 hover:shadow-md"
+    <div class="notif-item glass-card p-6 sm:p-7 bg-white border border-black/5 rounded-[24px] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group hover:border-black/15"
          id="notif-{{ notif.id }}"
          data-type="{{ notif.notification_type|lower }}"
          data-title="{{ notif.title|lower }}"
@@ -171,16 +173,18 @@
   </div>
 
   <!-- Overall Empty State -->
-  <div id="emptyState" class="{% if notifications %}hidden{% endif %} glass-card p-12 sm:p-16 text-center bg-white border border-black/10 rounded-3xl shadow-sm">
-    <div class="h-20 w-20 rounded-3xl bg-[#F8F8FA] border border-black/10 mx-auto flex items-center justify-center text-[#9CA3AF] mb-5 shadow-xs">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-    </div>
-    <h3 class="font-outfit text-xl font-extrabold text-[#111111] mb-2">You're all caught up!</h3>
-    <p class="text-xs sm:text-sm text-[#6B7280] font-medium max-w-md mx-auto mb-8">
-      You have no active notifications at the moment. We will notify you here as soon as there are updates on your hostel bookings or roommate matches.
-    </p>
+  <div id="emptyState" class="{% if notifications %}hidden{% endif %} glass-card p-16 sm:p-20 text-center bg-white border border-black/5 rounded-[32px] shadow-sm relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-[#F8F8FA] to-transparent opacity-50"></div>
+    <div class="relative z-10">
+      <div class="h-24 w-24 rounded-[32px] bg-white border border-black/5 mx-auto flex items-center justify-center text-[#9CA3AF] mb-6 shadow-xl shadow-black/5">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <h3 class="font-outfit text-2xl font-extrabold text-[#111111] mb-3 tracking-tight">You're all caught up!</h3>
+      <p class="text-sm text-[#6B7280] font-medium max-w-md mx-auto mb-10 leading-relaxed">
+        You have no active notifications at the moment. We will notify you here as soon as there are updates on your hostel bookings or roommate matches.
+      </p>
 
-    <div class="flex flex-wrap items-center justify-center gap-3">
+      <div class="flex flex-wrap items-center justify-center gap-4">
       <a href="{% url 'landing:properties' %}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#111111] text-white text-xs font-bold hover:bg-[#252525] transition-all shadow-xs">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <span>Explore Hostels</span>

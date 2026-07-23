@@ -7,7 +7,9 @@
 <div class="space-y-6 sm:space-y-8 w-full animate-fade-in-up">
 
   <!-- Header Banner -->
-  <div class="glass-card p-6 sm:p-8 bg-gradient-to-br from-white via-[#F8F8FA] to-sky-50/30 border border-black/10 rounded-3xl shadow-sm space-y-4">
+  <div class="glass-card p-8 sm:p-10 bg-gradient-to-br from-white via-[#F8F8FA] to-sky-50/30 border border-black/10 rounded-[32px] shadow-sm space-y-6 relative overflow-hidden">
+    <!-- Decorative background element -->
+    <div class="absolute -top-32 -right-32 w-80 h-80 bg-sky-500/5 rounded-full blur-3xl -z-10"></div>
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2 mb-1.5">
@@ -18,10 +20,10 @@
             System Settings
           </span>
         </div>
-        <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] tracking-tight">
+        <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">
           Display & App Preferences
         </h1>
-        <p class="text-xs sm:text-sm text-[#6B7280] font-medium mt-1">
+        <p class="text-sm sm:text-base text-[#6B7280] font-medium mt-2 max-w-xl leading-relaxed">
           Customize your regional currency, preferred language, theme display, and notification alerts.
         </p>
       </div>
@@ -36,7 +38,7 @@
   </div>
 
   <!-- Featured Roommate Matching Quiz Cross-Banner -->
-  <div class="glass-card p-6 sm:p-7 bg-gradient-to-r from-[#111111] via-[#1A1A1A] to-[#252525] text-white rounded-3xl shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+  <div class="glass-card p-8 sm:p-10 bg-gradient-to-r from-[#111111] via-[#1A1A1A] to-[#252525] text-white rounded-[32px] shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-8 relative overflow-hidden">
     <div class="space-y-2 max-w-xl z-10">
       <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-extrabold uppercase tracking-widest border border-indigo-400/20">
         <span class="h-1.5 w-1.5 rounded-full bg-indigo-400 pulse-dot"></span>
@@ -71,7 +73,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
     <!-- Card 1: Localisation & Display -->
-    <div class="lg:col-span-2 glass-card bg-white border border-black/10 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
+    <div class="lg:col-span-2 glass-card bg-white border border-black/5 rounded-[32px] p-8 sm:p-10 shadow-sm space-y-8">
       
       <div class="border-b border-black/[0.06] pb-4">
         <h2 class="font-outfit text-lg font-extrabold text-[#111111]">
@@ -92,13 +94,18 @@
             <label class="text-xs font-bold text-[#111111] uppercase tracking-wider block">
               Preferred Language
             </label>
-            <select name="preferred_language" class="w-full p-3.5 rounded-2xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all">
-              <option value="en" {% if profile.preferred_language == 'en' %}selected{% endif %}>English (Default)</option>
-              <option value="fr" {% if profile.preferred_language == 'fr' %}selected{% endif %}>French (Français)</option>
-              <option value="tw" {% if profile.preferred_language == 'tw' %}selected{% endif %}>Twi</option>
-              <option value="ga" {% if profile.preferred_language == 'ga' %}selected{% endif %}>Ga</option>
-              <option value="ee" {% if profile.preferred_language == 'ee' %}selected{% endif %}>Ewe</option>
-            </select>
+            <div class="relative">
+              <select name="preferred_language" class="w-full pl-4 pr-10 py-3.5 rounded-2xl bg-[#F8F8FA] border border-black/5 text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer">
+                <option value="en" {% if profile.preferred_language == 'en' %}selected{% endif %}>English (Default)</option>
+                <option value="fr" {% if profile.preferred_language == 'fr' %}selected{% endif %}>French (Français)</option>
+                <option value="tw" {% if profile.preferred_language == 'tw' %}selected{% endif %}>Twi</option>
+                <option value="ga" {% if profile.preferred_language == 'ga' %}selected{% endif %}>Ga</option>
+                <option value="ee" {% if profile.preferred_language == 'ee' %}selected{% endif %}>Ewe</option>
+              </select>
+              <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#9CA3AF]">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
             <p class="text-[11px] text-[#888888]">Used for system notifications and email communication.</p>
           </div>
 
@@ -107,11 +114,16 @@
             <label class="text-xs font-bold text-[#111111] uppercase tracking-wider block">
               Currency Display
             </label>
-            <select name="currency" class="w-full p-3.5 rounded-2xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all">
-              <option value="GHS">Ghana Cedi (GH₵)</option>
-              <option value="USD">US Dollar ($)</option>
-              <option value="GBP">British Pound (£)</option>
-            </select>
+            <div class="relative">
+              <select name="currency" class="w-full pl-4 pr-10 py-3.5 rounded-2xl bg-[#F8F8FA] border border-black/5 text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer">
+                <option value="GHS">Ghana Cedi (GH₵)</option>
+                <option value="USD">US Dollar ($)</option>
+                <option value="GBP">British Pound (£)</option>
+              </select>
+              <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#9CA3AF]">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
             <p class="text-[11px] text-[#888888]">All hostel prices will display equivalent conversions.</p>
           </div>
 
@@ -143,7 +155,7 @@
     <div class="space-y-6">
       
       <!-- Account Identity Summary -->
-      <div class="glass-card bg-white border border-black/10 rounded-3xl p-6 shadow-xs space-y-4">
+      <div class="glass-card bg-white border border-black/5 rounded-[32px] p-6 shadow-sm space-y-4">
         <h3 class="font-outfit text-base font-extrabold text-[#111111]">
           Account Overview
         </h3>
@@ -186,7 +198,7 @@
       </div>
 
       <!-- Quick Support Card -->
-      <div class="glass-card p-6 bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-3xl shadow-sm space-y-3">
+      <div class="glass-card p-6 sm:p-8 bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-[32px] shadow-md space-y-4">
         <div class="h-10 w-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         </div>

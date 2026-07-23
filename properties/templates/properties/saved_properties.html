@@ -7,7 +7,9 @@
 <div class="space-y-6 sm:space-y-8 w-full animate-fade-in-up">
 
   <!-- Header Banner & Page Title -->
-  <div class="glass-card p-6 sm:p-8 bg-gradient-to-br from-white via-[#F8F8FA] to-indigo-50/30 border border-black/10 rounded-3xl shadow-sm space-y-6">
+  <div class="glass-card p-8 sm:p-10 bg-gradient-to-br from-white via-[#F8F8FA] to-indigo-50/30 border border-black/10 rounded-[32px] shadow-sm space-y-8 relative overflow-hidden">
+    <!-- Decorative element -->
+    <div class="absolute -top-32 -right-32 w-80 h-80 bg-indigo-500/5 rounded-full blur-3xl -z-10"></div>
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
       
       <div class="space-y-2">
@@ -20,10 +22,10 @@
           </span>
         </div>
 
-        <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] tracking-tight">
+        <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">
           My Saved Properties
         </h1>
-        <p class="text-xs sm:text-sm text-[#6B7280] font-medium max-w-2xl leading-relaxed">
+        <p class="text-sm sm:text-base text-[#6B7280] font-medium max-w-2xl leading-relaxed mt-2">
           Compare prices, track availability, add personal notes, and organize your favorite student hostels and apartments.
         </p>
       </div>
@@ -78,7 +80,7 @@
 
   <!-- Search & Filter Controls Strip -->
   {% if total_saved > 0 or page_obj.paginator.count > 0 %}
-  <form id="filterForm" method="GET" action="{% url 'properties:saved-properties' %}" class="glass-card p-4 sm:p-5 bg-white border border-black/10 rounded-2xl shadow-xs space-y-4">
+  <form id="filterForm" method="GET" action="{% url 'properties:saved-properties' %}" class="glass-card p-5 sm:p-6 bg-white border border-black/5 rounded-[24px] shadow-sm space-y-4">
     
     <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4">
       
@@ -86,51 +88,66 @@
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 flex-1">
         
         <!-- Location Filter -->
-        <div>
-          <select name="location" onchange="this.form.submit()" class="w-full px-3 py-2 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black">
+        <div class="relative">
+          <select name="location" onchange="this.form.submit()" class="w-full pl-4 pr-10 py-3 rounded-2xl bg-[#F8F8FA] border border-black/5 text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer">
             <option value="all">All Locations</option>
             {% for loc in locations %}
             <option value="{{ loc }}" {% if current_filters.location == loc %}selected{% endif %}>{{ loc }}</option>
             {% endfor %}
           </select>
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#9CA3AF]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
         </div>
 
         <!-- Property Type Filter -->
-        <div>
-          <select name="property_type" onchange="this.form.submit()" class="w-full px-3 py-2 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black">
+        <div class="relative">
+          <select name="property_type" onchange="this.form.submit()" class="w-full pl-4 pr-10 py-3 rounded-2xl bg-[#F8F8FA] border border-black/5 text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer">
             <option value="all">All Types</option>
             <option value="HOSTEL" {% if current_filters.property_type == 'HOSTEL' %}selected{% endif %}>Hostels</option>
             <option value="APARTMENT" {% if current_filters.property_type == 'APARTMENT' %}selected{% endif %}>Apartments</option>
           </select>
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#9CA3AF]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
         </div>
 
         <!-- Availability Filter -->
-        <div>
-          <select name="availability" onchange="this.form.submit()" class="w-full px-3 py-2 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black">
+        <div class="relative">
+          <select name="availability" onchange="this.form.submit()" class="w-full pl-4 pr-10 py-3 rounded-2xl bg-[#F8F8FA] border border-black/5 text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer">
             <option value="">Availability: All</option>
             <option value="available" {% if current_filters.availability == 'available' %}selected{% endif %}>Available Now</option>
             <option value="sold_out" {% if current_filters.availability == 'sold_out' %}selected{% endif %}>Sold Out</option>
           </select>
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#9CA3AF]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
         </div>
 
         <!-- Rating Filter -->
-        <div>
-          <select name="rating" onchange="this.form.submit()" class="w-full px-3 py-2 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black">
+        <div class="relative">
+          <select name="rating" onchange="this.form.submit()" class="w-full pl-4 pr-10 py-3 rounded-2xl bg-[#F8F8FA] border border-black/5 text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer">
             <option value="">Rating: All</option>
             <option value="4.5" {% if current_filters.rating == '4.5' %}selected{% endif %}>4.5+ Stars</option>
             <option value="4.0" {% if current_filters.rating == '4.0' %}selected{% endif %}>4.0+ Stars</option>
             <option value="3.5" {% if current_filters.rating == '3.5' %}selected{% endif %}>3.5+ Stars</option>
           </select>
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#9CA3AF]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
         </div>
 
         <!-- Sort Select -->
-        <div>
-          <select name="sort" onchange="this.form.submit()" class="w-full px-3 py-2 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-black">
+        <div class="relative">
+          <select name="sort" onchange="this.form.submit()" class="w-full pl-4 pr-10 py-3 rounded-2xl bg-[#111111] border border-black text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-white appearance-none cursor-pointer shadow-md">
             <option value="recent" {% if current_filters.sort == 'recent' %}selected{% endif %}>Sort: Recent</option>
             <option value="price_low" {% if current_filters.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
             <option value="price_high" {% if current_filters.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
             <option value="rating" {% if current_filters.sort == 'rating' %}selected{% endif %}>Highest Rated</option>
           </select>
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/70">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
         </div>
 
       </div>
@@ -152,10 +169,10 @@
 
   <!-- Saved Properties Grid Display -->
   {% if page_obj.object_list %}
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     {% for saved_item in page_obj %}
       {% with property=saved_item.property %}
-      <div id="saved-card-{{ property.id }}" class="glass-card glass-card-hover bg-white border border-black/10 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xs transition-all duration-300 relative group">
+      <div id="saved-card-{{ property.id }}" class="glass-card glass-card-hover bg-white border border-black/5 rounded-[32px] overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 relative group">
         
         <!-- Top Media Section -->
         <div class="relative w-full aspect-[16/10] overflow-hidden bg-[#F4F4F6]">
