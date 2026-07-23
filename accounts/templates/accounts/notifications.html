@@ -1,84 +1,200 @@
 {% extends 'accounts/dashboard_base.html' %}
 {% load static %}
 
-{% block title %}Notifications - StayMatch{% endblock %}
+{% block title %}Notifications Center — Roomora{% endblock %}
 
 {% block content %}
-<div class="app-frame">
-  <div class="app-content" style="max-width: 800px; margin: 0 auto; width: 100%;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-      <h1 style="font-size: 24px; font-weight: 700; color: var(--text-head); margin: 0;">Notifications</h1>
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+
+  <!-- Header & Action Toolbar -->
+  <div class="glass-card p-6 sm:p-8 bg-white border border-black/10 rounded-3xl shadow-sm space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-black/5 text-[#6B7280]">
+            Activity & Notifications
+          </span>
+          <span id="notifTotalBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#111111] text-white">
+            {{ notifications|length }} Notification{% if notifications|length != 1 %}s{% endif %}
+          </span>
+        </div>
+        <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] tracking-tight">
+          Notifications Center
+        </h1>
+        <p class="text-xs sm:text-sm text-[#6B7280] font-medium mt-1">
+          Stay updated on your hostel bookings, roommate matches, payments, and account alerts.
+        </p>
+      </div>
+
       {% if notifications %}
-      <button id="clearAllBtn" style="background: none; border: 1px solid #cbd5e1; color: #64748b; padding: 6px 12px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
-        Clear All
-      </button>
+      <div class="flex items-center gap-3">
+        <button id="clearAllBtn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-100 transition-all cursor-pointer shadow-xs">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <span>Clear All</span>
+        </button>
+      </div>
       {% endif %}
     </div>
 
+    <!-- Search & Quick Filters Bar -->
     {% if notifications %}
-    <div id="notificationsContainer" style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-      {% for notif in notifications %}
-      <div class="notif-item" id="notif-{{ notif.id }}" style="padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: flex-start; transition: all 0.3s; position: relative;">
-        <div class="notif-indicator
-          {% if notif.notification_type in 'SYSTEM,URGENT' %}urgent
-          {% elif notif.notification_type in 'WARNING,CONFLICT' %}warning
-          {% elif notif.notification_type in 'SUCCESS,MATCH_FOUND' %}success
-          {% else %}info{% endif %}" style="flex-shrink: 0;">
-          
-          {% if notif.notification_type in 'SYSTEM,URGENT' %}
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          {% elif notif.notification_type in 'SUCCESS,MATCH_FOUND' %}
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          {% elif notif.notification_type in 'WARNING,CONFLICT' %}
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          {% else %}
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          {% endif %}
-        </div>
-        
-        <div style="flex-grow: 1;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-            <div class="notif-text-title" style="font-weight: 600; color: #1e293b; font-size: 15px;">{{ notif.title }}</div>
-            <div style="color: #94a3b8; font-size: 12px;">{{ notif.created_at|timesince }} ago</div>
-          </div>
-          <div class="notif-text-body" style="color: #475569; font-size: 14px; margin-bottom: 12px; line-height: 1.5;">{{ notif.message }}</div>
-          
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            {% if notif.link %}
-            <a href="{{ notif.link }}" class="notif-text-action" style="color: #3b82f6; font-size: 13px; font-weight: 500; text-decoration: none; padding: 6px 12px; background: #eff6ff; border-radius: 6px; display: inline-block;">View Action &rarr;</a>
-            {% else %}
-            <div></div>
-            {% endif %}
-            
-            <button class="delete-notif-btn" data-id="{{ notif.id }}" style="background: none; border: none; color: #ef4444; font-size: 13px; font-weight: 500; cursor: pointer; padding: 4px 8px; opacity: 0.7; transition: opacity 0.2s;" title="Delete notification">
-              Delete
-            </button>
-          </div>
-        </div>
+    <div class="pt-4 border-t border-black/[0.06] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      
+      <!-- Search Input -->
+      <div class="relative flex-1 max-w-md">
+        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="notifSearchInput" placeholder="Search by title or keyword..." class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#F8F8FA] border border-black/10 text-xs font-semibold text-[#111111] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all">
       </div>
-      {% endfor %}
-    </div>
-    {% else %}
-    <div id="emptyState" style="text-align: center; padding: 60px 20px; border: 1px dashed #cbd5e1; border-radius: 12px; background: white;">
-      <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-      <h3 style="font-size: 18px; color: #475569; margin-bottom: 8px;">No Notifications</h3>
-      <p style="color: #94a3b8; font-size: 14px;">You're all caught up! You have no notifications at the moment.</p>
+
+      <!-- Filter Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+        <button data-filter="all" class="notif-tab-btn active px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-[#111111] text-white shadow-xs">
+          All
+        </button>
+        <button data-filter="booking" class="notif-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-[#6B7280] hover:bg-[#F4F4F6] hover:text-[#111111]">
+          Bookings & Payments
+        </button>
+        <button data-filter="match" class="notif-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-[#6B7280] hover:bg-[#F4F4F6] hover:text-[#111111]">
+          Matches
+        </button>
+        <button data-filter="system" class="notif-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-[#6B7280] hover:bg-[#F4F4F6] hover:text-[#111111]">
+          System & Security
+        </button>
+      </div>
+
     </div>
     {% endif %}
-    
-    <!-- Hidden empty state for JS toggle -->
-    <div id="hiddenEmptyState" style="display: none; text-align: center; padding: 60px 20px; border: 1px dashed #cbd5e1; border-radius: 12px; background: white;">
-      <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-      <h3 style="font-size: 18px; color: #475569; margin-bottom: 8px;">No Notifications</h3>
-      <p style="color: #94a3b8; font-size: 14px;">You're all caught up! You have no notifications at the moment.</p>
-    </div>
-
   </div>
+
+  <!-- Notifications List Container -->
+  {% if notifications %}
+  <div id="notificationsContainer" class="space-y-3.5">
+    {% for notif in notifications %}
+    <div class="notif-item glass-card p-5 sm:p-6 bg-white border border-black/10 rounded-2xl shadow-xs transition-all duration-300 relative group hover:border-black/20 hover:shadow-md"
+         id="notif-{{ notif.id }}"
+         data-type="{{ notif.notification_type|lower }}"
+         data-title="{{ notif.title|lower }}"
+         data-message="{{ notif.message|lower }}">
+      
+      <div class="flex items-start gap-4 sm:gap-5">
+        
+        <!-- Category Icon Badge -->
+        <div class="flex-shrink-0 mt-0.5">
+          {% if notif.notification_type in 'BOOKING_UPDATE,PAYMENT' %}
+            <div class="h-11 w-11 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shadow-xs">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+          {% elif notif.notification_type in 'MATCH_FOUND,MESSAGE' %}
+            <div class="h-11 w-11 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center shadow-xs">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+          {% elif notif.notification_type in 'CONFLICT,URGENT,WARNING' %}
+            <div class="h-11 w-11 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center shadow-xs">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+          {% else %}
+            <div class="h-11 w-11 rounded-2xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center shadow-xs">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Notification Content Body -->
+        <div class="flex-1 min-w-0">
+          
+          <div class="flex items-start justify-between gap-3 mb-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <!-- Type Tag -->
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold tracking-wider uppercase
+                {% if notif.notification_type in 'BOOKING_UPDATE,PAYMENT' %}bg-emerald-50 text-emerald-700 border border-emerald-200
+                {% elif notif.notification_type in 'MATCH_FOUND,MESSAGE' %}bg-indigo-50 text-indigo-700 border border-indigo-200
+                {% elif notif.notification_type in 'CONFLICT,URGENT,WARNING' %}bg-amber-50 text-amber-700 border border-amber-200
+                {% else %}bg-sky-50 text-sky-700 border border-sky-200{% endif %}">
+                {{ notif.get_notification_type_display|default:notif.notification_type }}
+              </span>
+
+              <h3 class="font-outfit text-base font-bold text-[#111111] truncate">
+                {{ notif.title }}
+              </h3>
+            </div>
+
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <span class="text-[11px] font-semibold text-[#888888]">
+                {{ notif.created_at|timesince }} ago
+              </span>
+              
+              <!-- Quick Delete Button -->
+              <button class="delete-notif-btn h-8 w-8 rounded-xl bg-transparent text-[#9CA3AF] hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-all cursor-pointer opacity-70 group-hover:opacity-100"
+                      data-id="{{ notif.id }}"
+                      title="Delete notification">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Message Text -->
+          <p class="text-xs sm:text-sm text-[#4B5563] leading-relaxed font-normal mt-1 mb-3">
+            {{ notif.message }}
+          </p>
+
+          <!-- Action Button if link available -->
+          {% if notif.link %}
+          <div class="pt-2">
+            <a href="{{ notif.link }}" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#111111] text-white text-xs font-bold hover:bg-[#252525] transition-all shadow-xs group/btn">
+              <span>View Action</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="group-hover/btn:translate-x-0.5 transition-transform"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </div>
+          {% endif %}
+
+        </div>
+
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Filter Empty State (Hidden by default) -->
+  <div id="filterEmptyState" class="hidden glass-card p-12 text-center bg-white border border-black/10 rounded-3xl shadow-sm">
+    <div class="h-16 w-16 rounded-3xl bg-[#F8F8FA] border border-black/10 mx-auto flex items-center justify-center text-[#9CA3AF] mb-4">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <h3 class="font-outfit text-lg font-bold text-[#111111] mb-1">No matching notifications</h3>
+    <p class="text-xs text-[#6B7280] font-medium max-w-sm mx-auto mb-6">
+      We couldn't find any notifications matching your filter or search query.
+    </p>
+    <button id="resetFilterBtn" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#111111] text-white text-xs font-bold hover:bg-[#252525] transition-all">
+      Reset Filters
+    </button>
+  </div>
+
+  <!-- Overall Empty State -->
+  <div id="emptyState" class="{% if notifications %}hidden{% endif %} glass-card p-12 sm:p-16 text-center bg-white border border-black/10 rounded-3xl shadow-sm">
+    <div class="h-20 w-20 rounded-3xl bg-[#F8F8FA] border border-black/10 mx-auto flex items-center justify-center text-[#9CA3AF] mb-5 shadow-xs">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <h3 class="font-outfit text-xl font-extrabold text-[#111111] mb-2">You're all caught up!</h3>
+    <p class="text-xs sm:text-sm text-[#6B7280] font-medium max-w-md mx-auto mb-8">
+      You have no active notifications at the moment. We will notify you here as soon as there are updates on your hostel bookings or roommate matches.
+    </p>
+
+    <div class="flex flex-wrap items-center justify-center gap-3">
+      <a href="{% url 'landing:properties' %}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#111111] text-white text-xs font-bold hover:bg-[#252525] transition-all shadow-xs">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Explore Hostels</span>
+      </a>
+      <a href="{% url 'accounts:dashboard' %}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#F4F4F6] text-[#111111] border border-black/10 text-xs font-bold hover:bg-black/5 transition-all">
+        <span>Go to Dashboard</span>
+      </a>
+    </div>
+  </div>
+
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Helper to extract CSRF token
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -95,9 +211,100 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     const csrftoken = getCookie('csrftoken');
 
+    const searchInput = document.getElementById('notifSearchInput');
+    const tabBtns = document.querySelectorAll('.notif-tab-btn');
+    const notifItems = document.querySelectorAll('.notif-item');
+    const filterEmptyState = document.getElementById('filterEmptyState');
+    const container = document.getElementById('notificationsContainer');
+    const totalBadge = document.getElementById('notifTotalBadge');
+    const resetFilterBtn = document.getElementById('resetFilterBtn');
+
+    let currentFilter = 'all';
+    let currentSearch = '';
+
+    function applyFilters() {
+        if (!container) return;
+        let visibleCount = 0;
+
+        notifItems.forEach(item => {
+            const type = item.getAttribute('data-type') || '';
+            const title = item.getAttribute('data-title') || '';
+            const message = item.getAttribute('data-message') || '';
+
+            let matchesTab = false;
+            if (currentFilter === 'all') {
+                matchesTab = true;
+            } else if (currentFilter === 'booking') {
+                matchesTab = ['booking_update', 'payment'].includes(type);
+            } else if (currentFilter === 'match') {
+                matchesTab = ['match_found', 'message'].includes(type);
+            } else if (currentFilter === 'system') {
+                matchesTab = ['system', 'conflict', 'urgent', 'warning'].includes(type);
+            }
+
+            let matchesSearch = true;
+            if (currentSearch) {
+                matchesSearch = title.includes(currentSearch) || message.includes(currentSearch);
+            }
+
+            if (matchesTab && matchesSearch) {
+                item.style.display = 'block';
+                visibleCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        if (visibleCount === 0 && notifItems.length > 0) {
+            filterEmptyState.classList.remove('hidden');
+        } else {
+            filterEmptyState.classList.add('hidden');
+        }
+    }
+
+    // Search event listener
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            currentSearch = e.target.value.toLowerCase().trim();
+            applyFilters();
+        });
+    }
+
+    // Tab buttons
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            tabBtns.forEach(b => {
+                b.classList.remove('active', 'bg-[#111111]', 'text-white', 'shadow-xs');
+                b.classList.add('text-[#6B7280]', 'hover:bg-[#F4F4F6]', 'hover:text-[#111111]');
+            });
+            this.classList.add('active', 'bg-[#111111]', 'text-white', 'shadow-xs');
+            this.classList.remove('text-[#6B7280]', 'hover:bg-[#F4F4F6]', 'hover:text-[#111111]');
+
+            currentFilter = this.getAttribute('data-filter');
+            applyFilters();
+        });
+    });
+
+    if (resetFilterBtn) {
+        resetFilterBtn.addEventListener('click', function() {
+            currentFilter = 'all';
+            currentSearch = '';
+            if (searchInput) searchInput.value = '';
+            tabBtns.forEach(b => {
+                b.classList.remove('active', 'bg-[#111111]', 'text-white', 'shadow-xs');
+                b.classList.add('text-[#6B7280]');
+            });
+            if (tabBtns[0]) {
+                tabBtns[0].classList.add('active', 'bg-[#111111]', 'text-white', 'shadow-xs');
+            }
+            applyFilters();
+        });
+    }
+
     // Delete single notification
     document.querySelectorAll('.delete-notif-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
             const id = this.getAttribute('data-id');
             const item = document.getElementById('notif-' + id);
             
@@ -109,28 +316,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }).then(res => res.json())
             .then(data => {
-                if(data.success) {
+                if (data.success && item) {
                     item.style.opacity = '0';
+                    item.style.transform = 'translateY(-8px) scale(0.98)';
                     setTimeout(() => {
                         item.remove();
-                        // Check if empty
-                        if(document.querySelectorAll('.notif-item').length === 0) {
-                            document.getElementById('notificationsContainer').style.display = 'none';
-                            const clearBtn = document.getElementById('clearAllBtn');
-                            if(clearBtn) clearBtn.style.display = 'none';
-                            document.getElementById('hiddenEmptyState').style.display = 'block';
+                        const remaining = document.querySelectorAll('.notif-item');
+                        if (totalBadge) {
+                            totalBadge.textContent = remaining.length + ' Notification' + (remaining.length !== 1 ? 's' : '');
                         }
-                    }, 300);
+                        if (remaining.length === 0) {
+                            if (container) container.style.display = 'none';
+                            const clearBtn = document.getElementById('clearAllBtn');
+                            if (clearBtn) clearBtn.style.display = 'none';
+                            const overallEmpty = document.getElementById('emptyState');
+                            if (overallEmpty) overallEmpty.classList.remove('hidden');
+                        } else {
+                            applyFilters();
+                        }
+                    }, 250);
                 }
             });
         });
     });
 
-    // Clear all
+    // Clear all notifications
     const clearAllBtn = document.getElementById('clearAllBtn');
-    if(clearAllBtn) {
+    if (clearAllBtn) {
         clearAllBtn.addEventListener('click', function() {
-            if(confirm('Are you sure you want to delete all notifications?')) {
+            if (confirm('Are you sure you want to clear all notifications?')) {
                 fetch(`/accounts/notifications/clear-all/`, {
                     method: 'POST',
                     headers: {
@@ -139,10 +353,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }).then(res => res.json())
                 .then(data => {
-                    if(data.success) {
-                        document.getElementById('notificationsContainer').style.display = 'none';
+                    if (data.success) {
+                        if (container) container.style.display = 'none';
                         clearAllBtn.style.display = 'none';
-                        document.getElementById('hiddenEmptyState').style.display = 'block';
+                        if (totalBadge) totalBadge.textContent = '0 Notifications';
+                        const overallEmpty = document.getElementById('emptyState');
+                        if (overallEmpty) overallEmpty.classList.remove('hidden');
                     }
                 });
             }
