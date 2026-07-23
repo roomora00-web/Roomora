@@ -338,12 +338,21 @@ def verify_email_view(request):
         try:
             user = User.objects.get(email=email)
             if user.email_verified:
-                user.account_status = 'ACTIVE'
-                user.is_active = True
-                user.save()
-                login(request, user)
-                messages.success(request, 'Your email is already verified! Welcome to Roomora.')
-                return redirect('landing:home')
+                # Set status to incomplete if profile is missing or incomplete
+                if not hasattr(user, 'profile') or user.profile.profile_completion_percentage < 100:
+                    user.account_status = 'PROFILE_INCOMPLETE'
+                    user.is_active = True
+                    user.save()
+                    login(request, user)
+                    messages.success(request, 'Your email is already verified! Please complete your profile.')
+                    return redirect('accounts:profile-enrichment')
+                else:
+                    user.account_status = 'ACTIVE'
+                    user.is_active = True
+                    user.save()
+                    login(request, user)
+                    messages.success(request, 'Your email is already verified! Welcome back.')
+                    return redirect('accounts:dashboard')
 
             if not otp:
                 return render(request, 'accounts/verify_email.html', {

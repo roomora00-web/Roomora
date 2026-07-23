@@ -26,20 +26,23 @@ class NotificationService:
         )
         
         # 2. Broadcast via Channels
-        channel_layer = get_channel_layer()
-        if channel_layer:
-            group_name = f'user_{user.id}_notifications'
-            async_to_sync(channel_layer.group_send)(
-                group_name,
-                {
-                    'type': 'notification_message',
-                    'message': message,
-                    'title': title,
-                    'notification_type': notification_type,
-                    'link': link,
-                    'id': notification.id,
-                }
-            )
+        try:
+            channel_layer = get_channel_layer()
+            if channel_layer:
+                group_name = f'user_{user.id}_notifications'
+                async_to_sync(channel_layer.group_send)(
+                    group_name,
+                    {
+                        'type': 'notification_message',
+                        'message': message,
+                        'title': title,
+                        'notification_type': notification_type,
+                        'link': link,
+                        'id': notification.id,
+                    }
+                )
+        except Exception as e:
+            print(f"Failed to broadcast notification via Channels: {str(e)}")
             
         # 3. Send HTML Email if requested
         if send_email and user.email:
