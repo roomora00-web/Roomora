@@ -279,7 +279,7 @@
 
             <!-- Scrollable Full-Width Page Content Canvas -->
             <main class="flex-1 p-4 sm:p-6 md:p-8 lg:p-10 w-full min-w-0">
-                {% block dashboard_content %}{% endblock %}
+                {% block dashboard_content %}{% block content %}{% endblock %}{% endblock %}
             </main>
         </div>
     </div>
