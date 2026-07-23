@@ -1,0 +1,12 @@
+{% extends "accounts/emails/base.html" %}
+
+{% block content %}
+    <h1>Profile Complete, {{ user.first_name }}!</h1>
+    <p>Thank you for completing your profile.</p>
+    <p>We now have everything we need to start matching you with the perfect roommates and ideal accommodations based on your preferences and lifestyle.</p>
+    <div style="text-align: center;">
+        <a href="{{ site_url }}/dashboard/" class="button">Go to Dashboard</a>
+    </div>
+    <p>If you have any questions or need assistance, feel free to reach out to our support team.</p>
+    <p>Best regards,<br>The Roomora Team</p>
+{% endblock %}

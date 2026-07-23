@@ -343,7 +343,6 @@ def verify_email_view(request):
                 user=user,
                 used=False
             ).latest('created_at')
-            
             if verification.is_valid() and verification.otp == otp:
                 # Mark OTP as used
                 verification.used = True
@@ -351,14 +350,26 @@ def verify_email_view(request):
                 
                 # Mark email as verified and active
                 user.email_verified = True
-                user.account_status = 'ACTIVE'
+                # Set status to incomplete so they are forced to complete profile
+                user.account_status = 'PROFILE_INCOMPLETE' if not hasattr(user, 'profile') or user.profile.profile_completion_percentage < 100 else 'COMPLETE'
                 user.is_active = True
                 user.save()
                 
-                # Log user in and redirect to home
+                # Send welcome notification (email and in-app)
+                from accounts.services import NotificationService
+                NotificationService.send_notification(
+                    user=user,
+                    title='Welcome to Roomora!',
+                    message='Please complete your profile to get the best matching experience.',
+                    notification_type='SYSTEM',
+                    send_email=True,
+                    email_template='accounts/emails/welcome.html'
+                )
+                
+                # Log user in and redirect to profile enrichment
                 login(request, user)
-                messages.success(request, 'Email verified! Welcome to Roomora.')
-                return redirect('landing:home')
+                messages.success(request, 'Email verified! Please complete your profile to continue.')
+                return redirect('accounts:profile-enrichment')
             elif verification.used:
                 return render(request, 'accounts/verify_email.html', {
                     'status': 'error',
@@ -406,12 +417,17 @@ def verify_email_view(request):
         try:
             u = User.objects.get(email=email)
             if u.email_verified:
-                u.account_status = 'ACTIVE'
+                is_complete = hasattr(u, 'profile') and u.profile.profile_completion_percentage >= 100
+                u.account_status = 'COMPLETE' if is_complete else 'PROFILE_INCOMPLETE'
                 u.is_active = True
                 u.save()
                 login(request, u)
-                messages.success(request, 'Your email is verified! Welcome to Roomora.')
-                return redirect('landing:home')
+                if is_complete:
+                    messages.success(request, 'Your email is verified! Welcome back.')
+                    return redirect('accounts:dashboard')
+                else:
+                    messages.success(request, 'Your email is verified! Please complete your profile to continue.')
+                    return redirect('accounts:profile-enrichment')
         except User.DoesNotExist:
             pass
     return redirect('accounts:check-email', email=email)
@@ -498,7 +514,7 @@ def forgot_password_view(request):
             try:
                 reset_url = f"http://{request.get_host()}/accounts/reset-password/{reset_token}/"
                 send_mail(
-                    'Reset your Realco password',
+                    'Reset your Roomora password',
                     f'Hi {user.first_name},\n\nClick the link below to reset your password:\n\n{reset_url}\n\nThis link expires in 1 hour.\n\nIf you didn\'t request a password reset, you can ignore this email.',
                     settings.DEFAULT_FROM_EMAIL,
                     [user.email],
@@ -669,9 +685,21 @@ def profile_enrichment_view(request):
             form.save()
             profile.calculate_completion()
             
+            was_complete = request.user.account_status == 'COMPLETE'
+            
             # Update account status
             if profile.profile_completion_percentage >= 100:
                 request.user.account_status = 'COMPLETE'
+                if not was_complete:
+                    from accounts.services import NotificationService
+                    NotificationService.send_notification(
+                        user=request.user,
+                        title='Profile Complete!',
+                        message='Your profile is now 100% complete. We can start matching you!',
+                        notification_type='SYSTEM',
+                        send_email=True,
+                        email_template='accounts/emails/profile_complete.html'
+                    )
             else:
                 request.user.account_status = 'PROFILE_INCOMPLETE'
             request.user.save()

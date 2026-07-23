@@ -20,7 +20,7 @@ class RegistrationForm(forms.ModelForm):
     )
     agree_terms = forms.BooleanField(
         required=True,
-        label='I agree to StayMatch\'s Terms of Service and Privacy Policy'
+        label='I agree to Roomora\'s Terms of Service and Privacy Policy'
     )
     
     class Meta:

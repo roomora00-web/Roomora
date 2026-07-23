@@ -395,8 +395,31 @@ class PaymentService:
         return provider_map.get(payment_method, 'MTN')
     
     def _send_notification(self, user, notification_type, **kwargs):
-        """Send notification to user (placeholder for notification system)"""
-        # This will be implemented with the notification system
+        """Send notification to user (using CoreNotificationService)"""
+        from accounts.services import NotificationService as CoreNotificationService
+        
+        if notification_type == 'booking_confirmed':
+            booking = kwargs.get('booking')
+            payment = kwargs.get('payment')
+            CoreNotificationService.send_notification(
+                user=user,
+                title='PAYMENT SUCCESSFUL',
+                message=f"We have received your payment of GH₵ {payment.amount_paid}.\n\nYour booking ({booking.reference_number}) is confirmed.",
+                notification_type='PAYMENT',
+                send_email=True,
+                email_template='accounts/emails/payment_success.html'
+            )
+        elif notification_type == 'roommate_confirmed':
+            booking = kwargs.get('booking')
+            CoreNotificationService.send_notification(
+                user=user,
+                title='NEW ROOMMATE CONFIRMED',
+                message=f"A new roommate has confirmed their booking for your room in {booking.accommodation_property.title}.",
+                notification_type='INFO',
+                send_email=True,
+                email_template='accounts/emails/booking_update.html'
+            )
+            
         logger.info(f'Notification sent to {user.email}: {notification_type}')
     
     def _send_booking_confirmed_notifications(self, booking, payment):

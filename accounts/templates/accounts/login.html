@@ -3,478 +3,254 @@
 
 {% block title %}Sign In — Roomora{% endblock %}
 
-{% block extra_css %}
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet">
-<style>
-/* ─── HARD RESET ──────────────────────── */
-*, *::before, *::after { box-sizing: border-box; }
-html, body {
-  height: auto !important;
-  overflow: auto !important;
-  overflow-x: hidden !important;
-  background: #FFFFFF !important;
-  color: #0A0A0A !important;
-  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
-  -webkit-font-smoothing: antialiased !important;
-  margin: 0; padding: 0;
-}
-
-:root {
-  --font: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  --muted: rgba(255,255,255,0.7);
-  --subtle: rgba(255,255,255,0.85);
-}
-
-/* ─── DESKTOP SHELL ──────────────────────────────────────── */
-.auth-shell {
-  display: flex;
-  min-height: 100vh;
-  width: 100%;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   LEFT PANEL (DARK THEME)
-═══════════════════════════════════════════════════════════ */
-.auth-left {
-  position: fixed;
-  top: 0; left: 0;
-  width: 52%;
-  height: 100vh;
-  background: linear-gradient(150deg, #0D0D0D 0%, #181818 40%, #111111 70%, #0A0A0A 100%);
-  background-size: 300% 300%;
-  animation: gradFlow 18s ease infinite;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 10;
-  border-right: 1px solid rgba(255,255,255,0.15);
-}
-@keyframes gradFlow {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Grid & Particles */
-.bg-grid {
-  position: absolute; inset: 0;
-  background-image: linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none; z-index: 0;
-}
-.bg-noise {
-  position: absolute; inset: 0; opacity: 0.25; z-index: 0; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
-}
-.glow-tl {
-  position: absolute; top: -180px; left: -140px; width: 560px; height: 560px;
-  background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.15) 0%, transparent 65%);
-  animation: breathe 8s ease-in-out infinite; pointer-events: none; z-index: 0;
-}
-.glow-br {
-  position: absolute; bottom: -120px; right: -100px; width: 440px; height: 440px;
-  background: radial-gradient(circle at 60% 60%, rgba(255,255,255,0.1) 0%, transparent 65%);
-  animation: breathe 11s ease-in-out infinite reverse; pointer-events: none; z-index: 0;
-}
-@keyframes breathe {
-  0%,100% { transform: scale(1); opacity: .7; }
-  50% { transform: scale(1.18); opacity: 1; }
-}
-
-/* Left Content Inner */
-.left-inner {
-  position: relative; z-index: 2;
-  display: flex; flex-direction: column; justify-content: space-between;
-  height: 100%; padding: 40px 48px;
-  animation: revealLeft .9s cubic-bezier(.16,1,.3,1) both;
-}
-@keyframes revealLeft {
-  from { opacity: 0; transform: translateX(-30px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-/* Brand */
-.l-brand { display:flex; align-items:center; gap:12px; }
-.l-brand img { height:48px; width:auto; }
-.l-brand-name { font-size:22px; font-weight:800; letter-spacing:-.4px; color:#fff; }
-
-/* Headline */
-.l-eyebrow, .l-headline-eyebrow {
-  display:flex; align-items:center; gap:10px; font-size:11px; font-weight:700;
-  letter-spacing:2.5px; text-transform:uppercase; color:var(--muted); margin-bottom:16px;
-}
-.l-eyebrow::before, .l-headline-eyebrow span { content:''; display:block; width:28px; height:1px; background:var(--muted); }
-
-.l-title, .l-headline-title { line-height:.96; letter-spacing:-3px; font-weight:800; margin:0; font-style: italic; }
-.l-title .solid, .l-headline-title .line { display:block; font-size:clamp(48px, 5.5vw, 76px); color:#FFFFFF; animation: wordReveal .7s cubic-bezier(.16,1,.3,1) both .3s; }
-.l-title .ghost, .l-headline-title .line-ghost { display:block; font-size:clamp(48px, 5.5vw, 76px); color:transparent; -webkit-text-stroke:1.5px rgba(255,255,255,0.5); animation: wordReveal .7s cubic-bezier(.16,1,.3,1) both .45s; }
-.l-title .italic { display:block; font-size:clamp(48px, 5.5vw, 76px); color:#FFFFFF; font-style:italic; animation: wordReveal .7s cubic-bezier(.16,1,.3,1) both .6s; }
-.l-sub, .l-headline-sub { font-size:15px; color:var(--subtle); line-height:1.7; margin-top:20px; max-width:340px; font-style:normal; font-weight:400; }
-@keyframes wordReveal { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
-
-/* Register Steps */
-.l-steps { display: flex; flex-direction: column; gap: 0; position: relative; }
-.l-steps::before { content: ''; position: absolute; left: 18px; top: 26px; bottom: 26px; width: 1px; background: linear-gradient(to bottom, rgba(255,255,255,.18), rgba(255,255,255,.04)); }
-.l-step { display: flex; align-items: flex-start; gap: 14px; padding: 9px 0; animation: fadeUp .5s ease both; }
-.l-step:nth-child(1) { animation-delay: .35s; }
-.l-step:nth-child(2) { animation-delay: .5s; }
-.l-step:nth-child(3) { animation-delay: .65s; }
-.step-num-circle { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; background: rgba(255,255,255,.13); border: 1px solid rgba(255,255,255,.18); display: flex; align-items: flex-start; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; position: relative; z-index: 1; }
-.step-body { padding-top: 4px; }
-.step-title { font-size:13px; font-weight:700; color:#fff; margin-bottom:2px; }
-.step-desc { font-size:11.5px; color:var(--muted); line-height:1.45; }
-
-/* Login Marquee */
-.l-marquee-track { overflow: hidden; margin: 0 -48px; padding: 0 0 24px; mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent); }
-.l-marquee-inner { display: flex; gap: 10px; width: max-content; animation: marquee 28s linear infinite; }
-@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.l-chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: rgba(255,255,255,0.13); border: 1px solid rgba(255,255,255,0.22); border-radius: 100px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.65); }
-.l-chip .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); }
-
-/* Stats Strip */
-.l-stats { display: flex; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); border-radius: 14px; overflow: hidden; position: relative; }
-.l-stats::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%); animation: shimmerStat 4s ease-in-out infinite; }
-.l-stat { flex: 1; padding: 12px 10px; text-align: center; border-right: 1px solid rgba(255,255,255,.1); }
-.l-stat:last-child { border-right: none; }
-.stat-n { font-size: 19px; font-weight: 800; letter-spacing: -1px; color: #fff; line-height: 1; animation: statPop .6s cubic-bezier(.34,1.56,.64,1) both; }
-.l-stat:nth-child(1) .stat-n { animation-delay: .8s; }
-.l-stat:nth-child(2) .stat-n { animation-delay: .95s; }
-.l-stat:nth-child(3) .stat-n { animation-delay: 1.1s; }
-.stat-l { font-size: 10.5px; color: var(--muted); margin-top: 3px; font-weight: 500; }
-@keyframes shimmerStat { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-@keyframes statPop { from { opacity:0; transform:scale(0.7) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
-@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-
-/* ═══════════════════════════════════════════════════════════
-   RIGHT PANEL (LIGHT THEME FORM)
-═══════════════════════════════════════════════════════════ */
-.auth-right {
-  margin-left: 52%; /* pushes past fixed left */
-  width: 48%;
-  min-height: 100vh;
-  background: #FFFFFF;
-  display: flex; align-items: flex-start; justify-content: center;
-  padding: 30px 40px;
-}
-
-.form-shell {
-  width: 100%; max-width: 400px; margin: auto;
-  animation: panelSlideUp .8s cubic-bezier(.16,1,.3,1) .1s both;
-}
-@keyframes panelSlideUp {
-  from { opacity:0; transform:translateY(20px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-
-/* Header */
-.fh { margin-bottom: 24px; }
-.fh h2 { font-size: 28px; font-weight: 800; letter-spacing: -.7px; color: #0A0A0A; margin-bottom: 6px; }
-.fh p { font-size: 14.5px; color: rgba(0,0,0,0.55); }
-
-/* Form Elements */
-.aform { display: flex; flex-direction: column; gap: 12px; }
-.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.fg { display: flex; flex-direction: column; gap: 6px; transition: transform .2s; }
-.fg:focus-within { transform: translateY(-1px); }
-.fl { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: rgba(0,0,0,0.6); }
-.fsec { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(0,0,0,0.4); display: flex; align-items: center; gap: 10px; margin: 8px 0; }
-.fsec::after { content:''; flex:1; height:1px; background: rgba(0,0,0,0.1); }
-
-/* Inputs */
-.iw { position: relative; }
-.iw .ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(0,0,0,0.35); pointer-events: none; width: 18px; height: 18px; transition: color .22s; }
-.iw:focus-within .ico { color: #0A0A0A; }
-
-.fi {
-  width: 100%;
-  padding: 13px 16px 13px 44px !important;
-  background: #F7F7F9 !important;
-  border: 1px solid rgba(0,0,0,0.12) !important;
-  border-radius: 12px !important;
-  font-size: 15px !important; font-family: var(--font) !important;
-  color: #0A0A0A !important;
-  transition: border-color .22s, box-shadow .22s, background .22s !important;
-  outline: none !important; -webkit-appearance: none;
-}
-.fi:focus {
-  background: #FFFFFF !important;
-  border-color: #0A0A0A !important;
-  box-shadow: 0 0 0 3px rgba(0,0,0,0.06) !important;
-}
-.fi::placeholder { color: rgba(0,0,0,0.3) !important; }
-.fi.no-icon { padding-left:14px !important; }
-select.fi option { background:#fff; color:#0a0a0a; }
-select.fi { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,0.5)' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: right 14px center !important; }
-
-/* Password */
-.pw-wrap .fi { padding-right: 48px !important; }
-.pw-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(0,0,0,0.35); cursor: pointer; padding: 4px; display: flex; align-items: center; transition: color .2s; }
-.pw-btn:hover { color: #0A0A0A; }
-
-/* Links */
-.forgot-row { display: flex; justify-content: flex-end; margin-top: -4px; }
-.forgot-link { font-size: 13.5px; font-weight: 600; color: rgba(0,0,0,0.5); text-decoration: none; transition: color .2s; }
-.forgot-link:hover { color: #0A0A0A; }
-
-/* Terms */
-.terms-row { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.08); border-radius:12px; }
-.terms-row input[type="checkbox"] { width:18px; height:18px; flex-shrink:0; margin-top:1px; accent-color:#0A0A0A; cursor:pointer; }
-.terms-txt { font-size:13px; color:rgba(0,0,0,0.6); line-height:1.5; }
-.terms-txt a { color:#0A0A0A; font-weight:600; text-decoration:none; border-bottom:1px solid rgba(0,0,0,0.2); }
-.terms-txt a:hover { border-bottom-color:#0A0A0A; }
-
-/* Button */
-.sub-btn {
-  width: 100%; padding: 16px 24px;
-  background: #0A0A0A; color: #FFFFFF; border: none; border-radius: 100px;
-  font-size: 16px; font-weight: 700; font-family: var(--font);
-  cursor: pointer; display: flex; align-items: flex-start; justify-content: center;
-  gap: 8px; margin-top: 8px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-  transition: all .2s; position: relative; overflow: hidden;
-}
-.sub-btn::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
-  transform: translateX(-120%); transition: transform .55s ease;
-}
-.sub-btn:hover::after { transform: translateX(120%); }
-.sub-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); background: #222222; }
-.sub-btn:active { transform: translateY(0); box-shadow: none; }
-.sub-btn:disabled { background: #E0E0E0; color: #999; box-shadow: none; cursor: not-allowed; transform: none; }
-
-/* Footer */
-.form-foot { text-align: center; font-size: 14px; color: rgba(0,0,0,0.5); padding-top: 24px; border-top: 1px solid rgba(0,0,0,0.08); margin-top: 12px; }
-.form-foot a { color: #0A0A0A; font-weight: 700; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.2); padding-bottom: 1px; transition: border-color .2s; }
-.form-foot a:hover { border-bottom-color: #0A0A0A; }
-
-/* Error */
-.err-box { background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.2); border-left: 3px solid #DC2626; border-radius: 12px; padding: 12px 16px; margin-bottom: 24px; animation: shake .38s ease; }
-@keyframes shake { 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
-.err-box ul { list-style: none; margin:0; padding:0; }
-.err-box li { font-size: 13.5px; color: #B91C1C; padding: 2px 0; display: flex; gap: 8px; font-weight:500; }
-.err-box li::before { content: '✕'; font-size: 11px; opacity: .7; flex-shrink: 0; margin-top: 2px; }
-
-/* ═══════════════════════════════════════════════════════════
-   APP-LIKE MOBILE VIEW
-═══════════════════════════════════════════════════════════ */
-.mob-brand { display: none !important; }
-
-@media (max-width: 920px) {
-  /* Hide the split layout entirely */
-  .auth-left { display: none !important; }
-  
-  /* Right panel becomes the full screen app view */
-  .auth-right {
-    margin-left: 0 !important;
-    width: 100% !important;
-    padding: 48px 24px 80px !important; box-sizing: border-box !important;
-    background: #FFFFFF !important;
-    align-items: flex-start !important;
-  }
-
-  .form-shell {
-    max-width: 100% !important;
-    animation: none !important; /* No slide up on mobile, feels faster */
-  }
-
-  /* Show mobile brand */
-  .mob-brand { display: flex !important; align-items: center; gap: 16px; margin-bottom: 40px; }
-  .mob-brand img { height: 80px; }
-  .mob-brand-name { font-size: 32px; font-weight: 800; letter-spacing: -1px; color: #0A0A0A; }
-
-  /* Adjust typography for mobile */
-  .fh h2 { font-size: 26px !important; }
-  .fh p { font-size: 14px !important; }
-  
-  /* Inputs larger for touch */
-  .fi { font-size: 16px !important; padding: 14px 16px 14px 44px !important; }
-  .sub-btn { padding: 16px; font-size: 16px !important; }
-  
-  /* Stack form rows on small screens */
-  .frow { grid-template-columns: 1fr !important; gap: 16px !important; }
-}
-.spin { animation: spin 1s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-</style>
-{% endblock %}
-
 {% block content %}
+<!-- Main Responsively-Structured Screen Shell -->
+<div class="w-full min-h-screen bg-[#F4F4F6] text-[#111111] flex flex-col justify-between font-sans selection:bg-[#111111] selection:text-white">
+  
+  <div class="w-full min-h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-12 m-0 p-0 overflow-x-hidden">
+    
+    <!-- Left Panel: Desktop Showcase Panel (6 Cols on lg screens) -->
+    <div class="hidden lg:flex lg:col-span-6 h-screen flex-col justify-between p-8 xl:p-12 bg-[#F4F4F6] border-r border-black/10 relative overflow-hidden">
+      
+      <!-- Top Header -->
+      <div class="flex items-center justify-between z-10 w-full">
+        <a href="{% url 'landing:home' %}" class="flex items-center group">
+          <img src="{% static 'landing/images/logo-black-clean.png' %}" alt="Roomora Logo" class="h-11 xl:h-12 w-auto group-hover:scale-105 transition-transform duration-300">
+        </a>
 
-<div class="auth-shell">
-
-  <!-- ═══ LEFT ═══════════════════════════════════════════════ -->
-  <div class="auth-left">
-    <div class="bg-grid"></div>
-    <div class="bg-noise"></div>
-    <div class="glow-tl"></div>
-    <div class="glow-br"></div>
-
-    <div class="left-inner">
-
-      <!-- Brand -->
-      <a href="{% url 'landing:home' %}" class="l-brand" style="text-decoration:none;">
-        {% load static %}
-        <img src="{% static 'landing/images/logo-white.png' %}" alt="Roomora">
-        <span class="l-brand-name">Roomora</span>
-      </a>
-
-      <!-- Headline -->
-      <div class="l-headline">
-        <div class="l-headline-eyebrow">
-          <span></span>
-          Student housing, reimagined
-        </div>
-        <h1 class="l-headline-title">
-          <span class="line">Find your</span>
-          <span class="line-ghost">perfect</span>
-          <span class="line">space.</span>
-        </h1>
-        <p class="l-headline-sub">
-          Ghana's first lifestyle-matched student housing platform.
-          Find your room <em>and</em> your people in one place.
-        </p>
+        <a href="{% url 'landing:home' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-black/10 bg-white text-xs font-bold text-[#111111] hover:bg-black hover:text-white transition-all shadow-sm">
+          <span>Back to Home</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
       </div>
 
-      <!-- Scrolling chips marquee -->
-      <div class="l-marquee-track">
-        <div class="l-marquee-inner" id="mq">
-          <!-- duplicated for seamless loop -->
-          <span class="l-chip"><span class="dot"></span>Verified Listings</span>
-          <span class="l-chip"><span class="dot"></span>Instant Booking</span>
-          <span class="l-chip"><span class="dot"></span>Roommate Matching</span>
-          <span class="l-chip"><span class="dot"></span>Secure Payments</span>
-          <span class="l-chip"><span class="dot"></span>1,200+ Properties</span>
-          <span class="l-chip"><span class="dot"></span>KNUST · UG · Legon</span>
-          <span class="l-chip"><span class="dot"></span>24/7 Support</span>
-          <span class="l-chip"><span class="dot"></span>No Hidden Fees</span>
-          <!-- duplicate set -->
-          <span class="l-chip"><span class="dot"></span>Verified Listings</span>
-          <span class="l-chip"><span class="dot"></span>Instant Booking</span>
-          <span class="l-chip"><span class="dot"></span>Roommate Matching</span>
-          <span class="l-chip"><span class="dot"></span>Secure Payments</span>
-          <span class="l-chip"><span class="dot"></span>1,200+ Properties</span>
-          <span class="l-chip"><span class="dot"></span>KNUST · UG · Legon</span>
-          <span class="l-chip"><span class="dot"></span>24/7 Support</span>
-          <span class="l-chip"><span class="dot"></span>No Hidden Fees</span>
+      <!-- Center Hero Section -->
+      <div class="my-auto space-y-6 z-10 w-full max-w-xl mx-auto py-2">
+        
+        <div class="space-y-3">
+          <h1 class="font-outfit text-4xl xl:text-5xl font-extrabold text-[#111111] tracking-tight leading-[1.15]">
+            Find your ideal space. <br><span class="text-[#4B5563] font-normal">Match with real roommates.</span>
+          </h1>
+          
+          <p class="text-[#4B5563] text-sm sm:text-base leading-relaxed font-medium">
+            Experience seamless student housing with verified landlord listings, 60-second room soft-locking, and lifestyle compatibility matching.
+          </p>
         </div>
+
+        <!-- High-End Real Property Visual Card -->
+        <div class="rounded-3xl overflow-hidden shadow-2xl border border-black/10 bg-white group">
+          <div class="relative h-[220px] xl:h-[260px] overflow-hidden">
+            <img src="/media/property_images/campus_view_room.jpg" alt="Roomora Property Preview" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+            
+            <div class="absolute bottom-4 left-4 right-4 text-white flex items-center justify-between">
+              <div>
+                <div class="text-xs font-extrabold font-outfit uppercase tracking-wider text-emerald-400">Verified Campus Housing</div>
+                <div class="text-base font-bold">University Campus Executive Suite</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-gray-300 font-medium">Starting at</div>
+                <div class="text-base font-extrabold font-outfit text-white">GHC 1,200/mo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sleek Feature Highlights Grid -->
+        <div class="grid grid-cols-3 gap-3 pt-1">
+          <div class="p-3.5 rounded-2xl bg-white border border-black/10 space-y-1 shadow-sm">
+            <div class="w-7 h-7 rounded-xl bg-[#111111] text-white flex items-center justify-center font-bold text-xs">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="text-xs font-bold text-[#111111]">100% Verified</div>
+            <div class="text-xs text-[#6B7280] font-medium leading-tight">Hostels & landlords</div>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-white border border-black/10 space-y-1 shadow-sm">
+            <div class="w-7 h-7 rounded-xl bg-[#111111] text-white flex items-center justify-center font-bold text-xs">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <div class="text-xs font-bold text-[#111111]">Instant Soft-Lock</div>
+            <div class="text-xs text-[#6B7280] font-medium leading-tight">Reserve in 60s</div>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-white border border-black/10 space-y-1 shadow-sm">
+            <div class="w-7 h-7 rounded-xl bg-[#111111] text-white flex items-center justify-center font-bold text-xs">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            </div>
+            <div class="text-xs font-bold text-[#111111]">Roommate Match</div>
+            <div class="text-xs text-[#6B7280] font-medium leading-tight">Lifestyle profiles</div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Stats strip -->
-      <div class="l-stats">
-        <div class="l-stat">
-          <div class="stat-n">1,200+</div>
-          <div class="stat-l">Verified rooms</div>
+      <!-- Bottom Stat Banner -->
+      <div class="pt-4 border-t border-black/10 z-10 w-full max-w-xl mx-auto flex items-center justify-between text-xs text-[#6B7280] font-semibold">
+        <div class="flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+          <span>10,000+ Students Matched</span>
         </div>
-        <div class="l-stat">
-          <div class="stat-n">94%</div>
-          <div class="stat-l">Match satisfaction</div>
-        </div>
-        <div class="l-stat">
-          <div class="stat-n">8 min</div>
-          <div class="stat-l">Avg. to book</div>
-        </div>
+        <div>•</div>
+        <div>100% Escrow Protected</div>
+        <div>•</div>
+        <div>24/7 Support</div>
       </div>
 
     </div>
-  </div>
 
-  <!-- ═══ RIGHT ══════════════════════════════════════════════ -->
-  <div class="auth-right">
-    <div class="form-shell">
+    <!-- Right Panel: Responsive Form Section (6 Cols on lg screens, 100% on mobile) -->
+    <div class="col-span-1 lg:col-span-6 min-h-screen lg:h-screen flex flex-col justify-between p-4 sm:p-8 lg:p-12 xl:p-16 bg-white overflow-y-auto">
+      
+      <!-- Top Header Navigation & Auth Switcher -->
+      <div class="flex items-center justify-between lg:justify-end w-full mb-6 lg:mb-0">
+        <!-- Mobile Brand Logo Header -->
+        <a href="{% url 'landing:home' %}" class="block lg:hidden">
+          <img src="{% static 'landing/images/logo-black-clean.png' %}" alt="Roomora Logo" class="h-10 w-auto">
+        </a>
 
-      <!-- Mobile brand -->
-      <a href="{% url 'landing:home' %}" class="mob-brand" style="text-decoration:none;">
-        {% load static %}
-        <img src="{% static 'landing/images/logo-black.png' %}" alt="Roomora">
-        <span class="mob-brand-name">Roomora</span>
-      </a>
-
-      <div class="fh">
-        <h2>Welcome back</h2>
-        <p>Sign in to your account to manage bookings.</p>
+        <!-- Auth Mode Switcher -->
+        <div class="inline-flex p-1 rounded-2xl bg-[#F4F4F6] border border-black/10 shadow-inner">
+          <a href="{% url 'accounts:login' %}" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-[#111111] text-white shadow-sm transition-all">Sign In</a>
+          <a href="{% url 'accounts:register' %}" class="px-4 py-2 rounded-xl text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-all">Register</a>
+        </div>
       </div>
 
-      {% if form.errors %}
-      <div class="err-box">
-        <ul>
-          {% for f, errors in form.errors.items %}{% for e in errors %}<li>{{ e }}</li>{% endfor %}{% endfor %}
-          {% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}
-        </ul>
-      </div>
-      {% endif %}
+      <!-- Center Form Wrapper (Properly proportioned) -->
+      <div class="w-full max-w-[420px] mx-auto my-auto space-y-6 py-6 sm:py-8">
+        
+        <div class="space-y-1.5">
+          <h2 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">Welcome back</h2>
+          <p class="text-[#6B7280] text-sm font-medium">Please sign in to access your Roomora account.</p>
+        </div>
 
-      <form method="post" class="aform">
-        {% csrf_token %}
+        <!-- Social Buttons -->
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <button type="button" onclick="alert('Google Sign-In integration ready.')" class="flex items-center justify-center gap-2.5 p-3.5 rounded-2xl border border-black/10 bg-white hover:bg-[#F9FAFB] hover:border-black/20 active:scale-[0.98] transition-all shadow-sm text-xs sm:text-sm font-bold text-[#111111]">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+            <span>Google</span>
+          </button>
 
-        <div class="fg">
-          <label class="fl">Email or Phone</label>
-          <div class="iw">
-            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
+          <button type="button" onclick="alert('Apple Sign-In integration ready.')" class="flex items-center justify-center gap-2.5 p-3.5 rounded-2xl border border-black/10 bg-white hover:bg-[#F9FAFB] hover:border-black/20 active:scale-[0.98] transition-all shadow-sm text-xs sm:text-sm font-bold text-[#111111]">
+            <svg class="w-4 h-4 shrink-0 fill-[#111111]" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.32c.68-.82 1.14-1.97.01-3.12-.99.04-2.19.67-2.88 1.47-.61.71-1.15 1.88-.01 3.01 1.1.09 2.2-.54 2.88-1.36z"/></svg>
+            <span>Apple</span>
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="relative flex items-center justify-center my-2">
+          <div class="border-t border-black/10 w-full"></div>
+          <span class="bg-white px-3 text-xs font-bold uppercase tracking-wider text-[#9CA3AF] absolute">or email</span>
+        </div>
+
+        <!-- Alert Messages -->
+        {% if messages or form.errors %}
+        <div class="space-y-2">
+          {% for message in messages %}
+          <div class="p-3.5 rounded-2xl text-xs sm:text-sm font-medium border {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-700{% elif message.tags == 'success' %}bg-emerald-50 border-emerald-200 text-emerald-800{% else %}bg-blue-50 border-blue-200 text-blue-800{% endif %}">
+            {{ message }}
+          </div>
+          {% endfor %}
+
+          {% if form.non_field_errors %}
+          {% for error in form.non_field_errors %}
+          <div class="p-3.5 rounded-2xl text-xs sm:text-sm font-medium border bg-red-50 border-red-200 text-red-700 flex items-center gap-2">
+            <svg class="w-4 h-4 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>{{ error }}</span>
+          </div>
+          {% endfor %}
+          {% endif %}
+
+          {% if form.email_or_phone.errors %}
+          {% for error in form.email_or_phone.errors %}
+          <div class="p-3.5 rounded-2xl text-xs sm:text-sm font-medium border bg-red-50 border-red-200 text-red-700 flex items-center gap-2">
+            <svg class="w-4 h-4 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>{{ error }}</span>
+          </div>
+          {% endfor %}
+          {% endif %}
+
+          {% if form.password.errors %}
+          {% for error in form.password.errors %}
+          <div class="p-3.5 rounded-2xl text-xs sm:text-sm font-medium border bg-red-50 border-red-200 text-red-700 flex items-center gap-2">
+            <svg class="w-4 h-4 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>{{ error }}</span>
+          </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'accounts:login' %}" class="space-y-4">
+          {% csrf_token %}
+          
+          <div class="space-y-1.5">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#6B7280] pl-0.5">Email or Phone Number</label>
             {{ form.email_or_phone }}
           </div>
-        </div>
-
-        <div class="fg">
-          <label class="fl">Password</label>
-          <div class="iw pw-wrap">
-            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-            {{ form.password }}
-            <button type="button" class="pw-btn" id="pw-btn" aria-label="Toggle password">
-              <svg id="pw-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-              </svg>
-            </button>
+          
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between pl-0.5 pr-0.5">
+              <label class="block text-xs font-bold uppercase tracking-wider text-[#6B7280]">Password</label>
+              <a href="{% url 'accounts:forgot-password' %}" class="text-xs font-bold text-[#111111] hover:underline transition-colors">Forgot password?</a>
+            </div>
+            <div class="relative">
+              {{ form.password }}
+              <button type="button" onclick="togglePasswordVisibility('id_password', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#111111] transition-colors focus:outline-none" tabIndex="-1">
+                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </button>
+            </div>
           </div>
+          
+          <div class="flex items-center justify-between pt-1">
+            <label class="flex items-center gap-2.5 cursor-pointer group">
+              <input type="checkbox" name="remember_me" class="rounded border-black/20 bg-white text-[#111111] focus:ring-0 cursor-pointer">
+              <span class="text-xs font-semibold text-[#6B7280] group-hover:text-[#111111] transition-colors select-none">Remember for 30 days</span>
+            </label>
+          </div>
+          
+          <button type="submit" class="w-full bg-[#111111] text-white font-bold rounded-2xl py-3.5 sm:py-4 hover:bg-black active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-lg shadow-black/10 text-sm tracking-wide mt-2">
+            <span>Sign In to Dashboard</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+          </button>
+        </form>
+        
+        <div class="text-center pt-2">
+          <p class="text-xs sm:text-sm text-[#6B7280]">
+            Don't have an account? 
+            <a href="{% url 'accounts:register' %}" class="text-[#111111] font-bold hover:underline underline-offset-4 transition-all">Create account free</a>
+          </p>
         </div>
 
-        <div class="forgot-row">
-          <a href="{% url 'accounts:forgot-password' %}" class="forgot-link">Forgot password?</a>
+      </div>
+
+      <!-- Footer -->
+      <div class="w-full pt-4 border-t border-black/10 flex items-center justify-between text-xs text-[#9CA3AF]">
+        <div>© 2026 Roomora</div>
+        <div class="flex items-center gap-4">
+          <a href="#" class="hover:text-[#111111] transition-colors">Privacy Policy</a>
+          <span>•</span>
+          <a href="#" class="hover:text-[#111111] transition-colors">Terms of Service</a>
         </div>
-
-        <button type="submit" class="sub-btn">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-            <polyline points="10 17 15 12 10 7"/>
-            <line x1="15" y1="12" x2="3" y2="12"/>
-          </svg>
-          Sign In
-        </button>
-      </form>
-
-      <div class="form-foot">
-        Don't have an account? <a href="{% url 'accounts:register' %}">Create one free</a>
       </div>
 
     </div>
+
   </div>
 
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const email = document.querySelector('input[name="email_or_phone"]');
-  const pw    = document.querySelector('input[name="password"]');
-  if (email) { email.classList.add('fi'); email.placeholder = 'your@email.com or phone'; }
-  if (pw)    { pw.classList.add('fi');    pw.placeholder = '••••••••'; }
-
-  const btn = document.getElementById('pw-btn');
-  const eye = document.getElementById('pw-eye');
-  if (btn && pw) {
-    btn.addEventListener('click', () => {
-      const show = pw.type === 'password';
-      pw.type = show ? 'text' : 'password';
-      eye.innerHTML = show
-        ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
-        : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-    });
+  function togglePasswordVisibility(fieldId, btn) {
+    const input = document.getElementById(fieldId) || document.querySelector('input[name="password"]');
+    if (!input) return;
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.innerHTML = `<svg class="w-4.5 h-4.5 text-[#111111]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a10.018 10.018 0 013.682-.813c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m-1.42 1.42l-12-12"/></svg>`;
+    } else {
+      input.type = 'password';
+      btn.innerHTML = `<svg class="w-4.5 h-4.5 text-[#9CA3AF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`;
+    }
   }
-});
 </script>
-
 {% endblock %}

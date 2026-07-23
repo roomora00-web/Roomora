@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f4f4f6;
+            margin: 0;
+            padding: 0;
+            color: #111111;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            background-color: #111111;
+            padding: 24px;
+            text-align: center;
+        }
+        .header h2 {
+            color: #ffffff;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .content {
+            padding: 32px;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #111111;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 16px;
+            margin-bottom: 16px;
+        }
+        .footer {
+            background-color: #f9f9f9;
+            padding: 24px;
+            text-align: center;
+            font-size: 14px;
+            color: #666666;
+            border-top: 1px solid #eeeeee;
+        }
+        h1 {
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 16px;
+            color: #111111;
+        }
+        p {
+            margin-bottom: 16px;
+            color: #333333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>ROOMORA</h2>
+        </div>
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+        <div class="footer">
+            <p>&copy; {% now "Y" %} Roomora. All rights reserved.</p>
+            <p>Need help? Contact our support team at support@roomora.com</p>
+        </div>
+    </div>
+</body>
+</html>

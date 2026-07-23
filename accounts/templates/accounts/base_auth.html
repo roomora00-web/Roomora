@@ -1,18 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-[#F4F4F6] m-0 p-0">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Realco - Authentication{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}Roomora — Co-Living & Roommate Matching{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Plus Jakarta Sans', 'sans-serif'],
+              outfit: ['Outfit', 'sans-serif'],
+            },
+            animation: {
+              'float': 'float 5s ease-in-out infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-6px)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     {% load static %}
-    <link rel="icon" href="{% static 'accounts/img/logo.png' %}" type="image/png">
-    <link rel="stylesheet" href="{% static 'accounts/css/modern_auth.css' %}">
+    <link rel="icon" href="{% static 'landing/images/logo-black-clean.png' %}" type="image/png">
+    <style>
+      html, body {
+        background-color: #F4F4F6;
+        color: #111111;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 100vh;
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      .font-outfit {
+        font-family: 'Outfit', sans-serif;
+      }
+
+      /* Fix WebKit Autofill Blue Background */
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0px 1000px #FFFFFF inset !important;
+        -webkit-text-fill-color: #111111 !important;
+        border-color: rgba(0, 0, 0, 0.2) !important;
+        transition: background-color 5000s ease-in-out 0s;
+      }
+
+      /* Whitesmoke & Black Form Controls */
+      input[type="email"],
+      input[type="password"],
+      input[type="text"],
+      input[type="tel"],
+      select {
+        width: 100%;
+        background: #FFFFFF !important;
+        border: 1.5px solid rgba(0, 0, 0, 0.12) !important;
+        color: #111111 !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 0.875rem !important;
+        font-size: 0.875rem !important;
+        font-weight: 500 !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        outline: none !important;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+      }
+
+      input[type="email"]:focus,
+      input[type="password"]:focus,
+      input[type="text"]:focus,
+      input[type="tel"]:focus,
+      select:focus {
+        border-color: #111111 !important;
+        background: #FFFFFF !important;
+        box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08) !important;
+      }
+
+      input::placeholder {
+        color: #9CA3AF !important;
+        font-weight: 400 !important;
+      }
+
+      select option {
+        background-color: #FFFFFF;
+        color: #111111;
+      }
+
+      /* Glass Badge & Cards */
+      .glass-badge {
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+    </style>
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="bg-[#F4F4F6] text-[#111111] antialiased selection:bg-[#111111] selection:text-white">
     {% block content %}{% endblock %}
     {% block extra_js %}{% endblock %}
 </body>
