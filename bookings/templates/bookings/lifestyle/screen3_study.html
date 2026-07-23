@@ -20,6 +20,7 @@
         
         <!-- Step Indicator -->
         <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+          {% if booking %}
           <a href="{% url 'bookings:booking_initiated' booking.id %}" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0 hover:bg-emerald-100 transition-colors">
             <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
             <span>1. Soft Lock</span>
@@ -39,6 +40,12 @@
             <div class="h-5 w-5 rounded-full bg-black/10 text-[#6B7280] flex items-center justify-center text-[10px]">4</div>
             <span>4. Confirm</span>
           </div>
+          {% else %}
+          <div class="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 rounded-2xl text-xs font-bold shadow-sm shrink-0">
+            <div class="h-5 w-5 rounded-full bg-white text-[#111111] flex items-center justify-center text-[10px] font-extrabold">3</div>
+            <span>Study & Environment</span>
+          </div>
+          {% endif %}
         </div>
       </div>
 
@@ -66,7 +73,11 @@
           </div>
 
           {% if booking %}
+          {% if booking %}
           <form method="post" action="{% url 'bookings:submit_lifestyle_screen' booking.id 3 %}" class="space-y-6 lifestyle-selection-labels">
+          {% else %}
+          <form method="post" action="{% url 'accounts:lifestyle_submit_standalone' 3 %}" class="space-y-6 lifestyle-selection-labels">
+          {% endif %}
           {% else %}
           <form method="post" action="{% url 'accounts:lifestyle_submit_standalone' 3 %}" class="space-y-6 lifestyle-selection-labels">
           {% endif %}

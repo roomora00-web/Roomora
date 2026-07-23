@@ -349,9 +349,15 @@ class UserProfile(models.Model):
         # Base fields for all users
         required_fields.extend([
             self.user.profile_picture if self.user.profile_picture else 'HAS_DEFAULT_AVATAR',
+            self.user.phone_number,
+            self.user.gender,
+            self.user.date_of_birth,
             self.bio,
             self.address,
             self.city,
+            self.user.emergency_contact_name,
+            self.user.emergency_contact_phone,
+            self.user.emergency_contact_relationship,
         ])
         
         # User-type specific fields
@@ -392,8 +398,6 @@ class UserProfile(models.Model):
         else:
             self.profile_completion_percentage = 0
             
-        return self.profile_completion_percentage
-        
         self.save()
         return self.profile_completion_percentage
 

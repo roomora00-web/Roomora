@@ -1,348 +1,171 @@
-{% extends "landing/base.html" %}
+{% extends "accounts/dashboard_base.html" %}
 {% load static %}
 
-{% block title %}Edit Lifestyle Profile - StayMatch{% endblock %}
+{% block dashboard_title %}Lifestyle Questionnaire Options — Roomora{% endblock %}
 
-{% block content %}
-<div class="lifestyle-edit-container">
-    <div class="edit-header">
-        <h1>Edit Your Lifestyle Profile</h1>
-        <p class="edit-subtitle">Your profile was last updated on {{ last_updated|date:"F j, Y" }}</p>
+{% block dashboard_content %}
+<div class="space-y-6 sm:space-y-8 w-full animate-fade-in-up">
+
+  <!-- Hero Header Banner (Sleek Dark Theme) -->
+  <div class="glass-card p-6 sm:p-8 bg-gradient-to-br from-[#111111] via-[#1A1A1A] to-[#252525] text-white w-full relative overflow-hidden shadow-lg">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10 w-full">
+      <div class="space-y-2">
+        <div class="flex items-center gap-2 text-xs text-gray-400 font-medium">
+          <a href="{% url 'accounts:dashboard' %}" class="hover:text-white transition-colors">Dashboard</a>
+          <span>/</span>
+          <a href="{% url 'accounts:profile' %}?tab=lifestyle" class="hover:text-white transition-colors">Profile</a>
+          <span>/</span>
+          <span class="text-gray-200 font-bold">Lifestyle Questionnaire</span>
+        </div>
+        <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          Lifestyle Questionnaire Management
+        </h1>
+        <p class="text-xs text-gray-400 max-w-2xl">
+          Your room matching score & roommate compatibility are calculated from your lifestyle answers. Last updated: <span class="text-white font-bold">{{ last_updated|date:"F j, Y" }}</span>
+        </p>
+      </div>
+
+      <a href="{% url 'accounts:profile' %}?tab=lifestyle" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-white/20 bg-white/10 text-xs font-bold text-white hover:bg-white/20 transition-all backdrop-blur-xs shrink-0">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>Back to Profile</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Options Cards Container (100% Full Width Grid) -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
+
+    <!-- OPTION 1: KEEP SAVED PROFILE -->
+    <div class="glass-card p-6 bg-white border border-black/10 rounded-2xl flex flex-col justify-between space-y-6 hover:shadow-md transition-all w-full">
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="h-12 w-12 rounded-2xl bg-[#111111] text-white flex items-center justify-center shadow-xs">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11"/></svg>
+          </div>
+          <span class="bg-black/5 text-[#111111] text-[10px] font-extrabold px-3 py-1 rounded-full border border-black/10 uppercase tracking-widest">ACTIVE</span>
+        </div>
+
+        <div class="space-y-1.5">
+          <h2 class="font-outfit text-lg font-bold text-[#111111]">Keep Active Profile</h2>
+          <p class="text-xs text-[#6B7280]">
+            Maintain your current lifestyle preferences without changes. Your existing answers will power roommate compatibility.
+          </p>
+        </div>
+      </div>
+
+      <form method="post" class="w-full pt-4 border-t border-black/[0.06]">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="use_saved">
+        <button type="submit" class="w-full py-3 rounded-xl bg-[#111111] text-white text-xs font-bold hover:bg-black/80 transition-colors">
+          <span>Keep Saved Profile ➔</span>
+        </button>
+      </form>
     </div>
 
-    <!-- Option 1: Use Saved Profile -->
-    <div class="edit-option-card">
-        <div class="option-icon option-icon-saved">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <path d="M22 4L12 14.01l-3-3"/>
-            </svg>
+    <!-- OPTION 2: EDIT SPECIFIC SECTIONS -->
+    <div class="glass-card p-6 bg-white border border-black/10 rounded-2xl flex flex-col justify-between space-y-6 lg:col-span-2 hover:shadow-md transition-all w-full">
+      <div class="space-y-4">
+        <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+          <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-2xl bg-[#111111] text-white flex items-center justify-center shadow-xs">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <div>
+              <h2 class="font-outfit text-lg font-bold text-[#111111]">Update Specific Questionnaire Sections</h2>
+              <p class="text-xs text-[#6B7280]">Select the exact categories you wish to revise.</p>
+            </div>
+          </div>
         </div>
-        <div class="option-content">
-            <h2>Use Saved Profile</h2>
-            <p>Keep your current lifestyle preferences as they are. Your profile will be used for roommate matching.</p>
-        </div>
-        <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="use_saved">
-            <button type="submit" class="btn btn-primary">Use Saved Profile</button>
-        </form>
-    </div>
 
-    <!-- Option 2: Edit Categories -->
-    <div class="edit-option-card">
-        <div class="option-icon option-icon-edit">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-            </svg>
-        </div>
-        <div class="option-content">
-            <h2>Edit Specific Categories</h2>
-            <p>Select the categories you want to update. Other preferences will remain unchanged.</p>
+        <form method="post" id="edit-categories-form" class="space-y-5">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="edit_categories">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             
-            <form method="post" id="edit-categories-form">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="edit_categories">
-                
-                <div class="category-grid">
-                    <div class="category-item">
-                        <input type="checkbox" id="cat_screen1" name="categories" value="screen1">
-                        <label for="cat_screen1">
-                            <span class="category-icon">🌙</span>
-                            Sleep & Daily Routine
-                        </label>
-                    </div>
-                    <div class="category-item">
-                        <input type="checkbox" id="cat_screen2" name="categories" value="screen2">
-                        <label for="cat_screen2">
-                            <span class="category-icon">🧹</span>
-                            Cleanliness & Visitors
-                        </label>
-                    </div>
-                    <div class="category-item">
-                        <input type="checkbox" id="cat_screen3" name="categories" value="screen3">
-                        <label for="cat_screen3">
-                            <span class="category-icon">📚</span>
-                            Study & Environment
-                        </label>
-                    </div>
-                    <div class="category-item">
-                        <input type="checkbox" id="cat_screen4" name="categories" value="screen4">
-                        <label for="cat_screen4">
-                            <span class="category-icon">🚧</span>
-                            Boundaries & Conflict
-                        </label>
-                    </div>
+            <!-- Category 1 -->
+            <label class="flex items-start gap-3 p-3.5 rounded-xl border border-black/10 bg-[#F8F8FA] hover:bg-white hover:border-black/20 cursor-pointer transition-all">
+              <input type="checkbox" id="cat_screen1" name="categories" value="screen1" class="mt-1 h-4 w-4 rounded accent-black">
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-2 text-xs font-extrabold text-[#111111]">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                  <span>Sleep & Daily Routine</span>
                 </div>
-                
-                <button type="submit" class="btn btn-secondary">Update Selected Sections</button>
-            </form>
-        </div>
-    </div>
+                <p class="text-[11px] text-[#6B7280]">Bedtimes, wake schedules & habits.</p>
+              </div>
+            </label>
 
-    <!-- Option 3: Re-complete Profile -->
-    <div class="edit-option-card">
-        <div class="option-icon option-icon-refresh">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M23 4v6h-6"/>
-                <path d="M1 20v-6h6"/>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-            </svg>
-        </div>
-        <div class="option-content">
-            <h2>Re-complete Full Profile</h2>
-            <p>Start fresh and complete the entire questionnaire again. All previous preferences will be reset.</p>
-        </div>
-        <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="recomplete">
-            <button type="submit" class="btn btn-warning">Start Fresh</button>
+            <!-- Category 2 -->
+            <label class="flex items-start gap-3 p-3.5 rounded-xl border border-black/10 bg-[#F8F8FA] hover:bg-white hover:border-black/20 cursor-pointer transition-all">
+              <input type="checkbox" id="cat_screen2" name="categories" value="screen2" class="mt-1 h-4 w-4 rounded accent-black">
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-2 text-xs font-extrabold text-[#111111]">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  <span>Cleanliness & Duties</span>
+                </div>
+                <p class="text-[11px] text-[#6B7280]">Cleaning schedules & shared space care.</p>
+              </div>
+            </label>
+
+            <!-- Category 3 -->
+            <label class="flex items-start gap-3 p-3.5 rounded-xl border border-black/10 bg-[#F8F8FA] hover:bg-white hover:border-black/20 cursor-pointer transition-all">
+              <input type="checkbox" id="cat_screen3" name="categories" value="screen3" class="mt-1 h-4 w-4 rounded accent-black">
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-2 text-xs font-extrabold text-[#111111]">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 1 3-3h7z"/></svg>
+                  <span>Study & Environment</span>
+                </div>
+                <p class="text-[11px] text-[#6B7280]">Noise tolerance & quiet study hours.</p>
+              </div>
+            </label>
+
+            <!-- Category 4 -->
+            <label class="flex items-start gap-3 p-3.5 rounded-xl border border-black/10 bg-[#F8F8FA] hover:bg-white hover:border-black/20 cursor-pointer transition-all">
+              <input type="checkbox" id="cat_screen4" name="categories" value="screen4" class="mt-1 h-4 w-4 rounded accent-black">
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-2 text-xs font-extrabold text-[#111111]">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <span>Boundaries & Guests</span>
+                </div>
+                <p class="text-[11px] text-[#6B7280]">Visitor rules & personal boundaries.</p>
+              </div>
+            </label>
+
+          </div>
+
+          <div class="flex justify-end pt-2 border-t border-black/[0.06]">
+            <button type="submit" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#111111] text-white text-xs font-bold hover:bg-black/80 transition-colors">
+              <span>Update Selected Sections ➔</span>
+            </button>
+          </div>
         </form>
+      </div>
     </div>
 
-    <!-- Cancel Button -->
-    <div class="cancel-section">
-        <a href="{% url 'accounts:profile' %}" class="btn btn-cancel">Cancel</a>
+  </div>
+
+  <!-- OPTION 3: RETAKE FULL QUESTIONNAIRE (FULL WIDTH BOTTOM STRIP) -->
+  <div class="glass-card p-6 sm:p-8 bg-white border border-black/10 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-6 hover:shadow-md transition-all w-full">
+    <div class="flex items-start gap-4">
+      <div class="h-12 w-12 rounded-2xl bg-black/5 text-[#111111] border border-black/10 flex items-center justify-center shrink-0">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      </div>
+      <div class="space-y-1">
+        <h2 class="font-outfit text-lg font-bold text-[#111111]">Start Fresh & Retake Full Questionnaire</h2>
+        <p class="text-xs text-[#6B7280]">
+          Complete the entire 4-part lifestyle questionnaire from start to finish. Your answers will be pre-filled with your current responses so you can quickly make changes.
+        </p>
+      </div>
     </div>
+
+    <form method="post" class="shrink-0">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="recomplete">
+      <button type="submit" class="w-full sm:w-auto px-6 py-3 rounded-xl border border-black/20 text-[#111111] bg-[#F8F8FA] text-xs font-bold hover:bg-black hover:text-white transition-colors">
+        <span>Start Full Retake ➔</span>
+      </button>
+    </form>
+  </div>
+
 </div>
-
-<style>
-.lifestyle-edit-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 40px 20px;
-}
-
-.edit-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.edit-header h1 {
-    font-size: 32px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 8px;
-}
-
-.edit-subtitle {
-    font-size: 16px;
-    color: #666;
-    margin: 0;
-}
-
-.edit-option-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 24px;
-    background: white;
-    border-radius: 16px;
-    padding: 32px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    transition: all 0.2s ease;
-}
-
-.edit-option-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-}
-
-.option-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-    flex-shrink: 0;
-}
-
-.option-icon-saved {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-}
-
-.option-icon-edit {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.option-icon-refresh {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    color: white;
-}
-
-.option-content {
-    flex: 1;
-}
-
-.option-content h2 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 8px;
-}
-
-.option-content p {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 20px;
-    line-height: 1.5;
-}
-
-.category-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.category-item {
-    position: relative;
-}
-
-.category-item input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-}
-
-.category-item label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: #f8f9fa;
-    border: 2px solid #e0e0e0;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-}
-
-.category-item label:hover {
-    background: #f0f0f0;
-    border-color: #667eea;
-}
-
-.category-item input[type="checkbox"]:checked + label {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-    border-color: #667eea;
-}
-
-.category-icon {
-    font-size: 20px;
-}
-
-.btn-primary, .btn-secondary, .btn-warning, .btn-cancel {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 14px 32px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    border: none;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-}
-
-.btn-secondary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.btn-secondary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-warning {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    color: white;
-}
-
-.btn-warning:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-}
-
-.btn-cancel {
-    background: #f8f9fa;
-    color: #666;
-    border: 2px solid #e0e0e0;
-}
-
-.btn-cancel:hover {
-    background: #f0f0f0;
-    border-color: #999;
-}
-
-.cancel-section {
-    text-align: center;
-    margin-top: 32px;
-}
-
-/* Mobile Optimization */
-@media (max-width: 768px) {
-    .lifestyle-edit-container {
-        padding: 20px 16px;
-    }
-
-    .edit-header h1 {
-        font-size: 24px;
-    }
-
-    .edit-option-card {
-        flex-direction: column;
-        padding: 24px;
-    }
-
-    .option-icon {
-        width: 56px;
-        height: 56px;
-    }
-
-    .category-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .btn-primary, .btn-secondary, .btn-warning, .btn-cancel {
-        width: 100%;
-    }
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const editForm = document.getElementById('edit-categories-form');
-    const submitBtn = editForm.querySelector('button[type="submit"]');
-    
-    // Disable submit button if no categories selected
-    submitBtn.disabled = true;
-    submitBtn.style.opacity = '0.5';
-    
-    editForm.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const anyChecked = editForm.querySelectorAll('input[type="checkbox"]:checked').length > 0;
-            submitBtn.disabled = !anyChecked;
-            submitBtn.style.opacity = anyChecked ? '1' : '0.5';
-        });
-    });
-});
-</script>
 {% endblock %}
