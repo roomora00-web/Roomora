@@ -311,9 +311,11 @@ def send_html_email(subject, template_name, context, recipient_email):
         text_content = strip_tags(html_content)
         email = EmailMultiAlternatives(subject, text_content, settings.DEFAULT_FROM_EMAIL, [recipient_email])
         email.attach_alternative(html_content, "text/html")
-        email.send(fail_silently=True)
+        email.send(fail_silently=False)
     except Exception as e:
-        pass
+        import traceback
+        print(f"Error sending email to {recipient_email}: {str(e)}")
+        traceback.print_exc()
 
 def check_email_view(request, email):
     """Check your email page - shown after registration"""
