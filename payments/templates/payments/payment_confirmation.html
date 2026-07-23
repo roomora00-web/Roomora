@@ -35,7 +35,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl">
         <div>
           <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Payment Reference</div>
-          <div class="font-mono text-base font-extrabold text-[#111111] mt-0.5">{{ payment.payment_reference|default:booking.reference_number }}</div>
+          <div class="font-mono text-base font-extrabold text-[#111111] mt-0.5 break-all">{{ payment.payment_reference|default:booking.reference_number }}</div>
         </div>
         <div>
           <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Total Amount Paid</div>
@@ -59,7 +59,7 @@
     <div class="grid gap-6 lg:gap-8 lg:grid-cols-[1.35fr_0.65fr] items-start w-full">
       
       <!-- Left Column: Room Gallery, Room Specs, & Property Details -->
-      <div class="space-y-6 w-full">
+      <div class="space-y-6 w-full min-w-0">
         
         <!-- Room & Property Inspection Photo Gallery Card -->
         <div class="glass-card p-5 sm:p-8 space-y-5">
@@ -225,7 +225,7 @@
       </div>
 
       <!-- Right Column Sidebar: Official Receipt & Check-in Roadmap -->
-      <div class="space-y-6 w-full">
+      <div class="space-y-6 w-full min-w-0">
         
         <!-- Official Itemized Receipt Box -->
         <div class="glass-card p-6 space-y-5">
@@ -235,13 +235,13 @@
           </div>
           
           <div class="space-y-2.5 text-xs font-semibold">
-            <div class="flex justify-between py-2 border-b border-black/[0.06]">
-              <span class="text-[#6B7280]">Receipt Reference:</span>
-              <span class="text-[#111111] font-mono font-bold">{{ payment.payment_reference|default:booking.reference_number }}</span>
+            <div class="flex justify-between py-2 border-b border-black/[0.06] gap-2">
+              <span class="text-[#6B7280] shrink-0">Receipt Reference:</span>
+              <span class="text-[#111111] font-mono font-bold break-all text-right">{{ payment.payment_reference|default:booking.reference_number }}</span>
             </div>
-            <div class="flex justify-between py-2 border-b border-black/[0.06]">
-              <span class="text-[#6B7280]">Primary Tenant:</span>
-              <span class="text-[#111111] font-bold">{{ booking.tenant.full_name|default:booking.tenant.email }}</span>
+            <div class="flex justify-between py-2 border-b border-black/[0.06] gap-2">
+              <span class="text-[#6B7280] shrink-0">Primary Tenant:</span>
+              <span class="text-[#111111] font-bold break-words text-right">{{ booking.tenant.full_name|default:booking.tenant.email }}</span>
             </div>
             <div class="flex justify-between py-2 border-b border-black/[0.06]">
               <span class="text-[#6B7280]">Base Accommodation Fee:</span>

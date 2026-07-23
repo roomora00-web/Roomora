@@ -65,7 +65,7 @@
                     <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                     Official Payment Receipt
                 </div>
-                <h1 class="font-mono text-base font-extrabold text-[#111111] pt-1">REC-{{ payment.payment_reference|default:booking.reference_number }}</h1>
+                <h1 class="font-mono text-base font-extrabold text-[#111111] pt-1 break-all">REC-{{ payment.payment_reference|default:booking.reference_number }}</h1>
                 <p class="text-xs text-[#6B7280]">Date Issued: {{ payment.created_at|date:"F j, Y, g:i A"|default:"July 22, 2026" }}</p>
                 <p class="text-xs text-[#6B7280]">Status: <strong class="text-emerald-700 font-bold uppercase">PAID & SECURED</strong></p>
             </div>
@@ -75,8 +75,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-[#F8F8FA] border border-black/10 p-6 rounded-2xl">
             <div class="space-y-1 text-xs">
                 <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Billed To (Tenant)</div>
-                <div class="text-sm font-bold text-[#111111]">{{ booking.tenant.full_name|default:booking.tenant.email }}</div>
-                <div class="text-[#6B7280] font-medium">{{ booking.tenant.email }}</div>
+                <div class="text-sm font-bold text-[#111111] break-words">{{ booking.tenant.full_name|default:booking.tenant.email }}</div>
+                <div class="text-[#6B7280] font-medium break-all">{{ booking.tenant.email }}</div>
                 {% if booking.tenant.phone_number %}
                 <div class="text-[#6B7280] font-medium">{{ booking.tenant.phone_number }}</div>
                 {% endif %}
@@ -84,7 +84,7 @@
 
             <div class="space-y-1 text-xs sm:text-right">
                 <div class="text-[10px] font-extrabold uppercase tracking-widest text-[#888888]">Reservation Particulars</div>
-                <div class="text-sm font-bold text-[#111111]">Ref: {{ booking.reference_number }}</div>
+                <div class="text-sm font-bold text-[#111111] break-all">Ref: {{ booking.reference_number }}</div>
                 <div class="text-[#6B7280] font-medium">{{ property.title }}</div>
                 <div class="text-[#6B7280] font-medium">{% if room %}Room {{ room.room_number }}{% else %}Standard Space{% endif %} • {{ duration_display }}</div>
             </div>
@@ -139,7 +139,7 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                     <span class="uppercase">{{ payment.payment_method|default:"Paystack Mobile Money" }}</span>
                 </div>
-                <p class="text-[11px] text-[#6B7280]">Paystack Ref: <span class="font-mono text-[#111111] font-bold">{{ payment.paystack_reference|default:payment.payment_reference }}</span></p>
+                <p class="text-[11px] text-[#6B7280] break-all">Paystack Ref: <span class="font-mono text-[#111111] font-bold">{{ payment.paystack_reference|default:payment.payment_reference }}</span></p>
             </div>
 
             <div class="bg-[#111111] text-white p-6 rounded-2xl w-full sm:w-72 space-y-1">
