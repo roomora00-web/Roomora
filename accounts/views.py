@@ -9,7 +9,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib import messages
 from .models import User, UserProfile, LifestyleProfile, Verification, EmailVerification, PhoneVerification, LoginAttempt
@@ -302,6 +304,17 @@ def normalize_ghana_phone(phone):
     else:
         return None
 
+
+def send_html_email(subject, template_name, context, recipient_email):
+    try:
+        html_content = render_to_string(template_name, context)
+        text_content = strip_tags(html_content)
+        email = EmailMultiAlternatives(subject, text_content, settings.DEFAULT_FROM_EMAIL, [recipient_email])
+        email.attach_alternative(html_content, "text/html")
+        email.send(fail_silently=True)
+    except Exception as e:
+        pass
+
 def check_email_view(request, email):
     """Check your email page - shown after registration"""
     return render(request, 'accounts/check_email.html', {'email': email})
@@ -461,16 +474,12 @@ def resend_verification_view(request):
             )
             
             # Send verification email with OTP
-            try:
-                send_mail(
-                    'Verify your Roomora account',
-                    f'Hi {user.first_name},\n\nYour verification code is: {otp}\n\nThis code expires in 24 hours.',
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
-                    fail_silently=True,
-                )
-            except Exception as e:
-                pass
+            send_html_email(
+                'Verify your Roomora account',
+                'accounts/emails/verification.html',
+                {'user': user, 'otp': otp},
+                user.email
+            )
             messages.success(request, 'Verification code sent successfully.')
         except User.DoesNotExist:
             # Don't reveal if email exists
@@ -513,12 +522,11 @@ def forgot_password_view(request):
             # Send password reset email
             try:
                 reset_url = f"http://{request.get_host()}/accounts/reset-password/{reset_token}/"
-                send_mail(
+                send_html_email(
                     'Reset your Roomora password',
-                    f'Hi {user.first_name},\n\nClick the link below to reset your password:\n\n{reset_url}\n\nThis link expires in 1 hour.\n\nIf you didn\'t request a password reset, you can ignore this email.',
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
-                    fail_silently=False,
+                    'accounts/emails/reset_password.html',
+                    {'user': user, 'reset_url': reset_url},
+                    user.email
                 )
             except Exception as e:
                 print(f"Failed to send password reset email: {e}")
@@ -655,16 +663,12 @@ def register_view(request):
             )
             
             # Send verification email
-            try:
-                send_mail(
-                    'Verify your Roomora account',
-                    f'Hi {user.first_name},\n\nYour verification code is: {otp}\n\nThis code expires in 24 hours.',
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
-                    fail_silently=True,
-                )
-            except Exception as e:
-                pass
+            send_html_email(
+                'Verify your Roomora account',
+                'accounts/emails/verification.html',
+                {'user': user, 'otp': otp},
+                user.email
+            )
             messages.success(request, 'Account created successfully! Please check your email for the verification code.')
             return redirect('accounts:check-email', email=user.email)
     else:
