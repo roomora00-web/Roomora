@@ -256,3 +256,8 @@ PAYSTACK_CALLBACK_URL = f"{os.environ.get('SITE_URL', 'http://127.0.0.1:8000')}/
 PAYSTACK_ESCROW_SUBACCOUNT = os.environ.get('PAYSTACK_ESCROW_SUBACCOUNT', '')  # Subaccount code for landlord disbursements
 PAYMENT_WINDOW_HOURS = 2  # Payment window in hours
 PLATFORM_FEE_PERCENTAGE = 0.02  # 2% platform fee
+
+# Security and CSRF settings
+csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://roomora-production.up.railway.app,http://127.0.0.1:8000,http://localhost:8000').split(',')
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in csrf_origins if origin.strip()]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
