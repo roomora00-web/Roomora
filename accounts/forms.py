@@ -252,33 +252,10 @@ class ProfileEnrichmentForm(forms.ModelForm):
         tw_select_class = 'w-full pl-10 pr-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all appearance-none cursor-pointer'
         tw_basic_input = 'w-full px-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all'
         
-        GHANA_INSTITUTIONS = [
-            ('', 'Select Institution'),
-            ('University of Ghana', 'University of Ghana'),
-            ('KNUST', 'Kwame Nkrumah University of Science and Technology (KNUST)'),
-            ('UCC', 'University of Cape Coast (UCC)'),
-            ('UEW', 'University of Education, Winneba (UEW)'),
-            ('UPSA', 'University of Professional Studies, Accra (UPSA)'),
-            ('UDS', 'University for Development Studies (UDS)'),
-            ('UMaT', 'University of Mines and Technology (UMaT)'),
-            ('Ashesi University', 'Ashesi University'),
-            ('Academic City University', 'Academic City University College'),
-            ('Lancaster University Ghana', 'Lancaster University Ghana'),
-            ('Webster University Ghana', 'Webster University Ghana'),
-            ('Wisconsin International University', 'Wisconsin International University College'),
-            ('Valley View University', 'Valley View University'),
-            ('Central University', 'Central University'),
-            ('GIMPA', 'Ghana Institute of Management and Public Administration (GIMPA)'),
-            ('Accra Technical University', 'Accra Technical University'),
-            ('Kumasi Technical University', 'Kumasi Technical University'),
-            ('Other', 'Other Institution'),
-        ]
-        
         # Add user-type specific fields
         if user_type == 'STUDENT':
-            self.fields['institution'] = forms.ChoiceField(
-                choices=GHANA_INSTITUTIONS,
-                widget=forms.Select(attrs={'class': tw_select_class, 'id': 'institution_input'}),
+            self.fields['institution'] = forms.CharField(
+                widget=forms.TextInput(attrs={'class': tw_input_class, 'placeholder': 'Institution', 'id': 'institution_input'}),
                 label='Institution',
                 required=False
             )
