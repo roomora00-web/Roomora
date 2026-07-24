@@ -1,9 +1,9 @@
-{% extends 'accounts/dashboard_base.html' %}
+{% extends 'accounts/base_auth.html' %}
 {% load static %}
 
-{% block dashboard_title %}Complete Your Profile — Roomora{% endblock %}
+{% block title %}Complete Your Profile — Roomora{% endblock %}
 
-{% block dashboard_extra_css %}
+{% block extra_css %}
 <style>
   /* Custom Animations & Input Focus FX */
   .glow-ring:focus-within {
@@ -12,23 +12,39 @@
   .gradient-progress-bar {
     background: linear-gradient(90deg, #111111 0%, #3B82F6 50%, #10B981 100%);
   }
+  
+  /* Ensure consistent form select height and padding */
+  select#institution_input, select#level_select {
+    appearance: none;
+  }
 </style>
 {% endblock %}
 
-{% block dashboard_content %}
-<div class="max-w-7xl mx-auto space-y-8 animate-fade-in-up pb-12">
+{% block content %}
+<!-- Minimal Header -->
+<header class="w-full h-20 px-6 sm:px-10 flex items-center justify-between border-b border-black/5 bg-white/80 backdrop-blur-xl sticky top-0 z-50">
+    <a href="{% url 'landing:home' %}" class="flex items-center gap-3 group">
+        <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-base shadow-sm group-hover:scale-105 transition-transform">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <span class="font-outfit text-2xl font-extrabold text-[#111111] tracking-tight">Roomora</span>
+    </a>
+    <a href="{% url 'accounts:logout' %}" class="text-xs font-bold text-gray-500 hover:text-black transition-colors">Sign Out</a>
+</header>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 space-y-8 animate-fade-in-up">
 
   <!-- Step Progress Header -->
-  <div class="bg-white/80 backdrop-blur-xl border border-black/10 rounded-3xl p-6 sm:p-8 shadow-sm">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+  <div class="bg-white border border-black/10 rounded-3xl p-6 sm:p-10 shadow-sm">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
       
       <!-- Title & Subtitle -->
-      <div class="space-y-2">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800">
+      <div class="space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] font-bold text-emerald-800 uppercase tracking-wider">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span>Step 3 of 4: Account Enrichment</span>
         </div>
-        <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">
+        <h1 class="font-outfit text-3xl sm:text-5xl font-extrabold text-[#111111] tracking-tight">
           Complete Your Profile
         </h1>
         <p class="text-[#6B7280] text-sm sm:text-base font-medium max-w-2xl leading-relaxed">
@@ -37,16 +53,16 @@
       </div>
 
       <!-- Completion Badge Widget -->
-      <div class="shrink-0 bg-[#F4F4F6] border border-black/10 rounded-2xl p-4 sm:w-64 space-y-2">
+      <div class="shrink-0 bg-[#F4F4F6] border border-black/5 rounded-2xl p-5 sm:w-72 space-y-3 shadow-inner">
         <div class="flex items-center justify-between text-xs font-bold">
           <span class="text-[#6B7280] uppercase tracking-wider">Profile Status</span>
-          <span class="text-[#111111] font-outfit text-sm">{{ completion_percentage|default:60 }}%</span>
+          <span class="text-[#111111] font-outfit text-base">{{ completion_percentage|default:60 }}%</span>
         </div>
-        <div class="w-full bg-black/10 rounded-full h-2.5 overflow-hidden">
+        <div class="w-full bg-black/10 rounded-full h-3 overflow-hidden">
           <div class="gradient-progress-bar h-full rounded-full transition-all duration-700 ease-out" style="width: {{ completion_percentage|default:60 }}%;"></div>
         </div>
-        <div class="text-[11px] text-[#6B7280] font-medium flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+        <div class="text-[11px] text-emerald-700 font-bold flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
           <span>Email Verified</span>
         </div>
       </div>
@@ -54,10 +70,10 @@
     </div>
 
     <!-- Stepper Navigation Dots -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-black/10">
-      <div class="flex items-center gap-2.5">
-        <div class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold shrink-0">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-8 border-t border-black/5">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
         </div>
         <div class="text-xs">
           <div class="font-bold text-[#111111]">Register</div>
@@ -65,9 +81,9 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-2.5">
-        <div class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold shrink-0">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
         </div>
         <div class="text-xs">
           <div class="font-bold text-[#111111]">Verify Email</div>
@@ -75,16 +91,16 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-2.5">
-        <div class="w-7 h-7 rounded-full bg-[#111111] text-white flex items-center justify-center text-xs font-bold shrink-0 ring-4 ring-black/10">3</div>
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-[#111111] text-white flex items-center justify-center text-xs font-bold shrink-0 ring-4 ring-black/10">3</div>
         <div class="text-xs">
           <div class="font-bold text-[#111111]">Profile Details</div>
-          <div class="text-emerald-600 font-semibold text-[11px]">In Progress</div>
+          <div class="text-emerald-600 font-bold text-[11px]">In Progress</div>
         </div>
       </div>
 
-      <div class="flex items-center gap-2.5 opacity-50">
-        <div class="w-7 h-7 rounded-full bg-[#E5E7EB] text-[#6B7280] flex items-center justify-center text-xs font-bold shrink-0">4</div>
+      <div class="flex items-center gap-3 opacity-50">
+        <div class="w-8 h-8 rounded-full bg-[#E5E7EB] text-[#6B7280] flex items-center justify-center text-xs font-bold shrink-0">4</div>
         <div class="text-xs">
           <div class="font-bold text-[#111111]">Room Matching</div>
           <div class="text-[#6B7280] text-[11px]">Next Step</div>
@@ -95,13 +111,13 @@
 
   <!-- Messages Alert Area -->
   {% if messages %}
-  <div class="space-y-3">
+  <div class="space-y-3 max-w-2xl mx-auto w-full">
     {% for message in messages %}
-    <div class="p-4 rounded-2xl text-xs sm:text-sm font-medium border shadow-sm flex items-center gap-3 {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-700{% else %}bg-emerald-50 border-emerald-200 text-emerald-800{% endif %}">
+    <div class="p-4 rounded-2xl text-sm font-bold border shadow-sm flex items-center gap-3 {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-700{% else %}bg-emerald-50 border-emerald-200 text-emerald-800{% endif %}">
       {% if message.tags == 'error' %}
-      <svg class="w-5 h-5 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <svg class="w-5 h-5 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       {% else %}
-      <svg class="w-5 h-5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      <svg class="w-5 h-5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
       {% endif %}
       <span>{{ message }}</span>
     </div>
@@ -113,153 +129,153 @@
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
     <!-- Left Main Form Column (7 Cols) -->
-    <div class="lg:col-span-7 bg-white border border-black/10 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-shadow">
+    <div class="lg:col-span-7 bg-white border border-black/10 rounded-3xl p-6 sm:p-10 shadow-lg relative">
       
-      <div class="flex items-center justify-between pb-6 mb-6 border-b border-black/10">
+      <div class="flex items-center justify-between pb-6 mb-8 border-b border-black/5">
         <div>
-          <h2 class="font-outfit text-xl font-bold text-[#111111] flex items-center gap-2">
+          <h2 class="font-outfit text-2xl font-bold text-[#111111] flex items-center gap-2">
             {% if user.user_type == 'STUDENT' %}
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
+              <svg class="w-6 h-6 text-[#111111]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
               Student Academic Info
             {% elif user.user_type == 'WORKER' %}
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              Professional Employment Info
+              <svg class="w-6 h-6 text-[#111111]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              Professional Info
             {% else %}
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-              Additional Personal Details
+              <svg class="w-6 h-6 text-[#111111]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+              Personal Details
             {% endif %}
           </h2>
-          <p class="text-xs text-[#6B7280] font-medium mt-0.5">Fill in your information to personalize your accommodation matches.</p>
+          <p class="text-sm text-[#6B7280] font-medium mt-1">Information helps match you to the right properties.</p>
         </div>
-        <span class="px-3 py-1 rounded-full bg-[#F4F4F6] text-xs font-bold text-[#111111] border border-black/10 uppercase tracking-wider">
+        <span class="px-4 py-1.5 rounded-full bg-[#F4F4F6] text-[11px] font-extrabold text-[#111111] border border-black/10 uppercase tracking-widest">
           {{ user.user_type|default:"TENANT" }}
         </span>
       </div>
 
-      <form method="POST" action="{% url 'accounts:profile-enrichment' %}" class="space-y-6">
+      <form method="POST" action="{% url 'accounts:profile-enrichment' %}" class="space-y-7">
         {% csrf_token %}
 
         {% if user.user_type == 'STUDENT' %}
         <!-- Student Fields -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <!-- Academic Institution -->
           <div class="space-y-2 glow-ring rounded-2xl transition-all">
-            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#111111]">
               Academic Institution <span class="text-red-500">*</span>
             </label>
             <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#9CA3AF]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
               </div>
               {{ form.institution }}
-              <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+              <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-[#9CA3AF]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
               </div>
-              {% if form.institution.errors %}
-                <div class="text-red-500 text-xs mt-1">{{ form.institution.errors }}</div>
-              {% endif %}
             </div>
+            {% if form.institution.errors %}
+              <div class="text-red-500 text-xs font-bold">{{ form.institution.errors }}</div>
+            {% endif %}
           </div>
 
           <!-- Current Level -->
           <div class="space-y-2 glow-ring rounded-2xl transition-all">
-            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#111111]">
               Current Level <span class="text-red-500">*</span>
             </label>
             <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#9CA3AF]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
               </div>
               {{ form.academic_level }}
-              <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+              <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-[#9CA3AF]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
               </div>
-              {% if form.academic_level.errors %}
-                <div class="text-red-500 text-xs mt-1">{{ form.academic_level.errors }}</div>
-              {% endif %}
             </div>
+            {% if form.academic_level.errors %}
+              <div class="text-red-500 text-xs font-bold">{{ form.academic_level.errors }}</div>
+            {% endif %}
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <!-- Field of Study -->
           <div class="space-y-2 glow-ring rounded-2xl transition-all">
-            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Field of Study</label>
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#111111]">Field of Study</label>
             <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#9CA3AF]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
               </div>
               {{ form.field_of_study }}
-              {% if form.field_of_study.errors %}
-                <div class="text-red-500 text-xs mt-1">{{ form.field_of_study.errors }}</div>
-              {% endif %}
             </div>
+            {% if form.field_of_study.errors %}
+              <div class="text-red-500 text-xs font-bold">{{ form.field_of_study.errors }}</div>
+            {% endif %}
           </div>
 
           <!-- Expected Graduation -->
           <div class="space-y-2 glow-ring rounded-2xl transition-all">
-            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Expected Graduation</label>
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#111111]">Expected Graduation</label>
             <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#9CA3AF]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
               </div>
               {{ form.expected_graduation }}
-              {% if form.expected_graduation.errors %}
-                <div class="text-red-500 text-xs mt-1">{{ form.expected_graduation.errors }}</div>
-              {% endif %}
             </div>
+            {% if form.expected_graduation.errors %}
+              <div class="text-red-500 text-xs font-bold">{{ form.expected_graduation.errors }}</div>
+            {% endif %}
           </div>
         </div>
 
         {% elif user.user_type == 'WORKER' %}
         <!-- Worker Fields -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div class="space-y-2">
-            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Occupation <span class="text-red-500">*</span></label>
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#111111]">Occupation <span class="text-red-500">*</span></label>
             {{ form.occupation }}
           </div>
           <div class="space-y-2">
-            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Company / Employer</label>
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#111111]">Company / Employer</label>
             {{ form.company_name }}
           </div>
         </div>
         {% else %}
         <!-- Family / Other Fields -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div class="space-y-2">
-            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Household Size</label>
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#111111]">Household Size</label>
             {{ form.household_size }}
           </div>
           <div class="space-y-2">
-            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Number of Children</label>
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#111111]">Number of Children</label>
             {{ form.num_children }}
           </div>
         </div>
         {% endif %}
 
         <!-- Bio Field (All Users) -->
-        <div class="space-y-2">
+        <div class="space-y-2 pt-2">
           <div class="flex items-center justify-between">
-            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Bio / Personal Summary</label>
-            <span id="bio_counter" class="text-xs font-mono font-semibold text-[#9CA3AF]">0/150</span>
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#111111]">Bio / Personal Summary</label>
+            <span id="bio_counter" class="text-xs font-mono font-bold text-[#9CA3AF]">0/150</span>
           </div>
           <div class="relative">
             {{ form.bio }}
-            {% if form.bio.errors %}
-              <div class="text-red-500 text-xs mt-1">{{ form.bio.errors }}</div>
-            {% endif %}
           </div>
-          <p class="text-[11px] text-[#6B7280] font-medium">Visible to verified property managers and potential lifestyle roommates.</p>
+          {% if form.bio.errors %}
+            <div class="text-red-500 text-xs font-bold">{{ form.bio.errors }}</div>
+          {% endif %}
+          <p class="text-xs text-[#6B7280] font-medium pt-1">Visible to verified property managers and potential roommates.</p>
         </div>
 
         <!-- Buttons Row -->
-        <div class="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-black/10">
-          <button type="submit" class="w-full sm:w-auto px-8 py-3.5 bg-[#111111] text-white font-bold rounded-2xl hover:bg-black active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg shadow-black/10 text-sm">
-            <span>Save & Continue to Dashboard</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        <div class="flex flex-col sm:flex-row items-center gap-4 pt-6 mt-4 border-t border-black/5">
+          <button type="submit" class="w-full sm:w-auto px-10 py-4 bg-[#111111] text-white font-extrabold rounded-2xl hover:bg-black active:scale-95 transition-all flex items-center justify-center gap-3 shadow-[0_8px_20px_rgba(0,0,0,0.15)] text-[15px]">
+            <span>Save & Continue</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </button>
           
-          <a href="{% url 'accounts:dashboard' %}" class="w-full sm:w-auto px-6 py-3.5 bg-[#F4F4F6] text-[#4B5563] font-bold rounded-2xl hover:bg-[#E5E7EB] hover:text-[#111111] transition-all text-center text-sm border border-black/5">
+          <a href="{% url 'accounts:dashboard' %}" class="w-full sm:w-auto px-8 py-4 bg-[#F4F4F6] text-[#4B5563] font-bold rounded-2xl hover:bg-[#E5E7EB] hover:text-[#111111] transition-all text-center text-[15px]">
             Skip for now
           </a>
         </div>
@@ -268,49 +284,50 @@
     </div>
 
     <!-- Right Side Cards: Perks & Live Profile Preview (5 Cols) -->
-    <div class="lg:col-span-5 space-y-6">
+    <div class="lg:col-span-5 space-y-8">
 
       <!-- Roommate & Soft-Lock Perks Card -->
-      <div class="bg-gradient-to-br from-[#111111] via-[#1A1A1A] to-[#262626] text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
-        <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="space-y-4 relative z-10">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-xs font-bold text-emerald-400">
+      <div class="bg-[#111111] text-white rounded-3xl p-8 shadow-xl relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute -right-16 -bottom-16 w-56 h-56 bg-gradient-to-tr from-emerald-500/30 to-blue-500/20 rounded-full blur-[40px] pointer-events-none"></div>
+        <div class="space-y-6 relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-xs font-bold text-emerald-400 uppercase tracking-widest">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             <span>Match Boost Active</span>
           </div>
 
-          <h3 class="font-outfit text-xl font-bold tracking-tight">
-            Why complete your profile?
+          <h3 class="font-outfit text-2xl font-extrabold tracking-tight">
+            Unlock premium features
           </h3>
 
-          <div class="space-y-3.5 pt-2">
-            <div class="flex items-start gap-3">
-              <div class="w-8 h-8 rounded-xl bg-white/10 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          <div class="space-y-5 pt-2">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-2xl bg-white/10 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
               </div>
               <div>
-                <div class="text-sm font-bold">Room Soft-Lock Integration</div>
-                <div class="text-xs text-gray-400">Secure properties exclusively while making decisions.</div>
+                <div class="text-[15px] font-extrabold">Instant Soft-Locking</div>
+                <div class="text-[13px] text-gray-400 font-medium mt-0.5">Secure properties exclusively while making final decisions.</div>
               </div>
             </div>
 
-            <div class="flex items-start gap-3">
-              <div class="w-8 h-8 rounded-xl bg-white/10 text-blue-400 flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-2xl bg-white/10 text-blue-400 flex items-center justify-center font-bold text-sm shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
               </div>
               <div>
-                <div class="text-sm font-bold">Smart Roommate Matching</div>
-                <div class="text-xs text-gray-400">Advanced pairing based on study hours and lifestyle habits.</div>
+                <div class="text-[15px] font-extrabold">Advanced Matching</div>
+                <div class="text-[13px] text-gray-400 font-medium mt-0.5">We pair you based on study hours, neatness, and lifestyle.</div>
               </div>
             </div>
 
-            <div class="flex items-start gap-3">
-              <div class="w-8 h-8 rounded-xl bg-white/10 text-amber-400 flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-2xl bg-white/10 text-amber-400 flex items-center justify-center font-bold text-sm shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
               </div>
               <div>
-                <div class="text-sm font-bold">Verified Status Badge</div>
-                <div class="text-xs text-gray-400">Complete profiles gain priority communication from managers.</div>
+                <div class="text-[15px] font-extrabold">Verified Badge</div>
+                <div class="text-[13px] text-gray-400 font-medium mt-0.5">Complete profiles gain priority communication from hosts.</div>
               </div>
             </div>
           </div>
@@ -318,33 +335,33 @@
       </div>
 
       <!-- Live Profile Badge Preview Card -->
-      <div class="bg-white border border-black/10 rounded-3xl p-6 shadow-md space-y-4">
+      <div class="bg-white border border-black/10 rounded-3xl p-8 shadow-sm space-y-6">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-bold uppercase tracking-wider text-[#6B7280]">Live Profile Preview</span>
-          <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-extrabold border border-emerald-200 flex items-center gap-1">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span class="text-xs font-bold uppercase tracking-wider text-[#6B7280]">Live Preview</span>
+          <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-extrabold border border-emerald-200 flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Roomora Verified
           </span>
         </div>
 
-        <div class="flex items-center gap-4 p-4 rounded-2xl bg-[#F4F4F6] border border-black/5">
-          <div class="w-14 h-14 rounded-full bg-[#111111] text-white font-outfit font-black text-xl flex items-center justify-center shadow-md">
+        <div class="flex items-center gap-4 p-5 rounded-2xl bg-[#F4F4F6] border border-black/5">
+          <div class="w-16 h-16 rounded-2xl bg-[#111111] text-white font-outfit font-black text-2xl flex items-center justify-center shadow-md">
             {{ user.first_name|default:user.email|slice:":1"|upper }}
           </div>
           <div class="space-y-1">
-            <h4 class="font-outfit font-bold text-[#111111] text-base leading-tight">
+            <h4 class="font-outfit font-extrabold text-[#111111] text-xl leading-tight">
               {{ user.get_full_name|default:user.email }}
             </h4>
-            <div class="flex items-center gap-2 text-xs font-semibold text-[#6B7280]">
-              <span id="preview_institution">{{ profile.institution|default:"Select Institution" }}</span>
+            <div class="flex items-center gap-2 text-[13px] font-bold text-[#6B7280]">
+              <span id="preview_institution" class="truncate max-w-[120px]">{{ profile.institution|default:"Select Institution" }}</span>
               <span>•</span>
-              <span id="preview_level">{{ profile.academic_level|default:"Select Level" }}</span>
+              <span id="preview_level">{{ profile.academic_level|default:"Level" }}</span>
             </div>
           </div>
         </div>
 
-        <div class="p-3.5 rounded-2xl bg-white border border-black/10 text-xs font-medium text-[#4B5563] italic">
-          "<span id="preview_bio">{{ profile.bio|default:"No bio provided yet." }}</span>"
+        <div class="p-4 rounded-2xl bg-white border border-black/5 text-[13px] leading-relaxed font-medium text-[#4B5563] italic">
+          "<span id="preview_bio">{{ profile.bio|default:"No bio provided yet. Add a short bio to stand out." }}</span>"
         </div>
       </div>
 
@@ -370,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const len = bioTextarea.value.length;
     if (bioCounter) bioCounter.textContent = `${len}/150`;
     if (previewBio) {
-      previewBio.textContent = bioTextarea.value.trim() || "No bio provided yet.";
+      previewBio.textContent = bioTextarea.value.trim() || "No bio provided yet. Add a short bio to stand out.";
     }
   }
 
@@ -380,8 +397,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   if (institutionInput && previewInstitution) {
-    institutionInput.addEventListener('input', function() {
-      previewInstitution.textContent = this.value || "Select Institution";
+    institutionInput.addEventListener('change', function() {
+      previewInstitution.textContent = this.options[this.selectedIndex].text || "Select Institution";
     });
   }
 
