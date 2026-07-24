@@ -321,7 +321,13 @@ def send_html_email(subject, template_name, context, recipient_email):
 
 def check_email_view(request, email):
     """Check your email page - shown after registration"""
-    return render(request, 'accounts/check_email.html', {'email': email})
+    try:
+        user = User.objects.get(email=email)
+        latest_verification = EmailVerification.objects.filter(user=user, used=False).last()
+        otp = latest_verification.otp if latest_verification else None
+    except User.DoesNotExist:
+        otp = None
+    return render(request, 'accounts/check_email.html', {'email': email, 'otp': otp})
 
 
 def verify_email_view(request):

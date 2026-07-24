@@ -157,6 +157,15 @@
         </div>
         {% endif %}
 
+        <!-- Demo / School Project Mode OTP Display -->
+        {% if otp %}
+        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
+            <p class="text-xs text-emerald-800 font-bold uppercase tracking-wider">🛠️ School Project Mode 🛠️</p>
+            <p class="text-xs text-emerald-700 font-medium">Railway blocks free outbound emails. Use this code to proceed:</p>
+            <div class="text-3xl font-outfit font-black text-emerald-900 tracking-[0.2em]">{{ otp }}</div>
+        </div>
+        {% endif %}
+
         <!-- 6-Digit OTP Verification Form -->
         <form method="post" action="{% url 'accounts:verify-email' %}" id="otpForm" class="space-y-6">
           {% csrf_token %}
