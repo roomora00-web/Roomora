@@ -69,7 +69,7 @@ class HomeView(TemplateView):
         # Prepare map properties (first 20 to avoid slowing down homepage too much, or all featured)
         try:
             map_properties = []
-            for prop in Property.objects.filter(status='APPROVED', is_available=True).exclude(latitude__isnull=True).exclude(longitude__isnull=True)[:20]:
+            for prop in Property.objects.filter(status='APPROVED', is_available=True)[:20]:
                 if prop.images.exists():
                     img_field = prop.images.first().image
                     img_url = str(img_field) if str(img_field).startswith('http') else img_field.url
@@ -90,8 +90,8 @@ class HomeView(TemplateView):
                 map_properties.append({
                     'id': prop.id,
                     'title': prop.title,
-                    'lat': float(prop.latitude),
-                    'lng': float(prop.longitude),
+                    'lat': float(prop.latitude) if prop.latitude is not None else 5.6037,
+                    'lng': float(prop.longitude) if prop.longitude is not None else -0.1870,
                     'price': float(price) if price else 0,
                     'image': img_url,
                     'available_slots': 4 if prop.is_available else 0,
@@ -256,37 +256,36 @@ class PropertiesView(TemplateView):
         # Prepare JSON for Map
         map_properties = []
         for prop in properties:
-            if prop.latitude and prop.longitude:
-                # get price
-                price = "Contact"
-                if prop.property_type == 'HOSTEL':
-                    room_pricing = prop.room_types.first().pricing_models.first() if prop.room_types.first() else None
-                    if room_pricing:
-                        price = f"GH₵ {room_pricing.semester_price or room_pricing.monthly_price}/sem"
-                else:
-                    unit_pricing = prop.unit_types.first().pricing_models.first() if prop.unit_types.first() else None
-                    if unit_pricing:
-                        price = f"GH₵ {unit_pricing.monthly_price or unit_pricing.yearly_price}/mo"
-                        
-                # get image
-                if prop.images.first():
-                    img_field = prop.images.first().image
-                    img_url = str(img_field) if str(img_field).startswith('http') else img_field.url
-                else:
-                    img_url = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop"
-                
-                map_properties.append({
-                    'id': prop.id,
-                    'title': prop.title,
-                    'lat': float(prop.latitude),
-                    'lng': float(prop.longitude),
-                    'price': price,
-                    'image': img_url,
-                    'available_slots': 4 if prop.is_available else 0, # simulated availability
-                    'type': prop.get_property_type_display(),
-                    'is_verified': prop.is_verified,
-                    'address': f"{prop.city}, {prop.region}"
-                })
+            # get price
+            price = "Contact"
+            if prop.property_type == 'HOSTEL':
+                room_pricing = prop.room_types.first().pricing_models.first() if prop.room_types.first() else None
+                if room_pricing:
+                    price = f"GH₵ {room_pricing.semester_price or room_pricing.monthly_price}/sem"
+            else:
+                unit_pricing = prop.unit_types.first().pricing_models.first() if prop.unit_types.first() else None
+                if unit_pricing:
+                    price = f"GH₵ {unit_pricing.monthly_price or unit_pricing.yearly_price}/mo"
+                    
+            # get image
+            if prop.images.first():
+                img_field = prop.images.first().image
+                img_url = str(img_field) if str(img_field).startswith('http') else img_field.url
+            else:
+                img_url = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop"
+            
+            map_properties.append({
+                'id': prop.id,
+                'title': prop.title,
+                'lat': float(prop.latitude) if prop.latitude is not None else 5.6037,
+                'lng': float(prop.longitude) if prop.longitude is not None else -0.1870,
+                'price': price,
+                'image': img_url,
+                'available_slots': 4 if prop.is_available else 0, # simulated availability
+                'type': prop.get_property_type_display(),
+                'is_verified': prop.is_verified,
+                'address': f"{prop.city}, {prop.region}"
+            })
         
         context['map_properties_json'] = json.dumps(map_properties)
         
@@ -456,9 +455,7 @@ class PropertyMapView(TemplateView):
         # Get properties with coordinates
         properties = Property.objects.filter(
             status='APPROVED',
-            is_available=True,
-            latitude__isnull=False,
-            longitude__isnull=False
+            is_available=True
         ).prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models', 'amenities')
         
         # Serialize properties for JavaScript
@@ -489,8 +486,8 @@ class PropertyMapView(TemplateView):
                 'address': prop.address,
                 'city': prop.city,
                 'region': prop.region,
-                'latitude': float(prop.latitude) if prop.latitude else None,
-                'longitude': float(prop.longitude) if prop.longitude else None,
+                'latitude': float(prop.latitude) if prop.latitude is not None else 5.6037,
+                'longitude': float(prop.longitude) if prop.longitude is not None else -0.1870,
                 'property_type': prop.property_type,
                 'price': price,
                 'image': img_url,
