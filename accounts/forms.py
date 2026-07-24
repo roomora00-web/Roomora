@@ -238,55 +238,70 @@ class ProfileEnrichmentForm(forms.ModelForm):
         model = UserProfile
         fields = ['bio', 'address', 'city', 'country']
         widgets = {
-            'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Tell us about yourself'}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Your address'}),
-            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'City'}),
-            'country': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Country'}),
+            'bio': forms.Textarea(attrs={'class': 'w-full p-4 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-medium text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all resize-none', 'rows': 3, 'placeholder': 'A short intro about your lifestyle, study habits, or preferences (max 150 chars)…', 'id': 'bio_textarea', 'maxlength': '150'}),
+            'address': forms.Textarea(attrs={'class': 'w-full px-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all', 'rows': 2, 'placeholder': 'Your address'}),
+            'city': forms.TextInput(attrs={'class': 'w-full px-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all', 'placeholder': 'City'}),
+            'country': forms.TextInput(attrs={'class': 'w-full px-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all', 'placeholder': 'Country'}),
         }
     
     def __init__(self, *args, **kwargs):
         user_type = kwargs.pop('user_type', None)
         super().__init__(*args, **kwargs)
         
+        tw_input_class = 'w-full pl-10 pr-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all'
+        tw_select_class = 'w-full pl-10 pr-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all appearance-none cursor-pointer'
+        tw_basic_input = 'w-full px-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all'
+        
         # Add user-type specific fields
         if user_type == 'STUDENT':
             self.fields['institution'] = forms.CharField(
-                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Institution'}),
+                widget=forms.TextInput(attrs={'class': tw_input_class, 'placeholder': 'Institution', 'id': 'institution_input'}),
                 label='Institution',
                 required=False
             )
             self.fields['field_of_study'] = forms.CharField(
-                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Field of study'}),
-                label='Field of study',
+                widget=forms.TextInput(attrs={'class': tw_input_class, 'placeholder': 'e.g. Computer Science / Business'}),
+                label='Field of Study',
                 required=False
             )
             self.fields['academic_level'] = forms.ChoiceField(
                 choices=[
-                    ('100', '100'),
-                    ('200', '200'),
-                    ('300', '300'),
-                    ('400', '400'),
-                    ('GRADUATED', 'Graduated'),
+                    ('', 'Select Level'),
+                    ('100', '100-Level'),
+                    ('200', '200-Level'),
+                    ('300', '300-Level'),
+                    ('400', '400-Level'),
+                    ('GRADUATED', 'Postgraduate / Masters'),
                 ],
-                widget=forms.Select(attrs={'class': 'form-control'}),
-                label='Academic level',
+                widget=forms.Select(attrs={'class': tw_select_class, 'id': 'level_select'}),
+                label='Academic Level',
+                required=False
+            )
+            self.fields['expected_graduation'] = forms.DateField(
+                widget=forms.DateInput(attrs={'class': tw_input_class, 'type': 'date'}),
+                label='Expected Graduation',
                 required=False
             )
         elif user_type == 'WORKER':
             self.fields['occupation'] = forms.CharField(
-                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Occupation'}),
+                widget=forms.TextInput(attrs={'class': tw_basic_input, 'placeholder': 'e.g. Software Engineer'}),
                 label='Occupation',
-                required=False
+                required=True
             )
             self.fields['company_name'] = forms.CharField(
-                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Company name'}),
-                label='Company name',
+                widget=forms.TextInput(attrs={'class': tw_basic_input, 'placeholder': 'e.g. Google / Fintech GH'}),
+                label='Company / Employer',
                 required=False
             )
         elif user_type == 'FAMILY':
             self.fields['household_size'] = forms.IntegerField(
-                widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Number of people'}),
-                label='Household size',
+                widget=forms.NumberInput(attrs={'class': tw_basic_input, 'min': 1, 'max': 20}),
+                label='Household Size',
+                required=False
+            )
+            self.fields['num_children'] = forms.IntegerField(
+                widget=forms.NumberInput(attrs={'class': tw_basic_input, 'min': 0}),
+                label='Number of Children',
                 required=False
             )
         elif user_type == 'COUPLE':
