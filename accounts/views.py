@@ -311,7 +311,12 @@ def send_html_email(subject, template_name, context, recipient_email):
         text_content = strip_tags(html_content)
         email = EmailMultiAlternatives(subject, text_content, settings.DEFAULT_FROM_EMAIL, [recipient_email])
         email.attach_alternative(html_content, "text/html")
-        email.send(fail_silently=False)
+        
+        # DEMO MODE: Railway blocks port 587, causing a timeout and Errno 101.
+        # We skip actual sending so registration is instant, and the OTP is shown on screen.
+        # email.send(fail_silently=False)
+        print(f"DEMO MODE: Skipped sending email to {recipient_email}")
+        
         return True, "Success"
     except Exception as e:
         import traceback
