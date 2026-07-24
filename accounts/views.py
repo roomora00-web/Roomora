@@ -722,7 +722,6 @@ def profile_enrichment_view(request):
                 p.institution = request.POST.get('institution')
             if request.POST.get('academic_level'):
                 p.academic_level = request.POST.get('academic_level')
-                p.current_level = request.POST.get('academic_level')
             if request.POST.get('expected_graduation'):
                 try:
                     p.expected_graduation = request.POST.get('expected_graduation')
