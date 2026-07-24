@@ -596,7 +596,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <p class="map-description">Explore our curated selection of verified properties tailored for students and young professionals. Our intelligent matching system ensures you find the perfect accommodation and roommates.</p>
         <div class="map-cta-group">
             <button class="map-cta-btn map-btn-primary" onclick="window.location.href='{% url 'landing:properties' %}'">Search Hostels & Apartments</button>
-            <button class="map-cta-btn map-btn-secondary" onclick="useLiveLocation()">
+            <button id="home-live-location-btn" class="map-cta-btn map-btn-secondary" onclick="useLiveLocation()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px; vertical-align: middle;">
                     <circle cx="12" cy="12" r="10"></circle>
                     <circle cx="12" cy="12" r="3"></circle>
@@ -1726,7 +1726,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if ("geolocation" in navigator) {
             // Change button text temporarily
-            const btn = event.currentTarget;
+            const btn = document.getElementById('home-live-location-btn');
             const originalHtml = btn.innerHTML;
             btn.innerHTML = 'Locating...';
             btn.disabled = true;
