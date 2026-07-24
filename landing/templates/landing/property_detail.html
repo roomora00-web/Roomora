@@ -2699,7 +2699,7 @@ body {
                     Room {{ room.room_number }}
                   </div>
                   <div>
-                    <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; font-family: 'Outfit', sans-serif;">{{ room.room_type.room_type_name|default:room.room_type.name }}</h3>
+                    <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; font-family: 'Outfit', sans-serif;">{{ room.room_type.room_type_name }}</h3>
                     <div style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 2px; font-weight: 500;">
                       {{ room.room_type.get_occupancy_type_display }}
                     </div>
