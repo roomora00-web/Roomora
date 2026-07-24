@@ -312,10 +312,12 @@ def send_html_email(subject, template_name, context, recipient_email):
         email = EmailMultiAlternatives(subject, text_content, settings.DEFAULT_FROM_EMAIL, [recipient_email])
         email.attach_alternative(html_content, "text/html")
         email.send(fail_silently=False)
+        return True, "Success"
     except Exception as e:
         import traceback
         print(f"Error sending email to {recipient_email}: {str(e)}")
         traceback.print_exc()
+        return False, str(e)
 
 def check_email_view(request, email):
     """Check your email page - shown after registration"""
@@ -485,13 +487,16 @@ def resend_verification_view(request):
             )
             
             # Send verification email with OTP
-            send_html_email(
+            success, err_msg = send_html_email(
                 'Verify your Roomora account',
                 'accounts/emails/verification.html',
                 {'user': user, 'otp': otp},
                 user.email
             )
-            messages.success(request, 'Verification code sent successfully.')
+            if success:
+                messages.success(request, 'Verification code sent successfully.')
+            else:
+                messages.error(request, f'Failed to send email. Error: {err_msg}')
         except User.DoesNotExist:
             # Don't reveal if email exists
             messages.success(request, 'If an account exists with this email, we\'ve sent a verification code.')
@@ -674,13 +679,17 @@ def register_view(request):
             )
             
             # Send verification email
-            send_html_email(
+            success, err_msg = send_html_email(
                 'Verify your Roomora account',
                 'accounts/emails/verification.html',
                 {'user': user, 'otp': otp},
                 user.email
             )
-            messages.success(request, 'Account created successfully! Please check your email for the verification code.')
+            if success:
+                messages.success(request, 'Account created successfully! Please check your email for the verification code.')
+            else:
+                messages.error(request, f'Account created, but email failed to send. Error: {err_msg}')
+            
             return redirect('accounts:check-email', email=user.email)
     else:
         form = RegistrationForm()
