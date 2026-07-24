@@ -1,466 +1,382 @@
 {% extends 'accounts/dashboard_base.html' %}
-{% block dashboard_title %}Complete Your Profile — StayMatch{% endblock %}
+{% load static %}
+
+{% block dashboard_title %}Complete Your Profile — Roomora{% endblock %}
 
 {% block dashboard_extra_css %}
 <style>
-.subpage-header {
-  margin-bottom: 28px;
-}
-.subpage-header h1 {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-head);
-  letter-spacing: -0.03em;
-  margin-bottom: 4px;
-}
-.subpage-header p {
-  font-size: 13.5px;
-  color: var(--text-muted);
-}
-
-.form-card {
-  background: var(--surface);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  max-width: 640px;
-}
-
-.form-card-header {
-  padding: 20px 28px;
-  border-bottom: 1px solid var(--border-light);
-}
-
-.form-card-header h2 {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-head);
-  letter-spacing: -0.02em;
-  margin-bottom: 2px;
-}
-
-.form-card-header p {
-  font-size: 12.5px;
-  color: var(--text-muted);
-}
-
-.form-card-body {
-  padding: 28px;
-}
-
-/* Field */
-.field-group {
-  margin-bottom: 20px;
-}
-
-.field-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-body);
-  letter-spacing: 0.01em;
-  margin-bottom: 6px;
-}
-
-.field-label .req { color: var(--error); margin-left: 2px; }
-
-.field-input,
-.field-select,
-.field-textarea {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 11px 14px;
-  font-size: 14px;
-  font-family: inherit;
-  color: var(--text-head);
-  background: var(--bg-input);
-  outline: none;
-  transition: border-color .2s, box-shadow .2s, background .2s;
-}
-
-.field-input:focus,
-.field-select:focus,
-.field-textarea:focus {
-  border-color: var(--text-head);
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(12,20,36,.08);
-}
-
-.field-input[readonly],
-.field-input[disabled] {
-  background: var(--bg-input);
-  color: var(--text-muted);
-  cursor: not-allowed;
-  opacity: .75;
-}
-
-.field-help {
-  font-size: 11.5px;
-  color: var(--text-faint);
-  margin-top: 5px;
-}
-
-.field-row-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-@media (max-width: 640px) {
-  .field-row-2 { grid-template-columns: 1fr; }
-  .form-card-body { padding: 20px; }
-}
-
-/* Buttons */
-.btn-primary {
-  background: var(--brand);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-md);
-  padding: 11px 24px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  transition: opacity .15s;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  text-decoration: none;
-}
-
-.btn-primary svg {
-  width: 15px;
-  height: 15px;
-  stroke: #fff;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.btn-primary:hover { opacity: .88; }
-
-.btn-secondary {
-  background: var(--surface);
-  color: var(--text-head);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background .15s;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  text-decoration: none;
-}
-
-.btn-secondary:hover { background: var(--bg-input); }
-
-.btn-row {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  margin-top: 24px;
-}
-
-/* Alert */
-.alert {
-  padding: 12px 16px;
-  border-radius: var(--radius-md);
-  font-size: 13.5px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.alert svg {
-  width: 16px;
-  height: 16px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-  flex-shrink: 0;
-}
-
-.alert-success { background: var(--success-light); color: var(--success); border: 1px solid #A7F3D0; }
-.alert-error   { background: var(--error-light);   color: var(--error);   border: 1px solid #FCA5A5; }
-.alert-info    { background: #EBF4FF;               color: #1D4ED8;        border: 1px solid #BFDBFE; }
-
-/* Upload Zone */
-.upload-zone {
-  border: 2px dashed var(--border);
-  border-radius: var(--radius-lg);
-  padding: 40px 24px;
-  text-align: center;
-  cursor: pointer;
-  transition: all .2s;
-  background: var(--bg-input);
-}
-
-.upload-zone:hover {
-  border-color: var(--brand);
-  background: var(--surface);
-}
-
-.upload-zone-icon {
-  width: 52px;
-  height: 52px;
-  background: var(--brand);
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-}
-
-.upload-zone-icon svg {
-  width: 24px;
-  height: 24px;
-  stroke: #fff;
-  fill: none;
-  stroke-width: 1.75;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.upload-zone h3 {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-head);
-  margin-bottom: 6px;
-}
-
-.upload-zone p {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 16px;
-}
-
-/* OTP Input */
-.otp-input-row {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 24px;
-}
-
-.otp-digit {
-  width: 52px;
-  height: 60px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  font-size: 24px;
-  font-weight: 700;
-  text-align: center;
-  color: var(--text-head);
-  background: var(--bg-input);
-  outline: none;
-  transition: all .2s;
-  font-family: inherit;
-}
-
-.otp-digit:focus {
-  border-color: var(--text-head);
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(12,20,36,.08);
-}
-
-/* Step indicator */
-.steps-strip {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin-bottom: 32px;
-}
-
-.step {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-}
-
-.step-dot {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 2px solid var(--border);
-  background: var(--surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-faint);
-  flex-shrink: 0;
-  transition: all .2s;
-}
-
-.step.done .step-dot   { background: var(--brand); border-color: var(--brand); color: #fff; }
-.step.active .step-dot { background: var(--brand); border-color: var(--brand); color: #fff; }
-
-.step-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-faint);
-}
-
-.step.active .step-label { color: var(--text-head); }
-.step.done   .step-label { color: var(--text-mid); }
-
-.step-line {
-  height: 2px;
-  background: var(--border-light);
-  flex: 1;
-  margin: 0 4px;
-}
-
-.step.done .step-line { background: var(--brand); }
-
-/* Preview image */
-.photo-preview-circle {
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  background: var(--border-light);
-  border: 3px solid var(--surface);
-  box-shadow: 0 0 0 2px var(--border);
-  object-fit: cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  margin: 0 auto 20px;
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--text-head);
-}
+  /* Custom Animations & Input Focus FX */
+  .glow-ring:focus-within {
+    box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.08), 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  }
+  .gradient-progress-bar {
+    background: linear-gradient(90deg, #111111 0%, #3B82F6 50%, #10B981 100%);
+  }
 </style>
 {% endblock %}
 
 {% block dashboard_content %}
+<div class="max-w-7xl mx-auto space-y-8 animate-fade-in-up pb-12">
 
-<div class="subpage-header">
-  <h1>Complete Your Profile</h1>
-  <p>Add more details to improve your property matching and roommate compatibility.</p>
-</div>
+  <!-- Step Progress Header -->
+  <div class="bg-white/80 backdrop-blur-xl border border-black/10 rounded-3xl p-6 sm:p-8 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      
+      <!-- Title & Subtitle -->
+      <div class="space-y-2">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Step 3 of 4: Account Enrichment</span>
+        </div>
+        <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">
+          Complete Your Profile
+        </h1>
+        <p class="text-[#6B7280] text-sm sm:text-base font-medium max-w-2xl leading-relaxed">
+          Add your details to unlock instant room soft-locking and get matched with compatible roommates and verified hostels.
+        </p>
+      </div>
 
-{% if messages %}
-  {% for message in messages %}
-  <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
-    {% if message.tags == 'success' %}
-    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-    {% else %}
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    {% endif %}
-    {{ message }}
+      <!-- Completion Badge Widget -->
+      <div class="shrink-0 bg-[#F4F4F6] border border-black/10 rounded-2xl p-4 sm:w-64 space-y-2">
+        <div class="flex items-center justify-between text-xs font-bold">
+          <span class="text-[#6B7280] uppercase tracking-wider">Profile Status</span>
+          <span class="text-[#111111] font-outfit text-sm">{{ completion_percentage|default:60 }}%</span>
+        </div>
+        <div class="w-full bg-black/10 rounded-full h-2.5 overflow-hidden">
+          <div class="gradient-progress-bar h-full rounded-full transition-all duration-700 ease-out" style="width: {{ completion_percentage|default:60 }}%;"></div>
+        </div>
+        <div class="text-[11px] text-[#6B7280] font-medium flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          <span>Email Verified</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Stepper Navigation Dots -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-black/10">
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold shrink-0">✓</div>
+        <div class="text-xs">
+          <div class="font-bold text-[#111111]">Register</div>
+          <div class="text-[#6B7280] text-[11px]">Completed</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold shrink-0">✓</div>
+        <div class="text-xs">
+          <div class="font-bold text-[#111111]">Verify Email</div>
+          <div class="text-[#6B7280] text-[11px]">Completed</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-full bg-[#111111] text-white flex items-center justify-center text-xs font-bold shrink-0 ring-4 ring-black/10">3</div>
+        <div class="text-xs">
+          <div class="font-bold text-[#111111]">Profile Details</div>
+          <div class="text-emerald-600 font-semibold text-[11px]">In Progress</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5 opacity-50">
+        <div class="w-7 h-7 rounded-full bg-[#E5E7EB] text-[#6B7280] flex items-center justify-center text-xs font-bold shrink-0">4</div>
+        <div class="text-xs">
+          <div class="font-bold text-[#111111]">Room Matching</div>
+          <div class="text-[#6B7280] text-[11px]">Next Step</div>
+        </div>
+      </div>
+    </div>
   </div>
-  {% endfor %}
-{% endif %}
 
-<div class="form-card">
-  <div class="form-card-header">
-    <h2>{% if user.user_type == 'STUDENT' %}Student Details{% elif user.user_type == 'WORKER' %}Employment Details{% else %}Additional Details{% endif %}</h2>
-    <p>These details help us match you with the right properties and roommates.</p>
-  </div>
-  <div class="form-card-body">
-    <form method="POST" action="{% url 'accounts:profile-enrichment' %}">
-      {% csrf_token %}
-      {% if user.user_type == 'STUDENT' %}
-      <div class="field-row-2">
-        <div class="field-group">
-          <label class="field-label">Academic Institution <span class="req">*</span></label>
-          <select name="institution" class="field-select" required>
-            <option value="">Select Institution</option>
-            <option value="KNUST" {% if profile.institution == 'KNUST' %}selected{% endif %}>KNUST</option>
-            <option value="UG" {% if profile.institution == 'UG' %}selected{% endif %}>University of Ghana</option>
-            <option value="UCC" {% if profile.institution == 'UCC' %}selected{% endif %}>University of Cape Coast</option>
-            <option value="GIMPA" {% if profile.institution == 'GIMPA' %}selected{% endif %}>GIMPA</option>
-            <option value="OTHER" {% if profile.institution == 'OTHER' %}selected{% endif %}>Other</option>
-          </select>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Current Level <span class="req">*</span></label>
-          <select name="current_level" class="field-select" required>
-            <option value="">Select Level</option>
-            <option value="100" {% if profile.current_level == '100' %}selected{% endif %}>100-Level</option>
-            <option value="200" {% if profile.current_level == '200' %}selected{% endif %}>200-Level</option>
-            <option value="300" {% if profile.current_level == '300' %}selected{% endif %}>300-Level</option>
-            <option value="400" {% if profile.current_level == '400' %}selected{% endif %}>400-Level</option>
-            <option value="POSTGRAD" {% if profile.current_level == 'POSTGRAD' %}selected{% endif %}>Postgraduate</option>
-          </select>
-        </div>
-      </div>
-      <div class="field-row-2">
-        <div class="field-group">
-          <label class="field-label">Field of Study</label>
-          <input type="text" name="field_of_study" class="field-input" value="{{ profile.field_of_study|default:'' }}" placeholder="e.g. Computer Science">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Expected Graduation</label>
-          <input type="date" name="expected_graduation" class="field-input" value="{{ profile.expected_graduation|date:'Y-m-d'|default:'' }}">
-        </div>
-      </div>
-      {% elif user.user_type == 'WORKER' %}
-      <div class="field-row-2">
-        <div class="field-group">
-          <label class="field-label">Occupation <span class="req">*</span></label>
-          <input type="text" name="occupation" class="field-input" value="{{ profile.occupation|default:'' }}" required placeholder="e.g. Software Engineer">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Company / Employer</label>
-          <input type="text" name="company" class="field-input" value="{{ profile.company|default:'' }}" placeholder="e.g. Acme Corp">
-        </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Monthly Income Range</label>
-        <select name="income_range" class="field-select">
-          <option value="">Prefer not to say</option>
-          <option value="BELOW_2000">Below GH₵ 2,000</option>
-          <option value="2000_5000">GH₵ 2,000 – 5,000</option>
-          <option value="5000_10000">GH₵ 5,000 – 10,000</option>
-          <option value="ABOVE_10000">Above GH₵ 10,000</option>
-        </select>
-        <div class="field-help">Used to match you with appropriate price ranges. Not shown publicly.</div>
-      </div>
+  <!-- Messages Alert Area -->
+  {% if messages %}
+  <div class="space-y-3">
+    {% for message in messages %}
+    <div class="p-4 rounded-2xl text-xs sm:text-sm font-medium border shadow-sm flex items-center gap-3 {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-700{% else %}bg-emerald-50 border-emerald-200 text-emerald-800{% endif %}">
+      {% if message.tags == 'error' %}
+      <svg class="w-5 h-5 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       {% else %}
-      <div class="field-row-2">
-        <div class="field-group">
-          <label class="field-label">Household Size</label>
-          <input type="number" name="household_size" class="field-input" value="{{ profile.household_size|default:1 }}" min="1" max="20">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Number of Children</label>
-          <input type="number" name="num_children" class="field-input" value="{{ profile.num_children|default:0 }}" min="0">
-        </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Special Requirements</label>
-        <textarea name="special_requirements" class="field-textarea" rows="3" placeholder="Any accessibility or special needs…">{{ profile.special_requirements|default:'' }}</textarea>
-      </div>
+      <svg class="w-5 h-5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
       {% endif %}
-
-      <div class="field-group">
-        <label class="field-label">Bio</label>
-        <textarea name="bio" class="field-textarea" rows="3" maxlength="150" placeholder="A short intro about yourself (max 150 chars)…">{{ profile.bio|default:'' }}</textarea>
-        <div class="field-help">Visible to property managers and potential roommates.</div>
-      </div>
-
-      <div class="btn-row">
-        <button type="submit" class="btn-primary">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-          Save & Continue
-        </button>
-        <a href="{% url 'accounts:dashboard' %}" class="btn-secondary">Skip for now</a>
-      </div>
-    </form>
+      <span>{{ message }}</span>
+    </div>
+    {% endfor %}
   </div>
+  {% endif %}
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+    <!-- Left Main Form Column (7 Cols) -->
+    <div class="lg:col-span-7 bg-white border border-black/10 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-shadow">
+      
+      <div class="flex items-center justify-between pb-6 mb-6 border-b border-black/10">
+        <div>
+          <h2 class="font-outfit text-xl font-bold text-[#111111]">
+            {% if user.user_type == 'STUDENT' %}
+              🎓 Student Academic Info
+            {% elif user.user_type == 'WORKER' %}
+              💼 Professional Employment Info
+            {% else %}
+              📋 Additional Personal Details
+            {% endif %}
+          </h2>
+          <p class="text-xs text-[#6B7280] font-medium mt-0.5">Fill in your information to personalize your accommodation matches.</p>
+        </div>
+        <span class="px-3 py-1 rounded-full bg-[#F4F4F6] text-xs font-bold text-[#111111] border border-black/10 uppercase tracking-wider">
+          {{ user.user_type|default:"TENANT" }}
+        </span>
+      </div>
+
+      <form method="POST" action="{% url 'accounts:profile-enrichment' %}" class="space-y-6">
+        {% csrf_token %}
+
+        {% if user.user_type == 'STUDENT' %}
+        <!-- Student Fields -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <!-- Academic Institution -->
+          <div class="space-y-2 glow-ring rounded-2xl transition-all">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">
+              Academic Institution <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+              </div>
+              <select name="institution" id="institution_select" class="w-full pl-10 pr-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all appearance-none cursor-pointer" required>
+                <option value="">Select University / College</option>
+                <option value="KNUST" {% if profile.institution == 'KNUST' %}selected{% endif %}>Kwame Nkrumah Univ. of Science & Tech (KNUST)</option>
+                <option value="UG" {% if profile.institution == 'UG' %}selected{% endif %}>University of Ghana (UG Legon)</option>
+                <option value="UCC" {% if profile.institution == 'UCC' %}selected{% endif %}>University of Cape Coast (UCC)</option>
+                <option value="GIMPA" {% if profile.institution == 'GIMPA' %}selected{% endif %}>GIMPA</option>
+                <option value="UPSA" {% if profile.institution == 'UPSA' %}selected{% endif %}>UPSA Accra</option>
+                <option value="ASHESI" {% if profile.institution == 'ASHESI' %}selected{% endif %}>Ashesi University</option>
+                <option value="OTHER" {% if profile.institution == 'OTHER' %}selected{% endif %}>Other Institution</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Current Level -->
+          <div class="space-y-2 glow-ring rounded-2xl transition-all">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">
+              Current Level <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              </div>
+              <select name="academic_level" id="level_select" class="w-full pl-10 pr-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all appearance-none cursor-pointer" required>
+                <option value="">Select Level</option>
+                <option value="100" {% if profile.academic_level == '100' or profile.current_level == '100' %}selected{% endif %}>100-Level (Freshman)</option>
+                <option value="200" {% if profile.academic_level == '200' or profile.current_level == '200' %}selected{% endif %}>200-Level (Sophomore)</option>
+                <option value="300" {% if profile.academic_level == '300' or profile.current_level == '300' %}selected{% endif %}>300-Level (Junior)</option>
+                <option value="400" {% if profile.academic_level == '400' or profile.current_level == '400' %}selected{% endif %}>400-Level (Senior)</option>
+                <option value="GRADUATED" {% if profile.academic_level == 'GRADUATED' or profile.current_level == 'POSTGRAD' %}selected{% endif %}>Postgraduate / Masters</option>
+              </select>
+              <input type="hidden" name="current_level" id="current_level_hidden" value="{{ profile.current_level|default:'100' }}">
+              <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <!-- Field of Study -->
+          <div class="space-y-2 glow-ring rounded-2xl transition-all">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Field of Study</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+              </div>
+              <input type="text" name="field_of_study" id="field_input" value="{{ profile.field_of_study|default:'' }}" placeholder="e.g. Computer Science / Business" class="w-full pl-10 pr-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all">
+            </div>
+          </div>
+
+          <!-- Expected Graduation -->
+          <div class="space-y-2 glow-ring rounded-2xl transition-all">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Expected Graduation</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+              <input type="date" name="expected_graduation" value="{{ profile.expected_graduation|date:'Y-m-d'|default:'' }}" class="w-full pl-10 pr-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all">
+            </div>
+          </div>
+        </div>
+
+        {% elif user.user_type == 'WORKER' %}
+        <!-- Worker Fields -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div class="space-y-2">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Occupation <span class="text-red-500">*</span></label>
+            <input type="text" name="occupation" value="{{ profile.occupation|default:'' }}" placeholder="e.g. Software Engineer" class="w-full px-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all" required>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Company / Employer</label>
+            <input type="text" name="company_name" value="{{ profile.company_name|default:'' }}" placeholder="e.g. Google / Fintech GH" class="w-full px-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all">
+          </div>
+        </div>
+        {% else %}
+        <!-- Family / Other Fields -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div class="space-y-2">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Household Size</label>
+            <input type="number" name="household_size" value="{{ profile.household_size|default:1 }}" min="1" max="20" class="w-full px-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all">
+          </div>
+          <div class="space-y-2">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Number of Children</label>
+            <input type="number" name="num_children" value="{{ profile.num_children|default:0 }}" min="0" class="w-full px-4 py-3 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-semibold text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all">
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Bio Field (All Users) -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#4B5563]">Bio / Personal Summary</label>
+            <span id="bio_counter" class="text-xs font-mono font-semibold text-[#9CA3AF]">0/150</span>
+          </div>
+          <div class="relative">
+            <textarea name="bio" id="bio_textarea" rows="3" maxlength="150" placeholder="A short intro about your lifestyle, study habits, or preferences (max 150 chars)…" class="w-full p-4 bg-[#F4F4F6] border border-black/10 rounded-2xl text-sm font-medium text-[#111111] focus:bg-white focus:border-[#111111] outline-none transition-all resize-none">{{ profile.bio|default:'' }}</textarea>
+          </div>
+          <p class="text-[11px] text-[#6B7280] font-medium">Visible to verified property managers and potential lifestyle roommates.</p>
+        </div>
+
+        <!-- Buttons Row -->
+        <div class="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-black/10">
+          <button type="submit" class="w-full sm:w-auto px-8 py-3.5 bg-[#111111] text-white font-bold rounded-2xl hover:bg-black active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg shadow-black/10 text-sm">
+            <span>Save & Continue to Dashboard</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+          
+          <a href="{% url 'accounts:dashboard' %}" class="w-full sm:w-auto px-6 py-3.5 bg-[#F4F4F6] text-[#4B5563] font-bold rounded-2xl hover:bg-[#E5E7EB] hover:text-[#111111] transition-all text-center text-sm border border-black/5">
+            Skip for now
+          </a>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Right Side Cards: Perks & Live Profile Preview (5 Cols) -->
+    <div class="lg:col-span-5 space-y-6">
+
+      <!-- Roommate & Soft-Lock Perks Card -->
+      <div class="bg-gradient-to-br from-[#111111] via-[#1A1A1A] to-[#262626] text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+        <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="space-y-4 relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-xs font-bold text-emerald-400">
+            <span>✨ Match Boost Active</span>
+          </div>
+
+          <h3 class="font-outfit text-xl font-bold tracking-tight">
+            Why complete your profile?
+          </h3>
+
+          <div class="space-y-3.5 pt-2">
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-xl bg-white/10 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">⚡</div>
+              <div>
+                <div class="text-sm font-bold">Instant 60s Room Soft-Lock</div>
+                <div class="text-xs text-gray-400">Hold hostel beds exclusively for 60s while making your decision.</div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-xl bg-white/10 text-blue-400 flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">🤝</div>
+              <div>
+                <div class="text-sm font-bold">98% Roommate Match Score</div>
+                <div class="text-xs text-gray-400">Pairing based on study hours, sleeping habits, and institution.</div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-xl bg-white/10 text-amber-400 flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">🛡️</div>
+              <div>
+                <div class="text-sm font-bold">Verified Tenant Badge</div>
+                <div class="text-xs text-gray-400">Hostel managers respond 3x faster to complete profiles.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Profile Badge Preview Card -->
+      <div class="bg-white border border-black/10 rounded-3xl p-6 shadow-md space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-[#6B7280]">Live Profile Preview</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-extrabold border border-emerald-200">Roomora Verified</span>
+        </div>
+
+        <div class="flex items-center gap-4 p-4 rounded-2xl bg-[#F4F4F6] border border-black/5">
+          <div class="w-14 h-14 rounded-full bg-[#111111] text-white font-outfit font-black text-xl flex items-center justify-center shadow-md">
+            {{ user.first_name|default:user.username|slice:":1"|upper }}
+          </div>
+          <div class="space-y-1">
+            <h4 class="font-outfit font-bold text-[#111111] text-base leading-tight">
+              {{ user.get_full_name|default:user.username }}
+            </h4>
+            <div class="flex items-center gap-2 text-xs font-semibold text-[#6B7280]">
+              <span id="preview_institution">{{ profile.institution|default:"KNUST" }}</span>
+              <span>•</span>
+              <span id="preview_level">{{ profile.academic_level|default:"300-Level" }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-white border border-black/10 text-xs font-medium text-[#4B5563] italic">
+          "<span id="preview_bio">{{ profile.bio|default:"Looking for a quiet room near campus with high-speed WiFi and friendly roommates." }}</span>"
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
 
+<!-- Interactive JS for Bio Counter & Live Preview -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const bioTextarea = document.getElementById('bio_textarea');
+  const bioCounter = document.getElementById('bio_counter');
+  const previewBio = document.getElementById('preview_bio');
+  const institutionSelect = document.getElementById('institution_select');
+  const levelSelect = document.getElementById('level_select');
+  const previewInstitution = document.getElementById('preview_institution');
+  const previewLevel = document.getElementById('preview_level');
+  const currentLevelHidden = document.getElementById('current_level_hidden');
+
+  function updateBio() {
+    if (!bioTextarea) return;
+    const len = bioTextarea.value.length;
+    if (bioCounter) bioCounter.textContent = `${len}/150`;
+    if (previewBio) {
+      previewBio.textContent = bioTextarea.value.trim() || "Looking for a quiet room near campus with high-speed WiFi and friendly roommates.";
+    }
+  }
+
+  if (bioTextarea) {
+    bioTextarea.addEventListener('input', updateBio);
+    updateBio();
+  }
+
+  if (institutionSelect && previewInstitution) {
+    institutionSelect.addEventListener('change', function() {
+      previewInstitution.textContent = this.value || "KNUST";
+    });
+  }
+
+  if (levelSelect && previewLevel) {
+    levelSelect.addEventListener('change', function() {
+      previewLevel.textContent = this.options[this.selectedIndex].text || "300-Level";
+      if (currentLevelHidden) currentLevelHidden.value = this.value;
+    });
+  }
+});
+</script>
 {% endblock %}

@@ -717,7 +717,18 @@ def profile_enrichment_view(request):
     if request.method == 'POST':
         form = ProfileEnrichmentForm(request.POST, instance=profile, user_type=request.user.user_type)
         if form.is_valid():
-            form.save()
+            p = form.save(commit=False)
+            if request.POST.get('institution'):
+                p.institution = request.POST.get('institution')
+            if request.POST.get('academic_level'):
+                p.academic_level = request.POST.get('academic_level')
+                p.current_level = request.POST.get('academic_level')
+            if request.POST.get('expected_graduation'):
+                try:
+                    p.expected_graduation = request.POST.get('expected_graduation')
+                except Exception:
+                    pass
+            p.save()
             profile.calculate_completion()
             
             was_complete = request.user.account_status == 'COMPLETE'
