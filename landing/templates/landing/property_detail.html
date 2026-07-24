@@ -2691,109 +2691,186 @@ body {
             {% for room in property.rooms.all %}
             {% if room.status == 'AVAILABLE' or room.status == 'PARTIALLY_OCCUPIED' %}
             {% with primary_price=room.room_type.pricing_models.first %}
-            <div class="pd-room-card">
-              <div class="pd-room-card-header">
-                <div>
-                  <div class="pd-room-card-title">Room {{ room.room_number }} - {{ room.room_type.name }}</div>
-                  <div class="pd-room-card-subtitle">{{ room.room_type.get_occupancy_type_display }}</div>
+            <div class="pd-room-card premium-room-card" style="background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 24px; overflow: hidden; box-shadow: 0 12px 36px -8px rgba(0,0,0,0.06); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); margin-bottom: 24px;">
+              <!-- Room Card Header -->
+              <div style="background: linear-gradient(135deg, #111111 0%, #1c1c1e 100%); padding: 20px 24px; color: #ffffff; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                  <div style="background: rgba(255,255,255,0.12); backdrop-filter: blur(8px); padding: 6px 14px; border-radius: 999px; font-weight: 800; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.18);">
+                    Room {{ room.room_number }}
+                  </div>
+                  <div>
+                    <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; font-family: 'Outfit', sans-serif;">{{ room.room_type.room_type_name|default:room.room_type.name }}</h3>
+                    <div style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 2px; font-weight: 500;">
+                      {{ room.room_type.get_occupancy_type_display }}
+                    </div>
+                  </div>
                 </div>
-                <div class="pd-room-card-header-right" style="display:flex; align-items:center; gap:12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
                   {% if primary_price %}
-                  <div class="pd-room-header-price" style="background:#111111; color:#ffffff; padding:6px 14px; border-radius:12px; font-weight:800; font-size:14px; letter-spacing:-0.02em;">
-                    GH₵ {% if primary_price.semester_price %}{{ primary_price.semester_price|floatformat:0 }}<span style="font-size:10px; font-weight:600; opacity:0.8; margin-left:2px;">/sem</span>{% elif primary_price.monthly_price %}{{ primary_price.monthly_price|floatformat:0 }}<span style="font-size:10px; font-weight:600; opacity:0.8; margin-left:2px;">/mo</span>{% endif %}
+                  <div style="background: #ffffff; color: #111111; padding: 8px 16px; border-radius: 14px; font-weight: 900; font-size: 15px; letter-spacing: -0.02em; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    GH₵ {% if primary_price.semester_price %}{{ primary_price.semester_price|floatformat:0 }}<span style="font-size: 11px; font-weight: 700; color: #666; margin-left: 2px;">/sem</span>{% elif primary_price.monthly_price %}{{ primary_price.monthly_price|floatformat:0 }}<span style="font-size: 11px; font-weight: 700; color: #666; margin-left: 2px;">/mo</span>{% endif %}
                   </div>
                   {% endif %}
-                  {% if room.available_slots > 2 %}
-                    <span class="pd-avail-badge available">✓ {{ room.available_slots }} slots available</span>
-                  {% elif room.available_slots > 0 %}
-                    <span class="pd-avail-badge low">⚡ {{ room.available_slots }} slot(s) left</span>
+                  {% if room.available_slots > 0 %}
+                  <span style="background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; box-shadow: 0 0 10px #10B981; display: inline-block;"></span>
+                    {{ room.available_slots }} slot(s) left
+                  </span>
                   {% else %}
-                    <span class="pd-avail-badge full">✗ Fully booked</span>
+                  <span style="background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 700;">
+                    Fully Booked
+                  </span>
                   {% endif %}
                 </div>
               </div>
-              <div class="pd-room-card-body">
-                <div class="pd-room-grid">
-                  <div class="pd-room-details-col">
-                    <!-- Room Images Carousel -->
-                    {% if room.images.exists %}
-                    <div style="display:flex; gap:10px; overflow-x:auto; margin-bottom:15px; padding-bottom:5px;">
+
+              <!-- Card Body -->
+              <div style="padding: 24px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px;" class="pd-room-body-grid">
+                <!-- Left Column: Gallery & Room Details -->
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                  <!-- Room Gallery Thumbnails -->
+                  {% if room.images.exists %}
+                  <div>
+                    <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #888888; margin-bottom: 10px;">
+                      Room Gallery ({% with img_count=room.images.count %}{{ img_count }} Photo{{ img_count|pluralize }}{% endwith %})
+                    </div>
+                    <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
                       {% for r_img in room.images.all %}
-                      <img src="{{ r_img.image.url }}" alt="Room {{ room.room_number }} {{ r_img.get_image_type_display }}" style="width:120px; height:80px; object-fit:cover; border-radius:8px; flex-shrink:0;">
+                      <div style="position: relative; flex-shrink: 0; width: 140px; height: 95px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(0,0,0,0.1); background: #f3f4f6; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
+                        <img src="{{ r_img.image.url }}" alt="" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div style="display: none; width: 100%; height: 100%; background: #e5e7eb; align-items: center; justify-content: center; font-size: 11px; color: #6b7280; font-weight: 600;">
+                          Photo {{ forloop.counter }}
+                        </div>
+                        <span style="position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); color: #ffffff; font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
+                          {{ r_img.get_image_type_display }}
+                        </span>
+                      </div>
                       {% endfor %}
                     </div>
-                    {% endif %}
-                    
-                    <h4>Room Features</h4>
-                    <div class="pd-room-feature">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                      {{ room.room_type.get_bed_type_display }} bed{% if room.room_type.beds_per_room > 1 %}s (×{{ room.room_type.beds_per_room }}){% endif %}
-                    </div>
-                    {% if room.room_type.wifi_available %}
-                    <div class="pd-room-feature">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                      WiFi included
-                    </div>
-                    {% endif %}
-                    {% if room.room_type.private_bathroom %}
-                    <div class="pd-room-feature">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                      Private bathroom
-                    </div>
-                    {% endif %}
                   </div>
-                  
-                  <div class="pd-room-pricing-col">
-                    <h4>Room Rates & Payment Plans</h4>
-                    {% if room.room_type.pricing_models.all %}
-                      <div class="pd-price-list" style="display:flex; flex-col; gap:8px;">
-                        {% for price in room.room_type.pricing_models.all %}
-                        <div class="pd-price-block" style="background:#F8F8FA; border:1px solid rgba(0,0,0,0.08); padding:12px 16px; border-radius:14px; display:flex; align-items:center; justify-content:space-between;">
-                          <div>
-                            <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#6B7280;">{{ price.get_payment_type_display }}</div>
-                            <div style="font-size:11px; color:#888888; margin-top:1px;">Fixed stay plan</div>
-                          </div>
-                          <div style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#111111;">
-                            GH₵ {% if price.semester_price %}{{ price.semester_price|floatformat:0 }}{% elif price.monthly_price %}{{ price.monthly_price|floatformat:0 }}{% elif price.yearly_price %}{{ price.yearly_price|floatformat:0 }}{% endif %}
-                          </div>
-                        </div>
-                        {% endfor %}
-                      </div>
-                    {% else %}
-                    <div style="font-size:13px;color:var(--muted);">Contact for pricing</div>
-                    {% endif %}
-                  </div>
-                </div>
-              </div>
-              <div class="pd-room-card-footer">
-                <div class="pd-slots-info">
-                  {% if room.available_slots > 0 %}
-                  {{ room.available_slots }} of {{ room.total_slots }} slots open
-                  {% else %}
-                  All {{ room.total_slots }} slots occupied
                   {% endif %}
+
+                  <!-- Room Amenities & Features -->
+                  <div>
+                    <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #888888; margin-bottom: 12px;">
+                      Room Features & Amenities
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;">
+                      <!-- Bed Specs -->
+                      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #F9FAFB; border: 1px solid rgba(0,0,0,0.06); border-radius: 14px; font-size: 13px; font-weight: 600; color: #1F2937;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16M2 8h20v12M2 17h20M6 8v9M18 8v9"/></svg>
+                        <span>
+                          {% with btype=room.room_type.get_bed_type_display %}
+                            {% if "Bed" in btype or "bed" in btype %}
+                              {{ btype }}{% if room.room_type.beds_per_room > 1 %}s (×{{ room.room_type.beds_per_room }}){% endif %}
+                            {% else %}
+                              {{ btype }} Bed{% if room.room_type.beds_per_room > 1 %}s (×{{ room.room_type.beds_per_room }}){% endif %}
+                            {% endif %}
+                          {% endwith %}
+                        </span>
+                      </div>
+
+                      {% if room.room_type.wifi_available %}
+                      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #F9FAFB; border: 1px solid rgba(0,0,0,0.06); border-radius: 14px; font-size: 13px; font-weight: 600; color: #1F2937;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+                        <span>High-Speed WiFi</span>
+                      </div>
+                      {% endif %}
+
+                      {% if room.room_type.private_bathroom %}
+                      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #F9FAFB; border: 1px solid rgba(0,0,0,0.06); border-radius: 14px; font-size: 13px; font-weight: 600; color: #1F2937;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-2.12 0l-.88.88a1.5 1.5 0 0 0 0 2.12L6 9"/><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M12 9h.01"/></svg>
+                        <span>Private Bathroom</span>
+                      </div>
+                      {% endif %}
+
+                      {% if room.room_type.air_conditioning %}
+                      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #F9FAFB; border: 1px solid rgba(0,0,0,0.06); border-radius: 14px; font-size: 13px; font-weight: 600; color: #1F2937;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14"/></svg>
+                        <span>Air Conditioning</span>
+                      </div>
+                      {% endif %}
+
+                      {% if room.room_type.study_desk_available %}
+                      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #F9FAFB; border: 1px solid rgba(0,0,0,0.06); border-radius: 14px; font-size: 13px; font-weight: 600; color: #1F2937;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2"><rect x="4" y="4" width="16" height="12" rx="2"/><path d="M2 20h20"/></svg>
+                        <span>Study Desk & Chair</span>
+                      </div>
+                      {% endif %}
+
+                      {% if room.room_type.wardrobe_available %}
+                      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #F9FAFB; border: 1px solid rgba(0,0,0,0.06); border-radius: 14px; font-size: 13px; font-weight: 600; color: #1F2937;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 2v20"/><path d="M9 10h1"/><path d="M14 10h1"/></svg>
+                        <span>Spacious Wardrobe</span>
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
                 </div>
-                {% if room.available_slots > 0 %}
-                <div class="pd-house-rules-ack" id="ack-room-{{ room.id }}">
-                  <label class="pd-ack-label">
-                    <input type="checkbox" class="pd-ack-check" id="check-room-{{ room.id }}"
-                           onchange="toggleBookBtn('room', '{{ room.id }}')"
-                           data-room-type-id="{{ room.id }}">
-                    <span class="pd-ack-text">
-                      I agree to the house rules.
-                    </span>
-                  </label>
-                  <a href="{% url 'bookings:initiate_booking' property.id %}?room_id={{ room.id }}"
-                     id="bookbtn-room-{{ room.id }}"
-                     class="pd-book-btn pd-book-btn--disabled"
-                     onclick="return handleBookClick(event, 'room', '{{ room.id }}', '{{ property.id }}')"
-                     data-initiate-url="{% url 'bookings:initiate_booking' property.id %}?room_id={{ room.id }}">
-                    Book This Room
-                  </a>
+
+                <!-- Right Column: Rates & Action Block -->
+                <div style="display: flex; flex-direction: column; justify-content: space-between; background: #F9FAFB; border: 1px solid rgba(0,0,0,0.06); border-radius: 20px; padding: 20px; gap: 18px;">
+                  <div>
+                    <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #888888; margin-bottom: 12px;">
+                      Rates & Payment Options
+                    </div>
+                    {% if room.room_type.pricing_models.all %}
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                      {% for price in room.room_type.pricing_models.all %}
+                      <div style="background: #ffffff; border: 1px solid rgba(0,0,0,0.08); padding: 14px 16px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+                        <div>
+                          <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #6B7280;">{{ price.get_payment_type_display }}</div>
+                          <div style="font-size: 11px; color: #9CA3AF; margin-top: 1px;">Standard Plan</div>
+                        </div>
+                        <div style="font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; color: #111111;">
+                          GH₵ {% if price.semester_price %}{{ price.semester_price|floatformat:0 }}{% elif price.monthly_price %}{{ price.monthly_price|floatformat:0 }}{% elif price.yearly_price %}{{ price.yearly_price|floatformat:0 }}{% endif %}
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                    <div style="background: #ffffff; border: 1px dashed rgba(0,0,0,0.15); padding: 16px; border-radius: 14px; text-align: center; color: #6B7280; font-size: 13px;">
+                      Contact property manager for pricing
+                    </div>
+                    {% endif %}
+                  </div>
+
+                  <!-- Booking Section -->
+                  <div style="border-top: 1px solid rgba(0,0,0,0.08); padding-top: 16px; display: flex; flex-direction: column; gap: 14px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 600; color: #4B5563;">
+                      <span>Availability Status</span>
+                      <span style="color: #111111; font-weight: 700;">{{ room.available_slots }} of {{ room.total_slots }} slots open</span>
+                    </div>
+
+                    {% if room.available_slots > 0 %}
+                    <div id="ack-room-{{ room.id }}" style="display: flex; flex-direction: column; gap: 12px;">
+                      <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; user-select: none;">
+                        <input type="checkbox" id="check-room-{{ room.id }}"
+                               onchange="toggleBookBtn('room', '{{ room.id }}')"
+                               data-room-type-id="{{ room.id }}"
+                               style="width: 18px; height: 18px; accent-color: #111111; margin-top: 2px; cursor: pointer;">
+                        <span style="font-size: 12px; color: #6B7280; line-height: 1.4;">
+                          I agree to the property house rules and terms.
+                        </span>
+                      </label>
+
+                      <a href="{% url 'bookings:initiate_booking' property.id %}?room_id={{ room.id }}"
+                         id="bookbtn-room-{{ room.id }}"
+                         class="pd-book-btn pd-book-btn--disabled"
+                         onclick="return handleBookClick(event, 'room', '{{ room.id }}', '{{ property.id }}')"
+                         data-initiate-url="{% url 'bookings:initiate_booking' property.id %}?room_id={{ room.id }}"
+                         style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; border-radius: 14px; background: #111111; color: #ffffff; font-weight: 800; font-size: 14px; text-decoration: none; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(0,0,0,0.15);">
+                        <span>Book Room {{ room.room_number }}</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                      </a>
+                    </div>
+                    {% else %}
+                    <button disabled style="width: 100%; padding: 14px; border-radius: 14px; background: #E5E7EB; color: #9CA3AF; font-weight: 700; border: none; cursor: not-allowed;">
+                      Fully Booked
+                    </button>
+                    {% endif %}
+                  </div>
                 </div>
-                {% else %}
-                <a href="#rooms" class="pd-book-btn pd-book-btn--full" disabled>Fully Booked</a>
-                {% endif %}
               </div>
             </div>
             {% endwith %}
