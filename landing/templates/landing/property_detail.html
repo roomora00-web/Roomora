@@ -311,7 +311,7 @@
                 </div>
 
                 {% if room.available_slots > 0 %}
-                <a href="{% url 'bookings:create-booking' room.id %}" class="px-6 py-3 bg-[#111111] text-white font-extrabold text-xs rounded-2xl hover:bg-black active:scale-95 transition-all text-center shadow-md">
+                <a href="{% url 'bookings:initiate_booking' property.id %}" class="px-6 py-3 bg-[#111111] text-white font-extrabold text-xs rounded-2xl hover:bg-black active:scale-95 transition-all text-center shadow-md">
                   Select Room & Book
                 </a>
                 {% endif %}
