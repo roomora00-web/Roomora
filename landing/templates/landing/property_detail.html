@@ -11,26 +11,21 @@
     theme: {
       extend: {
         fontFamily: {
-          sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
-          outfit: ['Outfit', 'Plus Jakarta Sans', 'sans-serif'],
-        },
-        colors: {
-          brand: {
-            50: '#f6f6f7',
-            100: '#e5e7eb',
-            900: '#111111',
-          }
+          sans: ['Plus Jakarta Sans', 'sans-serif'],
+          outfit: ['Outfit', 'sans-serif'],
         }
       }
     }
   }
 </script>
 <style>
-  body { background-color: #FAFAFA; color: #111111; font-family: 'Plus Jakarta Sans', sans-serif; }
-  .backdrop-blur-glass { backdrop-filter: blur(16px); background: rgba(255, 255, 255, 0.85); }
-  .bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-  @media (max-width: 768px) {
-    .bento-grid { grid-template-columns: 1fr; }
+  body {
+    background-color: #FAFAFA !important;
+    color: #111111 !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+  }
+  .font-outfit {
+    font-family: 'Outfit', sans-serif !important;
   }
 </style>
 {% endblock %}
@@ -38,11 +33,52 @@
 {% block content %}
 <div class="min-h-screen bg-[#FAFAFA] text-[#111111] pb-24">
 
-  <!-- Top Navigation & Breadcrumb Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-black/10 transition-all">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+  <!-- Main Website Navigation Header -->
+  <header class="bg-[#111111] text-white border-b border-white/10 sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       
-      <!-- Breadcrumb -->
+      <!-- Brand Logo -->
+      <a href="{% url 'landing:home' %}" class="flex items-center gap-3 group">
+        <div class="h-10 w-10 rounded-2xl bg-white text-[#111111] flex items-center justify-center font-bold text-base shadow-sm group-hover:scale-105 transition-transform">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <span class="font-outfit text-2xl font-extrabold tracking-tight text-white">Roomora</span>
+      </a>
+
+      <!-- Center Navigation Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold">
+        <a href="{% url 'landing:home' %}" class="text-gray-300 hover:text-white transition-colors">Home</a>
+        <a href="{% url 'landing:properties' %}" class="text-white font-bold border-b-2 border-white pb-1">Properties</a>
+        <a href="{% url 'landing:home' %}#about" class="text-gray-300 hover:text-white transition-colors">About</a>
+      </nav>
+
+      <!-- Right Action Button -->
+      <div class="flex items-center gap-4">
+        {% if user.is_authenticated %}
+        <a href="{% url 'accounts:dashboard' %}" class="px-5 py-2.5 bg-white text-[#111111] font-bold text-xs rounded-full hover:bg-gray-100 transition-all shadow-sm">
+          Dashboard
+        </a>
+        <a href="{% url 'accounts:logout' %}" class="text-xs font-bold text-gray-400 hover:text-white transition-colors hidden sm:block">
+          Sign Out
+        </a>
+        {% else %}
+        <a href="{% url 'accounts:login' %}" class="text-xs font-bold text-gray-300 hover:text-white transition-colors">
+          Sign In
+        </a>
+        <a href="{% url 'landing:properties' %}" class="px-5 py-2.5 bg-white text-[#111111] font-bold text-xs rounded-full hover:bg-gray-100 transition-all shadow-sm">
+          Browse Hostels
+        </a>
+        {% endif %}
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Sticky Sub-Bar: Breadcrumb & Share/Save -->
+  <div class="bg-white border-b border-black/10 py-3.5 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      
+      <!-- Breadcrumbs -->
       <nav class="flex items-center space-x-2 text-xs font-semibold text-gray-500 overflow-x-auto">
         <a href="{% url 'landing:home' %}" class="hover:text-black transition-colors shrink-0">Home</a>
         <svg class="w-3.5 h-3.5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -51,9 +87,9 @@
         <span class="text-black font-bold truncate max-w-[200px] sm:max-w-xs">{{ property.title }}</span>
       </nav>
 
-      <!-- Action Items (Share / Save) -->
+      <!-- Action Buttons -->
       <div class="flex items-center space-x-3 shrink-0">
-        <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard!');" class="p-2 rounded-full border border-black/10 hover:bg-black/5 transition-all text-gray-700 hover:text-black flex items-center gap-1.5 text-xs font-bold px-3">
+        <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard!');" class="p-2 rounded-full border border-black/10 hover:bg-black/5 transition-all text-gray-700 hover:text-black flex items-center gap-1.5 text-xs font-bold px-3.5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
           <span class="hidden sm:inline">Share</span>
         </button>
@@ -61,7 +97,7 @@
         {% if user.is_authenticated %}
         <form method="POST" action="{% url 'properties:save-property' property.id %}" class="inline">
           {% csrf_token %}
-          <button type="submit" class="p-2 rounded-full border border-black/10 hover:bg-black/5 transition-all text-gray-700 hover:text-black flex items-center gap-1.5 text-xs font-bold px-3">
+          <button type="submit" class="p-2 rounded-full border border-black/10 hover:bg-black/5 transition-all text-gray-700 hover:text-black flex items-center gap-1.5 text-xs font-bold px-3.5">
             <svg class="w-4 h-4 {% if is_saved %}fill-red-500 text-red-500{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
             <span class="hidden sm:inline">{% if is_saved %}Saved{% else %}Save{% endif %}</span>
           </button>
@@ -70,40 +106,40 @@
       </div>
 
     </div>
-  </header>
+  </div>
 
   <!-- Main Container -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-8">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-10">
 
-    <!-- Property Header Info -->
-    <div class="space-y-3">
+    <!-- Property Header Title Info -->
+    <div class="space-y-4">
       <div class="flex flex-wrap items-center gap-2">
-        <span class="px-3 py-1 rounded-full bg-black text-white text-xs font-extrabold uppercase tracking-wider">
+        <span class="px-3.5 py-1 rounded-full bg-black text-white text-xs font-extrabold uppercase tracking-wider">
           {{ property.get_property_type_display }}
         </span>
         {% if property.is_verified %}
-        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+        <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
           <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           Roomora Verified
         </span>
         {% endif %}
-        <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-bold">
+        <span class="px-3.5 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-bold border border-black/5">
           {{ property.get_hostel_type_display|default:"Student Accommodation" }}
         </span>
       </div>
 
-      <h1 class="font-outfit text-3xl sm:text-4xl lg:text-5xl font-black text-black tracking-tight leading-tight">
+      <h1 class="font-outfit text-3xl sm:text-5xl font-black text-black tracking-tight leading-tight">
         {{ property.title }}
       </h1>
 
       <div class="flex flex-wrap items-center gap-4 text-xs sm:text-sm font-semibold text-gray-600">
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1.5">
           <svg class="w-4 h-4 text-amber-500 fill-amber-500" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           <span class="font-bold text-black">{{ average_rating|default:"New" }}</span>
           <span>({{ reviews_count }} review{% if reviews_count != 1 %}s{% endif %})</span>
         </div>
         <span>•</span>
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1.5">
           <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           <span>{{ property.address }}, {{ property.city }}, {{ property.region }}</span>
         </div>
@@ -118,7 +154,7 @@
     </div>
 
     <!-- 5-Image Bento Grid Gallery -->
-    <div class="relative rounded-3xl overflow-hidden shadow-lg border border-black/10 bg-gray-100">
+    <div class="relative rounded-3xl overflow-hidden shadow-md border border-black/10 bg-gray-100">
       {% with all_imgs=property.all_gallery_images %}
       {% if all_imgs %}
       <div class="grid grid-cols-1 md:grid-cols-4 gap-2.5 h-[320px] sm:h-[450px]">
@@ -127,7 +163,7 @@
           {% if all_imgs.0.image_url %}
           <img src="{{ all_imgs.0.image_url }}" alt="{{ property.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
           {% else %}
-          <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 font-bold">No Image</div>
+          <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 font-bold">No Image Available</div>
           {% endif %}
           <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors"></div>
         </div>
@@ -135,11 +171,11 @@
         <!-- 4 Grid Photos (Right 2 cols) -->
         <div class="hidden md:grid md:col-span-2 grid-cols-2 gap-2.5 h-full">
           {% for img in all_imgs|slice:"1:5" %}
-          <div class="relative group cursor-pointer overflow-hidden h-[218px]" onclick="openGalleryModal({{ forloop.counter }})">
+          <div class="relative group cursor-pointer overflow-hidden h-full" onclick="openGalleryModal({{ forloop.counter }})">
             {% if img.image_url %}
             <img src="{{ img.image_url }}" alt="{{ property.title }} photo {{ forloop.counter }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
             {% else %}
-            <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">No Image</div>
+            <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs font-bold">No Image</div>
             {% endif %}
             <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors"></div>
           </div>
@@ -147,396 +183,207 @@
         </div>
       </div>
 
-      <!-- View All Photos Floating Badge -->
-      <button onclick="openGalleryModal(0)" class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md text-black hover:bg-black hover:text-white font-bold text-xs px-4 py-2.5 rounded-2xl border border-black/10 shadow-lg transition-all flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 14a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 14a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-        <span>View all {{ all_imgs|length }} photos</span>
+      <!-- View All Photos Badge -->
+      <button onclick="openGalleryModal(0)" class="absolute bottom-4 right-4 bg-white/95 backdrop-blur-md text-black font-bold text-xs px-4 py-2.5 rounded-full shadow-lg border border-black/10 hover:bg-black hover:text-white transition-all flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span>View all {{ all_imgs|length }} photo{% if all_imgs|length != 1 %}s{% endif %}</span>
       </button>
+
       {% else %}
-      <div class="h-64 bg-gray-200 flex items-center justify-center text-gray-500 font-bold">No property images uploaded yet.</div>
+      <div class="h-64 bg-gray-200 flex flex-col items-center justify-center text-gray-400 font-bold gap-2">
+        <svg class="w-10 h-10 stroke-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span>No photos uploaded for this property yet</span>
+      </div>
       {% endif %}
       {% endwith %}
     </div>
 
-    <!-- Section Navigation Bar -->
-    <div class="border-b border-black/10 sticky top-[61px] z-30 bg-white/90 backdrop-blur-md">
-      <div class="flex items-center gap-8 text-xs sm:text-sm font-bold text-gray-500 overflow-x-auto py-3 no-scrollbar">
-        <a href="#overview" class="hover:text-black text-black border-b-2 border-black pb-2 shrink-0">Overview</a>
-        <a href="#rooms" class="hover:text-black pb-2 shrink-0">Available Rooms</a>
-        <a href="#amenities" class="hover:text-black pb-2 shrink-0">Amenities</a>
-        <a href="#location" class="hover:text-black pb-2 shrink-0">Location & Nearby</a>
-        <a href="#policies" class="hover:text-black pb-2 shrink-0">House Rules</a>
-        <a href="#reviews" class="hover:text-black pb-2 shrink-0">Reviews ({{ reviews_count }})</a>
-      </div>
-    </div>
+    <!-- Main 2-Column Content Layout (Overview & Rooms vs Booking Card) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
 
-    <!-- Main Content Layout (Left 8 Cols, Right 4 Cols) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <!-- Left Column: Details & Available Rooms (8 Cols) -->
+      <div class="lg:col-span-8 space-y-12">
 
-      <!-- Left Column (Overview, Rooms, Amenities, Policies, Reviews) -->
-      <div class="lg:col-span-8 space-y-10">
-
-        <!-- Overview Section -->
-        <section id="overview" class="space-y-6 pt-2">
-          <!-- Property Manager Card -->
-          <div class="flex items-center justify-between p-5 bg-white border border-black/10 rounded-3xl shadow-xs">
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 rounded-full bg-black text-white font-black text-lg flex items-center justify-center shadow-md">
-                {{ property.uploaded_by.first_name|default:"R"|slice:":1"|upper }}
-              </div>
-              <div>
-                <h3 class="font-outfit font-bold text-base text-black">Listed by {{ property.uploaded_by.get_full_name|default:"Roomora Verified Partner" }}</h3>
-                <p class="text-xs text-gray-500 font-medium">Verified Property Representative</p>
-              </div>
-            </div>
-            <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
-              Active Host
-            </span>
-          </div>
-
-          <!-- Highlight Specs Grid -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div class="p-4 bg-white border border-black/10 rounded-2xl space-y-1">
-              <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">Property Area</div>
-              <div class="text-sm font-extrabold text-black font-outfit">{{ property.total_area }} m²</div>
-            </div>
-            <div class="p-4 bg-white border border-black/10 rounded-2xl space-y-1">
-              <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">Campus Distance</div>
-              <div class="text-sm font-extrabold text-black font-outfit">{{ property.distance_to_campus|default:"1.0" }} km</div>
-            </div>
-            <div class="p-4 bg-white border border-black/10 rounded-2xl space-y-1">
-              <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">Water Supply</div>
-              <div class="text-sm font-extrabold text-black font-outfit truncate">{{ property.water_availability|default:"24/7 Supply" }}</div>
-            </div>
-            <div class="p-4 bg-white border border-black/10 rounded-2xl space-y-1">
-              <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">Security</div>
-              <div class="text-sm font-extrabold text-black font-outfit">{% if property.security_personnel %}24/7 Guard{% else %}Standard{% endif %}</div>
-            </div>
-          </div>
-
-          <!-- Description -->
-          <div class="space-y-3">
-            <h2 class="font-outfit text-xl font-bold text-black">About This Property</h2>
-            <p class="text-sm sm:text-base text-gray-700 leading-relaxed font-medium">
-              {{ property.description }}
-            </p>
+        <!-- Overview & Description -->
+        <section class="space-y-4">
+          <h2 class="font-outfit text-2xl font-extrabold text-black">About This Property</h2>
+          <div class="prose max-w-none text-gray-600 text-sm sm:text-base leading-relaxed font-medium">
+            {{ property.description|linebreaks }}
           </div>
         </section>
 
-        <hr class="border-black/10">
+        <hr class="border-black/5">
 
-        <!-- Available Rooms Section -->
-        <section id="rooms" class="space-y-6">
+        <!-- Property Features / Highlights -->
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div class="p-5 rounded-2xl bg-white border border-black/10 shadow-xs space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center font-bold">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <h3 class="font-outfit font-bold text-black text-base">Verified & Inspected</h3>
+            <p class="text-xs text-gray-500 font-medium">Reviewed by the Roomora team for quality and safety standards.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white border border-black/10 shadow-xs space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center font-bold">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3 class="font-outfit font-bold text-black text-base">Flexible Duration</h3>
+            <p class="text-xs text-gray-500 font-medium">Semester-based and annual stay plans tailored to students.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white border border-black/10 shadow-xs space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center font-bold">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <h3 class="font-outfit font-bold text-black text-base">Soft-Lock Room</h3>
+            <p class="text-xs text-gray-500 font-medium">Hold your preferred room instantly while finalizing details.</p>
+          </div>
+        </section>
+
+        <hr class="border-black/5">
+
+        <!-- Available Rooms / Options -->
+        <section id="rooms-section" class="space-y-6">
           <div class="flex items-center justify-between">
-            <div>
-              <h2 class="font-outfit text-2xl font-black text-black">Available Rooms & Units</h2>
-              <p class="text-xs text-gray-500 font-medium">Select your room type to proceed with instant soft-locking and booking.</p>
-            </div>
+            <h2 class="font-outfit text-2xl font-extrabold text-black">Available Accommodation</h2>
+            <span class="text-xs font-bold text-gray-500">Select an option to proceed</span>
           </div>
 
+          {% if property.property_type == 'HOSTEL' %}
           <div class="space-y-6">
-            {% if property.rooms.all %}
-              {% for room in property.rooms.all %}
-              <div class="bg-white border border-black/10 rounded-3xl p-6 shadow-md hover:shadow-lg transition-all space-y-6">
-                
-                <!-- Room Card Header -->
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-black/10">
-                  <div>
-                    <div class="inline-flex items-center gap-2">
-                      <h3 class="font-outfit text-xl font-bold text-black">Room {{ room.room_number }}</h3>
-                      <span class="text-xs font-bold text-gray-500 bg-gray-100 px-2.5 py-0.5 rounded-full border border-black/5">
-                        {{ room.room_type.get_occupancy_type_display|default:"Double (2 in a room)" }}
-                      </span>
-                    </div>
-                    <p class="text-xs text-gray-500 font-medium mt-0.5">{{ room.room_type.room_type_name }}</p>
+            {% for room in property.rooms.all %}
+            <div class="bg-white border border-black/10 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 hover:shadow-md transition-shadow">
+              
+              <!-- Room Header & Status -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-black/5">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-outfit text-xl font-extrabold text-black">Room {{ room.room_number }}</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-black text-xs font-bold border border-black/5">
+                      {{ room.room_type.name|default:"Standard Room" }}
+                    </span>
                   </div>
-
-                  <!-- Availability Pill -->
-                  <div>
-                    {% if room.available_slots > 0 %}
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-extrabold">
-                      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                      {{ room.available_slots }} slot(s) remaining
-                    </span>
-                    {% else %}
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-700 border border-red-200 text-xs font-extrabold">
-                      Fully Booked
-                    </span>
-                    {% endif %}
+                  <div class="text-xs font-bold text-gray-500 mt-1">
+                    {{ room.room_type.get_occupancy_type_display|default:"Shared Room" }}
                   </div>
                 </div>
 
-                <!-- Room Details Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                  
-                  <!-- Room Photos Thumbnail Carousel -->
-                  <div class="md:col-span-5">
-                    {% if room.images.exists %}
-                    <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                      {% for r_img in room.images.all %}
-                      <img src="{{ r_img.image_url }}" alt="Room {{ room.room_number }}" class="w-28 h-20 object-cover rounded-xl border border-black/10 shrink-0 shadow-xs">
-                      {% endfor %}
+                <!-- Price & Slots -->
+                <div class="flex items-center gap-4">
+                  {% with primary_price=room.room_type.pricing_models.first %}
+                  {% if primary_price %}
+                  <div class="text-right">
+                    <div class="font-outfit text-2xl font-black text-black">
+                      GH₵ {% if primary_price.semester_price %}{{ primary_price.semester_price|floatformat:0 }}{% elif primary_price.monthly_price %}{{ primary_price.monthly_price|floatformat:0 }}{% else %}—{% endif %}
                     </div>
-                    {% else %}
-                    <div class="w-full h-24 bg-gray-100 rounded-2xl flex items-center justify-center text-xs text-gray-400 font-bold border border-black/5">
-                      No room photos uploaded
+                    <div class="text-[11px] font-bold text-gray-500">
+                      {% if primary_price.semester_price %}per semester{% elif primary_price.monthly_price %}per month{% endif %}
                     </div>
-                    {% endif %}
                   </div>
+                  {% endif %}
+                  {% endwith %}
 
-                  <!-- Features List -->
-                  <div class="md:col-span-7 space-y-3">
-                    <div class="grid grid-cols-2 gap-2 text-xs font-semibold text-gray-700">
-                      <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                        <span>{{ room.room_type.get_bed_type_display|default:"Single Bed" }} beds (×{{ room.room_type.beds_per_room|default:2 }})</span>
-                      </div>
-                      {% if room.room_type.wifi_available %}
-                      <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                        <span>High-Speed WiFi</span>
-                      </div>
-                      {% endif %}
-                      {% if room.room_type.private_bathroom %}
-                      <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                        <span>Private Bathroom</span>
-                      </div>
-                      {% endif %}
-                      {% if room.room_type.air_conditioning %}
-                      <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                        <span>Air Conditioning</span>
-                      </div>
-                      {% endif %}
-                    </div>
-
-                    <!-- Pricing & Checkout Button Row -->
-                    <div class="pt-4 border-t border-black/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-                      <div>
-                        {% with pm=room.room_type.pricing_models.first %}
-                        {% if pm %}
-                        <div class="font-outfit text-xl font-black text-black">
-                          GH₵ {% if pm.semester_price %}{{ pm.semester_price|floatformat:0 }}<span class="text-xs font-bold text-gray-500"> / semester</span>{% elif pm.monthly_price %}{{ pm.monthly_price|floatformat:0 }}<span class="text-xs font-bold text-gray-500"> / month</span>{% endif %}
-                        </div>
-                        {% else %}
-                        <div class="font-outfit text-base font-extrabold text-black">Contact for Pricing</div>
-                        {% endif %}
-                        {% endwith %}
-                      </div>
-
-                      {% if room.available_slots > 0 %}
-                      <a href="{% url 'bookings:initiate_booking' property.id %}" class="w-full sm:w-auto px-6 py-3 bg-black hover:bg-gray-900 text-white font-bold rounded-2xl transition-all text-xs text-center flex items-center justify-center gap-2 shadow-md">
-                        <span>Book Room {{ room.room_number }}</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                      </a>
-                      {% else %}
-                      <button disabled class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-500 font-bold rounded-2xl text-xs text-center cursor-not-allowed">
-                        Fully Booked
-                      </button>
-                      {% endif %}
-                    </div>
-
-                  </div>
-
+                  {% if room.available_slots > 0 %}
+                  <span class="px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-extrabold">
+                    {{ room.available_slots }} Slot{% if room.available_slots != 1 %}s{% endif %} Left
+                  </span>
+                  {% else %}
+                  <span class="px-3.5 py-1.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200 text-xs font-extrabold">
+                    Fully Booked
+                  </span>
+                  {% endif %}
                 </div>
-
               </div>
-              {% endfor %}
-            {% else %}
-              <div class="p-8 text-center bg-white border border-black/10 rounded-3xl space-y-3">
-                <p class="text-sm font-bold text-gray-600">No specific rooms listed for this property yet.</p>
-                <a href="{% url 'bookings:initiate_booking' property.id %}" class="inline-block px-6 py-3 bg-black text-white font-bold text-xs rounded-2xl">
-                  Inquire & Book Property
+
+              <!-- Room Features & Book Button -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-600">
+                  <span class="flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    Floor {{ room.floor_number|default:"1" }}
+                  </span>
+                  <span>•</span>
+                  <span class="flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    {{ room.room_type.get_occupancy_type_display|default:"Multiple Occupancy" }}
+                  </span>
+                </div>
+
+                {% if room.available_slots > 0 %}
+                <a href="{% url 'bookings:create-booking' room.id %}" class="px-6 py-3 bg-[#111111] text-white font-extrabold text-xs rounded-2xl hover:bg-black active:scale-95 transition-all text-center shadow-md">
+                  Select Room & Book
                 </a>
+                {% endif %}
               </div>
-            {% endif %}
-          </div>
-        </section>
 
-        <hr class="border-black/10">
-
-        <!-- Amenities Section -->
-        <section id="amenities" class="space-y-6">
-          <div class="space-y-1">
-            <h2 class="font-outfit text-2xl font-black text-black">Amenities & Features</h2>
-            <p class="text-xs text-gray-500 font-medium">Included property facilities and safety features.</p>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {% for cat_name, amenities_list in amenity_groups.items %}
-            <div class="p-5 bg-white border border-black/10 rounded-2xl space-y-3">
-              <h3 class="font-outfit font-bold text-sm text-black uppercase tracking-wider border-b border-black/5 pb-2">
-                {{ cat_name }}
-              </h3>
-              <ul class="space-y-2">
-                {% for am in amenities_list %}
-                <li class="flex items-center gap-2.5 text-xs font-semibold text-gray-700">
-                  <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                  <span>{{ am.name }}</span>
-                </li>
-                {% endfor %}
-              </ul>
             </div>
             {% empty %}
-            <!-- Fallback Default Features Grid -->
-            <div class="p-5 bg-white border border-black/10 rounded-2xl space-y-3">
-              <h3 class="font-outfit font-bold text-sm text-black uppercase tracking-wider border-b border-black/5 pb-2">Utilities & Security</h3>
-              <ul class="space-y-2 text-xs font-semibold text-gray-700">
-                <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>Water: {{ property.water_availability|default:"24/7 Running Water" }}</span></li>
-                <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>Power: {{ property.electricity_stability|default:"Backup Generator" }}</span></li>
-                <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>Internet: {{ property.internet_availability|default:"High-Speed WiFi" }}</span></li>
-              </ul>
-            </div>
-            <div class="p-5 bg-white border border-black/10 rounded-2xl space-y-3">
-              <h3 class="font-outfit font-bold text-sm text-black uppercase tracking-wider border-b border-black/5 pb-2">Building Safety</h3>
-              <ul class="space-y-2 text-xs font-semibold text-gray-700">
-                <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>Security Personnel: {% if property.security_personnel %}Yes (24/7 On-duty){% else %}Standard Protection{% endif %}</span></li>
-                <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>CCTV Surveillance: {% if property.cctv %}Active in common areas{% else %}Available{% endif %}</span></li>
-              </ul>
+            <div class="p-8 text-center bg-white border border-black/10 rounded-3xl text-gray-500 font-medium text-sm">
+              No rooms currently listed for this hostel.
             </div>
             {% endfor %}
-          </div>
-        </section>
-
-        <hr class="border-black/10">
-
-        <!-- Location Section -->
-        <section id="location" class="space-y-6">
-          <div class="space-y-1">
-            <h2 class="font-outfit text-2xl font-black text-black">Location & Proximity</h2>
-            <p class="text-xs text-gray-500 font-medium">{{ property.address }}, {{ property.city }}</p>
-          </div>
-
-          <div class="p-6 bg-white border border-black/10 rounded-3xl space-y-4 shadow-xs">
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="font-outfit font-bold text-base text-black">{{ property.nearest_institution|default:"Nearest Academic Institution" }}</h4>
-                <p class="text-xs text-gray-500 font-medium">{{ property.distance_to_campus|default:"1.2" }} km away (approx. {{ property.walking_time_estimate|default:"15" }} mins walk)</p>
-              </div>
-              <a href="https://maps.google.com/?q={{ property.address|urlencode }}" target="_blank" class="px-4 py-2 bg-gray-100 hover:bg-black hover:text-white transition-all text-xs font-bold rounded-xl border border-black/10 flex items-center gap-1.5">
-                <span>Open in Google Maps</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <hr class="border-black/10">
-
-        <!-- House Rules Section -->
-        <section id="policies" class="space-y-6">
-          <div class="space-y-1">
-            <h2 class="font-outfit text-2xl font-black text-black">House Rules & Policies</h2>
-            <p class="text-xs text-gray-500 font-medium">Please review property guidelines before booking.</p>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="p-5 bg-white border border-black/10 rounded-2xl space-y-2">
-              <div class="text-xs font-bold uppercase tracking-wider text-gray-500">Curfew & Visitors</div>
-              <p class="text-xs font-semibold text-gray-800">
-                {% if property.curfew_time %}Curfew: {{ property.curfew_time|date:"P" }}{% else %}No strict curfew recorded.{% endif %}
-              </p>
-              <p class="text-[11px] text-gray-500 font-medium">
-                {{ property.visitor_policy|default:"Visitors permitted during standard daytime visiting hours." }}
-              </p>
-            </div>
-
-            <div class="p-5 bg-white border border-black/10 rounded-2xl space-y-2">
-              <div class="text-xs font-bold uppercase tracking-wider text-gray-500">Cancellation Policy</div>
-              <p class="text-xs font-semibold text-gray-800">Standard Refund Terms</p>
-              <p class="text-[11px] text-gray-500 font-medium">
-                {{ property.cancellation_policy|default:"Full refund up to 7 days prior to start date. Soft-locks held for 60 seconds during checkout." }}
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <hr class="border-black/10">
-
-        <!-- Guest Reviews Section -->
-        <section id="reviews" class="space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="font-outfit text-2xl font-black text-black">Guest Reviews</h2>
-              <p class="text-xs text-gray-500 font-medium">Verified feedback from past student tenants.</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <svg class="w-5 h-5 text-amber-500 fill-amber-500" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <span class="font-outfit text-2xl font-black text-black">{{ average_rating|default:"0.0" }}</span>
-              <span class="text-xs text-gray-500 font-bold">/ 5.0</span>
-            </div>
-          </div>
-
-          {% if reviews %}
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {% for rev in reviews %}
-            <div class="p-5 bg-white border border-black/10 rounded-2xl space-y-3 shadow-xs">
-              <div class="flex items-center justify-between">
-                <div class="font-bold text-xs text-black">{{ rev.user.get_full_name|default:"Verified Student" }}</div>
-                <div class="flex text-amber-500">
-                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  <span class="text-xs font-bold text-black ml-1">{{ rev.rating }}</span>
-                </div>
-              </div>
-              <p class="text-xs text-gray-600 font-medium italic">"{{ rev.comment }}"</p>
-            </div>
-            {% endfor %}
-          </div>
-          {% else %}
-          <div class="p-6 bg-white border border-black/10 rounded-2xl text-center space-y-2">
-            <p class="text-xs font-bold text-gray-500">No reviews submitted yet for this property.</p>
           </div>
           {% endif %}
         </section>
 
+        <hr class="border-black/5">
+
+        <!-- Amenities Section -->
+        <section class="space-y-6">
+          <h2 class="font-outfit text-2xl font-extrabold text-black">Amenities & Facilities</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {% for amenity in property.amenities.all %}
+            <div class="p-4 rounded-2xl bg-white border border-black/10 flex items-center gap-3 shadow-2xs">
+              <div class="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center text-black font-bold shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <span class="text-xs font-bold text-black">{{ amenity.name }}</span>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-xs text-gray-500 font-medium">Standard student housing amenities included.</div>
+            {% endfor %}
+          </div>
+        </section>
+
       </div>
 
-      <!-- Right Column Sticky Sidebar (Booking Card) -->
-      <div class="lg:col-span-4 sticky top-24 space-y-6">
-        
+      <!-- Right Column: Sticky Booking / Quick Action Box (4 Cols) -->
+      <div class="lg:col-span-4 lg:sticky lg:top-28 space-y-6">
+
         <div class="bg-white border border-black/10 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
           
-          <!-- Price Banner -->
-          <div class="pb-6 border-b border-black/10 space-y-1">
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">Starting Rent</div>
+          <!-- Starting Price Box -->
+          <div class="space-y-1 pb-6 border-b border-black/5">
+            <div class="text-xs font-extrabold uppercase tracking-wider text-gray-400">Starting From</div>
             <div class="flex items-baseline gap-2">
-              <span class="font-outfit text-3xl font-black text-black">
-                GH₵ {{ min_price|default:"Contact" }}
+              <span class="font-outfit text-4xl font-black text-black">
+                {% if min_starting_price %}GH₵ {{ min_starting_price|floatformat:0 }}{% else %}Contact{% endif %}
               </span>
-              {% if min_price %}
-              <span class="text-xs font-bold text-gray-500">/ semester</span>
-              {% endif %}
+              <span class="text-xs font-bold text-gray-500">/ stay plan</span>
             </div>
           </div>
 
-          <!-- Trust Badges -->
-          <div class="space-y-2.5">
-            <div class="flex items-center gap-2.5 text-xs font-bold text-gray-700">
-              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Instant 60s Soft-Lock Protection</span>
-            </div>
-            <div class="flex items-center gap-2.5 text-xs font-bold text-gray-700">
-              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <span>Verified Roommate Matching</span>
-            </div>
-          </div>
-
-          <!-- Main CTA Buttons -->
-          <div class="space-y-3 pt-2">
-            <a href="{% url 'bookings:initiate_booking' property.id %}" class="w-full py-4 bg-black hover:bg-gray-900 text-white font-bold rounded-2xl transition-all text-sm flex items-center justify-center gap-2 shadow-lg shadow-black/10">
-              <span>Book Property Now</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <!-- Quick Action Buttons -->
+          <div class="space-y-3">
+            <a href="#rooms-section" class="w-full py-4 bg-[#111111] text-white font-extrabold text-sm rounded-2xl hover:bg-black active:scale-95 transition-all text-center block shadow-lg">
+              Reserve A Room
             </a>
 
-            <a href="https://wa.me/?text=Hi%20Roomora,%20I'm%20interested%20in%20{{ property.title|urlencode }}" target="_blank" class="w-full py-3.5 bg-[#F4F4F6] hover:bg-gray-200 text-black font-bold rounded-2xl transition-all text-xs flex items-center justify-center gap-2 border border-black/5">
-              <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 0C5.396 0 .02 5.376.02 12.012c0 2.117.552 4.185 1.6 6.002L0 24l6.18-1.619a11.96 11.96 0 005.85 1.517h.005c6.635 0 12.012-5.376 12.012-12.013.001-3.208-1.246-6.224-3.51-8.49C18.272 1.127 15.253.001 12.03 0z"/></svg>
-              <span>Contact Manager on WhatsApp</span>
-            </a>
+            <button onclick="alert('Contact Host: +233 (0) 24 000 0000 / info@roomora.com');" class="w-full py-3.5 bg-gray-100 text-black font-bold text-xs rounded-2xl hover:bg-gray-200 transition-all text-center block border border-black/5">
+              Contact Host / Manager
+            </button>
           </div>
 
-          <div class="pt-4 border-t border-black/10 text-center">
-            <p class="text-[11px] text-gray-500 font-medium">Have questions? Reach out to support at <span class="font-bold text-black">admin@staymatch.com</span></p>
+          <!-- Safety & Escrow Assurance -->
+          <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-1.5">
+            <div class="flex items-center gap-2 text-xs font-extrabold text-emerald-900">
+              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span>100% Escrow Protection</span>
+            </div>
+            <p class="text-[11px] text-emerald-700 font-medium leading-relaxed">
+              Your booking payment is held safely until you verify your room check-in.
+            </p>
           </div>
 
         </div>
@@ -547,73 +394,41 @@
 
   </main>
 
-  <!-- Fullscreen Modal Photo Gallery -->
-  <div id="galleryModal" class="fixed inset-0 z-50 bg-black/95 text-white hidden flex-col justify-between p-4 sm:p-8 backdrop-blur-xl">
-    <div class="flex items-center justify-between border-b border-white/10 pb-4">
-      <div class="text-sm font-bold">{{ property.title }} — Photo Gallery</div>
-      <button onclick="closeGalleryModal()" class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-    </div>
-
-    <div class="flex-1 flex items-center justify-center relative py-6">
-      {% with all_imgs=property.all_gallery_images %}
-      {% if all_imgs %}
-      <img id="modalImg" src="{{ all_imgs.0.image_url }}" alt="Gallery Image" class="max-h-[75vh] max-w-full object-contain rounded-2xl shadow-2xl">
-      {% endif %}
-      {% endwith %}
-    </div>
-
-    <div class="flex items-center justify-center gap-4 border-t border-white/10 pt-4">
-      <button onclick="prevGalleryImage()" class="px-5 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-xs font-bold transition-all">Previous</button>
-      <span id="galleryCounter" class="text-xs font-mono text-gray-400">1 of {{ property.all_gallery_images|length }}</span>
-      <button onclick="nextGalleryImage()" class="px-5 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-xs font-bold transition-all">Next</button>
-    </div>
-  </div>
-
 </div>
 
-<!-- Gallery Modal JS -->
+<!-- Lightbox Gallery Modal -->
+<div id="galleryModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex-col justify-between p-4 sm:p-8 animate-fade-in">
+  <div class="flex items-center justify-between text-white">
+    <div class="text-sm font-bold">{{ property.title }} Gallery</div>
+    <button onclick="closeGalleryModal()" class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <div class="flex-1 flex items-center justify-center p-4">
+    {% with all_imgs=property.all_gallery_images %}
+    {% if all_imgs %}
+    <img id="galleryModalImg" src="{{ all_imgs.0.image_url }}" alt="Gallery Image" class="max-h-[75vh] max-w-full object-contain rounded-2xl">
+    {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="text-center text-xs text-gray-400 font-medium pb-2">
+    Click outside or press X to close
+  </div>
+</div>
+
 <script>
-  const galleryUrls = [
-    {% for img in property.all_gallery_images %}
-    "{{ img.image_url }}"{% if not forloop.last %},{% endif %}
-    {% endfor %}
-  ];
-  let currentImgIndex = 0;
+function openGalleryModal(index) {
+  const modal = document.getElementById('galleryModal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
 
-  function openGalleryModal(index) {
-    if (!galleryUrls.length) return;
-    currentImgIndex = index;
-    updateModalImage();
-    document.getElementById('galleryModal').classList.remove('hidden');
-    document.getElementById('galleryModal').classList.add('flex');
-  }
-
-  function closeGalleryModal() {
-    document.getElementById('galleryModal').classList.add('hidden');
-    document.getElementById('galleryModal').classList.remove('flex');
-  }
-
-  function updateModalImage() {
-    const modalImg = document.getElementById('modalImg');
-    const counter = document.getElementById('galleryCounter');
-    if (modalImg && galleryUrls[currentImgIndex]) {
-      modalImg.src = galleryUrls[currentImgIndex];
-    }
-    if (counter) {
-      counter.textContent = `${currentImgIndex + 1} of ${galleryUrls.length}`;
-    }
-  }
-
-  function prevGalleryImage() {
-    currentImgIndex = (currentImgIndex - 1 + galleryUrls.length) % galleryUrls.length;
-    updateModalImage();
-  }
-
-  function nextGalleryImage() {
-    currentImgIndex = (currentImgIndex + 1) % galleryUrls.length;
-    updateModalImage();
-  }
+function closeGalleryModal() {
+  const modal = document.getElementById('galleryModal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
 </script>
 {% endblock %}
