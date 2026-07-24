@@ -59,7 +59,7 @@
         </button>
 
         {% if user.is_authenticated %}
-        <form method="POST" action="{% url 'properties:toggle_save_property' property.id %}" class="inline">
+        <form method="POST" action="{% url 'properties:save-property' property.id %}" class="inline">
           {% csrf_token %}
           <button type="submit" class="p-2 rounded-full border border-black/10 hover:bg-black/5 transition-all text-gray-700 hover:text-black flex items-center gap-1.5 text-xs font-bold px-3">
             <svg class="w-4 h-4 {% if is_saved %}fill-red-500 text-red-500{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
