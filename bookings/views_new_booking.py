@@ -104,7 +104,14 @@ def initiate_booking(request, property_id):
             
     if room_type_id and not room_id:
         room_type = get_object_or_404(RoomType, id=room_type_id)
-        room = room_type.rooms.filter(available_slots__gt=0).first()
+        # Filter by rooms where occupied + pending < total (i.e. there are free slots)
+        # Also exclude fully booked rooms
+        from django.db.models import F
+        room = room_type.rooms.exclude(
+            status='FULLY_OCCUPIED'
+        ).filter(
+            occupied_slots__lt=F('total_slots')
+        ).first()
         if not room:
             messages.error(request, "No rooms are currently available for this room type.")
             return redirect('landing:property_detail', pk=property_id)
