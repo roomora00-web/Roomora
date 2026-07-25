@@ -671,7 +671,7 @@ class UserConsentView(View):
         booking = get_object_or_404(Booking, id=booking_id, tenant=request.user)
 
         # Check if booking is in correct state
-        if booking.status not in ['COMPATIBILITY_REVIEW', 'WAITING_CONSENT', 'ASSIGNED_AWAITING']:
+        if booking.status not in ['COMPATIBILITY_REVIEW', 'WAITING_CONSENT', 'ASSIGNED_AWAITING', 'TEMPORARILY_CANCELLED']:
             return redirect(f'/api/bookings/booking/{booking_id}/')
 
         # Check if user already consented
@@ -688,7 +688,7 @@ class UserConsentView(View):
         
         booking = get_object_or_404(Booking, id=booking_id, tenant=request.user)
         
-        if booking.status not in ['COMPATIBILITY_REVIEW', 'WAITING_CONSENT', 'ASSIGNED_AWAITING']:
+        if booking.status not in ['COMPATIBILITY_REVIEW', 'WAITING_CONSENT', 'ASSIGNED_AWAITING', 'TEMPORARILY_CANCELLED']:
             return JsonResponse({'success': False, 'error': f'Booking is not in correct state for consent. Current status: {booking.status}'})
         
         try:
@@ -866,23 +866,17 @@ class UserConsentView(View):
             })
         
         elif action == 'reject':
-            # Chapter 14B: Reject Flow
+            # Chapter 14B: Reject Flow - 30-minute hold window for user to reconsider
             from django.db import transaction
             
             with transaction.atomic():
+                expiry_time = timezone.now() + timezone.timedelta(minutes=30)
                 booking.status = 'TEMPORARILY_CANCELLED'
                 booking.cancellation_initiated_by = 'user'
-                booking.slot_hold_expires_at = timezone.now() + timezone.timedelta(hours=6)
-                booking.temp_cancel_expires_at = timezone.now() + timezone.timedelta(hours=2)
+                booking.slot_hold_expires_at = expiry_time
+                booking.temp_cancel_expires_at = expiry_time
+                booking.consent_deadline = expiry_time
                 booking.save()
-                
-                # Release room slot immediately on rejection
-                if booking.assigned_room and booking.assigned_room.pending_slots > 0:
-                    booking.assigned_room.pending_slots -= 1
-                    booking.assigned_room.save()
-                
-                # Unlock lifestyle profile if no other active bookings
-                booking.unlock_lifestyle_profile()
 
                 # Schedule Celery tasks (if Celery is configured)
                 try:
@@ -895,25 +889,10 @@ class UserConsentView(View):
                 from accounts.models import Notification
                 Notification.objects.create(
                     user=request.user,
-                    title='BOOKING TEMPORARILY CANCELLED',
-                    message=f"{booking.accommodation_property.title} — {booking.room_type.room_type_name if booking.room_type else booking.unit_type.unit_name if booking.unit_type else 'Unit'}\nReference: {booking.reference_number}\n\nYou have rejected the roommate match.\nYour booking is temporarily on hold.\n\nYou have 2 hours to change your mind.\n\nIf you want to keep this booking:\nGo to My Bookings → [Reinstate Booking]",
+                    title='MATCH DECLINED — 30-MINUTE HOLD ACTIVE',
+                    message=f"{booking.accommodation_property.title} — Reference: {booking.reference_number}\n\nYou declined the roommate match. Your soft-locked room is held for 30 minutes if you wish to resume your booking.",
                     link="/api/bookings/my-bookings/"
                 )
-                
-                # Notify existing occupant
-                existing_bookings = Booking.objects.filter(
-                    accommodation_property=booking.accommodation_property,
-                    room_type=booking.room_type,
-                    assigned_room=booking.assigned_room,
-                    status__in=['ACTIVE', 'CONFIRMED_ASSIGNED']
-                ).exclude(tenant=request.user)
-                
-                for existing_booking in existing_bookings:
-                    Notification.objects.create(
-                        user=existing_booking.tenant,
-                        title='ROOM STATUS UPDATE',
-                        message=f"A user who was proposed as your roommate for Room {booking.assigned_room.room_number if booking.assigned_room else 'Assigned'} has not yet confirmed.\n\nYour room and your booking remain unaffected.\nYou will receive an update within 2 hours.\n\nNo action required from you.",
-                    )
             
             return JsonResponse({
                 'success': True,

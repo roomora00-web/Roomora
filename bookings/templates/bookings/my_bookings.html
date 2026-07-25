@@ -242,6 +242,82 @@
   </div>
   {% endif %}
 
+  <!-- Temporarily Cancelled / Declined Match Hold Section -->
+  {% if temporarily_cancelled_bookings %}
+  <div class="space-y-4 pt-2 w-full">
+    <div class="flex items-center gap-3 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-amber-800">
+      <span class="h-2.5 w-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+      <span>Match Declined — 30-Minute Room Hold Window</span>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 w-full">
+      {% for booking in temporarily_cancelled_bookings %}
+      <div class="glass-card p-6 sm:p-8 space-y-6 border-l-4 border-l-amber-500 rounded-3xl bg-amber-50/40 border border-amber-200/80 shadow-sm w-full">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-black/[0.06] pb-5">
+          <div class="space-y-1">
+            <span class="inline-flex items-center gap-2 bg-amber-100 text-amber-900 border border-amber-300 text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider">
+              ⏳ Match Declined · Hold Active
+            </span>
+            <h2 class="font-outfit text-2xl font-extrabold text-[#111111] mt-2">{{ booking.accommodation_property.title }}</h2>
+            <p class="text-xs sm:text-sm text-[#6B7280]">
+              You declined the roommate match. Your soft-locked room is held for 30 minutes if you wish to reconsider and resume your booking.
+            </p>
+          </div>
+
+          <!-- Countdown Timer Box -->
+          <div class="bg-white border border-amber-300 px-4 py-3 rounded-2xl text-center shrink-0 shadow-xs">
+            <span class="text-[10px] font-extrabold text-amber-800 uppercase tracking-wider block">Hold Expires In</span>
+            <span id="tempCancelTimer-{{ booking.id }}" class="font-mono font-extrabold text-amber-950 text-lg">30:00</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1">
+          <div class="text-xs text-[#6B7280] space-y-1">
+            <div>Booking Ref: <strong class="text-[#111111] font-mono">#RM-{{ booking.id }}</strong></div>
+            <div>Assigned Space: <strong class="text-[#111111]">{% if booking.assigned_room %}Room {{ booking.assigned_room.room_number }}{% else %}Standard Unit{% endif %}</strong></div>
+          </div>
+
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <a href="{% url 'bookings:cancel-booking' booking.id %}" class="w-1/2 sm:w-auto px-5 py-3 rounded-2xl bg-white border border-black/20 text-[#111111] hover:bg-gray-100 font-bold text-xs sm:text-sm transition-all text-center">
+              Cancel Booking
+            </a>
+            <a href="{% url 'bookings:user-consent' booking.id %}" class="w-1/2 sm:w-auto px-6 py-3 rounded-2xl bg-[#111111] hover:bg-black/80 text-white font-extrabold text-xs sm:text-sm shadow-md transition-all text-center flex items-center justify-center gap-2">
+              <span>Resume Booking ➔</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <script>
+      (function() {
+        const expiryStr = "{% if booking.temp_cancel_expires_at %}{{ booking.temp_cancel_expires_at.isoformat }}{% elif booking.slot_hold_expires_at %}{{ booking.slot_hold_expires_at.isoformat }}{% elif booking.consent_deadline %}{{ booking.consent_deadline.isoformat }}{% endif %}";
+        if (!expiryStr) return;
+        const expiryTime = new Date(expiryStr).getTime();
+        
+        function updateTempTimer() {
+          const now = new Date().getTime();
+          const diff = expiryTime - now;
+          const el = document.getElementById("tempCancelTimer-{{ booking.id }}");
+          if (!el) return;
+          
+          if (diff <= 0) {
+            el.innerText = "EXPIRED";
+            return;
+          }
+          const mins = Math.floor(diff / (1000 * 60));
+          const secs = Math.floor((diff % (1000 * 60)) / 1000);
+          const pad = n => n.toString().padStart(2, '0');
+          el.innerText = `${pad(mins)}m ${pad(secs)}s`;
+        }
+        updateTempTimer();
+        setInterval(updateTempTimer, 1000);
+      })();
+      </script>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
   <!-- Pending & Other Bookings Section -->
   {% if pending_bookings or awaiting_consent or cancelled_bookings %}
   <div class="space-y-4 pt-4 w-full">
@@ -265,7 +341,11 @@
         </div>
 
         <div>
-          {% if booking.status == 'INITIATED' or booking.status == 'LIFESTYLE_PENDING' %}
+          {% if booking.status == 'WAITING_CONSENT' or booking.status == 'CONSENT_PENDING' or booking.status == 'COMPATIBILITY_REVIEW' %}
+          <a href="{% url 'bookings:user-consent' booking.id %}" class="inline-flex items-center gap-2 bg-[#111111] text-white px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold hover:bg-black/80 transition-colors shadow-xs">
+            <span>Resume Booking ➔</span>
+          </a>
+          {% elif booking.status == 'INITIATED' or booking.status == 'LIFESTYLE_PENDING' %}
           <a href="{% url 'bookings:resume_booking' booking.id %}" class="inline-flex items-center gap-2 bg-[#111111] text-white px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold hover:bg-black/80 transition-colors shadow-xs">
             <span>Resume Booking ➔</span>
           </a>

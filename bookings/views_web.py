@@ -63,7 +63,8 @@ def my_bookings_view(request):
     awaiting_consent = [b for b in bookings if b.status in ['WAITING_CONSENT', 'CONSENT_PENDING']]
     approved_bookings = [b for b in bookings if b.status in ['BOTH_ACCEPTED', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'APPROVED', 'PAYMENT_COMPLETE', 'PAID', 'PAYMENT_VERIFIED']]
     completed_bookings = [b for b in bookings if b.status == 'COMPLETED']
-    cancelled_bookings = [b for b in bookings if b.status in ['CANCELLED', 'REJECTED', 'TEMPORARILY_CANCELLED']]
+    temporarily_cancelled_bookings = [b for b in bookings if b.status == 'TEMPORARILY_CANCELLED']
+    cancelled_bookings = [b for b in bookings if b.status in ['CANCELLED', 'REJECTED']]
     waitlisted_bookings = [b for b in bookings if b.status == 'WAITLISTED']
     
     confirmed_and_active = approved_bookings + active_bookings
@@ -75,6 +76,7 @@ def my_bookings_view(request):
         'awaiting_consent': awaiting_consent,
         'approved_bookings': approved_bookings,
         'completed_bookings': completed_bookings,
+        'temporarily_cancelled_bookings': temporarily_cancelled_bookings,
         'cancelled_bookings': cancelled_bookings,
         'waitlisted_bookings': waitlisted_bookings,
         'total_bookings': bookings.count() if hasattr(bookings, 'count') else len(bookings),
@@ -118,22 +120,16 @@ def booking_detail_view(request, booking_id):
                 'percentage': min(100, int((days_elapsed / total_days) * 100)) if total_days > 0 else 0,
                 'days_remaining': (booking.move_out_date - today).days,
                 'days_elapsed': days_elapsed,
-                'total_days': total_days,
             }
     
     context = {
         'booking': booking,
         'property': booking.accommodation_property,
+        'timeline': timeline,
         'room_assignment': room_assignment,
         'roommates': roommates,
         'compatibility_score': compatibility_score,
-        'timeline': timeline,
         'lease_progress': lease_progress,
-        'can_accept_consent': (booking.status == 'WAITING_CONSENT' and 
-                               booking.tenant == request.user and 
-                               not booking.user_consent),
-        'can_cancel': booking.status in ['INITIATED', 'SUBMITTED', 'UNDER_REVIEW', 'COMPATIBILITY_REVIEW', 'WAITING_CONSENT'],
-        'is_user_booking': booking.tenant == request.user,
     }
     
     return render(request, 'bookings/booking_detail.html', context)
@@ -147,7 +143,7 @@ def consent_modal_view(request, booking_id):
     if booking.tenant != request.user:
         return redirect('my-bookings')
     
-    if booking.status not in ['WAITING_CONSENT', 'ASSIGNED_AWAITING', 'COMPATIBILITY_REVIEW']:
+    if booking.status not in ['WAITING_CONSENT', 'ASSIGNED_AWAITING', 'COMPATIBILITY_REVIEW', 'TEMPORARILY_CANCELLED']:
         messages.warning(request, 'This booking is not awaiting your consent.')
         return redirect('bookings:booking-detail', booking_id=booking_id)
     
