@@ -632,9 +632,15 @@ def reset_password_view(request, token=None):
 
 
 def logout_view(request):
-    """Logout view"""
+    """Secure logout view that flushes session and prevents back-button caching"""
     logout(request)
-    return redirect(getattr(settings, 'LOGOUT_REDIRECT_URL', 'landing:home'))
+    if hasattr(request, 'session'):
+        request.session.flush()
+    response = redirect(getattr(settings, 'LOGOUT_REDIRECT_URL', 'landing:home'))
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0, private'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 
 def login_view(request):

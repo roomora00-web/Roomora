@@ -72,10 +72,12 @@ class RegistrationForm(forms.ModelForm):
         return last_name
     
     def clean_email(self):
-        email = self.cleaned_data.get('email')
+        email = (self.cleaned_data.get('email') or '').strip().lower()
+        if not (email.endswith('@gmail.com') or email.endswith('@googlemail.com')):
+            raise ValidationError('Registration requires a valid Google Gmail address (@gmail.com).')
         if User.objects.filter(email=email).exists():
             raise ValidationError('This email is already registered. If you forgot your password, you can reset it.')
-        return email.lower()
+        return email
     
     def clean_phone_number(self):
         phone_number = self.cleaned_data.get('phone_number')

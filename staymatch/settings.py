@@ -63,6 +63,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'accounts.middleware.RoleBasedRedirectionMiddleware',
+    'accounts.security_middleware.NoCacheSecurityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -88,20 +89,27 @@ TEMPLATES = [
 WSGI_APPLICATION = 'staymatch.wsgi.application'
 ASGI_APPLICATION = 'staymatch.asgi.application'
 
-# Channel layer configuration (Redis)
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:16379/0')],
-            "connection_kwargs": {
-                "decode_responses": True,
-                "socket_connect_timeout": 5,
-                "socket_timeout": 5,
+# Channel layer configuration (Redis when deployed, InMemory locally for instant speed)
+if os.environ.get('REDIS_URL'):
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [os.environ.get('REDIS_URL')],
+                "connection_kwargs": {
+                    "decode_responses": True,
+                    "socket_connect_timeout": 5,
+                    "socket_timeout": 5,
+                },
             },
         },
-    },
-}
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer"
+        }
+    }
 
 
 # Database
