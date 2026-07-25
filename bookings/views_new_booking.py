@@ -140,19 +140,22 @@ def initiate_booking(request, property_id):
     if room and room.status in ['PARTIALLY_OCCUPIED', 'OCCUPIED'] and room.total_slots > 1:
         # User hasn't explicitly consented to low compatibility yet
         if not request.GET.get('force_proceed'):
-            occupants = [b.tenant for b in Booking.objects.filter(assigned_room=room, status__in=['ACTIVE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'PAYMENT_COMPLETE'])]
+            from accounts.models import LifestyleProfile
+            from bookings.services.booking.compatibility_service import CompatibilityService as BookingCompatibilityService
+            
+            active_statuses = ['ACTIVE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'PAYMENT_COMPLETE']
+            occupants = [b.tenant for b in Booking.objects.filter(assigned_room=room, status__in=active_statuses).exclude(tenant=user)]
             
             # Simple fallback if no active booking found but status is partially occupied
             if not occupants:
                 pass 
             else:
-                user_profile = getattr(user, 'lifestyleprofile', None)
-                if user_profile:
-                    comp_service = CompatibilityService()
-                    # Calculate average compatibility with occupants
-                    scores = comp_service.calculate_compatibility(user_profile, occupants)
-                    # scores is a dict mapping user_id to score
-                    avg_score = sum(scores.values()) / len(scores) if scores else 0
+                user_profile = LifestyleProfile.objects.filter(user=user, is_complete=True).first()
+                occupant_profiles = list(LifestyleProfile.objects.filter(user__in=occupants, is_complete=True))
+                
+                if user_profile and occupant_profiles:
+                    room_comp = BookingCompatibilityService.calculate_room_compatibility(user_profile, occupant_profiles)
+                    avg_score = room_comp.get('score', 0)
                     
                     if avg_score < 60:
                         # Find alternative partially occupied rooms
@@ -163,9 +166,13 @@ def initiate_booking(request, property_id):
                         
                         alternatives = []
                         for alt in alt_rooms:
-                            alt_occupants = [b.tenant for b in Booking.objects.filter(assigned_room=alt, status__in=['ACTIVE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'PAYMENT_COMPLETE'])]
-                            alt_scores = comp_service.calculate_compatibility(user_profile, alt_occupants)
-                            alt_avg = sum(alt_scores.values()) / len(alt_scores) if alt_scores else 0
+                            alt_occupants = [b.tenant for b in Booking.objects.filter(assigned_room=alt, status__in=active_statuses).exclude(tenant=user)]
+                            alt_profiles = list(LifestyleProfile.objects.filter(user__in=alt_occupants, is_complete=True))
+                            if alt_profiles:
+                                alt_comp = BookingCompatibilityService.calculate_room_compatibility(user_profile, alt_profiles)
+                                alt_avg = alt_comp.get('score', 0)
+                            else:
+                                alt_avg = 100
                             alternatives.append({
                                 'room': alt,
                                 'score': int(alt_avg)
@@ -663,7 +670,7 @@ def lifestyle_check(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, tenant=request.user, status='INITIATED')
     
     # Check for existing lifestyle profile
-    existing_profile = LifestyleProfile.objects.filter(user=request.user).first()
+    existing_profile = LifestyleProfile.objects.filter(user=request.user, is_complete=True).first()
     
     context = {
         'booking': booking,
@@ -680,9 +687,9 @@ def use_existing_lifestyle(request, booking_id):
     """
     booking = get_object_or_404(Booking, id=booking_id, tenant=request.user, status='INITIATED')
     
-    existing_profile = LifestyleProfile.objects.filter(user=request.user).first()
+    existing_profile = LifestyleProfile.objects.filter(user=request.user, is_complete=True).first()
     if not existing_profile:
-        messages.error(request, 'No existing profile found.')
+        messages.error(request, 'No completed profile found. Please fill out your preferences.')
         return redirect('bookings:lifestyle_check', booking_id=booking_id)
     
     # Proceed to routing engine (which will check if they are the first occupant or need matching)

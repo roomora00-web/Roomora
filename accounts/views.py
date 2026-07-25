@@ -1361,7 +1361,9 @@ def profile_management_view(request):
         elif form_type == 'lifestyle':
             lifestyle_form = LifestyleProfileForm(request.POST, instance=lifestyle_profile)
             if lifestyle_form.is_valid():
-                lifestyle_form.save()
+                inst = lifestyle_form.save(commit=False)
+                inst.is_complete = True
+                inst.save()
                 messages.success(request, 'Living preferences updated successfully.')
                 return redirect('/accounts/profile/?tab=lifestyle')
             else:
