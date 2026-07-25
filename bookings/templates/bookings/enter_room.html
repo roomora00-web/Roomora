@@ -7,34 +7,34 @@
 <div class="space-y-6 w-full animate-fade-in-up">
 
   <!-- Top Navigation & Hero Banner -->
-  <div class="glass-card p-5 sm:p-6 bg-gradient-to-br from-white via-[#F8F8FA] to-emerald-50/40 border border-black/10 shadow-sm rounded-2xl">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div class="space-y-2">
-        <div class="flex flex-wrap items-center gap-2.5">
-          <a href="{% url 'bookings:my-bookings' %}" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-extrabold text-[#6B7280] hover:text-[#111111] transition-colors">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+  <div class="glass-card p-6 sm:p-8 bg-gradient-to-br from-white via-[#F8F8FA] to-emerald-50/40 border border-black/10 shadow-sm rounded-3xl w-full">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="space-y-3">
+        <div class="flex flex-wrap items-center gap-3">
+          <a href="{% url 'bookings:my-bookings' %}" class="inline-flex items-center gap-2 text-sm font-extrabold text-[#6B7280] hover:text-[#111111] transition-colors">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
             <span>My Bookings</span>
           </a>
           <span class="text-sm text-gray-300">•</span>
-          <span class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-900 px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider border border-emerald-300">
-            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-900 px-3.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider border border-emerald-300">
+            <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
             Active Room Portal
           </span>
         </div>
 
-        <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] tracking-tight">
+        <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">
           {{ property.title }}
         </h1>
-        <p class="text-xs sm:text-sm text-[#6B7280] flex items-center gap-2 font-medium">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <p class="text-sm sm:text-base text-[#6B7280] flex items-center gap-2 font-medium">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           {{ property.address }}, {{ property.city }}
         </p>
       </div>
 
       <div class="flex items-center gap-3 shrink-0">
         {% if booking.payment_records.first %}
-        <a href="{% url 'payments:official_receipt' booking.payment_records.first.id %}" target="_blank" class="inline-flex items-center gap-2 bg-[#111111] text-white px-5 py-3 rounded-xl text-xs sm:text-sm font-extrabold hover:bg-black/80 transition-all shadow-md">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <a href="{% url 'payments:official_receipt' booking.payment_records.first.id %}" target="_blank" class="inline-flex items-center gap-2 bg-[#111111] text-white px-6 py-3.5 rounded-2xl text-xs sm:text-sm font-extrabold hover:bg-black/80 transition-all shadow-md">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           <span>Official Receipt (PDF)</span>
         </a>
         {% endif %}
@@ -43,10 +43,10 @@
   </div>
 
   <!-- Key Room Highlights Bar -->
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-    <div class="glass-card p-4 sm:p-5 space-y-1 border border-black/10 rounded-2xl bg-white shadow-xs">
-      <div class="text-[11px] font-extrabold uppercase tracking-wider text-[#888888]">Assigned Space</div>
-      <div class="font-outfit text-lg sm:text-xl font-extrabold text-[#111111]">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+    <div class="glass-card p-6 space-y-2 border border-black/10 rounded-2xl bg-white shadow-xs">
+      <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Assigned Space</div>
+      <div class="font-outfit text-xl sm:text-2xl font-extrabold text-[#111111]">
         {% if booking.assigned_room %}
           Room {{ booking.assigned_room.room_number }}
         {% elif booking.room_type %}
@@ -57,9 +57,9 @@
       </div>
     </div>
 
-    <div class="glass-card p-4 sm:p-5 space-y-1 border border-black/10 rounded-2xl bg-white shadow-xs">
-      <div class="text-[11px] font-extrabold uppercase tracking-wider text-[#888888]">Occupancy Type</div>
-      <div class="font-outfit text-lg sm:text-xl font-extrabold text-[#111111]">
+    <div class="glass-card p-6 space-y-2 border border-black/10 rounded-2xl bg-white shadow-xs">
+      <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Occupancy Type</div>
+      <div class="font-outfit text-xl sm:text-2xl font-extrabold text-[#111111]">
         {% if booking.room_type %}
           {{ booking.room_type.get_occupancy_type_display|default:booking.room_type.room_type_name }}
         {% else %}
@@ -68,81 +68,81 @@
       </div>
     </div>
 
-    <div class="glass-card p-4 sm:p-5 space-y-1 border border-black/10 rounded-2xl bg-white shadow-xs">
-      <div class="text-[11px] font-extrabold uppercase tracking-wider text-[#888888]">Stay Duration</div>
-      <div class="font-outfit text-lg sm:text-xl font-extrabold text-emerald-800">
+    <div class="glass-card p-6 space-y-2 border border-black/10 rounded-2xl bg-white shadow-xs">
+      <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Stay Duration</div>
+      <div class="font-outfit text-xl sm:text-2xl font-extrabold text-emerald-800">
         {{ booking.calculated_duration_label|title|default:"1 Semester" }}
       </div>
     </div>
 
-    <div class="glass-card p-4 sm:p-5 space-y-1 border border-black/10 rounded-2xl bg-white shadow-xs">
-      <div class="text-[11px] font-extrabold uppercase tracking-wider text-[#888888]">Booking Reference</div>
-      <div class="font-mono text-sm sm:text-base font-extrabold text-[#111111]">
+    <div class="glass-card p-6 space-y-2 border border-black/10 rounded-2xl bg-white shadow-xs">
+      <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Booking Reference</div>
+      <div class="font-mono text-base font-extrabold text-[#111111]">
         {{ booking.reference_number }}
       </div>
     </div>
   </div>
 
-  <!-- Main Portal Workspace Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+  <!-- Main Portal Workspace Grid: Full Width 2-Column Balanced Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
 
-    <!-- Left Column (2 Cols): Roommate Card, Photos, Amenities, Vacation Plan & Lifestyle -->
-    <div class="lg:col-span-2 space-y-6">
+    <!-- Left Column (7 Cols): Roommate Card, Photos, Specifications & Amenities -->
+    <div class="lg:col-span-7 space-y-6 w-full">
 
       <!-- Matched Roommate Details Card (High Priority Component) -->
-      <div class="glass-card p-5 sm:p-6 space-y-5 bg-gradient-to-br from-white via-emerald-50/20 to-emerald-100/30 border-2 border-emerald-500/30 rounded-2xl shadow-xs">
-        <div class="flex items-center justify-between border-b border-emerald-900/10 pb-3.5">
-          <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-extrabold text-base shadow-xs shrink-0">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <div class="glass-card p-6 sm:p-8 space-y-6 bg-gradient-to-br from-white via-emerald-50/20 to-emerald-100/30 border-2 border-emerald-500/30 rounded-3xl shadow-sm w-full">
+        <div class="flex items-center justify-between border-b border-emerald-900/10 pb-4">
+          <div class="flex items-center gap-3.5">
+            <div class="h-12 w-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-extrabold text-lg shadow-sm shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 1 0 7.75"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
             <div>
-              <h2 class="font-outfit text-xl font-extrabold text-[#111111]">Roommate & Shared Space Details</h2>
-              <p class="text-xs text-[#6B7280]">Occupants sharing this assigned room space.</p>
+              <h2 class="font-outfit text-2xl font-extrabold text-[#111111]">Roommate & Shared Space Details</h2>
+              <p class="text-xs sm:text-sm text-[#6B7280]">Occupants sharing this assigned room space.</p>
             </div>
           </div>
           {% if booking.roommate_info %}
-          <span class="text-xs font-extrabold text-emerald-900 bg-emerald-100 border border-emerald-300 px-3.5 py-1 rounded-full uppercase tracking-wider shadow-xs">
+          <span class="text-xs font-extrabold text-emerald-900 bg-emerald-100 border border-emerald-300 px-4 py-1.5 rounded-full uppercase tracking-wider shadow-xs">
             {{ booking.roommate_info.score }}% Compatible Match
           </span>
           {% else %}
-          <span class="text-xs font-bold text-gray-700 bg-gray-100 border border-gray-200 px-3 py-1 rounded-full">
+          <span class="text-xs font-bold text-gray-700 bg-gray-100 border border-gray-200 px-3.5 py-1.5 rounded-full">
             Single Occupant / Anchor Position
           </span>
           {% endif %}
         </div>
 
         {% if booking.roommate_info %}
-        <div class="p-5 rounded-xl bg-white border border-emerald-200 shadow-xs space-y-4">
+        <div class="p-6 rounded-2xl bg-white border border-emerald-200 shadow-xs space-y-5">
           <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div class="flex items-center gap-3.5">
+            <div class="flex items-center gap-4">
               {% if booking.roommate_info.user.profile_picture %}
-              <img src="{{ booking.roommate_info.user.profile_picture.url }}" alt="{{ booking.roommate_info.user.first_name }}" class="h-14 w-14 rounded-xl object-cover border-2 border-emerald-500 shadow-xs">
+              <img src="{{ booking.roommate_info.user.profile_picture.url }}" alt="{{ booking.roommate_info.user.first_name }}" class="h-16 w-16 rounded-2xl object-cover border-2 border-emerald-500 shadow-sm">
               {% else %}
-              <div class="h-14 w-14 rounded-xl bg-[#111111] text-white font-extrabold text-lg flex items-center justify-center shrink-0 border-2 border-emerald-500">
+              <div class="h-16 w-16 rounded-2xl bg-[#111111] text-white font-extrabold text-xl flex items-center justify-center shrink-0 border-2 border-emerald-500">
                 {{ booking.roommate_info.user.first_name|slice:":1" }}{{ booking.roommate_info.user.last_name|slice:":1" }}
               </div>
               {% endif %}
               <div>
-                <div class="text-base font-extrabold text-[#111111]">{{ booking.roommate_info.user.first_name }} {{ booking.roommate_info.user.last_name }}</div>
-                <div class="text-xs text-[#6B7280] font-mono">{{ booking.roommate_info.user.email }}</div>
-                <div class="text-xs font-extrabold text-emerald-800 mt-0.5">Assigned to Room Position {{ booking.roommate_info.position }}</div>
+                <div class="text-lg font-extrabold text-[#111111]">{{ booking.roommate_info.user.first_name }} {{ booking.roommate_info.user.last_name }}</div>
+                <div class="text-sm text-[#6B7280] font-mono">{{ booking.roommate_info.user.email }}</div>
+                <div class="text-xs font-extrabold text-emerald-800 mt-1">Assigned to Room Position {{ booking.roommate_info.position }}</div>
               </div>
             </div>
 
-            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-center sm:text-right shrink-0">
-              <div class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800">Match Score</div>
-              <div class="font-outfit text-2xl font-extrabold text-emerald-900">{{ booking.roommate_info.score }}%</div>
+            <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 text-center sm:text-right shrink-0">
+              <div class="text-xs font-extrabold uppercase tracking-wider text-emerald-800">Match Score</div>
+              <div class="font-outfit text-3xl font-extrabold text-emerald-900">{{ booking.roommate_info.score }}%</div>
             </div>
           </div>
 
           {% if booking.roommate_info.alignments %}
-          <div class="pt-3 border-t border-black/[0.06] space-y-2.5">
+          <div class="pt-3 border-t border-black/[0.06] space-y-3">
             <div class="text-xs font-extrabold text-[#111111] uppercase tracking-wider">Lifestyle Compatibility Alignments</div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {% for align in booking.roommate_info.alignments|slice:":4" %}
-              <div class="flex items-center gap-2 p-2.5 rounded-lg bg-[#F8F8FA] border border-black/10 text-xs font-semibold text-[#111111]">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-emerald-600 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
+              <div class="flex items-center gap-2.5 p-3 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs sm:text-sm font-semibold text-[#111111]">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-emerald-600 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
                 <span>{{ align.description }}</span>
               </div>
               {% endfor %}
@@ -151,233 +151,145 @@
           {% endif %}
         </div>
         {% else %}
-        <div class="p-6 bg-[#F8F8FA] border border-black/10 rounded-xl text-center space-y-2">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mx-auto text-emerald-700"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          <div class="text-xs sm:text-sm font-extrabold text-[#111111]">You are currently the primary tenant in this room.</div>
-          <p class="text-xs text-[#6B7280] max-w-md mx-auto">When a second occupant books a slot in this room, their lifestyle profile will be automatically matched against yours.</p>
+        <div class="p-8 bg-[#F8F8FA] border border-black/10 rounded-2xl text-center space-y-3">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mx-auto text-emerald-700"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <div class="text-sm font-extrabold text-[#111111]">You are currently the primary tenant in this room.</div>
+          <p class="text-xs sm:text-sm text-[#6B7280] max-w-md mx-auto">When a second occupant books a slot in this room, their lifestyle profile will be automatically matched against yours.</p>
         </div>
         {% endif %}
       </div>
 
       <!-- Property & Room Photos Showcase -->
-      <div class="glass-card p-5 sm:p-6 space-y-4 rounded-2xl border border-black/10 bg-white shadow-xs">
-        <div class="flex items-center justify-between border-b border-black/[0.06] pb-3.5">
-          <h2 class="font-outfit text-lg sm:text-xl font-extrabold text-[#111111] flex items-center gap-2.5">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <div class="glass-card p-6 sm:p-8 space-y-5 rounded-3xl border border-black/10 bg-white shadow-xs w-full">
+        <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+          <h2 class="font-outfit text-xl sm:text-2xl font-extrabold text-[#111111] flex items-center gap-3">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             <span>Property & Room Showcase</span>
           </h2>
           <span class="text-xs text-[#888888] font-extrabold uppercase tracking-wider">Verified Photos</span>
         </div>
 
         <!-- Image Gallery Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {% if all_showcase_images %}
-            {% for img in all_showcase_images|slice:":6" %}
-            <div class="relative group h-48 rounded-xl overflow-hidden border border-black/10 shadow-xs bg-[#F8F8FA]">
+            {% for img in all_showcase_images|slice:":4" %}
+            <div class="relative group h-60 rounded-2xl overflow-hidden border border-black/10 shadow-xs bg-[#F8F8FA]">
               <img src="{{ img.url }}" alt="{{ img.label }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent p-3 flex items-end justify-between">
-                <span class="text-xs text-white font-extrabold uppercase tracking-wider bg-black/50 px-2.5 py-0.5 rounded-md backdrop-blur-xs">{{ img.badge }}</span>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent p-4 flex items-end justify-between">
+                <span class="text-xs text-white font-extrabold uppercase tracking-wider bg-black/50 px-3 py-1 rounded-lg backdrop-blur-xs">{{ img.badge }}</span>
               </div>
             </div>
             {% endfor %}
           {% else %}
-            <div class="col-span-3 p-10 bg-[#F8F8FA] border border-black/10 rounded-xl text-center space-y-2">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="mx-auto text-[#888888]"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <div class="text-xs text-[#6B7280] font-bold">Verified property photos loaded directly from Roomora database</div>
+            <div class="col-span-2 p-12 bg-[#F8F8FA] border border-black/10 rounded-2xl text-center space-y-2">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="mx-auto text-[#888888]"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <div class="text-sm text-[#6B7280] font-bold">Verified property photos loaded directly from Roomora database</div>
             </div>
           {% endif %}
         </div>
       </div>
 
       <!-- Dynamic Room & Property Amenities Grid -->
-      <div class="glass-card p-5 sm:p-6 space-y-5 rounded-2xl border border-black/10 bg-white shadow-xs">
-        <h2 class="font-outfit text-lg sm:text-xl font-extrabold text-[#111111] flex items-center gap-2.5">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div class="glass-card p-6 sm:p-8 space-y-6 rounded-3xl border border-black/10 bg-white shadow-xs w-full">
+        <h2 class="font-outfit text-xl sm:text-2xl font-extrabold text-[#111111] flex items-center gap-3">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span>Verified Specifications & Amenities</span>
         </h2>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {% if booking.room_type %}
             {% if booking.room_type.wifi_available %}
-            <div class="flex items-center gap-2.5 p-3.5 bg-[#F8F8FA] border border-black/10 rounded-xl text-xs sm:text-sm font-extrabold text-[#111111]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+            <div class="flex items-center gap-3 p-4 bg-[#F8F8FA] border border-black/10 rounded-2xl text-sm font-extrabold text-[#111111]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
               <span>High-Speed Wi-Fi</span>
             </div>
             {% endif %}
 
             {% if booking.room_type.air_conditioning %}
-            <div class="flex items-center gap-2.5 p-3.5 bg-[#F8F8FA] border border-black/10 rounded-xl text-xs sm:text-sm font-extrabold text-[#111111]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <div class="flex items-center gap-3 p-4 bg-[#F8F8FA] border border-black/10 rounded-2xl text-sm font-extrabold text-[#111111]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
               <span>Air Conditioning</span>
             </div>
             {% endif %}
 
             {% if booking.room_type.private_bathroom %}
-            <div class="flex items-center gap-2.5 p-3.5 bg-[#F8F8FA] border border-black/10 rounded-xl text-xs sm:text-sm font-extrabold text-[#111111]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-2.12 0 1.5 1.5 0 0 0 0 2.12L6.88 8M16 13a4 4 0 0 1-4 4H7.5A4.5 4.5 0 0 1 3 12.5V12a9 9 0 0 1 18 0v.5"/></svg>
+            <div class="flex items-center gap-3 p-4 bg-[#F8F8FA] border border-black/10 rounded-2xl text-sm font-extrabold text-[#111111]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-2.12 0 1.5 1.5 0 0 0 0 2.12L6.88 8M16 13a4 4 0 0 1-4 4H7.5A4.5 4.5 0 0 1 3 12.5V12a9 9 0 0 1 18 0v.5"/></svg>
               <span>Private Bathroom</span>
             </div>
             {% endif %}
 
             {% if booking.room_type.study_desk_available %}
-            <div class="flex items-center gap-2.5 p-3.5 bg-[#F8F8FA] border border-black/10 rounded-xl text-xs sm:text-sm font-extrabold text-[#111111]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <div class="flex items-center gap-3 p-4 bg-[#F8F8FA] border border-black/10 rounded-2xl text-sm font-extrabold text-[#111111]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
               <span>Dedicated Study Desk</span>
             </div>
             {% endif %}
 
             {% if booking.room_type.electricity_backup %}
-            <div class="flex items-center gap-2.5 p-3.5 bg-[#F8F8FA] border border-black/10 rounded-xl text-xs sm:text-sm font-extrabold text-[#111111]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <div class="flex items-center gap-3 p-4 bg-[#F8F8FA] border border-black/10 rounded-2xl text-sm font-extrabold text-[#111111]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               <span>24/7 Power Backup</span>
             </div>
             {% endif %}
 
             {% if booking.room_type.wardrobe_available %}
-            <div class="flex items-center gap-2.5 p-3.5 bg-[#F8F8FA] border border-black/10 rounded-xl text-xs sm:text-sm font-extrabold text-[#111111]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+            <div class="flex items-center gap-3 p-4 bg-[#F8F8FA] border border-black/10 rounded-2xl text-sm font-extrabold text-[#111111]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
               <span>Personal Wardrobe</span>
             </div>
             {% endif %}
           {% endif %}
 
           {% if property.security_personnel or property.cctv %}
-          <div class="flex items-center gap-2.5 p-3.5 bg-[#F8F8FA] border border-black/10 rounded-xl text-xs sm:text-sm font-extrabold text-[#111111]">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div class="flex items-center gap-3 p-4 bg-[#F8F8FA] border border-black/10 rounded-2xl text-sm font-extrabold text-[#111111]">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span>24/7 Security Personnel</span>
           </div>
           {% endif %}
 
           {% for amenity in property.amenities.all %}
-          <div class="flex items-center gap-2.5 p-3.5 bg-[#F8F8FA] border border-black/10 rounded-xl text-xs sm:text-sm font-extrabold text-[#111111]">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
+          <div class="flex items-center gap-3 p-4 bg-[#F8F8FA] border border-black/10 rounded-2xl text-sm font-extrabold text-[#111111]">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
             <span>{{ amenity.name }}</span>
           </div>
           {% endfor %}
         </div>
       </div>
 
-      <!-- Stay Duration, Lease Progress & Vacation Declaration Plan -->
-      <div class="glass-card p-5 sm:p-6 space-y-5 rounded-2xl border border-black/10 bg-white shadow-xs">
-        <div class="flex items-center justify-between">
-          <h2 class="font-outfit text-lg sm:text-xl font-extrabold text-[#111111] flex items-center gap-2.5">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span>Stay Duration & Vacation Protocol</span>
-          </h2>
-          <span class="text-xs font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Verified Lease
-          </span>
-        </div>
-
-        <!-- Dates Breakdown -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 bg-[#F8F8FA] border border-black/10 p-4.5 rounded-xl text-xs sm:text-sm">
-          <div>
-            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Move-In Date</div>
-            <div class="font-extrabold text-[#111111] mt-0.5 text-sm sm:text-base">
-              {{ booking.move_in_date|date:"d M Y"|default:"Pending Schedule" }}
-            </div>
-          </div>
-          <div>
-            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Move-Out Date</div>
-            <div class="font-extrabold text-[#111111] mt-0.5 text-sm sm:text-base">
-              {{ booking.move_out_date|date:"d M Y"|default:"Pending Schedule" }}
-            </div>
-          </div>
-          <div>
-            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Total Academic Stay</div>
-            <div class="font-extrabold text-emerald-800 mt-0.5 text-sm sm:text-base">
-              {{ booking.calculated_duration_label|title|default:"1 Semester" }}
-            </div>
-          </div>
-        </div>
-
-        <!-- Vacation & Semester Break Card -->
-        <div class="p-5 rounded-xl bg-gradient-to-r from-[#111111] to-[#222222] text-white space-y-3.5 shadow-sm">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-emerald-400">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <span>Semester Vacation & Storage Declaration</span>
-            </div>
-            <span class="text-[11px] bg-emerald-950 text-emerald-300 border border-emerald-800/80 px-2.5 py-0.5 rounded-full font-bold">Active Protocol</span>
-          </div>
-          <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
-            During official university vacation breaks, your room and belongings are soft-locked and fully secured. You can update your vacation departure dates or declare luggage storage options at any time.
-          </p>
-          <div class="pt-0.5">
-            <a href="{% url 'bookings:vacation-reserve-update' booking.id %}" class="inline-flex items-center gap-2 bg-emerald-800 text-white px-4.5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold hover:bg-emerald-900 transition-colors shadow-xs">
-              <span>Update Vacation & Return Dates ➔</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Lifestyle Summary Card -->
-      <div class="glass-card p-5 sm:p-6 space-y-5 rounded-2xl border border-black/10 bg-white shadow-xs">
-        <h2 class="font-outfit text-lg sm:text-xl font-extrabold text-[#111111] flex items-center gap-2.5">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span>Your Lifestyle & Compatibility Profile</span>
-        </h2>
-
-        {% if lifestyle_profile %}
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs sm:text-sm">
-          <div class="p-3.5 rounded-xl bg-[#F8F8FA] border border-black/10 space-y-1">
-            <div class="text-[11px] font-extrabold uppercase text-[#888888]">Sleep Schedule</div>
-            <div class="font-extrabold text-[#111111]">{{ lifestyle_profile.get_sleep_time_display|default:"Not specified" }}</div>
-          </div>
-          <div class="p-3.5 rounded-xl bg-[#F8F8FA] border border-black/10 space-y-1">
-            <div class="text-[11px] font-extrabold uppercase text-[#888888]">Cleanliness Preference</div>
-            <div class="font-extrabold text-[#111111]">{{ lifestyle_profile.get_cleaning_frequency_display|default:"Not specified" }}</div>
-          </div>
-          <div class="p-3.5 rounded-xl bg-[#F8F8FA] border border-black/10 space-y-1">
-            <div class="text-[11px] font-extrabold uppercase text-[#888888]">Night Activity</div>
-            <div class="font-extrabold text-[#111111]">{{ lifestyle_profile.get_night_activity_display|default:"Not specified" }}</div>
-          </div>
-          <div class="p-3.5 rounded-xl bg-[#F8F8FA] border border-black/10 space-y-1">
-            <div class="text-[11px] font-extrabold uppercase text-[#888888]">Visitor Frequency</div>
-            <div class="font-extrabold text-[#111111]">{{ lifestyle_profile.get_visitor_frequency_display|default:"Not specified" }}</div>
-          </div>
-        </div>
-        {% else %}
-        <div class="p-6 bg-[#F8F8FA] border border-black/10 rounded-xl text-center space-y-2">
-          <div class="text-xs sm:text-sm text-[#6B7280] font-bold">You have not completed your lifestyle profile questionnaire yet.</div>
-          <a href="{% url 'accounts:profile-settings' %}" class="inline-block text-xs sm:text-sm font-extrabold text-emerald-800 hover:underline">Complete Lifestyle Profile ➔</a>
-        </div>
-        {% endif %}
-      </div>
-
     </div>
 
-    <!-- Right Column (1 Col): Admin & Support Interactive Chatbox -->
-    <div class="space-y-6">
+    <!-- Right Column (5 Cols): Chatbox, Stay Duration & Vacation Protocol, Lifestyle -->
+    <div class="lg:col-span-5 space-y-6 w-full">
 
-      <div class="glass-card p-5 flex flex-col h-[650px] space-y-4 rounded-2xl border border-black/10 bg-white shadow-xs">
+      <!-- Admin & Support Interactive Chatbox -->
+      <div class="glass-card p-6 flex flex-col h-[520px] space-y-4 rounded-3xl border border-black/10 bg-white shadow-sm w-full">
         
         <!-- Chatbox Header -->
-        <div class="border-b border-black/[0.06] pb-3.5 flex items-center justify-between">
-          <div class="space-y-0.5">
-            <h3 class="font-outfit text-lg sm:text-xl font-extrabold text-[#111111] flex items-center gap-2">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <div class="border-b border-black/[0.06] pb-4 flex items-center justify-between">
+          <div class="space-y-1">
+            <h3 class="font-outfit text-xl font-extrabold text-[#111111] flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               <span>Room Admin Chat</span>
             </h3>
             <p class="text-xs text-[#6B7280]">Direct channel with Property Management</p>
           </div>
-          <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full border border-emerald-200">
+          <span class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full border border-emerald-200">
             <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
             Online
           </span>
         </div>
 
         <!-- Chat Stream Window -->
-        <div id="chatStream" class="flex-1 overflow-y-auto space-y-3.5 pr-1 text-xs sm:text-sm">
+        <div id="chatStream" class="flex-1 overflow-y-auto space-y-4 pr-1 text-sm">
           
           <!-- System Welcome Message -->
-          <div class="bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl text-[#111111] space-y-1">
-            <div class="flex items-center justify-between text-[11px] font-extrabold text-emerald-800 uppercase tracking-wider">
+          <div class="bg-[#F8F8FA] border border-black/10 p-4 rounded-2xl text-[#111111] space-y-1">
+            <div class="flex items-center justify-between text-xs font-extrabold text-emerald-800 uppercase tracking-wider">
               <span>Roomora Property Concierge</span>
               <span>System</span>
             </div>
-            <p class="text-xs sm:text-sm leading-relaxed text-[#444444]">
+            <p class="text-sm leading-relaxed text-[#444444]">
               Welcome to your Room Portal chat! You can send inquiries about room setup, maintenance requests, or vacation declarations directly to the admin here.
             </p>
           </div>
@@ -386,15 +298,15 @@
           {% for msg in room_messages %}
           {% if msg.sender == request.user %}
           <div class="flex flex-col items-end space-y-1">
-            <div class="bg-[#111111] text-white p-3.5 rounded-xl max-w-[85%] shadow-xs leading-relaxed text-xs sm:text-sm">
+            <div class="bg-[#111111] text-white p-4 rounded-2xl max-w-[85%] shadow-xs leading-relaxed text-sm">
               {{ msg.content }}
             </div>
             <span class="text-[10px] text-[#888888] font-bold px-1">{{ msg.created_at|date:"M d, H:i" }}</span>
           </div>
           {% else %}
           <div class="flex flex-col items-start space-y-1">
-            <div class="bg-[#F8F8FA] border border-black/10 text-[#111111] p-3.5 rounded-xl max-w-[85%] shadow-xs leading-relaxed text-xs sm:text-sm">
-              <div class="text-[11px] font-extrabold text-emerald-800 uppercase mb-1">{{ msg.sender.full_name|default:"Roomora Admin" }}</div>
+            <div class="bg-[#F8F8FA] border border-black/10 text-[#111111] p-4 rounded-2xl max-w-[85%] shadow-xs leading-relaxed text-sm">
+              <div class="text-xs font-extrabold text-emerald-800 uppercase mb-1">{{ msg.sender.full_name|default:"Roomora Admin" }}</div>
               {{ msg.content }}
             </div>
             <span class="text-[10px] text-[#888888] font-bold px-1">{{ msg.created_at|date:"M d, H:i" }}</span>
@@ -405,15 +317,104 @@
         </div>
 
         <!-- Chat Form -->
-        <form id="chatForm" class="border-t border-black/[0.06] pt-3.5 flex items-center gap-2.5">
+        <form id="chatForm" class="border-t border-black/[0.06] pt-4 flex items-center gap-3">
           {% csrf_token %}
-          <input type="text" id="chatInput" placeholder="Type message to admin..." required class="flex-1 bg-[#F8F8FA] border border-black/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-[#111111] focus:outline-none focus:border-emerald-600 transition-colors font-medium">
-          <button type="submit" id="sendBtn" class="bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold hover:bg-emerald-900 transition-colors shadow-xs shrink-0 flex items-center gap-1.5">
+          <input type="text" id="chatInput" placeholder="Type message to admin..." required class="flex-1 bg-[#F8F8FA] border border-black/10 rounded-2xl px-4 py-3 text-sm text-[#111111] focus:outline-none focus:border-emerald-600 transition-colors font-medium">
+          <button type="submit" id="sendBtn" class="bg-emerald-800 text-white px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold hover:bg-emerald-900 transition-colors shadow-xs shrink-0 flex items-center gap-2">
             <span>Send</span>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </form>
 
+      </div>
+
+      <!-- Stay Duration, Lease Progress & Vacation Declaration Plan -->
+      <div class="glass-card p-6 sm:p-8 space-y-6 rounded-3xl border border-black/10 bg-white shadow-xs w-full">
+        <div class="flex items-center justify-between">
+          <h2 class="font-outfit text-xl sm:text-2xl font-extrabold text-[#111111] flex items-center gap-3">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>Stay Duration & Protocol</span>
+          </h2>
+          <span class="text-xs font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-full uppercase tracking-wider flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Verified Lease
+          </span>
+        </div>
+
+        <!-- Dates Breakdown -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl text-sm">
+          <div>
+            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Move-In Date</div>
+            <div class="font-extrabold text-[#111111] mt-1 text-sm sm:text-base">
+              {{ booking.move_in_date|date:"d M Y"|default:"Pending Schedule" }}
+            </div>
+          </div>
+          <div>
+            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Move-Out Date</div>
+            <div class="font-extrabold text-[#111111] mt-1 text-sm sm:text-base">
+              {{ booking.move_out_date|date:"d M Y"|default:"Pending Schedule" }}
+            </div>
+          </div>
+          <div>
+            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Academic Stay</div>
+            <div class="font-extrabold text-emerald-800 mt-1 text-sm sm:text-base">
+              {{ booking.calculated_duration_label|title|default:"1 Semester" }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Vacation & Semester Break Card -->
+        <div class="p-6 rounded-2xl bg-gradient-to-r from-[#111111] to-[#222222] text-white space-y-4 shadow-md">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-emerald-400">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>Semester Vacation & Storage Declaration</span>
+            </div>
+            <span class="text-xs bg-emerald-950 text-emerald-300 border border-emerald-800/80 px-3 py-1 rounded-full font-bold">Active Protocol</span>
+          </div>
+          <p class="text-sm text-gray-300 leading-relaxed">
+            During official university vacation breaks, your room and belongings are soft-locked and fully secured. You can update your vacation departure dates or declare luggage storage options at any time.
+          </p>
+          <div class="pt-1">
+            <a href="{% url 'bookings:vacation-reserve-update' booking.id %}" class="inline-flex items-center gap-2 bg-emerald-800 text-white px-5 py-3 rounded-xl text-xs sm:text-sm font-extrabold hover:bg-emerald-900 transition-colors shadow-xs">
+              <span>Update Vacation & Return Dates ➔</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lifestyle Summary Card -->
+      <div class="glass-card p-6 sm:p-8 space-y-6 rounded-3xl border border-black/10 bg-white shadow-xs w-full">
+        <h2 class="font-outfit text-xl sm:text-2xl font-extrabold text-[#111111] flex items-center gap-3">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Your Lifestyle & Compatibility Profile</span>
+        </h2>
+
+        {% if lifestyle_profile %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div class="p-4 rounded-2xl bg-[#F8F8FA] border border-black/10 space-y-1">
+            <div class="text-xs font-extrabold uppercase text-[#888888]">Sleep Schedule</div>
+            <div class="font-extrabold text-[#111111]">{{ lifestyle_profile.get_sleep_time_display|default:"Not specified" }}</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-[#F8F8FA] border border-black/10 space-y-1">
+            <div class="text-xs font-extrabold uppercase text-[#888888]">Cleanliness Preference</div>
+            <div class="font-extrabold text-[#111111]">{{ lifestyle_profile.get_cleaning_frequency_display|default:"Not specified" }}</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-[#F8F8FA] border border-black/10 space-y-1">
+            <div class="text-xs font-extrabold uppercase text-[#888888]">Night Activity</div>
+            <div class="font-extrabold text-[#111111]">{{ lifestyle_profile.get_night_activity_display|default:"Not specified" }}</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-[#F8F8FA] border border-black/10 space-y-1">
+            <div class="text-xs font-extrabold uppercase text-[#888888]">Visitor Frequency</div>
+            <div class="font-extrabold text-[#111111]">{{ lifestyle_profile.get_visitor_frequency_display|default:"Not specified" }}</div>
+          </div>
+        </div>
+        {% else %}
+        <div class="p-8 bg-[#F8F8FA] border border-black/10 rounded-2xl text-center space-y-2">
+          <div class="text-sm text-[#6B7280] font-bold">You have not completed your lifestyle profile questionnaire yet.</div>
+          <a href="{% url 'accounts:profile-settings' %}" class="inline-block text-sm font-extrabold text-emerald-800 hover:underline">Complete Lifestyle Profile ➔</a>
+        </div>
+        {% endif %}
       </div>
 
     </div>
