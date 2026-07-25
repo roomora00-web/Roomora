@@ -1,16 +1,16 @@
 {% extends "bookings/base_checkout.html" %}
 {% load static %}
 
-{% block title %}Match Review & Consent — Roomora{% endblock %}
+{% block title %}Match Review & Consent — {{ property.title }}{% endblock %}
 
 {% block extra_css %}
 <style>
     .modal-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.88);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         display: none;
         align-items: center;
         justify-content: center;
@@ -27,12 +27,12 @@
 
     .modal-card {
         width: 100%;
-        max-width: 520px;
-        background: #09090b;
-        border: 1px solid #27272a;
-        border-radius: 24px;
+        max-width: 500px;
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 28px;
         padding: 32px;
-        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8);
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
         transform: scale(0.96);
         transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -42,275 +42,236 @@
     }
 
     .score-ring {
-        background: conic-gradient(#ffffff calc({{ match_score }} * 1%), #27272a 0deg);
+        background: conic-gradient(#111111 calc({{ match_score }} * 1%), #e4e4e7 0deg);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-[#09090b] text-white selection:bg-white selection:text-black pb-28 font-sans">
-    
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 space-y-8">
+<div class="min-h-[calc(100vh-73px)] bg-[#F4F4F6] px-4 py-6 sm:px-8 lg:px-12 w-full pb-28 md:pb-12">
+    <div class="w-full flex flex-col gap-6 sm:gap-8">
         
-        <!-- Header Navigation & Status Tag -->
-        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-6">
-            <div class="flex items-center gap-3">
-                <a href="{% url 'bookings:my-bookings' %}" class="inline-flex items-center gap-2 text-xs font-bold text-zinc-300 hover:text-white transition-colors bg-zinc-900 hover:bg-zinc-800 px-3.5 py-2 rounded-full border border-zinc-700">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    Back to My Bookings
-                </a>
-                <span class="text-zinc-600">/</span>
-                <span class="text-xs font-bold uppercase tracking-widest text-zinc-300 bg-zinc-900 px-3 py-1.5 rounded-full border border-zinc-700">Phase 6.6 · Roommate Match Review</span>
-            </div>
-            
-            {% if consent_timeout %}
-            <div class="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-700 px-4 py-2 rounded-full text-xs font-bold text-white shadow-md">
-                <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Hold expires in: <strong id="timeRemaining" class="font-mono font-extrabold text-white text-sm">--:--:--</strong></span>
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- HERO MATCH SUMMARY CARD (Strict Black & White) -->
-        <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8">
-            
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                
-                <!-- Left: Score Ring & Verdict -->
-                <div class="lg:col-span-4 flex flex-col items-center text-center sm:flex-row sm:text-left lg:flex-col lg:text-center gap-6 pr-0 lg:pr-8 lg:border-r border-zinc-800">
-                    <div class="relative flex items-center justify-center">
-                        <div class="w-36 h-36 rounded-full score-ring p-3 flex items-center justify-center shadow-xl">
-                            <div class="w-full h-full bg-[#09090b] rounded-full flex flex-col items-center justify-center border border-zinc-700">
-                                <span class="text-4xl font-extrabold font-outfit text-white tracking-tight">{{ match_score }}<span class="text-zinc-400 text-2xl">%</span></span>
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mt-0.5">Compatibility</span>
-                            </div>
-                        </div>
+        <!-- Top Stepper Bar (Exact Match to Screenshot) -->
+        <div class="glass-card p-4 sm:p-6 w-full">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300/80 bg-emerald-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-800">
+                        <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Step 3 of 4 — Roommate Match Verification
                     </div>
-                    <div class="space-y-2">
-                        <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-zinc-900 text-white border border-zinc-700 text-xs font-extrabold uppercase tracking-wider">
-                            ★ {{ match_verdict }}
-                        </div>
-                        <h1 class="text-2xl sm:text-3xl font-extrabold font-outfit text-white tracking-tight">Roommate Match Review</h1>
-                        <p class="text-xs sm:text-sm text-zinc-400 max-w-xs leading-relaxed">Review lifestyle compatibility and decide whether to accept this room pairing.</p>
+                    <h1 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] mt-2 tracking-tight">Roommate Match Review & Consent</h1>
+                </div>
+                
+                <!-- Step Indicator Buttons -->
+                <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+                    <a href="{% url 'bookings:booking_initiated' booking.id %}" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0 hover:bg-emerald-100 transition-colors">
+                        <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
+                        <span>1. Soft Lock</span>
+                    </a>
+                    <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+                    <a href="{% url 'bookings:duration_selection' booking.id %}" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-xs font-bold text-emerald-900 shrink-0 hover:bg-emerald-100 transition-colors">
+                        <div class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">✓</div>
+                        <span>2. Duration</span>
+                    </a>
+                    <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+                    <div class="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 rounded-2xl text-xs font-bold shadow-sm shrink-0">
+                        <div class="h-5 w-5 rounded-full bg-white text-[#111111] flex items-center justify-center text-[10px] font-extrabold">3</div>
+                        <span>3. Match Review</span>
+                    </div>
+                    <div class="h-0.5 w-4 bg-black/10 shrink-0"></div>
+                    <div class="flex items-center gap-2 bg-black/[0.04] text-[#6B7280] px-4 py-2 rounded-2xl text-xs font-semibold shrink-0">
+                        <div class="h-5 w-5 rounded-full bg-black/10 text-[#6B7280] flex items-center justify-center text-[10px]">4</div>
+                        <span>4. Confirm</span>
                     </div>
                 </div>
+            </div>
 
-                <!-- Right: Accurate Property & Booking Information -->
-                <div class="lg:col-span-8 space-y-6">
+            <!-- Progress Bar -->
+            <div class="mt-5 pt-4 border-t border-black/[0.06] flex items-center gap-4">
+                <div class="flex-1 h-2 rounded-full bg-black/10 overflow-hidden">
+                    <div class="h-full w-full bg-emerald-600 rounded-full transition-all duration-500"></div>
+                </div>
+                <span class="text-xs font-extrabold text-emerald-700">100% Completed</span>
+            </div>
+        </div>
+
+        <!-- Main Workspace Grid (Left content + Right sidebar) -->
+        <div class="grid gap-6 lg:gap-8 lg:grid-cols-[1.3fr_0.7fr] items-start w-full">
+            
+            <!-- LEFT COLUMN: Compatibility Details -->
+            <div class="space-y-6 w-full">
+                
+                <div class="glass-card p-5 sm:p-8 space-y-6">
                     
-                    <!-- Property & Unit Overview Pill -->
-                    <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center shrink-0 text-white font-extrabold text-2xl">
-                                🏢
-                            </div>
-                            <div>
-                                <span class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Assigned Property</span>
-                                <h3 class="text-lg font-bold text-white font-outfit mt-0.5">{{ property.title }}</h3>
-                                <p class="text-xs text-zinc-400 flex items-center gap-1.5 mt-0.5">
-                                    <svg class="w-3.5 h-3.5 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                    {{ property.location_city|default:property.address|default:"Ghana" }}
-                                </p>
-                            </div>
+                    <!-- Header -->
+                    <div class="flex items-center gap-3 border-b border-black/[0.06] pb-4">
+                        <div class="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         </div>
-
-                        <div class="bg-black border border-zinc-800 rounded-xl px-4 py-3 text-left sm:text-right shrink-0 min-w-[140px]">
-                            <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Unit / Room</span>
-                            <span class="text-sm font-extrabold text-white font-outfit block">
-                                {% if room_number %}Room {{ room_number }}{% elif booking.assigned_room %}Room {{ booking.assigned_room.room_number }}{% else %}Assigned Room{% endif %}
-                            </span>
-                            <span class="text-[11px] text-zinc-400 block mt-0.5">{{ room_type_name|default:"Standard Room" }}</span>
+                        <div>
+                            <h2 class="font-outfit text-xl font-bold text-[#111111]">Roommate Compatibility & Match Summary</h2>
+                            <p class="text-xs text-[#6B7280]">Review your compatibility highlights and accept to lock in your room.</p>
                         </div>
                     </div>
 
-                    <!-- Roommate Occupant Info Card -->
-                    <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-white text-black font-extrabold text-base flex items-center justify-center shrink-0 uppercase shadow-md">
-                                {% if roommate %}
-                                    {{ roommate.first_name|default:roommate.email|slice:":2" }}
-                                {% else %}
-                                    RM
-                                {% endif %}
+                    <!-- Compatibility Gauge Card -->
+                    <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-4">
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-5">
+                            <div class="flex items-center gap-5">
+                                <div class="w-24 h-24 rounded-full score-ring p-2 flex items-center justify-center shrink-0 shadow-md">
+                                    <div class="w-full h-full bg-white rounded-full flex flex-col items-center justify-center border border-black/10">
+                                        <span class="text-2xl font-extrabold font-outfit text-[#111111] tracking-tight">{{ match_score }}%</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-1 text-center sm:text-left">
+                                    <span class="inline-block bg-[#111111] text-white text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full">
+                                        ★ {{ match_verdict }}
+                                    </span>
+                                    <h3 class="text-lg font-bold text-[#111111] font-outfit">High Lifestyle Compatibility</h3>
+                                    <p class="text-xs text-[#6B7280]">Score reflects alignment between your questionnaire and your matched roommate.</p>
+                                </div>
                             </div>
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <h4 class="text-base font-bold text-white font-outfit">
+                        </div>
+                    </div>
+
+                    <!-- Matched Roommate Card -->
+                    <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-3">
+                        <div class="text-xs font-bold uppercase tracking-wider text-[#6B7280]">Matched Occupant Profile</div>
+                        
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white border border-black/10 p-4 rounded-xl">
+                            <div class="flex items-center gap-3.5">
+                                <div class="h-10 w-10 rounded-full bg-[#111111] text-white font-extrabold text-xs flex items-center justify-center uppercase shrink-0">
+                                    {% if roommate %}
+                                        {{ roommate.first_name|default:roommate.email|slice:":2" }}
+                                    {% else %}
+                                        RM
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-[#111111] font-outfit">
                                         {% if roommate %}
                                             {{ roommate.get_full_name|default:roommate.email }}
                                         {% else %}
                                             Primary Room Occupant / Co-Tenant
                                         {% endif %}
                                     </h4>
-                                    <span class="bg-zinc-800 text-zinc-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-zinc-700">Verified Occupant</span>
+                                    <span class="text-[11px] font-semibold text-[#6B7280]">Verified Occupant · Shared Roommate</span>
                                 </div>
-                                <p class="text-xs text-zinc-400 mt-1">Shared room occupant for your stay period.</p>
                             </div>
-                        </div>
 
-                        <div class="text-xs font-bold text-zinc-300 bg-black border border-zinc-800 px-3.5 py-2 rounded-xl">
-                            🔒 Privacy Protected
+                            <span class="text-xs font-bold text-[#111111] bg-[#F4F4F6] border border-black/10 px-3 py-1.5 rounded-full shrink-0">
+                                🔒 Privacy Protected
+                            </span>
                         </div>
                     </div>
 
-                </div>
-            </div>
-        </div>
-
-        <!-- TWO COLUMN DETAILED BREAKDOWN -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- LEFT COLUMN: ALIGNMENT & DIFFERENCES (8 cols) -->
-            <div class="lg:col-span-8 space-y-6">
-                
-                <!-- Shared Alignments Card -->
-                <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6">
-                    <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-white text-black font-extrabold flex items-center justify-center text-sm">
-                                ✓
-                            </div>
-                            <div>
-                                <h2 class="text-xl font-bold font-outfit text-white">Lifestyle Alignments</h2>
-                                <p class="text-xs text-zinc-400">Key habits and shared preferences matching your lifestyle profile.</p>
-                            </div>
+                    <!-- Lifestyle Alignments Section -->
+                    <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="text-xs font-bold uppercase tracking-wider text-[#6B7280]">Key Lifestyle Alignments</div>
+                            <span class="text-xs font-bold text-[#111111] bg-white px-2.5 py-0.5 rounded-full border border-black/10">
+                                {{ alignment_factors|length|default:3 }} Matches
+                            </span>
                         </div>
-                        <span class="text-xs font-bold text-white bg-zinc-900 px-3 py-1 rounded-full border border-zinc-700">
-                            {{ alignment_factors|length|default:3 }} Key Matches
-                        </span>
-                    </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {% if alignment_factors %}
-                            {% for factor in alignment_factors %}
-                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-start gap-3">
-                                <div class="w-5 h-5 rounded-full bg-white text-black flex items-center justify-center shrink-0 text-xs font-extrabold mt-0.5">
-                                    ✓
+                        <div class="grid gap-2.5 sm:grid-cols-2">
+                            {% if alignment_factors %}
+                                {% for factor in alignment_factors %}
+                                <div class="flex items-center gap-3 rounded-xl border border-black/10 bg-white p-3.5">
+                                    <div class="h-5 w-5 rounded-full bg-[#111111] text-white flex items-center justify-center text-[10px] font-bold shrink-0">✓</div>
+                                    <span class="text-xs font-bold text-[#111111] font-outfit">{{ factor }}</span>
                                 </div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-white font-outfit">{{ factor }}</h4>
-                                    <p class="text-xs text-zinc-400">High preference alignment.</p>
+                                {% endfor %}
+                            {% else %}
+                                <div class="flex items-center gap-3 rounded-xl border border-black/10 bg-white p-3.5">
+                                    <div class="h-5 w-5 rounded-full bg-[#111111] text-white flex items-center justify-center text-[10px] font-bold shrink-0">✓</div>
+                                    <span class="text-xs font-bold text-[#111111] font-outfit">Cleanliness Expectations</span>
                                 </div>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-start gap-3">
-                                <div class="w-5 h-5 rounded-full bg-white text-black flex items-center justify-center shrink-0 text-xs font-extrabold mt-0.5">✓</div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-white font-outfit">Cleanliness Expectations</h4>
-                                    <p class="text-xs text-zinc-400">Both occupants value neat, tidy shared spaces.</p>
+                                <div class="flex items-center gap-3 rounded-xl border border-black/10 bg-white p-3.5">
+                                    <div class="h-5 w-5 rounded-full bg-[#111111] text-white flex items-center justify-center text-[10px] font-bold shrink-0">✓</div>
+                                    <span class="text-xs font-bold text-[#111111] font-outfit">Quiet Study Routines</span>
                                 </div>
-                            </div>
-                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-start gap-3">
-                                <div class="w-5 h-5 rounded-full bg-white text-black flex items-center justify-center shrink-0 text-xs font-extrabold mt-0.5">✓</div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-white font-outfit">Quiet Study Routines</h4>
-                                    <p class="text-xs text-zinc-400">Aligned expectations for exam quiet hours.</p>
+                                <div class="flex items-center gap-3 rounded-xl border border-black/10 bg-white p-3.5">
+                                    <div class="h-5 w-5 rounded-full bg-[#111111] text-white flex items-center justify-center text-[10px] font-bold shrink-0">✓</div>
+                                    <span class="text-xs font-bold text-[#111111] font-outfit">Non-Smoking Policy</span>
                                 </div>
-                            </div>
-                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-start gap-3">
-                                <div class="w-5 h-5 rounded-full bg-white text-black flex items-center justify-center shrink-0 text-xs font-extrabold mt-0.5">✓</div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-white font-outfit">Non-Smoking Policy</h4>
-                                    <p class="text-xs text-zinc-400">Strict non-smoking agreement for both occupants.</p>
+                                <div class="flex items-center gap-3 rounded-xl border border-black/10 bg-white p-3.5">
+                                    <div class="h-5 w-5 rounded-full bg-[#111111] text-white flex items-center justify-center text-[10px] font-bold shrink-0">✓</div>
+                                    <span class="text-xs font-bold text-[#111111] font-outfit">Sleep Schedule Alignment</span>
                                 </div>
-                            </div>
-                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-start gap-3">
-                                <div class="w-5 h-5 rounded-full bg-white text-black flex items-center justify-center shrink-0 text-xs font-extrabold mt-0.5">✓</div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-white font-outfit">Sleep Schedule</h4>
-                                    <p class="text-xs text-zinc-400">Compatible sleep windows to prevent night disturbances.</p>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Potential Differences Card -->
-                <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6">
-                    <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-white font-bold text-sm">
-                                💡
-                            </div>
-                            <div>
-                                <h2 class="text-xl font-bold font-outfit text-white">Differences & Advice</h2>
-                                <p class="text-xs text-zinc-400">Minor differences identified by matching with recommendations.</p>
-                            </div>
+                            {% endif %}
                         </div>
-                        <span class="text-xs font-bold text-zinc-300 bg-zinc-900 px-3 py-1 rounded-full border border-zinc-700">
-                            {{ difference_factors|length|default:2 }} Items
-                        </span>
                     </div>
 
-                    <div class="space-y-4">
-                        {% if difference_factors %}
-                            {% for diff in difference_factors %}
-                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-bold text-white font-outfit">{{ diff.category }}</h4>
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 bg-black px-2.5 py-1 rounded-full border border-zinc-800">Comparison</span>
-                                </div>
-                                <div class="grid grid-cols-2 gap-3 text-xs">
-                                    <div class="bg-black border border-zinc-800 rounded-xl p-3">
-                                        <span class="text-[10px] text-zinc-400 uppercase tracking-widest block mb-1">Your Preference</span>
-                                        <span class="font-bold text-white">{{ diff.your_pref }}</span>
+                    <!-- Differences & Pro Tips Section -->
+                    <div class="bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl space-y-3">
+                        <div class="text-xs font-bold uppercase tracking-wider text-[#6B7280]">Differences & Pro Advice</div>
+
+                        <div class="space-y-3">
+                            {% if difference_factors %}
+                                {% for diff in difference_factors %}
+                                <div class="bg-white border border-black/10 rounded-xl p-4 space-y-2">
+                                    <div class="text-xs font-bold text-[#111111] font-outfit">{{ diff.category }}</div>
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div class="bg-[#F8F8FA] border border-black/5 p-2.5 rounded-lg">
+                                            <span class="text-[10px] text-[#6B7280] block font-semibold">Your Stance</span>
+                                            <span class="font-bold text-[#111111]">{{ diff.your_pref }}</span>
+                                        </div>
+                                        <div class="bg-[#F8F8FA] border border-black/5 p-2.5 rounded-lg">
+                                            <span class="text-[10px] text-[#6B7280] block font-semibold">Roommate Stance</span>
+                                            <span class="font-bold text-[#111111]">{{ diff.roommate_pref }}</span>
+                                        </div>
                                     </div>
-                                    <div class="bg-black border border-zinc-800 rounded-xl p-3">
-                                        <span class="text-[10px] text-zinc-400 uppercase tracking-widest block mb-1">Roommate Preference</span>
-                                        <span class="font-bold text-zinc-300">{{ diff.roommate_pref }}</span>
+                                    {% if diff.tip %}
+                                    <div class="text-xs text-[#6B7280] bg-[#F8F8FA] border border-black/5 p-2.5 rounded-lg">
+                                        <strong class="text-[#111111]">Tip:</strong> {{ diff.tip }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="bg-white border border-black/10 rounded-xl p-4 space-y-2">
+                                    <div class="text-xs font-bold text-[#111111] font-outfit">Visitor Habits</div>
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div class="bg-[#F8F8FA] border border-black/5 p-2.5 rounded-lg">
+                                            <span class="text-[10px] text-[#6B7280] block font-semibold">Your Preference</span>
+                                            <span class="font-bold text-[#111111]">Rare daytime guests</span>
+                                        </div>
+                                        <div class="bg-[#F8F8FA] border border-black/5 p-2.5 rounded-lg">
+                                            <span class="text-[10px] text-[#6B7280] block font-semibold">Roommate Preference</span>
+                                            <span class="font-bold text-[#111111]">Occasional weekend guests</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-[#6B7280] bg-[#F8F8FA] border border-black/5 p-2.5 rounded-lg">
+                                        <strong class="text-[#111111]">Tip:</strong> Agree on advance notice before inviting guests over.
                                     </div>
                                 </div>
-                                {% if diff.tip %}
-                                <div class="text-xs text-zinc-300 bg-black border border-zinc-800 rounded-xl p-3 flex items-center gap-2">
-                                    <span class="font-bold text-white">Tip:</span> {{ diff.tip }}
-                                </div>
-                                {% endif %}
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-bold text-white font-outfit">Visitor Habits</h4>
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 bg-black px-2.5 py-1 rounded-full border border-zinc-800">Comparison</span>
-                                </div>
-                                <div class="grid grid-cols-2 gap-3 text-xs">
-                                    <div class="bg-black border border-zinc-800 rounded-xl p-3">
-                                        <span class="text-[10px] text-zinc-400 uppercase tracking-widest block mb-1">Your Stance</span>
-                                        <span class="font-bold text-white">Rare daytime guests</span>
-                                    </div>
-                                    <div class="bg-black border border-zinc-800 rounded-xl p-3">
-                                        <span class="text-[10px] text-zinc-400 uppercase tracking-widest block mb-1">Roommate Stance</span>
-                                        <span class="font-bold text-zinc-300">Occasional weekend guests</span>
-                                    </div>
-                                </div>
-                                <div class="text-xs text-zinc-300 bg-black border border-zinc-800 rounded-xl p-3 flex items-center gap-2">
-                                    <span class="font-bold text-white">Tip:</span> Agree on advance notice before inviting guests over.
-                                </div>
-                            </div>
-                        {% endif %}
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: ACCURATE BOOKING DETAILS & GUARANTEES (4 cols) -->
-            <div class="lg:col-span-4 space-y-6">
+            <!-- RIGHT COLUMN: Reservation Sidebar (Exact Match to Screenshot) -->
+            <div class="space-y-6 w-full">
                 
-                <!-- Accurate Booking Breakdown Card -->
-                <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 space-y-5">
-                    <h3 class="text-base font-bold font-outfit text-white border-b border-zinc-800 pb-3">
-                        Booking Specification
-                    </h3>
-                    
-                    <div class="space-y-3.5 text-xs">
-                        <div class="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
-                            <span class="text-zinc-400">Booking ID</span>
-                            <span class="font-mono font-bold text-white">#RM-{{ booking.id }}</span>
+                <!-- RESERVATION DETAILS CARD -->
+                <div class="glass-card p-6 space-y-4">
+                    <div class="font-outfit text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#888888]">Reservation Details</div>
+                    <div class="space-y-3 text-xs">
+                        <div class="flex justify-between items-center bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+                            <span class="text-[#6B7280]">Property</span>
+                            <span class="font-bold text-[#111111]">{{ property.title }}</span>
                         </div>
-                        
-                        <div class="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
-                            <span class="text-zinc-400">Pricing / Rent</span>
-                            <span class="font-extrabold text-white">
+                        <div class="flex justify-between items-center bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+                            <span class="text-[#6B7280]">Room</span>
+                            <span class="font-bold text-[#111111]">
+                                {% if room_number %}Room {{ room_number }}{% elif booking.assigned_room %}Room {{ booking.assigned_room.room_number }}{% else %}Room 101{% endif %}
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center bg-[#F8F8FA] border border-black/10 p-3.5 rounded-xl">
+                            <span class="text-[#6B7280]">Rent / Rate</span>
+                            <span class="font-bold text-[#111111]">
                                 {% if booking.total_price %}
                                     {{ booking.currency|default:"GHS" }} {{ booking.total_price }}
                                 {% elif booking.price_per_unit %}
@@ -320,72 +281,36 @@
                                 {% endif %}
                             </span>
                         </div>
-
-                        {% if booking.move_in_date %}
-                        <div class="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
-                            <span class="text-zinc-400">Move-In Date</span>
-                            <span class="font-bold text-white">{{ booking.move_in_date|date:"M d, Y" }}</span>
-                        </div>
-                        {% endif %}
-
-                        {% if booking.move_out_date %}
-                        <div class="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
-                            <span class="text-zinc-400">Move-Out Date</span>
-                            <span class="font-bold text-white">{{ booking.move_out_date|date:"M d, Y" }}</span>
-                        </div>
-                        {% endif %}
-
-                        <div class="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
-                            <span class="text-zinc-400">Billing Model</span>
-                            <span class="font-bold text-white">{{ booking.get_billing_model_display|default:booking.billing_model|default:"Semester / Standard" }}</span>
-                        </div>
-
-                        <div class="flex justify-between items-center py-1.5">
-                            <span class="text-zinc-400">Status</span>
-                            <span class="font-bold text-white bg-zinc-900 px-2.5 py-0.5 rounded border border-zinc-700">Awaiting Consent</span>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Guarantee Card -->
-                <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 space-y-4">
-                    <h3 class="text-sm font-bold font-outfit uppercase tracking-wider text-zinc-400">Co-Living Guarantees</h3>
+                <!-- Action & Hold Card -->
+                <div class="glass-card p-6 space-y-4">
+                    <div class="flex items-center gap-2 font-bold text-xs text-[#111111]">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Final Step Before Confirmation
+                    </div>
                     
-                    <ul class="space-y-3 text-xs text-zinc-300">
-                        <li class="flex items-start gap-3">
-                            <span class="font-bold text-white shrink-0">🔒</span>
-                            <span><strong>Room Held Exclusively:</strong> Slot is reserved exclusively while you decide.</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="font-bold text-white shrink-0">🤝</span>
-                            <span><strong>Instant Lock:</strong> Accepting secures room allocation instantly.</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="font-bold text-white shrink-0">🔄</span>
-                            <span><strong>Free Re-Matching:</strong> Declining opens instant search for alternative rooms.</span>
-                        </li>
-                    </ul>
+                    <p class="text-xs text-[#6B7280] leading-relaxed">
+                        Accepting this match completes Step 3. Next, you will review your full booking details on the confirmation page.
+                    </p>
+
+                    {% if consent_timeout %}
+                    <div class="bg-[#F8F8FA] border border-black/10 p-3 rounded-xl text-center text-xs">
+                        <span class="text-[#6B7280] block font-semibold">Hold Expiration Window</span>
+                        <span id="timeRemaining" class="font-mono font-extrabold text-[#111111] text-sm">--:--:--</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="space-y-3 pt-2">
+                        <button type="button" onclick="openModal('acceptModal')" class="ds-btn w-full py-3.5 text-xs sm:text-sm font-bold shadow-md">
+                            <span>Accept Match & Lock Room ➔</span>
+                        </button>
+                        <button type="button" onclick="openModal('rejectModal')" class="w-full bg-white border border-black/20 text-[#111111] hover:bg-gray-100 font-bold rounded-full py-3.5 text-center text-xs sm:text-sm shadow-xs transition-all">
+                            Decline Match & Seek Alternatives
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- STICKY ACTION BAR AT BOTTOM (Black & White Theme) -->
-    <div class="fixed bottom-0 inset-x-0 z-40 bg-black/95 backdrop-blur-md border-t border-zinc-800 px-4 py-4 sm:py-5 shadow-2xl">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="hidden sm:block">
-                <span class="text-xs font-bold text-zinc-400 uppercase tracking-widest block">Ready to decide?</span>
-                <span class="text-sm font-semibold text-white">Accepting reserves your room assignment immediately.</span>
-            </div>
-
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-                <button type="button" onclick="openModal('rejectModal')" class="w-1/2 sm:w-auto px-6 py-3.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs sm:text-sm transition-all text-center">
-                    Decline Match
-                </button>
-                <button type="button" onclick="openModal('acceptModal')" class="w-1/2 sm:w-auto px-8 py-3.5 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-xs sm:text-sm shadow-xl transition-all text-center flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    Accept Match & Secure Room
-                </button>
             </div>
         </div>
     </div>
@@ -394,27 +319,27 @@
 <!-- CONFIRMATION MODAL: ACCEPT -->
 <div id="acceptModal" class="modal-overlay">
     <div class="modal-card space-y-6">
-        <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+        <div class="flex items-center justify-between border-b border-black/10 pb-4">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-white text-black font-extrabold flex items-center justify-center text-sm">
+                <div class="h-9 w-9 rounded-full bg-[#111111] text-white font-extrabold flex items-center justify-center text-sm">
                     ✓
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold font-outfit text-white">Confirm Roommate Match</h3>
-                    <p class="text-xs text-zinc-400">Lock in your room and compatibility pairing.</p>
+                    <h3 class="text-lg font-bold font-outfit text-[#111111]">Confirm Roommate Match</h3>
+                    <p class="text-xs text-[#6B7280]">Lock in your room and compatibility pairing.</p>
                 </div>
             </div>
-            <button onclick="closeModal('acceptModal')" class="text-zinc-400 hover:text-white p-1 text-lg">✕</button>
+            <button onclick="closeModal('acceptModal')" class="text-[#6B7280] hover:text-[#111111] p-1 text-lg font-bold">✕</button>
         </div>
 
-        <div class="space-y-4 text-xs text-zinc-300 leading-relaxed">
-            <p>You are about to accept the match for <strong class="text-white font-outfit">{{ property.title }} — {% if room_number %}Room {{ room_number }}{% else %}Assigned Room{% endif %}</strong> with a <strong class="text-white font-bold">{{ match_score }}% compatibility score</strong>.</p>
+        <div class="space-y-4 text-xs text-[#333333] leading-relaxed">
+            <p>You are about to accept the match for <strong class="text-[#111111] font-outfit">{{ property.title }} — {% if room_number %}Room {{ room_number }}{% else %}Room 101{% endif %}</strong> with a <strong class="text-[#111111] font-bold">{{ match_score }}% compatibility score</strong>.</p>
             
-            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-2">
-                <div class="flex items-center gap-2 font-bold text-white text-xs">
+            <div class="bg-[#F8F8FA] border border-black/10 rounded-xl p-4 space-y-2">
+                <div class="font-bold text-[#111111] text-xs">
                     ✓ Next steps upon accepting:
                 </div>
-                <ul class="space-y-1.5 text-zinc-400 pl-6 list-disc">
+                <ul class="space-y-1.5 text-[#6B7280] pl-5 list-disc">
                     <li>Your room assignment is officially confirmed</li>
                     <li>Lifestyle agreements are logged</li>
                     <li>Redirected to booking confirmation</li>
@@ -423,10 +348,10 @@
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-2">
-            <button onclick="closeModal('acceptModal')" class="px-5 py-2.5 rounded-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-bold text-xs border border-zinc-700">
+            <button onclick="closeModal('acceptModal')" class="px-5 py-2.5 rounded-full bg-white border border-black/20 text-[#111111] font-bold text-xs hover:bg-gray-100">
                 Review Details Again
             </button>
-            <button id="btnConfirmAccept" onclick="submitConsent('accept')" class="px-6 py-2.5 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-xs shadow-md flex items-center gap-2">
+            <button id="btnConfirmAccept" onclick="submitConsent('accept')" class="px-6 py-2.5 rounded-full bg-[#111111] text-white font-extrabold text-xs shadow-md hover:bg-zinc-800 flex items-center gap-2">
                 <span>Confirm Acceptance</span>
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </button>
@@ -437,32 +362,32 @@
 <!-- CONFIRMATION MODAL: REJECT -->
 <div id="rejectModal" class="modal-overlay">
     <div class="modal-card space-y-6">
-        <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+        <div class="flex items-center justify-between border-b border-black/10 pb-4">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-zinc-800 border border-zinc-700 text-white font-bold flex items-center justify-center text-sm">
+                <div class="h-9 w-9 rounded-full bg-[#111111] text-white font-bold flex items-center justify-center text-sm">
                     !
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold font-outfit text-white">Decline Roommate Match</h3>
-                    <p class="text-xs text-zinc-400">Request an alternative roommate pairing.</p>
+                    <h3 class="text-lg font-bold font-outfit text-[#111111]">Decline Roommate Match</h3>
+                    <p class="text-xs text-[#6B7280]">Request an alternative roommate pairing.</p>
                 </div>
             </div>
-            <button onclick="closeModal('rejectModal')" class="text-zinc-400 hover:text-white p-1 text-lg">✕</button>
+            <button onclick="closeModal('rejectModal')" class="text-[#6B7280] hover:text-[#111111] p-1 text-lg font-bold">✕</button>
         </div>
 
-        <div class="space-y-4 text-xs text-zinc-300 leading-relaxed">
-            <p>Declining this match will release your hold on <strong class="text-white font-outfit">{% if room_number %}Room {{ room_number }}{% else %}Assigned Room{% endif %}</strong>. Our system will re-enter your booking into the compatibility engine to find alternative roommate options.</p>
+        <div class="space-y-4 text-xs text-[#333333] leading-relaxed">
+            <p>Declining this match will release your hold on <strong class="text-[#111111] font-outfit">{% if room_number %}Room {{ room_number }}{% else %}Room 101{% endif %}</strong>. Our system will re-enter your booking into the compatibility engine to find alternative roommate options.</p>
 
-            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-zinc-300">
-                <strong>Note:</strong> Finding another roommate match depends on current property availability.
+            <div class="bg-[#F8F8FA] border border-black/10 rounded-xl p-4 text-[#6B7280]">
+                <strong class="text-[#111111]">Note:</strong> Finding another roommate match depends on current property availability.
             </div>
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-2">
-            <button onclick="closeModal('rejectModal')" class="px-5 py-2.5 rounded-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-bold text-xs border border-zinc-700">
+            <button onclick="closeModal('rejectModal')" class="px-5 py-2.5 rounded-full bg-white border border-black/20 text-[#111111] font-bold text-xs hover:bg-gray-100">
                 Cancel
             </button>
-            <button id="btnConfirmReject" onclick="submitConsent('reject')" class="px-6 py-2.5 rounded-full bg-black hover:bg-zinc-900 text-white font-bold text-xs border border-zinc-700 shadow-md flex items-center gap-2">
+            <button id="btnConfirmReject" onclick="submitConsent('reject')" class="px-6 py-2.5 rounded-full bg-[#111111] text-white font-bold text-xs shadow-md hover:bg-zinc-800 flex items-center gap-2">
                 <span>Confirm & Seek Alternatives</span>
             </button>
         </div>
