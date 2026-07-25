@@ -396,6 +396,23 @@ class PropertyDetailView(DetailView):
         # ── Proximity destinations for structured table ───────────────────────────
         context['proximity_destinations'] = property_obj.proximity_destinations.all()
 
+        # ── Review eligibility for inline modal ────────────────────────────────
+        context['user_can_review'] = False
+        context['user_already_reviewed'] = False
+        context['user_review'] = None
+        if self.request.user.is_authenticated:
+            from feedback.views import check_review_eligibility
+            from feedback.models import Review
+            ineligible, _ = check_review_eligibility(self.request.user, property_obj)
+            context['user_can_review'] = not ineligible
+            existing_review = Review.objects.filter(
+                reviewer=self.request.user,
+                accommodation_property=property_obj
+            ).first()
+            if existing_review:
+                context['user_already_reviewed'] = True
+                context['user_review'] = existing_review
+
         return context
 
 

@@ -3458,16 +3458,27 @@ body {
 
         <!-- Write Review Button -->
         <div style="text-align:center;margin-top:32px;padding-top:24px;border-top:1px solid var(--border);">
-          {% if request.user.is_authenticated %}
-          <a href="/api/feedback/write-review/{{ property.id }}/" class="pd-btn-white" style="padding:14px 28px; font-size:14px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            Write a Review
-          </a>
-          {% else %}
-          <a href="/login/" class="pd-btn-white" style="padding:14px 28px; font-size:14px;">
+          {% if not request.user.is_authenticated %}
+          <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="pd-btn-white" style="padding:14px 28px; font-size:14px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             Login to Write a Review
           </a>
+          {% elif user_already_reviewed %}
+          <button type="button" onclick="openReviewModal()" class="pd-btn-white" style="padding:14px 28px; font-size:14px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit Your Review
+          </button>
+          {% elif user_can_review %}
+          <button type="button" onclick="openReviewModal()" class="pd-btn-white" style="padding:14px 28px; font-size:14px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Write a Review
+          </button>
+          {% else %}
+          <button type="button" disabled style="padding:14px 28px; font-size:14px; opacity:0.5; cursor:not-allowed;" class="pd-btn-white" title="You need a confirmed booking at this property to write a review.">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Book First to Review
+          </button>
+          <p style="font-size:12px;color:#888;margin-top:8px;">Only guests with a confirmed booking can write a review.</p>
           {% endif %}
         </div>
 
@@ -3479,15 +3490,17 @@ body {
           <h4 style="font-size: 18px; font-weight: 800; color: #111111; margin-bottom: 8px;">No reviews yet</h4>
           <p style="color: #555555; font-size: 15px; max-width: 320px; margin: 0 auto 24px; line-height: 1.6;">Be the first to share your experience and help others find their perfect place.</p>
           <div>
-            {% if request.user.is_authenticated %}
-            <a href="/api/feedback/write-review/{{ property.id }}/" class="pd-btn-white" style="padding:14px 28px; font-size:14px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              Write a Review
-            </a>
-            {% else %}
+            {% if not request.user.is_authenticated %}
             <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="pd-btn-white" style="padding:14px 28px; font-size:14px;">
               Login to Write a Review
             </a>
+            {% elif user_can_review %}
+            <button type="button" onclick="openReviewModal()" class="pd-btn-white" style="padding:14px 28px; font-size:14px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Write a Review
+            </button>
+            {% else %}
+            <p style="font-size:13px;color:#888;">Book and confirm your stay to write the first review.</p>
             {% endif %}
           </div>
         </div>
@@ -5259,4 +5272,196 @@ window.addEventListener('load', function() {
     document.body.classList.add('loaded');
 });
 </script>
+
+{% if request.user.is_authenticated and user_can_review %}
+<!-- ── INLINE REVIEW MODAL ─────────────────────────────────────────── -->
+<div id="reviewModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); overflow-y:auto; padding:20px 16px;">
+  <div style="max-width:720px; margin:0 auto; background:#fff; border-radius:24px; box-shadow:0 24px 80px rgba(0,0,0,0.18); overflow:hidden; animation:reviewSlideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);">
+    <!-- Header -->
+    <div style="padding:28px 32px 20px; border-bottom:1px solid #F0F0F0; display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.15em; color:#888; margin-bottom:4px;">Review</div>
+        <h2 style="font-size:22px; font-weight:800; color:#111; margin:0;">Share Your Experience</h2>
+        <p style="font-size:13px; color:#6B7280; margin:4px 0 0;">{{ property.title }}</p>
+      </div>
+      <button onclick="closeReviewModal()" style="width:40px;height:40px;border-radius:50%;border:1px solid #E5E7EB;background:#F8F8FA;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form id="reviewModalForm" method="post" action="/api/feedback/write-review/{{ property.id }}/" enctype="multipart/form-data" style="padding:28px 32px;">
+      {% csrf_token %}
+
+      <!-- Star Rating -->
+      <div style="margin-bottom:24px;">
+        <label style="font-size:13px;font-weight:700;color:#111;display:block;margin-bottom:12px;">Overall Rating <span style="color:#E11D48;">*</span></label>
+        <div id="modalRatingStars" style="display:flex;gap:8px;">
+          {% for i in "12345" %}
+          <button type="button" data-r="{{ forloop.counter }}" onclick="setModalRating({{ forloop.counter }})" style="background:none;border:none;cursor:pointer;padding:4px;transition:transform 0.15s;">
+            <svg id="ms-{{ forloop.counter }}" width="40" height="40" viewBox="0 0 24 24" fill="#E5E7EB" stroke="#E5E7EB" stroke-width="0.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </button>
+          {% endfor %}
+        </div>
+        <input type="hidden" name="rating" id="modalRatingInput" value="5">
+      </div>
+
+      <!-- Title -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:13px;font-weight:700;color:#111;display:block;margin-bottom:8px;">Review Title <span style="color:#E11D48;">*</span></label>
+        <input type="text" name="title" required maxlength="200" placeholder="What would you tell a friend?" style="width:100%;padding:12px 14px;border:1px solid #E5E7EB;border-radius:12px;font-size:14px;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='#111'" onblur="this.style.borderColor='#E5E7EB'">
+      </div>
+
+      <!-- Content -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:13px;font-weight:700;color:#111;display:block;margin-bottom:8px;">Your Review <span style="color:#E11D48;">*</span> <span style="font-weight:400;color:#888;">(min 100 chars)</span></label>
+        <textarea name="content" required minlength="100" maxlength="1000" id="modalReviewContent" rows="5" placeholder="Share your experience — location, cleanliness, management, value..." style="width:100%;padding:12px 14px;border:1px solid #E5E7EB;border-radius:12px;font-size:14px;resize:vertical;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='#111'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
+        <div style="font-size:11px;color:#888;margin-top:4px;text-align:right;"><span id="modalCharCount">0</span>/1000</div>
+      </div>
+
+      <!-- Category Ratings -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:13px;font-weight:700;color:#111;display:block;margin-bottom:12px;">Rate Specific Aspects <span style="font-weight:400;color:#888;">(optional)</span></label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          
+          <div><label style="font-size:12px;color:#555;font-weight:600;">Cleanliness</label><select name="cleanliness_rating" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"><option value="">Not rated</option><option value="5">5 - Excellent</option><option value="4">4 - Very Good</option><option value="3">3 - Good</option><option value="2">2 - Fair</option><option value="1">1 - Poor</option></select></div>
+          <div><label style="font-size:12px;color:#555;font-weight:600;">Location</label><select name="location_rating" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"><option value="">Not rated</option><option value="5">5 - Excellent</option><option value="4">4 - Very Good</option><option value="3">3 - Good</option><option value="2">2 - Fair</option><option value="1">1 - Poor</option></select></div>
+          <div><label style="font-size:12px;color:#555;font-weight:600;">Amenities</label><select name="amenities_rating" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"><option value="">Not rated</option><option value="5">5 - Excellent</option><option value="4">4 - Very Good</option><option value="3">3 - Good</option><option value="2">2 - Fair</option><option value="1">1 - Poor</option></select></div>
+          <div><label style="font-size:12px;color:#555;font-weight:600;">Value for Money</label><select name="value_rating" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"><option value="">Not rated</option><option value="5">5 - Excellent</option><option value="4">4 - Very Good</option><option value="3">3 - Good</option><option value="2">2 - Fair</option><option value="1">1 - Poor</option></select></div>
+        </div>
+      </div>
+
+      <!-- Recommendation -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:13px;font-weight:700;color:#111;display:block;margin-bottom:10px;">Would you recommend this property?</label>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;"><input type="radio" name="recommendation" value="DEFINITELY" checked style="accent-color:#111;"> Yes, definitely</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;"><input type="radio" name="recommendation" value="MAYBE" style="accent-color:#111;"> Maybe</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;"><input type="radio" name="recommendation" value="NO" style="accent-color:#111;"> Not recommended</label>
+        </div>
+      </div>
+
+      <!-- Aspects & Concerns -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#111;display:block;margin-bottom:10px;">Highlights</label>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;"><input type="checkbox" name="aspects" value="Location" style="accent-color:#111;"> Location</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;"><input type="checkbox" name="aspects" value="Security" style="accent-color:#111;"> Security</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;"><input type="checkbox" name="aspects" value="Cleanliness" style="accent-color:#111;"> Cleanliness</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;"><input type="checkbox" name="aspects" value="WiFi" style="accent-color:#111;"> WiFi</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;"><input type="checkbox" name="aspects" value="Kitchen" style="accent-color:#111;"> Kitchen</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;"><input type="checkbox" name="aspects" value="Community" style="accent-color:#111;"> Community</label>
+          </div>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#111;display:block;margin-bottom:10px;">Any Concerns</label>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;"><input type="checkbox" name="concerns" value="Water pressure" style="accent-color:#111;"> Water pressure</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;"><input type="checkbox" name="concerns" value="Noise levels" style="accent-color:#111;"> Noise levels</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;"><input type="checkbox" name="concerns" value="Kitchen access" style="accent-color:#111;"> Kitchen access</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;"><input type="checkbox" name="concerns" value="Parking limited" style="accent-color:#111;"> Parking limited</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;"><input type="checkbox" name="concerns" value="Other" style="accent-color:#111;"> Other</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Guest type -->
+      <div style="margin-bottom:24px;">
+        <label style="font-size:13px;font-weight:700;color:#111;display:block;margin-bottom:10px;">Guest Type</label>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;"><input type="radio" name="guest_type" value="STUDENT" checked style="accent-color:#111;"> Student</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;"><input type="radio" name="guest_type" value="WORKER" style="accent-color:#111;"> Worker</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;"><input type="radio" name="guest_type" value="OTHER" style="accent-color:#111;"> Other</label>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;gap:12px;padding-top:16px;border-top:1px solid #F0F0F0;">
+        <button type="submit" id="reviewSubmitBtn" style="flex:1;padding:14px;background:#111;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:background 0.2s;">Submit Review</button>
+        <button type="button" onclick="closeReviewModal()" style="padding:14px 20px;background:#F8F8FA;color:#111;border:1px solid #E5E7EB;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+@keyframes reviewSlideUp {
+  from { opacity:0; transform:translateY(40px) scale(0.96); }
+  to { opacity:1; transform:translateY(0) scale(1); }
+}
+</style>
+
+<script>
+function openReviewModal() {
+  document.getElementById('reviewModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  setModalRating(5);
+}
+function closeReviewModal() {
+  document.getElementById('reviewModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+document.getElementById('reviewModal').addEventListener('click', function(e) {
+  if (e.target === this) closeReviewModal();
+});
+
+// Star rating
+function setModalRating(rating) {
+  document.getElementById('modalRatingInput').value = rating;
+  for (let i = 1; i <= 5; i++) {
+    const star = document.getElementById('ms-' + i);
+    if (i <= rating) {
+      star.setAttribute('fill', '#F59E0B');
+      star.setAttribute('stroke', '#F59E0B');
+    } else {
+      star.setAttribute('fill', '#E5E7EB');
+      star.setAttribute('stroke', '#E5E7EB');
+    }
+  }
+}
+
+// Char count
+document.getElementById('modalReviewContent').addEventListener('input', function() {
+  document.getElementById('modalCharCount').textContent = this.value.length;
+});
+
+// Form submit
+document.getElementById('reviewModalForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('reviewSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  const formData = new FormData(this);
+
+  fetch(this.action, {
+    method: 'POST',
+    body: formData,
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+  })
+  .then(res => {
+    if (res.redirected || res.ok) {
+      closeReviewModal();
+      // Show success message and reload page to show updated reviews
+      const banner = document.createElement('div');
+      banner.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#059669;color:#fff;padding:14px 28px;border-radius:12px;font-weight:700;font-size:14px;z-index:99999;box-shadow:0 8px 32px rgba(0,0,0,0.15);';
+      banner.textContent = 'Your review has been submitted and is pending approval.';
+      document.body.appendChild(banner);
+      setTimeout(() => window.location.reload(), 2500);
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Submit Review';
+      alert('There was an error submitting your review. Please try again.');
+    }
+  })
+  .catch(() => {
+    btn.disabled = false;
+    btn.textContent = 'Submit Review';
+    alert('Network error. Please check your connection and try again.');
+  });
+});
+</script>
+{% endif %}
+
 {% endblock %}

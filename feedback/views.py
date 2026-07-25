@@ -171,12 +171,16 @@ def write_review(request, property_id):
         aspects = request.POST.getlist('aspects')
         concerns = request.POST.getlist('concerns')
         
-        # Get the user's booking for this property
+        # Get the user's booking for this property (any eligible status)
         booking = Booking.objects.filter(
             tenant=request.user,
             accommodation_property=property,
-            status='COMPLETED'
-        ).first()
+            status__in=[
+                'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ACTIVE', 'COMPLETED',
+                'PAYMENT_COMPLETE', 'PAYMENT_REQUIRED', 'UNDER_REVIEW',
+                'ASSIGNED_AWAITING', 'ADMIN_PENDING', 'REINSTATED'
+            ]
+        ).order_by('-created_at').first()
         
         # Calculate trust score
         trust_score = calculate_trust_score(request.user, booking, content)
@@ -228,15 +232,22 @@ def check_review_eligibility(user, property):
     if not user.is_authenticated:
         return True, "You must be logged in to write a review."
     
-    # Check if user has a completed booking at this property
-    has_completed_booking = Booking.objects.filter(
+    # Allow review once any confirmed or active booking exists at this property.
+    # We do NOT restrict to only COMPLETED stays — users who have paid and are
+    # currently staying (or have a confirmed booking) should be able to review.
+    eligible_statuses = [
+        'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ACTIVE', 'COMPLETED',
+        'PAYMENT_COMPLETE', 'PAYMENT_REQUIRED', 'UNDER_REVIEW',
+        'ASSIGNED_AWAITING', 'ADMIN_PENDING', 'REINSTATED'
+    ]
+    has_eligible_booking = Booking.objects.filter(
         tenant=user,
         accommodation_property=property,
-        status='COMPLETED'
+        status__in=eligible_statuses
     ).exists()
     
-    if not has_completed_booking:
-        return True, "You can only review properties where you've completed a stay."
+    if not has_eligible_booking:
+        return True, "You can only review properties where you have a confirmed booking. Complete your booking payment first."
     
     # Check if user already reviewed this property
     has_reviewed = Review.objects.filter(
