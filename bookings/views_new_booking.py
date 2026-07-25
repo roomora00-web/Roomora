@@ -157,8 +157,8 @@ def initiate_booking(request, property_id):
                     room_comp = BookingCompatibilityService.calculate_room_compatibility(user_profile, occupant_profiles)
                     avg_score = room_comp.get('score', 0)
                     
-                    if avg_score < 60:
-                        # Find alternative partially occupied rooms
+                    if avg_score < 85:
+                        # Find alternative partially occupied rooms if any exist
                         alt_rooms = Room.objects.filter(
                             accommodation_property=property_obj, 
                             status='PARTIALLY_OCCUPIED'

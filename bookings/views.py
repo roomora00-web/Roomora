@@ -598,15 +598,10 @@ class CompatibilityCalculationView(View):
                     logger.error(f"Compatibility calculation failed for booking {booking.id} with occupant {b.tenant.id}: {str(e)}")
                     continue
                 
-                # If any score drops below 60%, it's a dealbreaker for the entire room
-                if compatibility_score < 60:
-                    dealbreaker_hit = True
-                    break
-                    
                 room_scores.append(compatibility_score)
                 room_profiles.append(occupant_profile)
                 
-            if dealbreaker_hit or not room_scores:
+            if not room_scores:
                 continue
                 
             # Average the scores for all occupants in the room
