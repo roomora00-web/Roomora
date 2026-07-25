@@ -420,9 +420,10 @@ class Booking(models.Model):
         if not roommate_booking:
             return None
 
-        from accounts.models import LifestyleProfile
+        from accounts.models import LifestyleProfile, UserProfile
         roommate_user = roommate_booking.tenant
         roommate_profile = LifestyleProfile.objects.filter(user=roommate_user).first()
+        extended_profile = UserProfile.objects.filter(user=roommate_user).first()
         score = self.compatibility_score or roommate_booking.compatibility_score
         
         alignments = []
@@ -435,6 +436,7 @@ class Booking(models.Model):
             'booking': roommate_booking,
             'user': roommate_user,
             'profile': roommate_profile,
+            'extended_profile': extended_profile,
             'score': int(score) if score else 97,
             'position': roommate_booking.occupancy_position or 1,
             'alignments': alignments,

@@ -158,24 +158,51 @@
 
         {% if booking.roommate_info %}
         <!-- Roommate Match Banner -->
-        <div class="p-5 rounded-2xl bg-gradient-to-r from-emerald-50 via-white to-emerald-50/50 border border-emerald-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm shadow-xs">
-          <div class="flex items-center gap-4">
-            {% if booking.roommate_info.user.profile_picture %}
-            <img src="{{ booking.roommate_info.user.profile_picture.url }}" alt="{{ booking.roommate_info.user.first_name }}" class="h-12 w-12 rounded-2xl object-cover border-2 border-emerald-500 shrink-0 shadow-xs" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ booking.roommate_info.user.first_name|default:booking.roommate_info.user.email }}+{{ booking.roommate_info.user.last_name }}&background=111111&color=ffffff&bold=true';">
-            {% else %}
-            <div class="h-12 w-12 rounded-2xl bg-[#111111] text-white font-extrabold text-base flex items-center justify-center shrink-0 border-2 border-emerald-500">
-              {{ booking.roommate_info.user.first_name|slice:":1" }}{{ booking.roommate_info.user.last_name|slice:":1" }}
+        <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-emerald-50 via-white to-emerald-50/50 border border-emerald-300 space-y-4 shadow-xs">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              {% if booking.roommate_info.user.profile_picture %}
+              <img src="{{ booking.roommate_info.user.profile_picture.url }}" alt="{{ booking.roommate_info.user.first_name }}" class="h-14 w-14 rounded-2xl object-cover border-2 border-emerald-500 shrink-0 shadow-xs" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ booking.roommate_info.user.first_name|default:booking.roommate_info.user.email }}+{{ booking.roommate_info.user.last_name }}&background=111111&color=ffffff&bold=true';">
+              {% else %}
+              <div class="h-14 w-14 rounded-2xl bg-[#111111] text-white font-extrabold text-lg flex items-center justify-center shrink-0 border-2 border-emerald-500">
+                {{ booking.roommate_info.user.first_name|slice:":1" }}{{ booking.roommate_info.user.last_name|slice:":1" }}
+              </div>
+              {% endif %}
+              <div class="space-y-0.5">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-800">Matched Roommate</span>
+                  <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border border-emerald-300 bg-emerald-100 text-emerald-950">
+                    {{ booking.roommate_info.user.get_gender_display|default:booking.roommate_info.user.gender }}
+                  </span>
+                </div>
+                <div class="font-extrabold text-base text-[#111111]">
+                  {{ booking.roommate_info.user.first_name }} {{ booking.roommate_info.user.last_name }}
+                  {% if booking.roommate_info.user.preferred_name %}
+                  <span class="text-xs font-bold text-gray-500">("{{ booking.roommate_info.user.preferred_name }}")</span>
+                  {% endif %}
+                </div>
+                <div class="text-xs text-[#6B7280] font-mono">{{ booking.roommate_info.user.email }} • {{ booking.roommate_info.user.phone_number }}</div>
+              </div>
             </div>
-            {% endif %}
-            <div class="space-y-0.5">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-800">Matched Roommate Assigned</span>
-              <div class="font-extrabold text-base text-[#111111]">{{ booking.roommate_info.user.first_name }} {{ booking.roommate_info.user.last_name }} <span class="font-mono text-emerald-700 font-normal text-xs">({{ booking.roommate_info.user.email }})</span></div>
+
+            <div class="flex items-center gap-3 shrink-0">
+              <span class="bg-emerald-600 text-white font-extrabold text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-xs">{{ booking.roommate_info.score }}% MATCH</span>
+              <span class="text-xs font-extrabold text-emerald-900 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl">Position {{ booking.roommate_info.position }}</span>
             </div>
           </div>
 
-          <div class="flex items-center gap-3 shrink-0">
-            <span class="bg-emerald-600 text-white font-extrabold text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-xs">{{ booking.roommate_info.score }}% MATCH</span>
-            <span class="text-xs font-extrabold text-emerald-900 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl">Bed Position {{ booking.roommate_info.position }}</span>
+          <!-- Address & Student Info Snippet -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1 border-t border-emerald-200/60">
+            <div>
+              <span class="font-extrabold text-[#888888] uppercase text-[10px]">Location / Address:</span>
+              <div class="font-bold text-[#111111]">{{ booking.roommate_info.extended_profile.address|default:"Campus Area" }}, {{ booking.roommate_info.extended_profile.city|default:"Kumasi" }}</div>
+            </div>
+            {% if booking.roommate_info.user.user_type == 'STUDENT' or booking.roommate_info.extended_profile.institution %}
+            <div>
+              <span class="font-extrabold text-emerald-800 uppercase text-[10px]">Student / Major:</span>
+              <div class="font-bold text-[#111111]">{{ booking.roommate_info.extended_profile.institution|default:"University" }} — {{ booking.roommate_info.extended_profile.field_of_study|default:"Student" }} (Level {{ booking.roommate_info.extended_profile.academic_level|default:"300" }})</div>
+            </div>
+            {% endif %}
           </div>
         </div>
         {% endif %}

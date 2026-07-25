@@ -113,7 +113,9 @@
         </div>
 
         {% if booking.roommate_info %}
-        <div class="p-6 rounded-2xl bg-white border border-emerald-200 shadow-xs space-y-5">
+        <div class="p-6 sm:p-7 rounded-2xl bg-white border border-emerald-200 shadow-xs space-y-6">
+          
+          <!-- Roommate Header Row -->
           <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
               {% if booking.roommate_info.user.profile_picture %}
@@ -124,8 +126,16 @@
               </div>
               {% endif %}
               <div>
-                <div class="text-lg font-extrabold text-[#111111]">{{ booking.roommate_info.user.first_name }} {{ booking.roommate_info.user.last_name }}</div>
-                <div class="text-sm text-[#6B7280] font-mono">{{ booking.roommate_info.user.email }}</div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-lg font-extrabold text-[#111111]">{{ booking.roommate_info.user.first_name }} {{ booking.roommate_info.user.last_name }}</span>
+                  {% if booking.roommate_info.user.preferred_name %}
+                  <span class="text-xs font-bold text-gray-500">("{{ booking.roommate_info.user.preferred_name }}")</span>
+                  {% endif %}
+                  <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-emerald-300 bg-emerald-50 text-emerald-900">
+                    {{ booking.roommate_info.user.get_gender_display|default:booking.roommate_info.user.gender }}
+                  </span>
+                </div>
+                <div class="text-xs text-[#6B7280] font-mono mt-0.5">{{ booking.roommate_info.user.email }} • {{ booking.roommate_info.user.phone_number }}</div>
                 <div class="text-xs font-extrabold text-emerald-800 mt-1">Assigned to Room Position {{ booking.roommate_info.position }}</div>
               </div>
             </div>
@@ -134,6 +144,56 @@
               <div class="text-xs font-extrabold uppercase tracking-wider text-emerald-800">Match Score</div>
               <div class="font-outfit text-3xl font-extrabold text-emerald-900">{{ booking.roommate_info.score }}%</div>
             </div>
+          </div>
+
+          <!-- Personal Bio & Summary -->
+          {% if booking.roommate_info.extended_profile.bio %}
+          <div class="p-4 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs sm:text-sm text-[#333333] leading-relaxed">
+            <span class="font-extrabold text-[#111111] block mb-1 text-xs uppercase tracking-wider">Bio & Personal Summary</span>
+            "{{ booking.roommate_info.extended_profile.bio }}"
+          </div>
+          {% endif %}
+
+          <!-- Address & Student Academic Details Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
+            
+            <!-- Residential Address Card -->
+            <div class="p-4 rounded-xl bg-[#F8F8FA] border border-black/10 space-y-1.5">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">Residential Address & Location</div>
+              <div class="font-bold text-[#111111] leading-snug">
+                {{ booking.roommate_info.extended_profile.address|default:"Campus Housing / Residential Area" }}
+              </div>
+              <div class="text-xs text-[#6B7280] font-semibold">
+                {{ booking.roommate_info.extended_profile.city|default:"Kumasi, Ashanti Region" }}
+              </div>
+            </div>
+
+            <!-- Student Academic Info Card (If Student) -->
+            {% if booking.roommate_info.user.user_type == 'STUDENT' or booking.roommate_info.extended_profile.institution %}
+            <div class="p-4 rounded-xl bg-emerald-50/60 border border-emerald-200/80 space-y-1.5">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-900">Academic & Student Details</div>
+              <div class="font-bold text-[#111111] leading-snug">
+                {{ booking.roommate_info.extended_profile.institution|default:"KNUST University" }}
+              </div>
+              <div class="text-xs text-emerald-900 font-semibold flex items-center justify-between pt-0.5">
+                <span>{{ booking.roommate_info.extended_profile.field_of_study|default:"Computer Science" }}</span>
+                <span class="font-mono bg-emerald-100 border border-emerald-300 text-emerald-950 px-2 py-0.5 rounded text-[10px] font-extrabold">
+                  Level {{ booking.roommate_info.extended_profile.academic_level|default:"300" }}
+                </span>
+              </div>
+            </div>
+            {% else %}
+            <div class="p-4 rounded-xl bg-[#F8F8FA] border border-black/10 space-y-1.5">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#888888]">User Role & Occupation</div>
+              <div class="font-bold text-[#111111]">
+                {{ booking.roommate_info.user.get_user_type_display|default:"Occupant" }}
+              </div>
+              <div class="text-xs text-[#6B7280]">
+                {{ booking.roommate_info.extended_profile.occupation|default:"Verified Resident" }}
+              </div>
+            </div>
+            {% endif %}
+
           </div>
 
           {% if booking.roommate_info.alignments %}
@@ -149,6 +209,7 @@
             </div>
           </div>
           {% endif %}
+
         </div>
         {% else %}
         <div class="p-8 bg-[#F8F8FA] border border-black/10 rounded-2xl text-center space-y-3">
