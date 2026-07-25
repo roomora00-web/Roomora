@@ -723,7 +723,7 @@ def lifestyle_questionnaire(request, booking_id=None, screen=1):
     """
     booking = None
     if booking_id:
-        booking = get_object_or_404(Booking, id=booking_id, tenant=request.user, status='INITIATED')
+        booking = get_object_or_404(Booking, id=booking_id, tenant=request.user)
     
     if screen < 1 or screen > 4:
         if booking_id:
@@ -802,7 +802,7 @@ def submit_lifestyle_screen(request, booking_id=None, screen=1):
     """
     booking = None
     if booking_id:
-        booking = get_object_or_404(Booking, id=booking_id, tenant=request.user, status='INITIATED')
+        booking = get_object_or_404(Booking, id=booking_id, tenant=request.user)
 
     if 'lifestyle_answers' not in request.session:
         request.session['lifestyle_answers'] = {}
@@ -845,7 +845,7 @@ def lifestyle_submit(request, booking_id=None):
     """
     booking = None
     if booking_id:
-        booking = get_object_or_404(Booking, id=booking_id, tenant=request.user, status='INITIATED')
+        booking = get_object_or_404(Booking, id=booking_id, tenant=request.user)
 
     answers = request.session.get('lifestyle_answers', {})
 
