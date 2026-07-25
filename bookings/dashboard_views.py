@@ -105,13 +105,13 @@ def _get_initiated_card(booking):
     return {
         'card_type': 'initiated',
         'title': 'Complete Your Booking',
-        'subtitle': 'Slot reserved - complete within 48 hours',
-        'hours_remaining': hours_remaining if time_remaining else 48,
+        'subtitle': 'Slot reserved — complete within 2 hours',
+        'hours_remaining': hours_remaining if time_remaining else 2,
         'progress_percentage': 10,
         'next_step': 'acknowledge_house_rules',
         'action_text': 'Continue Booking',
         'action_url': f"/api/bookings/booking/{booking.id}/resume/",
-        'warning': time_remaining and time_remaining.total_seconds() < 12 * 3600,
+        'warning': time_remaining and time_remaining.total_seconds() < 0.5 * 3600,  # warn at 30 mins
     }
 
 

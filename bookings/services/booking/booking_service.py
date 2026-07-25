@@ -81,7 +81,7 @@ class BookingService:
         )
         
         # Set soft-lock
-        booking.set_soft_lock(hours=48)
+        booking.set_soft_lock(hours=2)
         
         # Reserve slot
         if not booking.reserve_slot():

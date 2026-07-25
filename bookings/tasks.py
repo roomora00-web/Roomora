@@ -7,7 +7,7 @@ import datetime
 def send_soft_lock_reminder(booking_id):
     """
     Task A: Soft lock expiry reminder
-    Fires at 4 hours (2 hours before expiry)
+    Fires at 1 hour (1 hour before expiry)
     Sends notification to user to complete booking
     """
     from accounts.models import Notification
@@ -19,7 +19,7 @@ def send_soft_lock_reminder(booking_id):
         if booking.reminder_sent:
             return f"Reminder already sent for booking {booking_id}"
         
-        # Check if booking is still within reminder window (4 hours after creation)
+        # Check if booking is still within reminder window
         if booking.is_soft_lock_expired():
             return f"Booking {booking_id} already expired, skipping reminder"
         
@@ -27,14 +27,14 @@ def send_soft_lock_reminder(booking_id):
         Notification.objects.create(
             user=booking.tenant,
             title='BOOKING EXPIRING SOON',
-            message=f"Your booking expires in 2 hours. Complete your booking to keep your slot.\n\nProperty: {booking.accommodation_property.title}\nReference: {booking.reference_number}\n\n[Resume Booking]",
+            message=f"Your booking expires in 1 hour. Complete your booking now to keep your slot.\n\nProperty: {booking.accommodation_property.title}\nReference: {booking.reference_number}\n\n[Resume Booking]",
         )
         
         # Mark reminder as sent
         booking.reminder_sent = True
         booking.save()
         
-        return f"Sent 4-hour reminder for booking {booking_id}"
+        return f"Sent 1-hour reminder for booking {booking_id}"
     
     except Booking.DoesNotExist:
         return f"Booking {booking_id} not found or not in INITIATED status"
@@ -44,23 +44,23 @@ def send_soft_lock_reminder(booking_id):
 def schedule_soft_lock_tasks(booking_id):
     """
     Schedule both Celery tasks immediately after soft lock transaction commits:
-    - Task A: Soft lock expiry reminder at 4 hours
-    - Task B: Soft lock expiry at 6 hours
+    - Task A: Soft lock expiry reminder at 1 hour
+    - Task B: Soft lock expiry at 2 hours
     """
     from celery import current_app
     
-    # Schedule reminder at 4 hours (14400 seconds)
+    # Schedule reminder at 1 hour (3600 seconds)
     current_app.send_task(
         'bookings.tasks.send_soft_lock_reminder',
         args=[booking_id],
-        countdown=4 * 60 * 60  # 4 hours in seconds
+        countdown=1 * 60 * 60  # 1 hour in seconds
     )
     
-    # Schedule expiry at 6 hours (21600 seconds)
+    # Schedule expiry at 2 hours (7200 seconds)
     current_app.send_task(
         'bookings.tasks.expire_soft_lock',
         args=[booking_id],
-        countdown=6 * 60 * 60  # 6 hours in seconds
+        countdown=2 * 60 * 60  # 2 hours in seconds
     )
     
     return f"Scheduled soft lock tasks for booking {booking_id}"
@@ -69,7 +69,7 @@ def schedule_soft_lock_tasks(booking_id):
 def expire_soft_lock(booking_id):
     """
     Task B: Soft lock expiry
-    Fires at 6 hours
+    Fires at 2 hours
     Sets booking status to EXPIRED, releases slot, notifies user
     """
     from accounts.models import Notification
@@ -85,7 +85,7 @@ def expire_soft_lock(booking_id):
         Notification.objects.create(
             user=booking.tenant,
             title='BOOKING EXPIRED',
-            message=f"Your booking has expired. The slot has been released.\n\nProperty: {booking.accommodation_property.title}\nReference: {booking.reference_number}\n\n[Search Again]",
+            message=f"Your 2-hour booking window has expired. The slot has been released.\n\nProperty: {booking.accommodation_property.title}\nReference: {booking.reference_number}\n\n[Search Again]",
         )
         
         return f"Expired soft lock for booking {booking_id}"

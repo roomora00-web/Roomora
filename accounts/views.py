@@ -941,6 +941,17 @@ def dashboard_view(request):
     status_message, status_details = get_status_message(user_state, request.user, last_search, saved_properties_count, current_booking, roommate_match)
     
     # Get recommended properties based on user type and search history
+    # Annotate with the real minimum price from room/unit pricing models
+    from django.db.models import Min, Coalesce, DecimalField
+    price_annotation = Min(
+        Coalesce(
+            'room_types__pricing_models__semester_price',
+            'room_types__pricing_models__monthly_price',
+            'room_types__pricing_models__academic_year_price',
+            'unit_types__pricing_models__monthly_price',
+            output_field=DecimalField()
+        )
+    )
     if last_search:
         recommended_properties = Property.objects.filter(
             status='APPROVED',
@@ -948,13 +959,17 @@ def dashboard_view(request):
             city__icontains=last_search.city if last_search.city else ''
         ).exclude(
             saved_by=request.user
-        ).prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models').order_by('-created_at', '-views_count')[:6]
+        ).prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models').annotate(
+            starting_price=price_annotation
+        ).order_by('-created_at', '-views_count')[:6]
     else:
         recommended_properties = Property.objects.filter(
             status='APPROVED',
             is_available=True,
             suitable_for_students=request.user.user_type == 'STUDENT'
-        ).prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models').order_by('-views_count', '-created_at')[:6]
+        ).prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models').annotate(
+            starting_price=price_annotation
+        ).order_by('-views_count', '-created_at')[:6]
     
     # Get notifications/alerts
     notifications = get_user_notifications(request.user, profile, current_booking)

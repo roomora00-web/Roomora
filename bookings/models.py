@@ -82,7 +82,7 @@ class Booking(models.Model):
     house_rules_acknowledged = models.BooleanField(default=False, help_text='User acknowledged property prohibited items/rules')
     house_rules_acknowledged_at = models.DateTimeField(null=True, blank=True, help_text='Timestamp when house rules were acknowledged')
     
-    # Soft-lock expiration (48-hour window for completing booking)
+    # Soft-lock expiration (2-hour window for completing booking)
     soft_lock_expires_at = models.DateTimeField(null=True, blank=True, help_text='When the soft-lock on the slot expires')
     soft_lock_released = models.BooleanField(default=False, help_text='Whether the soft lock has been released')
     reminder_sent = models.BooleanField(default=False, help_text='Has the 36-hour reminder been sent?')
@@ -417,7 +417,7 @@ class Booking(models.Model):
             return True
         return False
     
-    def set_soft_lock(self, hours=48):
+    def set_soft_lock(self, hours=2):
         """Set soft-lock on the booking with expiration"""
         from django.utils import timezone
         from datetime import timedelta

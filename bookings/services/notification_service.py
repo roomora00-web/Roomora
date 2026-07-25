@@ -31,7 +31,7 @@ class NotificationService:
         _send_notification(
             user=booking.tenant,
             title='BOOKING INITIATED',
-            message=f"Your booking has been initiated successfully!\n\nProperty: {booking.accommodation_property.title}\nRoom Type: {booking.room_type.room_type_name if booking.room_type else 'N/A'}\nReference: {booking.reference_number}\n\nComplete your booking within 48 hours to secure your slot.",
+            message=f"Your booking has been initiated successfully!\n\nProperty: {booking.accommodation_property.title}\nRoom Type: {booking.room_type.room_type_name if booking.room_type else 'N/A'}\nReference: {booking.reference_number}\n\nComplete your booking within 2 hours to secure your slot.",
             notification_type='INFO'
         )
     

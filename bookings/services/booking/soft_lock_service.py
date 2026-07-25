@@ -158,15 +158,26 @@ class SoftLockService:
             )
             
             # Step 4: Create booking with INITIATED status
+            # Resolve room_type from the room if room_id is provided
+            room_type_id_resolved = None
+            if room_id:
+                try:
+                    from properties.models import Room as RoomModel
+                    room_obj = RoomModel.objects.get(id=room_id)
+                    room_type_id_resolved = room_obj.room_type_id
+                except Exception:
+                    pass
+
             booking = Booking.objects.create(
                 tenant=user,
                 accommodation_property=property_obj,
                 room_id=room_id,
+                room_type_id=room_type_id_resolved,  # Critical: enables post_save signal to call recalculate_capacity()
                 unit_type_id=unit_type_id,
                 status='INITIATED',
                 house_rules_acknowledged=True,
                 house_rules_acknowledged_at=house_rules_acknowledged_at or timezone.now(),
-                soft_lock_expires_at=timezone.now() + timedelta(hours=6),
+                soft_lock_expires_at=timezone.now() + timedelta(hours=2),
                 occupancy_position=occupancy_position,
                 is_first_occupant=is_first_occupant,
                 move_in_date=timezone.now().date(),  # Placeholder, will be set in next step
@@ -175,7 +186,7 @@ class SoftLockService:
             )
             
             # Step 5: Slots are now updated automatically via Django post_save signals
-            # when the booking is created.
+            # when the booking is created (room_type.recalculate_capacity() is called).
             
             # Step 6: Create timeline entry
             from bookings.models import BookingStatusTimeline
@@ -185,7 +196,7 @@ class SoftLockService:
                 new_status='INITIATED',
                 triggered_by=user,
                 triggered_by_type='USER',
-                reason='Soft lock initiated - slot reserved for 48 hours'
+                reason='Soft lock initiated - slot reserved for 2 hours'
             )
             
             return SoftLockResult(
@@ -193,6 +204,7 @@ class SoftLockService:
                 booking=booking,
                 message=f"Slot reserved successfully. Reference: {booking.reference_number}"
             )
+
     
     @staticmethod
     def release_soft_lock(booking: Booking) -> bool:

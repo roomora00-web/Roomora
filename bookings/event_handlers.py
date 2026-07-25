@@ -100,7 +100,7 @@ def handle_booking_reinstated(event):
         recipient=booking.tenant,
         notification_type='BOOKING_REINSTATED',
         title='Booking Reinstated',
-        message='Your booking has been reinstated. Please complete your booking within 48 hours.',
+        message='Your booking has been reinstated. Please complete your booking within 2 hours.',
         related_booking=booking
     )
 

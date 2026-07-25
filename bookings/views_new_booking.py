@@ -218,7 +218,7 @@ def initiate_booking(request, property_id):
     Notification.objects.create(
         user=user,
         title='SLOT RESERVED',
-        message=f"Your slot at {property_obj.title} is reserved.\nReference: {booking.reference_number}\nComplete your booking within 6 hours.",
+        message=f"Your slot at {property_obj.title} is reserved.\nReference: {booking.reference_number}\nComplete your booking within 2 hours.",
     )
     
     # Step 6: Show booking initiated screen
