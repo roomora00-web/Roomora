@@ -212,67 +212,67 @@
       </div>
 
       <!-- High-End Property Rules & Amenities Modal for Booking #{{ booking.id }} -->
-      <div id="modal-{{ booking.id }}" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-        <div class="bg-white rounded-3xl border border-black/10 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 animate-scale-up">
+      <div id="modal-{{ booking.id }}" class="fixed inset-0 bg-black/75 backdrop-blur-md z-[999999] hidden flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div class="bg-white rounded-3xl border border-black/10 shadow-2xl max-w-3xl sm:max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-10 space-y-6 animate-scale-up">
           
-          <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+          <div class="flex items-center justify-between border-b border-black/[0.08] pb-5">
             <div class="space-y-1">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-800">Property & Room Particulars</span>
-              <h3 class="font-outfit text-2xl font-extrabold text-[#111111]">{{ booking.accommodation_property.title }}</h3>
+              <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">Property & Room Particulars</span>
+              <h3 class="font-outfit text-2xl sm:text-3xl font-extrabold text-[#111111] mt-1">{{ booking.accommodation_property.title }}</h3>
             </div>
-            <button type="button" onclick="closeDetailsModal('modal-{{ booking.id }}')" class="h-10 w-10 rounded-2xl bg-[#F8F8FA] border border-black/10 flex items-center justify-center text-[#111111] hover:bg-black/5 transition-colors font-bold">
+            <button type="button" onclick="closeDetailsModal('modal-{{ booking.id }}')" class="h-11 w-11 rounded-2xl bg-[#F8F8FA] border border-black/10 flex items-center justify-center text-[#111111] hover:bg-black/10 transition-colors font-bold text-lg">
               ✕
             </button>
           </div>
 
           <!-- Verified Amenities Grid -->
           <div class="space-y-3">
-            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888] flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span>Verified Specifications & Amenities</span>
+            <div class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#888888] flex items-center gap-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Verified Room Specifications & Amenities</span>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
               {% if booking.room_type %}
                 {% if booking.room_type.wifi_available %}
-                <div class="flex items-center gap-2.5 p-3 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111]">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+                <div class="flex items-center gap-3 p-4 rounded-2xl bg-[#F8F8FA] border border-black/10 text-sm font-extrabold text-[#111111]">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
                   <span>High-Speed Wi-Fi</span>
                 </div>
                 {% endif %}
 
                 {% if booking.room_type.air_conditioning %}
-                <div class="flex items-center gap-2.5 p-3 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111]">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <div class="flex items-center gap-3 p-4 rounded-2xl bg-[#F8F8FA] border border-black/10 text-sm font-extrabold text-[#111111]">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                   <span>Air Conditioning</span>
                 </div>
                 {% endif %}
 
                 {% if booking.room_type.private_bathroom %}
-                <div class="flex items-center gap-2.5 p-3 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111]">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-2.12 0 1.5 1.5 0 0 0 0 2.12L6.88 8M16 13a4 4 0 0 1-4 4H7.5A4.5 4.5 0 0 1 3 12.5V12a9 9 0 0 1 18 0v.5"/></svg>
+                <div class="flex items-center gap-3 p-4 rounded-2xl bg-[#F8F8FA] border border-black/10 text-sm font-extrabold text-[#111111]">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-2.12 0 1.5 1.5 0 0 0 0 2.12L6.88 8M16 13a4 4 0 0 1-4 4H7.5A4.5 4.5 0 0 1 3 12.5V12a9 9 0 0 1 18 0v.5"/></svg>
                   <span>Private Bathroom</span>
                 </div>
                 {% endif %}
 
                 {% if booking.room_type.study_desk_available %}
-                <div class="flex items-center gap-2.5 p-3 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111]">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <div class="flex items-center gap-3 p-4 rounded-2xl bg-[#F8F8FA] border border-black/10 text-sm font-extrabold text-[#111111]">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                   <span>Dedicated Study Desk</span>
                 </div>
                 {% endif %}
               {% endif %}
 
               {% if booking.accommodation_property.security_personnel or booking.accommodation_property.cctv %}
-              <div class="flex items-center gap-2.5 p-3 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111]">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <div class="flex items-center gap-3 p-4 rounded-2xl bg-[#F8F8FA] border border-black/10 text-sm font-extrabold text-[#111111]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 <span>24/7 Security & CCTV</span>
               </div>
               {% endif %}
 
               {% for amenity in booking.accommodation_property.amenities.all %}
-              <div class="flex items-center gap-2.5 p-3 rounded-xl bg-[#F8F8FA] border border-black/10 text-xs font-bold text-[#111111]">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
+              <div class="flex items-center gap-3 p-4 rounded-2xl bg-[#F8F8FA] border border-black/10 text-sm font-extrabold text-[#111111]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
                 <span>{{ amenity.name }}</span>
               </div>
               {% endfor %}
@@ -280,30 +280,30 @@
           </div>
 
           <!-- House Rules & Guidelines -->
-          <div class="space-y-2 border-t border-black/[0.06] pt-4">
-            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">House Rules & Guidelines</div>
-            <p class="text-xs text-[#555555] leading-relaxed">
+          <div class="space-y-3 border-t border-black/[0.08] pt-5">
+            <div class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#888888]">House Rules & Guidelines</div>
+            <div class="p-5 rounded-2xl bg-[#F8F8FA] border border-black/10 text-sm text-[#222222] leading-relaxed font-medium">
               {{ booking.accommodation_property.house_rules|default:"Standard Hostel Quiet Hours (10:00 PM - 6:00 AM). Respect co-tenants and maintain shared room cleanliness." }}
-            </p>
+            </div>
             {% if booking.accommodation_property.prohibited_items %}
-            <div class="text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 p-3 rounded-xl">
+            <div class="text-sm font-bold text-amber-900 bg-amber-50 border border-amber-200 p-4 rounded-2xl">
               Prohibited Items: {{ booking.accommodation_property.prohibited_items }}
             </div>
             {% endif %}
           </div>
 
           <!-- Curfew & Campus Proximity -->
-          <div class="space-y-2 border-t border-black/[0.06] pt-4">
-            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Campus Proximity & Curfew Policy</div>
-            <div class="text-xs text-[#555555] space-y-1">
+          <div class="space-y-3 border-t border-black/[0.08] pt-5">
+            <div class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#888888]">Campus Proximity & Curfew Policy</div>
+            <div class="p-5 rounded-2xl bg-[#F8F8FA] border border-black/10 text-sm text-[#333333] space-y-2 font-medium">
               <div>Campus Distance: <span class="font-bold text-[#111111]">{{ booking.accommodation_property.nearest_institution|default:"Campus Area" }}</span> ({{ booking.accommodation_property.distance_to_campus|default:"0.5" }} km, ~{{ booking.accommodation_property.walking_time_estimate|default:"5" }} mins walk)</div>
               <div>Curfew Policy: <span class="font-bold text-[#111111]">{% if booking.accommodation_property.curfew_time %}{{ booking.accommodation_property.curfew_time|time:"g:i A" }}{% else %}No strict curfew (24/7 keycard access){% endif %}</span></div>
               <div>Visitor Rules: <span class="font-bold text-[#111111]">{{ booking.accommodation_property.visitor_policy|default:"Day guests allowed until 9:00 PM with ID." }}</span></div>
             </div>
           </div>
 
-          <div class="pt-4 border-t border-black/[0.06] flex justify-end">
-            <button type="button" onclick="closeDetailsModal('modal-{{ booking.id }}')" class="bg-[#111111] text-white px-6 py-2.5 rounded-xl text-xs font-bold hover:bg-black/80 transition-colors">
+          <div class="pt-5 border-t border-black/[0.08] flex justify-end">
+            <button type="button" onclick="closeDetailsModal('modal-{{ booking.id }}')" class="bg-[#111111] text-white px-7 py-3 rounded-2xl text-xs sm:text-sm font-extrabold hover:bg-black/80 transition-colors shadow-md">
               Close Particulars
             </button>
           </div>
@@ -363,6 +363,9 @@
   function openDetailsModal(id) {
     const modal = document.getElementById(id);
     if (modal) {
+      if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+      }
       modal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
     }
