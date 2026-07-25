@@ -128,6 +128,10 @@ if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
     DATABASES['default']['OPTIONS'] = DATABASES['default'].get('OPTIONS', {})
     DATABASES['default']['OPTIONS'].update({
         'connect_timeout': 15,
+        'keepalives': 1,
+        'keepalives_idle': 30,
+        'keepalives_interval': 10,
+        'keepalives_count': 5,
     })
 
 # Celery Configuration
