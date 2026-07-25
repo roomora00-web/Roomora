@@ -155,7 +155,28 @@
               GH₵ {% if booking.payment_records.first %}{{ booking.payment_records.first.amount_total|floatformat:2 }}{% else %}{{ booking.total_price|floatformat:2 }}{% endif %}
             </div>
           </div>
+        {% if booking.roommate_info %}
+        <!-- Roommate Match Banner -->
+        <div class="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-3">
+            {% if booking.roommate_info.user.profile_picture %}
+            <img src="{{ booking.roommate_info.user.profile_picture.url }}" alt="{{ booking.roommate_info.user.first_name }}" class="h-8 w-8 rounded-lg object-cover border border-emerald-500 shrink-0">
+            {% else %}
+            <div class="h-8 w-8 rounded-lg bg-emerald-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0">
+              {{ booking.roommate_info.user.first_name|slice:":1" }}{{ booking.roommate_info.user.last_name|slice:":1" }}
+            </div>
+            {% endif %}
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800">Matched Roommate</span>
+              <div class="font-extrabold text-[#111111]">{{ booking.roommate_info.user.first_name }} {{ booking.roommate_info.user.last_name }} <span class="font-mono text-emerald-700 font-normal">({{ booking.roommate_info.user.email }})</span></div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="bg-emerald-600 text-white font-extrabold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider">{{ booking.roommate_info.score }}% MATCH</span>
+            <span class="text-[11px] font-bold text-emerald-900 bg-emerald-100 px-2 py-0.5 rounded-md">Position {{ booking.roommate_info.position }}</span>
+          </div>
         </div>
+        {% endif %}
 
         <!-- Action Buttons Strip -->
         <div class="flex flex-wrap items-center justify-between gap-3 border-t border-black/[0.06] pt-4">

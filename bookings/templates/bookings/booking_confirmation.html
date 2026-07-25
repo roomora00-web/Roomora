@@ -49,7 +49,63 @@
       
       <!-- Left Column: Room Photos & Comprehensive Details -->
       <div class="space-y-6 w-full">
-        
+
+        {% if booking.roommate_info %}
+        <!-- Matched Roommate & Compatibility Highlight Card -->
+        <div class="glass-card p-5 sm:p-8 space-y-5 bg-gradient-to-br from-white via-emerald-50/20 to-emerald-100/30 border-2 border-emerald-500/30 shadow-md">
+          <div class="flex items-center justify-between border-b border-emerald-900/10 pb-4">
+            <div class="flex items-center gap-3">
+              <div class="h-12 w-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-extrabold text-lg shadow-sm shrink-0">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="bg-emerald-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">ROOMMATE MATCHED</span>
+                  <span class="text-xs font-mono font-extrabold text-emerald-900 bg-emerald-100 px-2 py-0.5 rounded-md">{{ booking.roommate_info.score }}% COMPATIBILITY</span>
+                </div>
+                <h2 class="font-outfit text-xl font-extrabold text-[#111111] mt-1">Matched Roommate Assigned</h2>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center bg-white/80 p-4 rounded-2xl border border-emerald-200 shadow-xs">
+            <div class="flex items-center gap-3 col-span-2">
+              {% if booking.roommate_info.user.profile_picture %}
+              <img src="{{ booking.roommate_info.user.profile_picture.url }}" alt="{{ booking.roommate_info.user.first_name }}" class="h-14 w-14 rounded-2xl object-cover border-2 border-emerald-500 shadow-xs">
+              {% else %}
+              <div class="h-14 w-14 rounded-2xl bg-[#111111] text-white font-extrabold text-lg flex items-center justify-center shrink-0 border-2 border-emerald-500">
+                {{ booking.roommate_info.user.first_name|slice:":1" }}{{ booking.roommate_info.user.last_name|slice:":1" }}
+              </div>
+              {% endif %}
+              <div>
+                <div class="text-base font-extrabold text-[#111111]">{{ booking.roommate_info.user.first_name }} {{ booking.roommate_info.user.last_name }}</div>
+                <div class="text-xs text-[#6B7280] font-mono">{{ booking.roommate_info.user.email }}</div>
+                <div class="text-[11px] font-bold text-emerald-800 mt-0.5">Assigned to Room Position {{ booking.roommate_info.position }}</div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-center sm:text-right">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800">Match Score</div>
+              <div class="font-outfit text-2xl font-extrabold text-emerald-900">{{ booking.roommate_info.score }}%</div>
+            </div>
+          </div>
+
+          {% if booking.roommate_info.alignments %}
+          <div class="space-y-2">
+            <div class="text-xs font-extrabold text-[#111111] uppercase tracking-wider">Top Shared Alignments</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {% for align in booking.roommate_info.alignments|slice:":4" %}
+              <div class="flex items-center gap-2 p-2.5 rounded-xl bg-white border border-emerald-100 text-xs font-semibold text-[#111111]">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-emerald-600 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>{{ align.description }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+
         <!-- Room & Property Inspection Photo Gallery Card -->
         <div class="glass-card p-5 sm:p-8 space-y-5">
           <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">

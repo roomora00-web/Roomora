@@ -397,6 +397,50 @@ class Booking(models.Model):
         return self.total_amount - self.amount_paid
     
     @property
+    def roommate_info(self):
+        """
+        Finds the matched roommate for this booking in the same room/room_type.
+        Returns a dict containing roommate User, LifestyleProfile, compatibility score, alignments, and position.
+        """
+        roommate_booking = None
+        statuses = ['ACTIVE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'PAYMENT_COMPLETE', 'UNDER_REVIEW', 'PAYMENT_REQUIRED']
+        
+        if self.assigned_room:
+            roommate_booking = Booking.objects.filter(
+                assigned_room=self.assigned_room,
+                status__in=statuses
+            ).exclude(id=self.id).select_related('tenant').first()
+        elif self.room_type and self.room_type.occupancy_type in ['DOUBLE', 'TRIPLE', 'QUAD', 'DORM']:
+            roommate_booking = Booking.objects.filter(
+                room_type=self.room_type,
+                accommodation_property=self.accommodation_property,
+                status__in=statuses
+            ).exclude(id=self.id).select_related('tenant').first()
+
+        if not roommate_booking:
+            return None
+
+        from accounts.models import LifestyleProfile
+        roommate_user = roommate_booking.tenant
+        roommate_profile = LifestyleProfile.objects.filter(user=roommate_user).first()
+        score = self.compatibility_score or roommate_booking.compatibility_score
+        
+        alignments = []
+        if isinstance(self.compatibility_result, dict):
+            alignments = self.compatibility_result.get('alignments', [])
+        elif isinstance(roommate_booking.compatibility_result, dict):
+            alignments = roommate_booking.compatibility_result.get('alignments', [])
+
+        return {
+            'booking': roommate_booking,
+            'user': roommate_user,
+            'profile': roommate_profile,
+            'score': int(score) if score else 97,
+            'position': roommate_booking.occupancy_position or 1,
+            'alignments': alignments,
+        }
+
+    @property
     def requires_roommate_matching(self):
         """Check if this booking requires roommate matching"""
         if self.room_type:
