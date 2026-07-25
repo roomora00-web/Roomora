@@ -104,17 +104,25 @@ def initiate_booking(request, property_id):
             
     if room_type_id and not room_id:
         room_type = get_object_or_404(RoomType, id=room_type_id)
-        # Filter by rooms where occupied + pending < total (i.e. there are free slots)
-        # Also exclude fully booked rooms
         from django.db.models import F
-        room = room_type.rooms.exclude(
-            status='FULLY_OCCUPIED'
-        ).filter(
-            occupied_slots__lt=F('total_slots')
-        ).first()
+        # Priority 1: room with occupied_slots < total_slots
+        room = room_type.rooms.filter(occupied_slots__lt=F('total_slots')).first()
+        
+        # Priority 2: room not fully archived/maintenance
         if not room:
-            messages.error(request, "No rooms are currently available for this room type.")
-            return redirect('landing:property_detail', pk=property_id)
+            room = room_type.rooms.exclude(status__in=['ARCHIVED', 'MAINTENANCE']).first()
+            
+        # Priority 3: auto-create room instance if RoomType has no room records yet
+        if not room:
+            room = Room.objects.create(
+                accommodation_property=property_obj,
+                room_type=room_type,
+                room_number=f"Room 1",
+                total_slots=room_type.total_capacity or 1,
+                occupied_slots=0,
+                pending_slots=0,
+                status='AVAILABLE'
+            )
         room_id = room.id
         
     room = get_object_or_404(Room, id=room_id) if room_id else None

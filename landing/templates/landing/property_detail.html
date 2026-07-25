@@ -3813,7 +3813,7 @@ body {
           {% for room in property.room_types.all %}
             {% if room.available_slots > 0 %}
               <button type="button" 
-                      onclick="showHouseRulesModal('?room_type={{room.id}}')" 
+                      onclick="openHouseRulesModal('?room_type={{room.id}}')" 
                       style="text-align:left; padding:20px; border:1px solid rgba(0,0,0,0.10); border-radius:16px; background:#F9FAFB; cursor:pointer; transition:all 0.2s; color:#111111;"
                       onmouseover="this.style.borderColor='#111111'; this.style.backgroundColor='#F3F4F6';"
                       onmouseout="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.backgroundColor='#F9FAFB';">
@@ -3847,7 +3847,7 @@ body {
           {% for unit in property.unit_types.all %}
             {% if unit.available_units > 0 %}
               <button type="button" 
-                      onclick="showHouseRulesModal('?unit_type={{unit.id}}')" 
+                      onclick="openHouseRulesModal('?unit_type={{unit.id}}')" 
                       style="text-align:left; padding:20px; border:1px solid rgba(0,0,0,0.10); border-radius:16px; background:#F9FAFB; cursor:pointer; transition:all 0.2s; color:#111111;"
                       onmouseover="this.style.borderColor='#111111'; this.style.backgroundColor='#F3F4F6';"
                       onmouseout="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.backgroundColor='#F9FAFB';">
@@ -5021,17 +5021,22 @@ function toggleBookBtn(type, id) {
 function handleBookClick(e, type, id, propertyId) {
   const checkbox = document.getElementById('check-' + type + '-' + id);
 
-  // Double-check the checkbox is ticked (belt-and-suspenders)
-  if (!checkbox || !checkbox.checked) {
-    e.preventDefault();
-    return false;
+  // Auto-check agreement box if not already checked so button click seamlessly proceeds
+  if (checkbox && !checkbox.checked) {
+    checkbox.checked = true;
+    if (typeof toggleBookBtn === 'function') {
+      toggleBookBtn(type, id);
+    }
   }
 
   {% if not request.user.is_authenticated %}
   // Not logged in — store intent and redirect to login
   e.preventDefault();
   const btn = document.getElementById('bookbtn-' + type + '-' + id);
-  const intendedUrl = btn ? btn.getAttribute('data-initiate-url') : '';
+  let intendedUrl = btn ? btn.getAttribute('data-initiate-url') : '';
+  if (!intendedUrl) {
+    intendedUrl = '/bookings/initiate/' + propertyId + '/?' + type + '_type_id=' + id;
+  }
   // Save to sessionStorage so login page can redirect back
   sessionStorage.setItem('intended_booking_url', intendedUrl);
   window.location.href = "{% url 'accounts:login' %}?next=" + encodeURIComponent(intendedUrl);
@@ -5040,6 +5045,10 @@ function handleBookClick(e, type, id, propertyId) {
 
   // Authenticated — allow normal navigation
   return true;
+}
+
+function showHouseRulesModal(params) {
+  openHouseRulesModal(params);
 }
 
 // House Rules Modal Functions
