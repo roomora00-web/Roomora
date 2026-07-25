@@ -107,6 +107,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = 'users'
         verbose_name = 'User'
         verbose_name_plural = 'Users'
+
+    @property
+    def is_email_verified(self):
+        return self.email_verified or self.account_status in ['VERIFIED', 'ACTIVE', 'PROFILE_INCOMPLETE', 'PROFILE_COMPLETE']
     
     def __str__(self):
         return f"{self.email} ({self.get_user_type_display()})"
