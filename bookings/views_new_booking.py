@@ -899,7 +899,7 @@ def booking_route(request, booking_id):
     Route B: First occupant of shared room → Admin review
     Route C: Shared occupancy → Compatibility engine
     """
-    booking = get_object_or_404(Booking, id=booking_id, tenant=request.user, status='INITIATED')
+    booking = get_object_or_404(Booking, id=booking_id, tenant=request.user)
     
     # Determine occupancy type
     occupancy_type = 'SINGLE'
@@ -1002,7 +1002,7 @@ def compatibility_engine(request, booking_id):
     Compatibility Engine - Activates for shared occupancy when not first occupant
     Calculates room-level compatibility scores and finds best match
     """
-    booking = get_object_or_404(Booking, id=booking_id, tenant=request.user, status='INITIATED')
+    booking = get_object_or_404(Booking, id=booking_id, tenant=request.user)
     
     # Get user's lifestyle profile
     from accounts.models import LifestyleProfile
