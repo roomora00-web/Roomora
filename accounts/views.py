@@ -942,15 +942,16 @@ def dashboard_view(request):
     
     # Get recommended properties based on user type and search history
     # Annotate with the real minimum price from room/unit pricing models
-    from django.db.models import Min, Coalesce, DecimalField
-    price_annotation = Min(
-        Coalesce(
-            'room_types__pricing_models__semester_price',
-            'room_types__pricing_models__monthly_price',
-            'room_types__pricing_models__academic_year_price',
-            'unit_types__pricing_models__monthly_price',
-            output_field=DecimalField()
-        )
+    from django.db.models import Min
+    from django.db.models.functions import Coalesce
+    from django.db.models import DecimalField, Value
+    price_annotation = Coalesce(
+        Min('room_types__pricing_models__semester_price'),
+        Min('room_types__pricing_models__monthly_price'),
+        Min('room_types__pricing_models__academic_year_price'),
+        Min('unit_types__pricing_models__monthly_price'),
+        Value(None),
+        output_field=DecimalField()
     )
     if last_search:
         recommended_properties = Property.objects.filter(
