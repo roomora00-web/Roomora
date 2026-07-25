@@ -270,9 +270,9 @@
           <div class="space-y-1">
             <h3 class="font-outfit text-xl font-extrabold text-[#111111] flex items-center gap-2">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              <span>Room Admin Chat</span>
+              <span>Room Admin & Roommate Chat</span>
             </h3>
-            <p class="text-xs text-[#6B7280]">Direct channel with Property Management</p>
+            <p class="text-xs text-[#6B7280]">Direct discussion channel for room setup & declarations</p>
           </div>
           <span class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full border border-emerald-200">
             <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -290,13 +290,23 @@
               <span>System</span>
             </div>
             <p class="text-sm leading-relaxed text-[#444444]">
-              Welcome to your Room Portal chat! You can send inquiries about room setup, maintenance requests, or vacation declarations directly to the admin here.
+              Welcome to your Room Portal chat! Declare items you'll bring to the room below, or send inquiries directly to property admin and your roommate.
             </p>
           </div>
 
           <!-- Message History -->
           {% for msg in room_messages %}
-          {% if msg.sender == request.user %}
+          {% if msg.is_system or not msg.sender %}
+          <div class="bg-emerald-50/80 border border-emerald-200 p-4 rounded-2xl text-[#111111] space-y-1">
+            <div class="flex items-center justify-between text-xs font-extrabold text-emerald-900 uppercase tracking-wider">
+              <span>Room Setup System Declaration</span>
+              <span>{{ msg.created_at|date:"M d, H:i" }}</span>
+            </div>
+            <p class="text-xs sm:text-sm font-semibold text-emerald-950 leading-relaxed">
+              {{ msg.content }}
+            </p>
+          </div>
+          {% elif msg.sender == request.user %}
           <div class="flex flex-col items-end space-y-1">
             <div class="bg-[#111111] text-white p-4 rounded-2xl max-w-[85%] shadow-xs leading-relaxed text-sm">
               {{ msg.content }}
@@ -306,7 +316,7 @@
           {% else %}
           <div class="flex flex-col items-start space-y-1">
             <div class="bg-[#F8F8FA] border border-black/10 text-[#111111] p-4 rounded-2xl max-w-[85%] shadow-xs leading-relaxed text-sm">
-              <div class="text-xs font-extrabold text-emerald-800 uppercase mb-1">{{ msg.sender.full_name|default:"Roomora Admin" }}</div>
+              <div class="text-xs font-extrabold text-emerald-800 uppercase mb-1">{{ msg.sender.get_full_name|default:msg.sender.email }}</div>
               {{ msg.content }}
             </div>
             <span class="text-[10px] text-[#888888] font-bold px-1">{{ msg.created_at|date:"M d, H:i" }}</span>
@@ -319,12 +329,94 @@
         <!-- Chat Form -->
         <form id="chatForm" class="border-t border-black/[0.06] pt-4 flex items-center gap-3">
           {% csrf_token %}
-          <input type="text" id="chatInput" placeholder="Type message to admin..." required class="flex-1 bg-[#F8F8FA] border border-black/10 rounded-2xl px-4 py-3 text-sm text-[#111111] focus:outline-none focus:border-emerald-600 transition-colors font-medium">
+          <input type="text" id="chatInput" placeholder="Type message to admin or roommate..." required class="flex-1 bg-[#F8F8FA] border border-black/10 rounded-2xl px-4 py-3 text-sm text-[#111111] focus:outline-none focus:border-emerald-600 transition-colors font-medium">
           <button type="submit" id="sendBtn" class="bg-emerald-800 text-white px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold hover:bg-emerald-900 transition-colors shadow-xs shrink-0 flex items-center gap-2">
             <span>Send</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </form>
+
+      </div>
+
+      <!-- Declare Room Items & Shared Equipment Widget -->
+      <div class="glass-card p-6 sm:p-8 space-y-6 rounded-3xl border border-black/10 bg-white shadow-xs w-full">
+        <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+          <div>
+            <h2 class="font-outfit text-xl sm:text-2xl font-extrabold text-[#111111] flex items-center gap-3">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Shared Room Item Declarations</span>
+            </h2>
+            <p class="text-xs text-[#6B7280] mt-0.5">Declare appliances or equipment you are bringing to avoid duplicate items.</p>
+          </div>
+        </div>
+
+        <!-- Add Declaration Form -->
+        <form id="declarationForm" class="space-y-4 bg-[#F8F8FA] border border-black/10 p-5 rounded-2xl">
+          {% csrf_token %}
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="space-y-1">
+              <label class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Item Name</label>
+              <input type="text" id="declItemName" placeholder="e.g. Mini Fridge, Kettle, Microwave, TV..." required class="w-full bg-white border border-black/10 rounded-xl px-4 py-2.5 text-xs font-bold text-[#111111] focus:outline-none focus:border-emerald-600">
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Category</label>
+              <select id="declCategory" required class="w-full bg-white border border-black/10 rounded-xl px-4 py-2.5 text-xs font-bold text-[#111111] focus:outline-none focus:border-emerald-600">
+                <option value="ELECTRICAL">Electrical Appliance</option>
+                <option value="FURNITURE">Furniture Item</option>
+                <option value="PERSONAL">Personal Equipment</option>
+                <option value="OTHER">Other Item</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
+            <input type="text" id="declDescription" placeholder="Optional notes (brand, power rating, notes)..." class="w-full bg-white border border-black/10 rounded-xl px-4 py-2.5 text-xs text-[#111111]">
+            <button type="submit" id="declSubmitBtn" class="bg-[#111111] text-white px-6 py-2.5 rounded-xl text-xs font-extrabold hover:bg-black/80 transition-colors shrink-0 shadow-xs">
+              Declare Item ➔
+            </button>
+          </div>
+        </form>
+
+        <!-- Declared Items List -->
+        <div class="space-y-4 pt-2">
+          <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Declared Room Items</div>
+          
+          <div id="declarationsContainer" class="space-y-3">
+            {% if all_declarations %}
+              {% for decl in all_declarations %}
+              <div class="p-4 rounded-2xl border border-black/10 bg-white flex items-center justify-between gap-3 shadow-xs">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2">
+                    <span class="font-extrabold text-sm text-[#111111]">{{ decl.item_name }}</span>
+                    <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-black/10 bg-[#F8F8FA] text-[#555555]">
+                      {{ decl.get_category_display }}
+                    </span>
+                    {% if decl.is_flagged %}
+                    <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full border border-rose-300 bg-rose-50 text-rose-800">
+                      Prohibited Item Warning
+                    </span>
+                    {% endif %}
+                  </div>
+                  <div class="text-xs text-[#6B7280]">
+                    Declared by <span class="font-bold text-[#111111]">{% if decl.user == request.user %}You{% else %}{{ decl.user.first_name }}{% endif %}</span> • {{ decl.created_at|date:"M d, Y" }}
+                  </div>
+                </div>
+
+                <div class="text-right">
+                  <span class="text-xs font-extrabold px-3 py-1 rounded-full border {% if decl.consumption_level == 'HIGH' %}bg-amber-100 text-amber-900 border-amber-300{% elif decl.consumption_level == 'MEDIUM' %}bg-blue-100 text-blue-900 border-blue-300{% else %}bg-emerald-100 text-emerald-900 border-emerald-300{% endif %}">
+                    {{ decl.get_consumption_level_display }}
+                  </span>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="p-6 bg-[#F8F8FA] border border-black/10 rounded-2xl text-center space-y-1">
+                <div class="text-xs font-bold text-[#6B7280]">No items declared yet. Use the form above to declare appliances or items you will bring.</div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
 
       </div>
 
@@ -422,4 +514,50 @@
   </div>
 
 </div>
+
+<script>
+  // Item Declaration Submission Handler
+  const declForm = document.getElementById('declarationForm');
+  if (declForm) {
+    declForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const itemName = document.getElementById('declItemName').value;
+      const category = document.getElementById('declCategory').value;
+      const description = document.getElementById('declDescription').value;
+      const submitBtn = document.getElementById('declSubmitBtn');
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Declaring...';
+
+      fetch("{% url 'bookings:setup-declaration' booking.id %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({
+          item_name: itemName,
+          category: category,
+          description: description
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Declare Item ➔';
+        if (data.error) {
+          alert(data.error);
+        } else {
+          location.reload();
+        }
+      })
+      .catch(err => {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Declare Item ➔';
+        alert('Failed to submit item declaration.');
+      });
+    });
+  }
+</script>
 {% endblock %}

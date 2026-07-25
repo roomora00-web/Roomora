@@ -557,9 +557,10 @@ def enter_room_view(request, booking_id):
         }
 
     # Roommates list
-    roommates = []
-    if room_assignment and room_assignment.assigned_roommates.exists():
-        roommates = room_assignment.assigned_roommates.exclude(id=request.user.id)
+    from bookings.models import RoomSetupDeclaration
+    all_declarations = RoomSetupDeclaration.objects.filter(room_assignment=room_assignment).order_by('-created_at') if room_assignment else []
+    my_declarations = [d for d in all_declarations if d.user == request.user]
+    roommate_declarations = [d for d in all_declarations if d.user != request.user]
 
     context = {
         'booking': booking,
@@ -567,6 +568,9 @@ def enter_room_view(request, booking_id):
         'all_showcase_images': all_showcase_images,
         'room_assignment': room_assignment,
         'room_messages': room_messages,
+        'my_declarations': my_declarations,
+        'roommate_declarations': roommate_declarations,
+        'all_declarations': all_declarations,
         'lifestyle_profile': lifestyle_profile,
         'lease_progress': lease_progress,
         'roommates': roommates,
