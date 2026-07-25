@@ -2408,7 +2408,7 @@ body {
         </div>
         <div class="pd-glance-card">
           <div class="pd-glance-label">Status</div>
-          <div class="pd-glance-value">{% if property.is_available %}Available{% else %}Booked{% endif %}</div>
+          <div class="pd-glance-value">{% if property.has_available_rooms %}<span style="color:#059669; font-weight:800;">Available Now</span>{% else %}<span style="color:#DC2626; font-weight:800;">Fully Booked</span>{% endif %}</div>
         </div>
       </div>
     </div>

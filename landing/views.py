@@ -33,10 +33,13 @@ class HomeView(TemplateView):
                 status='APPROVED', is_available=True, property_type='APARTMENT'
             ).prefetch_related('images', 'unit_types__pricing_models', 'amenities')[:6]
 
-            # Fetch premium/featured listings (ordered by 5-star ratings & featured status)
+            from django.db.models import Avg
+            # Fetch premium/featured listings (ordered by featured status & review rating)
             premium_listings = Property.objects.filter(
                 status='APPROVED'
-            ).order_by('-average_rating', '-is_featured', '-id').prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models', 'amenities')
+            ).annotate(
+                avg_rating=Avg('reviews__rating')
+            ).order_by('-is_featured', '-avg_rating', '-id').prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models', 'amenities')
 
             context['premium_listings'] = premium_listings[:6]
             context['featured_property'] = premium_listings.first()

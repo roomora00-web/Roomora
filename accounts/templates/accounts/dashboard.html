@@ -211,6 +211,30 @@
             </div>
           </div>
 
+          <!-- Active Roommate Compatibility Banner -->
+          {% if current_booking.roommate_info %}
+          <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-300 flex items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-3">
+              {% if current_booking.roommate_info.user.profile_picture %}
+              <img src="{{ current_booking.roommate_info.user.profile_picture.url }}" alt="{{ current_booking.roommate_info.user.first_name }}" class="h-10 w-10 rounded-xl object-cover border border-emerald-500 shrink-0" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ current_booking.roommate_info.user.first_name|default:current_booking.roommate_info.user.email }}+{{ current_booking.roommate_info.user.last_name }}&background=111111&color=ffffff&bold=true';">
+              {% else %}
+              <div class="h-10 w-10 rounded-xl bg-[#111111] text-white font-extrabold text-xs flex items-center justify-center shrink-0 border border-emerald-500">
+                {{ current_booking.roommate_info.user.first_name|slice:":1" }}{{ current_booking.roommate_info.user.last_name|slice:":1" }}
+              </div>
+              {% endif %}
+              <div>
+                <div class="font-bold text-[#111111]">Roommate: {{ current_booking.roommate_info.user.first_name }} {{ current_booking.roommate_info.user.last_name }}</div>
+                <div class="text-[11px] text-[#6B7280]">{{ current_booking.roommate_info.user.email }}</div>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="bg-emerald-700 text-white font-extrabold text-[11px] px-3 py-1 rounded-full uppercase tracking-wider shadow-xs">
+                {{ current_booking.roommate_info.score }}% MATCH
+              </span>
+            </div>
+          </div>
+          {% endif %}
+
           <!-- Action Button -->
           <div class="pt-2">
             {% if current_booking.status == 'INITIATED' or current_booking.status == 'LIFESTYLE_PENDING' %}
@@ -369,10 +393,10 @@
 
           <div class="space-y-1">
             <div class="text-xs font-bold text-[#111111]">
-              {% if completion_percentage >= 100 %}Full Setup Completed{% else %}Action Required{% endif %}
+              Personal Profile Setup: {{ completion_percentage|default:0 }}%
             </div>
             <p class="text-[11px] text-[#6B7280]">
-              {% if completion_percentage >= 100 %}Your profile is optimized for roommate matching.{% else %}Fill in missing emergency and student ID info.{% endif %}
+              {% if completion_percentage >= 100 %}Your account details are 100% complete.{% else %}Account form progress (71% filled out).{% endif %}
             </p>
           </div>
         </div>
