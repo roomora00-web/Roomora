@@ -114,36 +114,20 @@ else:
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-# Local development uses local SQLite by default for instant zero-latency loads.
-# Set USE_REMOTE_DB=true in environment or run on Railway to connect to remote Postgres.
-use_remote = os.environ.get('USE_REMOTE_DB', 'false').lower() in ['true', '1', 'yes'] or os.environ.get('RAILWAY_ENVIRONMENT')
+# Connects uniformly to Neon Postgres (live database) across local and deployed environments.
 
-if use_remote and os.environ.get('DATABASE_URL'):
-    DATABASES = {
-        'default': dj_database_url.config(
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-            'OPTIONS': {
-                'timeout': 20,
-            }
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
+        conn_max_age=0,
+        conn_health_checks=True,
+    )
+}
 
 if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
     DATABASES['default']['OPTIONS'] = DATABASES['default'].get('OPTIONS', {})
     DATABASES['default']['OPTIONS'].update({
         'connect_timeout': 15,
-        'keepalives': 1,
-        'keepalives_idle': 30,
-        'keepalives_interval': 10,
-        'keepalives_count': 5,
     })
 
 # Celery Configuration
