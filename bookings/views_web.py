@@ -187,10 +187,18 @@ def consent_modal_view(request, booking_id):
             if co_booking:
                 roommate = co_booking.tenant
 
-    # Resolve assigned room details accurately
+    # Resolve assigned room & room type details accurately
     room_obj = booking.room or getattr(booking, 'assigned_room', None)
     room_number = room_obj.room_number if room_obj else None
-    room_type_name = booking.room_type.name if booking.room_type else (room_obj.room_type.name if room_obj and room_obj.room_type else None)
+    
+    room_type_obj = booking.room_type or (room_obj.room_type if room_obj else None)
+    unit_type_obj = booking.unit_type
+    
+    room_type_name = None
+    if room_type_obj:
+        room_type_name = getattr(room_type_obj, 'room_type_name', None) or getattr(room_type_obj, 'name', None)
+    elif unit_type_obj:
+        room_type_name = getattr(unit_type_obj, 'unit_name', None) or getattr(unit_type_obj, 'name', None)
 
     context = {
         'booking': booking,
