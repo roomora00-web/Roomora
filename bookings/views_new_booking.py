@@ -193,6 +193,7 @@ def initiate_booking(request, property_id):
             'property': property_obj,
             'room_id': room_id,
             'unit_type_id': unit_type_id,
+            'room_type_id': room_type_id,
             'room': room,
         })
     
@@ -218,8 +219,13 @@ def initiate_booking(request, property_id):
     
     booking = soft_lock_result.booking
     
-    # Step 4: Schedule Celery tasks (4h reminder and 6h expiry)
-    schedule_soft_lock_tasks.delay(booking.id)
+    # Step 4: Schedule Celery tasks (4h reminder and 6h expiry) safely
+    try:
+        from bookings.tasks import schedule_soft_lock_tasks
+        schedule_soft_lock_tasks.delay(booking.id)
+    except Exception as e:
+        import logging
+        logging.warning(f"Celery task scheduling bypassed for booking {booking.id}: {e}")
     
     # Step 5: Send notification
     Notification.objects.create(
@@ -246,6 +252,7 @@ def acknowledge_house_rules(request):
     property_id = request.POST.get('property_id')
     room_id = request.POST.get('room_id')
     unit_type_id = request.POST.get('unit_type_id')
+    room_type_id = request.POST.get('room_type_id')
     
     property_obj = get_object_or_404(Property, id=property_id)
     
@@ -265,6 +272,7 @@ def acknowledge_house_rules(request):
     params = []
     if room_id: params.append(f"room_id={room_id}")
     if unit_type_id: params.append(f"unit_type_id={unit_type_id}")
+    if room_type_id: params.append(f"room_type_id={room_type_id}")
     if params: url += "?" + "&".join(params)
         
     return redirect(url)
