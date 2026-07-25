@@ -117,7 +117,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     @property
     def full_name(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}".strip()
+
+    def get_full_name(self):
+        full = f"{self.first_name} {self.last_name}".strip()
+        return full if full else self.email
     
     def is_locked(self):
         """Check if account is locked due to failed login attempts"""
