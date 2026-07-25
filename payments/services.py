@@ -213,9 +213,12 @@ class PaymentService:
             payment.gateway_response = transaction_data
             payment.save()
             
-            # Update booking status
+            # Trigger auto-assignment logic (which updates status and assigns room)
             booking = payment.booking
-            booking.status = 'PAYMENT_COMPLETE'
+            from bookings.services.booking.assignment_service import AssignmentService
+            AssignmentService.auto_assign_physical_room(booking)
+            
+            # Save booking to be safe, though auto_assign handles it
             booking.save()
             
             # Lock lifestyle profile

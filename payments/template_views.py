@@ -59,29 +59,8 @@ def payment_confirmation_view(request, payment_id):
     
     booking = payment.booking
     
-    # Update booking status to move to admin review
-    if booking.status == 'PAYMENT_REQUIRED':
-        booking.status = 'UNDER_REVIEW'
-        booking.payment_status = 'PAID'
-        booking.save()
-        
-        # Create booking history
-        from bookings.models import BookingHistory
-        BookingHistory.objects.create(
-            booking=booking,
-            action='PAYMENT_COMPLETED',
-            description='Payment completed successfully. Booking submitted for admin review.',
-            performed_by=request.user
-        )
-        
-        # Send notification to user
-        from accounts.models import Notification
-        Notification.objects.create(
-            user=request.user,
-            title='Payment Successful',
-            message=f'Your payment of GH₵ {payment.amount_total} has been received. Your booking {booking.reference_number} is now under admin review.',
-            notification_type='SUCCESS'
-        )
+    # The payment webhook (services.py) securely handles the state transition.
+    # We do not modify the booking status here in the UI anymore to prevent race conditions.
     
     duration_display = f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)"
     accommodation_property = booking.accommodation_property
