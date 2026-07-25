@@ -71,7 +71,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center bg-white/80 p-4 rounded-2xl border border-emerald-200 shadow-xs">
             <div class="flex items-center gap-3 col-span-2">
               {% if booking.roommate_info.user.profile_picture %}
-              <img src="{{ booking.roommate_info.user.profile_picture.url }}" alt="{{ booking.roommate_info.user.first_name }}" class="h-14 w-14 rounded-2xl object-cover border-2 border-emerald-500 shadow-xs">
+              <img src="{{ booking.roommate_info.user.profile_picture.url }}" alt="{{ booking.roommate_info.user.first_name }}" class="h-14 w-14 rounded-2xl object-cover border-2 border-emerald-500 shadow-xs" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ booking.roommate_info.user.first_name|default:booking.roommate_info.user.email }}+{{ booking.roommate_info.user.last_name }}&background=111111&color=ffffff&bold=true';">
               {% else %}
               <div class="h-14 w-14 rounded-2xl bg-[#111111] text-white font-extrabold text-lg flex items-center justify-center shrink-0 border-2 border-emerald-500">
                 {{ booking.roommate_info.user.first_name|slice:":1" }}{{ booking.roommate_info.user.last_name|slice:":1" }}

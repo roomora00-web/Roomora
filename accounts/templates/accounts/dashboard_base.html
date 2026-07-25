@@ -113,7 +113,7 @@
             <div class="px-5 pt-5 pb-3">
                 <div class="bg-[#F8F8FA] border border-black/10 p-3.5 rounded-2xl flex items-center gap-3">
                     {% if user.profile_picture %}
-                    <img src="{{ user.profile_picture.url }}" class="h-10 w-10 rounded-xl object-cover ring-2 ring-white" alt="{{ user.first_name }}">
+                    <img src="{{ user.profile_picture.url }}" class="h-10 w-10 rounded-xl object-cover ring-2 ring-white" alt="{{ user.first_name }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ user.first_name|default:user.email }}+{{ user.last_name }}&background=111111&color=ffffff&bold=true';">
                     {% else %}
                     <div class="h-10 w-10 rounded-xl bg-[#111111] text-white flex items-center justify-center font-extrabold text-sm ring-2 ring-white">
                         {{ user.first_name|default:"U"|slice:":1"|upper }}
@@ -350,7 +350,7 @@
                     <!-- User Profile Avatar Pill -->
                     <a href="{% url 'accounts:profile' %}" class="flex items-center gap-2.5 p-1 pr-3 rounded-full border border-black/10 bg-white hover:bg-[#F8F8FA] transition-colors">
                         {% if user.profile_picture %}
-                        <img src="{{ user.profile_picture.url }}" class="h-7 w-7 rounded-full object-cover" alt="{{ user.first_name }}">
+                        <img src="{{ user.profile_picture.url }}" class="h-7 w-7 rounded-full object-cover" alt="{{ user.first_name }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ user.first_name|default:user.email }}+{{ user.last_name }}&background=111111&color=ffffff&bold=true';">
                         {% else %}
                         <div class="h-7 w-7 rounded-full bg-[#111111] text-white flex items-center justify-center font-bold text-xs">
                             {{ user.first_name|default:"U"|slice:":1"|upper }}
