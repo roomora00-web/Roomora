@@ -1011,15 +1011,17 @@ body {
 }
 
 .availability-pill.pill-available {
-    background: rgba(255, 255, 255, 0.2);
+    background: #059669;
     color: #FFFFFF;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid #10B981;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .availability-pill.pill-full {
-    background: rgba(239, 68, 68, 0.2);
-    color: #F87171;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: #DC2626;
+    color: #FFFFFF;
+    border: 1px solid #EF4444;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .card-price-block {

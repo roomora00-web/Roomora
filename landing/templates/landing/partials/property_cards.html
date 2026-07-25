@@ -32,17 +32,26 @@
             <svg style="width:18px;height:18px;flex-shrink:0;" viewBox="0 0 24 24" aria-label="Verified"><g><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.918-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.337 2.25c-.416-.165-.866-.25-1.336-.25-2.21 0-3.918 1.792-3.918 4 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.46.74 2.746 1.867 3.45-.094.373-.146.762-.146 1.15 0 2.21 1.71 4 3.918 4 .51 0 1-.096 1.46-.273C9.432 21.688 10.643 22.5 12 22.5s2.568-.812 3.51-2.023c.46.177.95.273 1.46.273 2.21 0 3.918-1.79 3.918-4 0-.388-.052-.777-.146-1.15 1.127-.704 1.867-1.99 1.867-3.45z" fill="#1d9bf0"></path><path d="M10.73 16.59l-3.32-3.32c-.28-.28-.28-.75 0-1.04.29-.28.75-.28 1.04 0l2.28 2.28 5.75-5.75c.29-.28.75-.28 1.04 0 .28.29.28.76 0 1.04l-6.27 6.27c-.14.14-.33.22-.52.22s-.38-.08-.52-.22z" fill="#ffffff"></path></g></svg>
             {% endif %}
         </h3>
-        <p class="property-description-copy">{{ property.city }}, {{ property.region }}</p>
+        <p class="property-description-copy" style="font-size:0.85rem; font-weight:600; color:rgba(255,255,255,0.95); margin-bottom:6px; display:flex; align-items:center; gap:4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>{{ property.address|default:property.city }}, {{ property.city }} {% if property.nearest_institution %}• Near {{ property.nearest_institution }}{% endif %}</span>
+        </p>
 
-        <div class="amenities-row-wrapper">
-            {% for amenity in property.amenities.all|slice:":4" %}
-            <span class="facility-capsule-badge">{{ amenity.name }}</span>
-            {% endfor %}
+        <div class="amenities-row-wrapper" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px;">
+            {% if property.amenities.exists %}
+                {% for amenity in property.amenities.all|slice:":4" %}
+                <span class="facility-capsule-badge" style="background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.3); font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; color:#fff;">{{ amenity.name }}</span>
+                {% endfor %}
+            {% else %}
+                <span class="facility-capsule-badge" style="background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.3); font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; color:#fff;">Wi-Fi</span>
+                <span class="facility-capsule-badge" style="background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.3); font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; color:#fff;">24/7 Security</span>
+                <span class="facility-capsule-badge" style="background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.3); font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; color:#fff;">Water Supply</span>
+            {% endif %}
         </div>
 
         <div class="price-baseline-wrap">
             <div class="availability-pill {% if property.has_available_rooms %}pill-available{% else %}pill-full{% endif %}">
-                {% if property.has_available_rooms %}Available{% else %}Fully Booked{% endif %}
+                {% if property.has_available_rooms %}AVAILABLE NOW{% else %}FULLY BOOKED{% endif %}
             </div>
             <div class="card-price-block">
                 <span class="card-price-label">from</span>

@@ -281,22 +281,37 @@
                 {% endif %}
                 
                 {% if current_booking and prop.id == current_booking.accommodation_property.id %}
-                <span class="absolute top-2.5 left-2.5 bg-emerald-800 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg border border-emerald-600 uppercase flex items-center gap-1 shadow-sm">
+                <span class="absolute top-2.5 left-2.5 bg-emerald-800 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg border border-emerald-600 uppercase flex items-center gap-1 shadow-sm z-10">
                   <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 pulse-dot"></span>
                   ✓ Booked & Secured by You
                 </span>
                 {% else %}
-                <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-md text-[#111111] text-[10px] font-extrabold px-2.5 py-1 rounded-lg border border-black/10 uppercase">
-                  {{ prop.get_property_type_display|default:prop.property_type }}
+                <span class="absolute top-2.5 left-2.5 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg uppercase shadow-xs z-10
+                  {% if prop.has_available_rooms %}bg-emerald-600 border border-emerald-400{% else %}bg-rose-600 border border-rose-400{% endif %}">
+                  {% if prop.has_available_rooms %}AVAILABLE NOW{% else %}FULLY BOOKED{% endif %}
                 </span>
                 {% endif %}
               </div>
 
-              <div>
+              <div class="space-y-1">
                 <div class="font-bold text-sm text-[#111111] truncate">{{ prop.title }}</div>
-                <div class="text-xs text-[#6B7280] flex items-center gap-1 mt-0.5">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  {{ prop.city }}
+                <div class="text-xs text-[#6B7280] flex items-center gap-1">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span class="truncate">{{ prop.address|default:prop.city }}, {{ prop.city }} {% if prop.nearest_institution %}• Near {{ prop.nearest_institution }}{% endif %}</span>
+                </div>
+
+                <!-- Amenities Row -->
+                <div class="flex items-center gap-1 flex-wrap pt-1">
+                  {% if prop.amenities.exists %}
+                    {% for amenity in prop.amenities.all|slice:":3" %}
+                      <span class="px-2 py-0.5 rounded-md bg-[#F4F4F6] text-[#4B5563] text-[9px] font-extrabold border border-black/5">
+                        {{ amenity.name }}
+                      </span>
+                    {% endfor %}
+                  {% else %}
+                    <span class="px-2 py-0.5 rounded-md bg-[#F4F4F6] text-[#4B5563] text-[9px] font-extrabold border border-black/5">Wi-Fi</span>
+                    <span class="px-2 py-0.5 rounded-md bg-[#F4F4F6] text-[#4B5563] text-[9px] font-extrabold border border-black/5">24/7 Security</span>
+                  {% endif %}
                 </div>
               </div>
             </div>

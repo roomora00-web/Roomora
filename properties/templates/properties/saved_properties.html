@@ -188,9 +188,9 @@
 
           <!-- Top Status Badges -->
           <div class="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2 z-10">
-            <span class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-md shadow-xs
-              {% if property.room_types.exists or property.unit_types.exists %}bg-emerald-500/90 text-white{% else %}bg-rose-500/90 text-white{% endif %}">
-              {% if property.room_types.exists or property.unit_types.exists %}Available{% else %}Sold Out{% endif %}
+            <span class="px-3 py-1 rounded-xl text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-md shadow-xs
+              {% if property.has_available_rooms %}bg-emerald-600/90 text-white border border-emerald-400{% else %}bg-rose-600/90 text-white border border-rose-400{% endif %}">
+              {% if property.has_available_rooms %}AVAILABLE NOW{% else %}FULLY BOOKED{% endif %}
             </span>
 
             <!-- Remove Button -->
@@ -227,7 +227,7 @@
             <!-- Location Subtitle -->
             <div class="flex items-center gap-1.5 text-xs text-[#6B7280] font-semibold truncate">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#888888] flex-shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span class="truncate">{{ property.city }} — {{ property.nearest_institution|default:"Near Campus" }}</span>
+              <span class="truncate">{{ property.address|default:property.city }}, {{ property.city }} {% if property.nearest_institution %}• Near {{ property.nearest_institution }}{% endif %}</span>
             </div>
 
             <!-- Price Tag -->
@@ -259,13 +259,17 @@
 
             <!-- Amenity Pills -->
             <div class="flex items-center gap-1.5 flex-wrap pt-1">
-              {% for amenity in property.amenities.all|slice:":3" %}
-                <span class="px-2 py-0.5 rounded-md bg-[#F4F4F6] text-[#4B5563] text-[10px] font-bold">
-                  {{ amenity.name }}
-                </span>
-              {% empty %}
-                <span class="px-2 py-0.5 rounded-md bg-[#F4F4F6] text-[#888888] text-[10px] font-bold">Verified Student Housing</span>
-              {% endfor %}
+              {% if property.amenities.exists %}
+                {% for amenity in property.amenities.all|slice:":4" %}
+                  <span class="px-2.5 py-1 rounded-lg bg-[#F4F4F6] text-[#4B5563] text-[10px] font-extrabold border border-black/5">
+                    {{ amenity.name }}
+                  </span>
+                {% endfor %}
+              {% else %}
+                <span class="px-2.5 py-1 rounded-lg bg-[#F4F4F6] text-[#4B5563] text-[10px] font-extrabold border border-black/5">Wi-Fi</span>
+                <span class="px-2.5 py-1 rounded-lg bg-[#F4F4F6] text-[#4B5563] text-[10px] font-extrabold border border-black/5">24/7 Security</span>
+                <span class="px-2.5 py-1 rounded-lg bg-[#F4F4F6] text-[#4B5563] text-[10px] font-extrabold border border-black/5">Water Supply</span>
+              {% endif %}
             </div>
           </div>
 
