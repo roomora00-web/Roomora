@@ -172,106 +172,80 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     {% for saved_item in page_obj %}
       {% with property=saved_item.property %}
-      <div id="saved-card-{{ property.id }}" class="glass-card glass-card-hover bg-white border border-black/5 rounded-[32px] overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 relative group">
-        
-        <!-- Top Media Section -->
-        <div class="relative w-full aspect-[16/10] overflow-hidden bg-[#F4F4F6]">
-          {% with main_img=property.images.first %}
-            {% if main_img %}
-              <img src="{{ main_img.image_url }}" alt="{{ property.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+      <div id="saved-card-{{ property.id }}" class="relative group">
+        <a class="property-overlay-card"
+            href="{% url 'landing:property_detail' property.pk %}"
+            {% with primary_image=property.images.all|first %}
+            {% if primary_image %}
+                {% with img_url=primary_image.image_url %}
+                    {% if img_url %}
+                    style="background-image: url('{{ img_url }}')"
+                    {% else %}
+                    style="background-image: url('/media/property_images/apt_1.jpg')"
+                    {% endif %}
+                {% endwith %}
             {% else %}
-              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop" alt="{{ property.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                style="background-image: url('/media/property_images/apt_1.jpg')"
             {% endif %}
-          {% endwith %}
+            {% endwith %}>
 
-          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-
-          <!-- Top Status Badges -->
-          <div class="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2 z-10">
-            <span class="px-3 py-1 rounded-xl text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-md shadow-xs
-              {% if property.has_available_rooms %}bg-emerald-600/90 text-white border border-emerald-400{% else %}bg-rose-600/90 text-white border border-rose-400{% endif %}">
-              {% if property.has_available_rooms %}AVAILABLE NOW{% else %}FULLY BOOKED{% endif %}
-            </span>
-
-            <!-- Remove Button -->
-            <button onclick="removeSavedProperty({{ property.id }}, event)" title="Remove from saved" class="h-9 w-9 rounded-2xl bg-white/90 backdrop-blur-md text-[#111111] hover:bg-rose-600 hover:text-white flex items-center justify-center transition-all shadow-md cursor-pointer">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-            </button>
-          </div>
-
-          <!-- Bottom Image Overlay Content -->
-          <div class="absolute bottom-3.5 left-3.5 right-3.5 z-10 text-white space-y-1">
-            <div class="flex items-center justify-between gap-2">
-              <span class="px-2 py-0.5 rounded-lg bg-white/20 backdrop-blur-md text-[10px] font-extrabold uppercase tracking-wider">
-                {{ property.get_property_type_display }}
-              </span>
-              <div class="flex items-center gap-1 bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-lg text-[11px] font-bold text-amber-400">
-                <span>★</span>
-                <span>{{ property.average_rating|default:0|floatformat:1 }}</span>
-              </div>
+            <div class="card-top-header-row">
+                <div class="rating-badge-capsule">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    {% if property.average_rating > 0 %}{{ property.average_rating|floatformat:1 }}{% else %}5.0{% endif %}
+                </div>
+                <button onclick="removeSavedProperty({{ property.id }}, event)" title="Remove from saved" class="favorite-heart-circle bg-rose-600/90 text-white hover:bg-rose-700 transition-all cursor-pointer" aria-label="Remove">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                </button>
             </div>
 
-            <h3 class="font-outfit text-base sm:text-lg font-extrabold text-white truncate flex items-center gap-1.5 pt-1">
-              <span>{{ property.title }}</span>
-              {% if property.is_verified %}
-              <svg class="w-4 h-4 text-sky-400 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.918-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.337 2.25c-.416-.165-.866-.25-1.336-.25-2.21 0-3.918 1.792-3.918 4 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.46.74 2.746 1.867 3.45-.094.373-.146.762-.146 1.15 0 2.21 1.71 4 3.918 4 .51 0 1-.096 1.46-.273C9.432 21.688 10.643 22.5 12 22.5s2.568-.812 3.51-2.023c.46.177.95.273 1.46.273 2.21 0 3.918-1.79 3.918-4 0-.388-.052-.777-.146-1.15 1.127-.704 1.867-1.99 1.867-3.45z"/></svg>
-              {% endif %}
-            </h3>
-          </div>
-        </div>
-
-        <!-- Property Card Body -->
-        <div class="p-5 space-y-4 flex-1 flex flex-col justify-between">
-          
-          <div class="space-y-2">
-            <!-- Location Subtitle -->
-            <div class="flex items-center gap-1.5 text-xs text-[#6B7280] font-semibold truncate">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#888888] flex-shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span class="truncate">{{ property.address|default:property.city }}, {{ property.city }} {% if property.nearest_institution %}• Near {{ property.nearest_institution }}{% endif %}</span>
-            </div>
-
-            <!-- Price Tag -->
-            <div class="flex items-baseline gap-1 pt-1">
-              <span class="text-[10px] font-extrabold text-[#888888] uppercase tracking-wider">From</span>
-              <span class="font-outfit text-xl font-extrabold text-[#111111]">
-                {% if property.property_type == 'HOSTEL' and property.room_types.exists %}
-                    {% with pricing=property.room_types.first.pricing_models.first %}
-                    {% if pricing %}
-                        GH₵ {{ pricing.monthly_price|default:pricing.semester_price|floatformat:0 }}
-                    {% else %}
-                        Contact
+            <div class="card-bottom-scrim-workspace">
+                <h3 class="card-property-title">
+                    {{ property.title }}
+                    {% if property.is_verified %}
+                    <svg style="width:18px;height:18px;flex-shrink:0;" viewBox="0 0 24 24" aria-label="Verified"><g><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.918-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.337 2.25c-.416-.165-.866-.25-1.336-.25-2.21 0-3.918 1.792-3.918 4 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.46.74 2.746 1.867 3.45-.094.373-.146.762-.146 1.15 0 2.21 1.71 4 3.918 4 .51 0 1-.096 1.46-.273C9.432 21.688 10.643 22.5 12 22.5s2.568-.812 3.51-2.023c.46.177.95.273 1.46.273 2.21 0 3.918-1.79 3.918-4 0-.388-.052-.777-.146-1.15 1.127-.704 1.867-1.99 1.867-3.45z" fill="#1d9bf0"></path><path d="M10.73 16.59l-3.32-3.32c-.28-.28-.28-.75 0-1.04.29-.28.75-.28 1.04 0l2.28 2.28 5.75-5.75c.29-.28.75-.28 1.04 0 .28.29.28.76 0 1.04l-6.27 6.27c-.14.14-.33.22-.52.22s-.38-.08-.52-.22z" fill="#ffffff"></path></g></svg>
                     {% endif %}
-                    {% endwith %}
-                {% elif property.property_type == 'APARTMENT' and property.unit_types.exists %}
-                    {% with pricing=property.unit_types.first.pricing_models.first %}
-                    {% if pricing %}
-                        GH₵ {{ pricing.monthly_price|default:pricing.yearly_price|floatformat:0 }}
-                    {% else %}
-                        Contact
-                    {% endif %}
-                    {% endwith %}
-                {% else %}
-                    Contact
-                {% endif %}
-              </span>
-              <span class="text-xs text-[#888888] font-bold">/ term</span>
-            </div>
+                </h3>
 
-            <!-- Amenity Pills -->
-            <div class="flex items-center gap-1.5 flex-wrap pt-1">
-              {% if property.amenities.exists %}
-                {% for amenity in property.amenities.all|slice:":4" %}
-                  <span class="px-2.5 py-1 rounded-lg bg-[#F4F4F6] text-[#4B5563] text-[10px] font-extrabold border border-black/5">
-                    {{ amenity.name }}
-                  </span>
-                {% endfor %}
-              {% else %}
-                <span class="px-2.5 py-1 rounded-lg bg-[#F4F4F6] text-[#4B5563] text-[10px] font-extrabold border border-black/5">Wi-Fi</span>
-                <span class="px-2.5 py-1 rounded-lg bg-[#F4F4F6] text-[#4B5563] text-[10px] font-extrabold border border-black/5">24/7 Security</span>
-                <span class="px-2.5 py-1 rounded-lg bg-[#F4F4F6] text-[#4B5563] text-[10px] font-extrabold border border-black/5">Water Supply</span>
-              {% endif %}
+                <p class="property-description-copy" style="font-size:0.85rem; font-weight:600; color:rgba(255,255,255,0.95); margin-bottom:6px; display:flex; align-items:center; gap:4px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>{{ property.address|default:property.city }}, {{ property.city }} {% if property.nearest_institution %}• Near {{ property.nearest_institution }}{% endif %}</span>
+                </p>
+
+                <div class="amenities-row-wrapper" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px;">
+                    {% if property.amenities.exists %}
+                        {% for amenity in property.amenities.all|slice:":4" %}
+                        <span class="facility-capsule-badge" style="background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.3); font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; color:#fff;">{{ amenity.name }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="facility-capsule-badge" style="background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.3); font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; color:#fff;">Wi-Fi</span>
+                        <span class="facility-capsule-badge" style="background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.3); font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; color:#fff;">24/7 Security</span>
+                        <span class="facility-capsule-badge" style="background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.3); font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; color:#fff;">Water Supply</span>
+                    {% endif %}
+                </div>
+
+                <div class="price-baseline-wrap">
+                    <div class="availability-pill {% if property.has_available_rooms %}pill-available{% else %}pill-full{% endif %}">
+                        {% if property.has_available_rooms %}AVAILABLE NOW{% else %}FULLY BOOKED{% endif %}
+                    </div>
+                    <div class="card-price-block">
+                        <span class="card-price-label">from</span>
+                        <span class="card-price-value">
+                            {% if property.property_type == 'HOSTEL' and property.room_types.exists %}
+                                {% with pricing=property.room_types.first.pricing_models.first %}
+                                {% if pricing %}GHC {{ pricing.semester_price|default:pricing.monthly_price }}{% else %}Contact{% endif %}
+                                {% endwith %}
+                            {% elif property.property_type == 'APARTMENT' and property.unit_types.exists %}
+                                {% with pricing=property.unit_types.first.pricing_models.first %}
+                                {% if pricing %}GHC {{ pricing.monthly_price|default:pricing.yearly_price }}{% else %}Contact{% endif %}
+                                {% endwith %}
+                            {% else %}Contact{% endif %}
+                        </span>
+                    </div>
+                </div>
             </div>
-          </div>
+        </a>
+      </div>
 
           <!-- Personal Notes Box -->
           <div class="bg-[#F8F8FA] border border-black/10 rounded-2xl p-3.5 space-y-1.5">
