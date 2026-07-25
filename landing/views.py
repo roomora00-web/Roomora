@@ -63,7 +63,7 @@ class HomeView(TemplateView):
         ]
         from properties.models import RoomType, SavedProperty
         context['room_occupancy_types'] = RoomType.OCCUPANCY_TYPE_CHOICES
-        if self.request.user.is_authenticated:
+        if hasattr(self, 'request') and self.request and getattr(self.request, 'user', None) and self.request.user.is_authenticated:
             context['user_saved_property_ids'] = set(
                 SavedProperty.objects.filter(user=self.request.user).values_list('property_id', flat=True)
             )
