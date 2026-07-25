@@ -370,10 +370,18 @@ class RoomType(models.Model):
         Dynamically recalculates available_slots based on actual Booking records.
         """
         from bookings.models import Booking
-        # Count active physical bookings
+        # Count active physical bookings (any status that holds a slot, past INITIATED)
         active_bookings_count = Booking.objects.filter(
             room_type=self,
-            status__in=['ACTIVE', 'COMPLETED', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'UNDER_REVIEW']
+            status__in=[
+                'ACTIVE', 'COMPLETED', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 
+                'ASSIGNED_AWAITING', 'UNDER_REVIEW', 'LIFESTYLE_PENDING', 
+                'LIFESTYLE_COMPLETE', 'AWAITING_COMPATIBILITY', 'AUTO_ASSIGNED', 
+                'CONSENT_PENDING', 'CONSENT_ACCEPTED', 'ADMIN_PENDING', 
+                'PAYMENT_REQUIRED', 'PAYMENT_PROCESSING', 'PAYMENT_PENDING_VERIFICATION', 
+                'PAYMENT_COMPLETE', 'VACATION_RESERVE', 'GRACE_PERIOD', 
+                'WAITING_CONSENT', 'COMPATIBILITY_REVIEW', 'REINSTATED'
+            ]
         ).count()
         
         # Count soft-locked slots
@@ -513,10 +521,18 @@ class UnitType(models.Model):
         Dynamically recalculates available_units based on actual Booking records.
         """
         from bookings.models import Booking
-        # Count active physical bookings
+        # Count active physical bookings (any status that holds a slot, past INITIATED)
         active_bookings_count = Booking.objects.filter(
             unit_type=self,
-            status__in=['ACTIVE', 'COMPLETED', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'UNDER_REVIEW']
+            status__in=[
+                'ACTIVE', 'COMPLETED', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 
+                'ASSIGNED_AWAITING', 'UNDER_REVIEW', 'LIFESTYLE_PENDING', 
+                'LIFESTYLE_COMPLETE', 'AWAITING_COMPATIBILITY', 'AUTO_ASSIGNED', 
+                'CONSENT_PENDING', 'CONSENT_ACCEPTED', 'ADMIN_PENDING', 
+                'PAYMENT_REQUIRED', 'PAYMENT_PROCESSING', 'PAYMENT_PENDING_VERIFICATION', 
+                'PAYMENT_COMPLETE', 'VACATION_RESERVE', 'GRACE_PERIOD', 
+                'WAITING_CONSENT', 'COMPATIBILITY_REVIEW', 'REINSTATED'
+            ]
         ).count()
         
         # Count soft-locked slots
