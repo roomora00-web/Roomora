@@ -223,10 +223,13 @@ class Property(models.Model):
     def has_available_rooms(self):
         if not self.is_available:
             return False
-        has_phys_rooms = self.rooms.filter(status='AVAILABLE').exists()
+        has_rooms_defined = self.rooms.exists() or self.room_types.exists() or self.unit_types.exists()
+        if not has_rooms_defined:
+            return self.is_available
+        has_phys_rooms = self.rooms.filter(status__in=['AVAILABLE', 'PARTIALLY_OCCUPIED']).exists()
         has_slots = self.room_types.filter(available_slots__gt=0).exists()
         has_units = self.unit_types.filter(available_units__gt=0).exists()
-        return has_phys_rooms or has_slots or has_units or self.is_available
+        return has_phys_rooms or has_slots or has_units
 
 
 class PropertyAmenity(models.Model):

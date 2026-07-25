@@ -94,7 +94,7 @@ class HomeView(TemplateView):
                     'lng': float(prop.longitude) if prop.longitude is not None else -0.1870,
                     'price': float(price) if price else 0,
                     'image': img_url,
-                    'available_slots': 4 if prop.is_available else 0,
+                    'available_slots': sum(rt.available_slots for rt in prop.room_types.all()) + sum(ut.available_units for ut in prop.unit_types.all()) if prop.has_available_rooms else 0,
                     'type': prop.get_property_type_display(),
                     'is_verified': prop.is_verified,
                     'address': f"{prop.city}, {prop.region}"
@@ -281,7 +281,7 @@ class PropertiesView(TemplateView):
                 'lng': float(prop.longitude) if prop.longitude is not None else -0.1870,
                 'price': price,
                 'image': img_url,
-                'available_slots': 4 if prop.is_available else 0, # simulated availability
+                'available_slots': sum(rt.available_slots for rt in prop.room_types.all()) + sum(ut.available_units for ut in prop.unit_types.all()) if prop.has_available_rooms else 0,
                 'type': prop.get_property_type_display(),
                 'is_verified': prop.is_verified,
                 'address': f"{prop.city}, {prop.region}"
