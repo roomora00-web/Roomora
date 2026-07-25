@@ -557,6 +557,10 @@ def enter_room_view(request, booking_id):
         }
 
     # Roommates list
+    roommates = []
+    if room_assignment and hasattr(room_assignment, 'assigned_roommates') and room_assignment.assigned_roommates.exists():
+        roommates = room_assignment.assigned_roommates.exclude(id=request.user.id)
+
     from bookings.models import RoomSetupDeclaration
     all_declarations = RoomSetupDeclaration.objects.filter(room_assignment=room_assignment).order_by('-created_at') if room_assignment else []
     my_declarations = [d for d in all_declarations if d.user == request.user]
