@@ -3138,11 +3138,11 @@ body {
                         </span>
                       </label>
 
-                      <a href="{% url 'bookings:initiate_booking' property.id %}?room_id={{ room_type.id }}"
+                      <a href="{% url 'bookings:initiate_booking' property.id %}?room_type_id={{ room_type.id }}"
                          id="bookbtn-room-{{ room_type.id }}"
                          class="pd-book-btn pd-book-btn--disabled"
                          onclick="return handleBookClick(event, 'room', '{{ room_type.id }}', '{{ property.id }}')"
-                         data-initiate-url="{% url 'bookings:initiate_booking' property.id %}?room_id={{ room_type.id }}"
+                         data-initiate-url="{% url 'bookings:initiate_booking' property.id %}?room_type_id={{ room_type.id }}"
                          style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px 16px; border-radius: 14px; background: #111111; color: #ffffff; font-weight: 800; font-size: 13px; text-decoration: none; text-transform: none; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(0,0,0,0.15);">
                         <span class="pd-btn-text-full">Book {{ room_type.room_type_name }}</span>
                         <span class="pd-btn-text-short">Book Room</span>

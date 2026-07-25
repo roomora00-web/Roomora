@@ -66,7 +66,7 @@ def initiate_booking(request, property_id):
     """
     Main booking initiation endpoint.
     """
-    from properties.models import Room
+    from properties.models import Room, RoomType
     from accounts.models import LifestyleProfile
     from bookings.services.matching.compatibility_service import CompatibilityService
     
@@ -94,6 +94,22 @@ def initiate_booking(request, property_id):
     
     room_id = request.GET.get('room_id')
     unit_type_id = request.GET.get('unit_type_id')
+    room_type_id = request.GET.get('room_type_id')
+    
+    # Fallback if frontend mistakenly passed room_type.id as room_id
+    if room_id and not room_type_id:
+        if not Room.objects.filter(id=room_id).exists() and RoomType.objects.filter(id=room_id).exists():
+            room_type_id = room_id
+            room_id = None
+            
+    if room_type_id and not room_id:
+        room_type = get_object_or_404(RoomType, id=room_type_id)
+        room = room_type.rooms.filter(available_slots__gt=0).first()
+        if not room:
+            messages.error(request, "No rooms are currently available for this room type.")
+            return redirect('landing:property_detail', pk=property_id)
+        room_id = room.id
+        
     room = get_object_or_404(Room, id=room_id) if room_id else None
     
     user_gender = user.gender
