@@ -122,6 +122,13 @@ class SlotReservationService:
             if room.pending_slots > 0:
                 room.pending_slots -= 1
                 room.occupied_slots += 1
+                # Auto-sync room status based on slot counts
+                if room.occupied_slots >= room.total_slots:
+                    room.status = 'FULLY_OCCUPIED'
+                elif room.occupied_slots > 0:
+                    room.status = 'PARTIALLY_OCCUPIED'
+                else:
+                    room.status = 'AVAILABLE'
                 room.save()
                 return True
             return False

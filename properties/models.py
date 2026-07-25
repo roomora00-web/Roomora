@@ -223,9 +223,14 @@ class Property(models.Model):
     def has_available_rooms(self):
         if not self.is_available:
             return False
-        # If physical rooms exist, they are the single source of truth for availability
+        # If physical rooms exist, use slot counts as the ground truth.
+        # The status field can be stale; occupied_slots is always up-to-date.
         if self.rooms.exists():
-            return self.rooms.filter(status__in=['AVAILABLE', 'PARTIALLY_OCCUPIED']).exists()
+            for room in self.rooms.all():
+                # A room is available if it has spare slots regardless of status label
+                if room.occupied_slots < room.total_slots:
+                    return True
+            return False
         # Fallback to room types or unit types
         if self.room_types.exists():
             return self.room_types.filter(available_slots__gt=0).exists()
