@@ -522,7 +522,7 @@ def saved_properties_view(request):
 
 @login_required
 def save_property_view(request, property_id):
-    """Save a property to user's saved list"""
+    """Save or toggle a property in user's saved list"""
     property_obj = get_object_or_404(Property, id=property_id, status='APPROVED')
     
     saved_property, created = SavedProperty.objects.get_or_create(
@@ -530,11 +530,20 @@ def save_property_view(request, property_id):
         property=property_obj
     )
     
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+    if not created:
+        saved_property.delete()
+        is_saved = False
+        message = 'Property removed from saved list'
+    else:
+        is_saved = True
+        message = 'Property saved to your favorites!'
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.headers.get('Accept') == 'application/json':
         return JsonResponse({
             'success': True,
-            'status': 'saved' if created else 'already_saved',
-            'message': 'Property saved successfully' if created else 'Property already saved'
+            'is_saved': is_saved,
+            'status': 'saved' if is_saved else 'unsaved',
+            'message': message
         })
     
     return redirect('properties:saved_properties')

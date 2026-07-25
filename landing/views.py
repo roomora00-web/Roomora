@@ -61,8 +61,14 @@ class HomeView(TemplateView):
             {'min': 5000, 'max': 10000, 'label': 'GHC 5,000 - 10,000'},
             {'min': 10000, 'max': '', 'label': 'Above GHC 10,000'},
         ]
-        from properties.models import RoomType
+        from properties.models import RoomType, SavedProperty
         context['room_occupancy_types'] = RoomType.OCCUPANCY_TYPE_CHOICES
+        if self.request.user.is_authenticated:
+            context['user_saved_property_ids'] = set(
+                SavedProperty.objects.filter(user=self.request.user).values_list('property_id', flat=True)
+            )
+        else:
+            context['user_saved_property_ids'] = set()
         context['tenant_types'] = [
             {'value': 'student', 'label': 'Student'},
             {'value': 'professional', 'label': 'Professional'},
@@ -243,6 +249,13 @@ class PropertiesView(TemplateView):
         # Filter options
         context['all_amenities'] = Amenity.objects.all()
         context['property_types'] = Property.PROPERTY_TYPE_CHOICES
+        if request.user.is_authenticated:
+            from properties.models import SavedProperty
+            context['user_saved_property_ids'] = set(
+                SavedProperty.objects.filter(user=request.user).values_list('property_id', flat=True)
+            )
+        else:
+            context['user_saved_property_ids'] = set()
         
         # Current filter values
         context['current_filters'] = {

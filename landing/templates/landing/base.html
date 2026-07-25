@@ -89,7 +89,75 @@
             }, 5000);
         }
     </script>
-    {% endif %}
+    <script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function toggleSaveCard(propertyId, event, btnElement) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        if (!btnElement) return;
+        const svg = btnElement.querySelector('svg');
+        const csrfToken = getCookie('csrftoken') || '';
+        
+        fetch('/properties/save/' + propertyId + '/', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRFToken': csrfToken
+            }
+        })
+        .then(response => {
+            if (response.status === 401 || response.status === 403 || response.redirected) {
+                window.location.href = '/accounts/login/?next=' + encodeURIComponent(window.location.pathname);
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+            if (data.success) {
+                if (data.is_saved) {
+                    btnElement.classList.add('save-active');
+                    if (svg) {
+                        svg.setAttribute('fill', '#ef4444');
+                        svg.setAttribute('stroke', '#ef4444');
+                    }
+                    btnElement.style.transform = 'scale(1.25)';
+                    setTimeout(() => { btnElement.style.transform = ''; }, 200);
+                } else {
+                    btnElement.classList.remove('save-active');
+                    if (svg) {
+                        svg.setAttribute('fill', 'none');
+                        svg.setAttribute('stroke', 'currentColor');
+                    }
+                }
+                if (typeof showNotification === 'function') {
+                    showNotification('Favorites', data.message, data.is_saved ? 'MATCH_FOUND' : 'SYSTEM');
+                }
+            }
+        })
+        .catch(err => {
+            console.error('Error saving property:', err);
+        });
+    }
+    </script>
     
     {% block extra_js %}{% endblock %}
 </body>
