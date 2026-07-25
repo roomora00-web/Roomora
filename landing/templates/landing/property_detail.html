@@ -148,14 +148,10 @@ body {
 }
 .prop-navbar-brand a { display: block; }
 .prop-logo-img {
-  height: 200px;
+  height: 40px;
   width: auto;
-  max-width: none;
   display: block;
   object-fit: contain;
-  margin: -50px 0 -80px -40px;
-  transform: scale(1.2);
-  transform-origin: left center;
 }
 .prop-center-nav {
   background: rgba(0, 0, 0, 0.05);
@@ -993,6 +989,28 @@ body {
 .pd-room-card-title { font-size: 20px; font-weight: 800; color: #111111; line-height: 1.1; }
 .pd-room-card-subtitle { font-size: 13px; color: #6B7280; margin-top: 6px; }
 .pd-room-card-header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+
+/* Premium Room Card Header */
+.premium-room-card-header {
+  background: linear-gradient(135deg, #111111 0%, #1c1c1e 100%);
+  padding: 20px 24px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+@media (max-width: 1024px) {
+  .premium-room-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+  }
+  .premium-room-card {
+    border-radius: 16px !important;
+  }
+}
 
 /* Availability badges styled strictly B&W */
 .pd-avail-badge {
@@ -2956,7 +2974,7 @@ body {
             {% with primary_price=room_type.pricing_models.first %}
             <div class="pd-room-card premium-room-card" style="background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 24px; overflow: hidden; box-shadow: 0 12px 36px -8px rgba(0,0,0,0.06); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); margin-bottom: 24px;">
               <!-- Room Card Header -->
-              <div style="background: linear-gradient(135deg, #111111 0%, #1c1c1e 100%); padding: 20px 24px; color: #ffffff; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+              <div class="premium-room-card-header">
                 <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
                   <div style="background: #ffffff; color: #111111; padding: 6px 14px; border-radius: 999px; font-weight: 800; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; border: none;">
                     {{ room_type.room_type_name }}
@@ -2968,7 +2986,7 @@ body {
                     </div>
                   </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                   {% if primary_price %}
                   <div style="background: #ffffff; color: #111111; padding: 8px 16px; border-radius: 14px; font-weight: 900; font-size: 15px; letter-spacing: -0.02em; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                     GH₵ {% if primary_price.semester_price %}{{ primary_price.semester_price|floatformat:0 }}<span style="font-size: 11px; font-weight: 700; color: #666; margin-left: 2px;">/sem</span>{% elif primary_price.monthly_price %}{{ primary_price.monthly_price|floatformat:0 }}<span style="font-size: 11px; font-weight: 700; color: #666; margin-left: 2px;">/mo</span>{% elif primary_price.academic_year_price %}{{ primary_price.academic_year_price|floatformat:0 }}<span style="font-size: 11px; font-weight: 700; color: #666; margin-left: 2px;">/yr</span>{% endif %}
@@ -2990,7 +3008,7 @@ body {
               <!-- Card Body -->
               <div class="pd-room-body-grid">
                 <!-- Left Column: Gallery & Room Details -->
-                <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0;">
                   <!-- Room Gallery Slider -->
                   {% if room_type.rooms.first.images.exists %}
                   <div>
