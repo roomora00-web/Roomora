@@ -784,8 +784,27 @@ class Room(models.Model):
         # Count pending physical bookings
         self.pending_slots = Booking.objects.filter(
             assigned_room=self,
-            status__in=['ASSIGNED_AWAITING', 'UNDER_REVIEW']
+            status__in=[
+                'ASSIGNED_AWAITING', 'UNDER_REVIEW', 'LIFESTYLE_PENDING', 
+                'LIFESTYLE_COMPLETE', 'AWAITING_COMPATIBILITY', 'AUTO_ASSIGNED', 
+                'CONSENT_PENDING', 'CONSENT_ACCEPTED', 'ADMIN_PENDING', 
+                'PAYMENT_REQUIRED', 'PAYMENT_PROCESSING', 'PAYMENT_PENDING_VERIFICATION', 
+                'PAYMENT_COMPLETE', 'VACATION_RESERVE', 'GRACE_PERIOD', 
+                'WAITING_CONSENT', 'COMPATIBILITY_REVIEW', 'REINSTATED'
+            ]
         ).count()
+        
+        # Count soft-locked slots
+        soft_locked_slots = 0
+        initiated_bookings = Booking.objects.filter(
+            assigned_room=self,
+            status='INITIATED'
+        )
+        for b in initiated_bookings:
+            if b.is_soft_lock_active():
+                soft_locked_slots += 1
+                
+        self.pending_slots += soft_locked_slots
         
         # Cap to total_slots just in case
         self.occupied_slots = min(self.occupied_slots, self.total_slots)

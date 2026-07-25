@@ -4,7 +4,7 @@ Atomic Soft Lock Service
 Implements the atomic soft lock mechanism for booking initiation according to the new booking flow specification.
 
 The soft lock:
-- Reserves exactly one slot for the user for 6 hours
+- Reserves exactly one slot for the user for 2 hours
 - Makes that slot appear unavailable to all other browsing users
 - Prevents any other user from booking the same slot
 - Does not confirm the booking or assign a room number

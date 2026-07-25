@@ -137,10 +137,10 @@ def initiate_booking(request, property_id):
             return redirect('landing:property_detail', pk=property_id)
 
     # --- COMPATIBILITY CHECK FOR PARTIALLY OCCUPIED ROOMS ---
-    if room and room.status == 'PARTIALLY_OCCUPIED' and room.room_type.total_slots > 1:
+    if room and room.status in ['PARTIALLY_OCCUPIED', 'OCCUPIED'] and room.total_slots > 1:
         # User hasn't explicitly consented to low compatibility yet
         if not request.GET.get('force_proceed'):
-            occupants = [b.tenant for b in Booking.objects.filter(room=room, status__in=['ACTIVE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'PAYMENT_COMPLETE'])]
+            occupants = [b.tenant for b in Booking.objects.filter(assigned_room=room, status__in=['ACTIVE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'PAYMENT_COMPLETE'])]
             
             # Simple fallback if no active booking found but status is partially occupied
             if not occupants:
@@ -163,7 +163,7 @@ def initiate_booking(request, property_id):
                         
                         alternatives = []
                         for alt in alt_rooms:
-                            alt_occupants = [b.tenant for b in Booking.objects.filter(room=alt, status__in=['ACTIVE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'PAYMENT_COMPLETE'])]
+                            alt_occupants = [b.tenant for b in Booking.objects.filter(assigned_room=alt, status__in=['ACTIVE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ASSIGNED_AWAITING', 'PAYMENT_COMPLETE'])]
                             alt_scores = comp_service.calculate_compatibility(user_profile, alt_occupants)
                             alt_avg = sum(alt_scores.values()) / len(alt_scores) if alt_scores else 0
                             alternatives.append({
