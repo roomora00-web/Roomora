@@ -249,10 +249,10 @@ class PropertiesView(TemplateView):
         # Filter options
         context['all_amenities'] = Amenity.objects.all()
         context['property_types'] = Property.PROPERTY_TYPE_CHOICES
-        if request.user.is_authenticated:
+        if hasattr(self, 'request') and self.request and getattr(self.request, 'user', None) and self.request.user.is_authenticated:
             from properties.models import SavedProperty
             context['user_saved_property_ids'] = set(
-                SavedProperty.objects.filter(user=request.user).values_list('property_id', flat=True)
+                SavedProperty.objects.filter(user=self.request.user).values_list('property_id', flat=True)
             )
         else:
             context['user_saved_property_ids'] = set()
