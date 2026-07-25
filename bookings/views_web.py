@@ -178,38 +178,26 @@ def consent_modal_view(request, booking_id):
                 'tip': diff.get('suggestion', 'Be open to compromise')
             })
     
-    if booking.preferred_roommates.exists() and not booking.compatibility_result:
-        roommate = booking.preferred_roommates.first()
-        roommate_profile = getattr(roommate, 'profile', None)
-        tenant_profile = getattr(request.user, 'profile', None)
-        
-        # Simulate compatibility breakdown (ideally fetch from LifestyleProfile)
-        if match_score >= 85:
-            alignment_factors = [
-                'You both prefer a quiet environment',
-                'You both value cleanliness (both 4–5 rating)',
-                'You both sleep early',
-            ]
-        
-        if match_score < 90:
-            difference_factors = [
-                {
-                    'category': 'Visitor preferences',
-                    'your_pref': 'Rare visitors',
-                    'roommate_pref': 'Occasional visitors',
-                    'tip': 'Agree on notice period for guests'
-                },
-                {
-                    'category': 'Noise tolerance',
-                    'your_pref': 'Low (prefers quiet)',
-                    'roommate_pref': 'Medium (some activity)',
-                    'tip': 'Establish quiet hours for study'
-                },
-            ]
-    
+    # Resolve roommate occupant accurately
+    if not roommate:
+        if booking.preferred_roommates.exists():
+            roommate = booking.preferred_roommates.first()
+        elif booking.room:
+            co_booking = Booking.objects.filter(room=booking.room).exclude(id=booking.id).first()
+            if co_booking:
+                roommate = co_booking.tenant
+
+    # Resolve assigned room details accurately
+    room_obj = booking.room or getattr(booking, 'assigned_room', None)
+    room_number = room_obj.room_number if room_obj else None
+    room_type_name = booking.room_type.name if booking.room_type else (room_obj.room_type.name if room_obj and room_obj.room_type else None)
+
     context = {
         'booking': booking,
         'property': booking.accommodation_property,
+        'room': room_obj,
+        'room_number': room_number,
+        'room_type_name': room_type_name,
         'roommate': roommate,
         'match_score': int(match_score),
         'match_verdict': 'Excellent match' if match_score >= 85 else 'Good match' if match_score >= 75 else 'Acceptable match',

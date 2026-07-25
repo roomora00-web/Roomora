@@ -5,33 +5,19 @@
 
 {% block extra_css %}
 <style>
-    @keyframes pulseGlow {
-        0%, 100% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.25), 0 0 50px rgba(16, 185, 129, 0.1); }
-        50% { box-shadow: 0 0 35px rgba(16, 185, 129, 0.45), 0 0 70px rgba(16, 185, 129, 0.2); }
-    }
-
-    @keyframes floatSubtle {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-4px); }
-    }
-
-    .glow-card {
-        animation: pulseGlow 4s infinite ease-in-out;
-    }
-
     .modal-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(2, 6, 23, 0.82);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: rgba(0, 0, 0, 0.88);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         display: none;
         align-items: center;
         justify-content: center;
         z-index: 1000;
         padding: 20px;
         opacity: 0;
-        transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .modal-overlay.active {
@@ -41,14 +27,14 @@
 
     .modal-card {
         width: 100%;
-        max-width: 540px;
-        background: #0f172a;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 28px;
+        max-width: 520px;
+        background: #09090b;
+        border: 1px solid #27272a;
+        border-radius: 24px;
         padding: 32px;
-        box-shadow: 0 30px 100px -10px rgba(0, 0, 0, 0.7);
-        transform: scale(0.95);
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8);
+        transform: scale(0.96);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .modal-overlay.active .modal-card {
@@ -56,104 +42,96 @@
     }
 
     .score-ring {
-        background: conic-gradient(#10b981 calc({{ match_score }} * 1%), rgba(255, 255, 255, 0.08) 0deg);
+        background: conic-gradient(#ffffff calc({{ match_score }} * 1%), #27272a 0deg);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-[#030712] text-slate-100 selection:bg-emerald-500 selection:text-white pb-24">
-    <!-- Ambient Background Lighting -->
-    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div class="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-[128px]"></div>
-        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-[128px]"></div>
-        <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-teal-500/10 rounded-full blur-[128px]"></div>
-    </div>
-
-    <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 space-y-8">
+<div class="min-h-screen bg-[#09090b] text-white selection:bg-white selection:text-black pb-28 font-sans">
+    
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 space-y-8">
         
-        <!-- Header Breadcrumb & Status Tag -->
-        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
+        <!-- Header Navigation & Status Tag -->
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-6">
             <div class="flex items-center gap-3">
-                <a href="{% url 'bookings:my-bookings' %}" class="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
+                <a href="{% url 'bookings:my-bookings' %}" class="inline-flex items-center gap-2 text-xs font-bold text-zinc-300 hover:text-white transition-colors bg-zinc-900 hover:bg-zinc-800 px-3.5 py-2 rounded-full border border-zinc-700">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    Back to Bookings
+                    Back to My Bookings
                 </a>
-                <span class="text-slate-600">/</span>
-                <span class="text-xs font-medium text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Phase 6.6 · Roommate Match Review</span>
+                <span class="text-zinc-600">/</span>
+                <span class="text-xs font-bold uppercase tracking-widest text-zinc-300 bg-zinc-900 px-3 py-1.5 rounded-full border border-zinc-700">Phase 6.6 · Roommate Match Review</span>
             </div>
             
             {% if consent_timeout %}
-            <div class="inline-flex items-center gap-2 bg-slate-900/90 border border-amber-500/30 px-4 py-2 rounded-full text-xs font-medium text-amber-300 shadow-lg backdrop-blur-md">
-                <svg class="w-4 h-4 text-amber-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Hold expires in: <strong id="timeRemaining" class="font-mono font-bold text-amber-200 text-sm">--:--:--</strong></span>
+            <div class="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-700 px-4 py-2 rounded-full text-xs font-bold text-white shadow-md">
+                <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Hold expires in: <strong id="timeRemaining" class="font-mono font-extrabold text-white text-sm">--:--:--</strong></span>
             </div>
             {% endif %}
         </div>
 
-        <!-- HERO MATCH SUMMARY CARD -->
-        <div class="relative bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden glow-card">
-            <div class="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-emerald-500/15 via-transparent to-transparent pointer-events-none rounded-tr-3xl"></div>
-
+        <!-- HERO MATCH SUMMARY CARD (Strict Black & White) -->
+        <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8">
+            
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
                 <!-- Left: Score Ring & Verdict -->
-                <div class="lg:col-span-4 flex flex-col items-center text-center sm:flex-row sm:text-left lg:flex-col lg:text-center gap-6 pr-0 lg:pr-8 lg:border-r border-white/10">
+                <div class="lg:col-span-4 flex flex-col items-center text-center sm:flex-row sm:text-left lg:flex-col lg:text-center gap-6 pr-0 lg:pr-8 lg:border-r border-zinc-800">
                     <div class="relative flex items-center justify-center">
-                        <!-- Score Gauge Ring -->
-                        <div class="w-36 h-36 rounded-full score-ring p-3 flex items-center justify-center shadow-2xl">
-                            <div class="w-full h-full bg-slate-950 rounded-full flex flex-col items-center justify-center border border-white/10">
-                                <span class="text-4xl font-extrabold font-outfit text-white tracking-tight">{{ match_score }}<span class="text-emerald-400 text-2xl">%</span></span>
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-0.5">Compatibility</span>
+                        <div class="w-36 h-36 rounded-full score-ring p-3 flex items-center justify-center shadow-xl">
+                            <div class="w-full h-full bg-[#09090b] rounded-full flex flex-col items-center justify-center border border-zinc-700">
+                                <span class="text-4xl font-extrabold font-outfit text-white tracking-tight">{{ match_score }}<span class="text-zinc-400 text-2xl">%</span></span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mt-0.5">Compatibility</span>
                             </div>
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold uppercase tracking-wider">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            {{ match_verdict }}
+                        <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-zinc-900 text-white border border-zinc-700 text-xs font-extrabold uppercase tracking-wider">
+                            ★ {{ match_verdict }}
                         </div>
-                        <h1 class="text-2xl sm:text-3xl font-extrabold font-outfit text-white tracking-tight">Roommate Match Found</h1>
-                        <p class="text-xs sm:text-sm text-slate-300 max-w-xs leading-relaxed">Our AI compatibility engine evaluated your lifestyle preferences against current occupants.</p>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold font-outfit text-white tracking-tight">Roommate Match Review</h1>
+                        <p class="text-xs sm:text-sm text-zinc-400 max-w-xs leading-relaxed">Review lifestyle compatibility and decide whether to accept this room pairing.</p>
                     </div>
                 </div>
 
-                <!-- Right: Property & Roommate Quick Info -->
+                <!-- Right: Accurate Property & Booking Information -->
                 <div class="lg:col-span-8 space-y-6">
-                    <!-- Property Details Pill -->
-                    <div class="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    
+                    <!-- Property & Unit Overview Pill -->
+                    <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-xl bg-slate-800 border border-white/10 flex items-center justify-center shrink-0 text-emerald-400 font-bold text-xl">
-                                🏠
+                            <div class="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center shrink-0 text-white font-extrabold text-2xl">
+                                🏢
                             </div>
                             <div>
-                                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Assigned Accommodation</span>
-                                <h3 class="text-lg font-bold text-white font-outfit mt-0.5">{{ booking.accommodation_property.title }}</h3>
-                                <p class="text-xs text-slate-300 flex items-center gap-1.5 mt-0.5">
-                                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                    {{ booking.accommodation_property.location_city|default:booking.accommodation_property.address|default:"Ghana" }}
+                                <span class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Assigned Property</span>
+                                <h3 class="text-lg font-bold text-white font-outfit mt-0.5">{{ property.title }}</h3>
+                                <p class="text-xs text-zinc-400 flex items-center gap-1.5 mt-0.5">
+                                    <svg class="w-3.5 h-3.5 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    {{ property.location_city|default:property.address|default:"Ghana" }}
                                 </p>
                             </div>
                         </div>
-                        <div class="bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-left sm:text-right shrink-0">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Assigned Unit</span>
-                            <span class="text-sm font-extrabold text-emerald-400 font-outfit">Room {{ booking.assigned_room.room_number|default:'Assigned' }}</span>
+
+                        <div class="bg-black border border-zinc-800 rounded-xl px-4 py-3 text-left sm:text-right shrink-0 min-w-[140px]">
+                            <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Unit / Room</span>
+                            <span class="text-sm font-extrabold text-white font-outfit block">
+                                {% if room_number %}Room {{ room_number }}{% elif booking.assigned_room %}Room {{ booking.assigned_room.room_number }}{% else %}Assigned Room{% endif %}
+                            </span>
+                            <span class="text-[11px] text-zinc-400 block mt-0.5">{{ room_type_name|default:"Standard Room" }}</span>
                         </div>
                     </div>
 
-                    <!-- Roommate Occupant Card -->
-                    <div class="bg-gradient-to-r from-indigo-950/40 via-slate-900/60 to-slate-900/40 border border-indigo-500/20 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <!-- Roommate Occupant Info Card -->
+                    <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div class="flex items-center gap-4">
-                            <div class="relative">
-                                <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5 shadow-lg">
-                                    <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center text-white font-extrabold text-lg uppercase">
-                                        {% if roommate %}
-                                            {{ roommate.first_name|default:roommate.username|slice:":2" }}
-                                        {% else %}
-                                            RM
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <span class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-slate-900 rounded-full" title="Verified Match"></span>
+                            <div class="w-12 h-12 rounded-full bg-white text-black font-extrabold text-base flex items-center justify-center shrink-0 uppercase shadow-md">
+                                {% if roommate %}
+                                    {{ roommate.first_name|default:roommate.username|slice:":2" }}
+                                {% else %}
+                                    RM
+                                {% endif %}
                             </div>
                             <div>
                                 <div class="flex items-center gap-2">
@@ -161,20 +139,20 @@
                                         {% if roommate %}
                                             {{ roommate.get_full_name|default:roommate.username }}
                                         {% else %}
-                                            Matched Primary Occupant
+                                            Primary Room Occupant / Co-Tenant
                                         {% endif %}
                                     </h4>
-                                    <span class="bg-indigo-500/20 text-indigo-300 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-indigo-500/30">Verified Student</span>
+                                    <span class="bg-zinc-800 text-zinc-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-zinc-700">Verified Occupant</span>
                                 </div>
-                                <p class="text-xs text-slate-400 mt-1">Shared room occupant for your selected stay period.</p>
+                                <p class="text-xs text-zinc-400 mt-1">Shared room occupant for your stay period.</p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-300 bg-white/5 border border-white/10 px-3.5 py-2 rounded-xl">
-                            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                            Privacy Protected
+                        <div class="text-xs font-bold text-zinc-300 bg-black border border-zinc-800 px-3.5 py-2 rounded-xl">
+                            🔒 Privacy Protected
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -186,18 +164,18 @@
             <div class="lg:col-span-8 space-y-6">
                 
                 <!-- Shared Alignments Card -->
-                <div class="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-3xl p-6 sm:p-8 space-y-6">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6">
+                    <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold">
+                            <div class="w-9 h-9 rounded-xl bg-white text-black font-extrabold flex items-center justify-center text-sm">
                                 ✓
                             </div>
                             <div>
                                 <h2 class="text-xl font-bold font-outfit text-white">Lifestyle Alignments</h2>
-                                <p class="text-xs text-slate-400">High-matching habits that promote a smooth co-living experience.</p>
+                                <p class="text-xs text-zinc-400">Key habits and shared preferences matching your lifestyle profile.</p>
                             </div>
                         </div>
-                        <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                        <span class="text-xs font-bold text-white bg-zinc-900 px-3 py-1 rounded-full border border-zinc-700">
                             {{ alignment_factors|length|default:3 }} Key Matches
                         </span>
                     </div>
@@ -205,43 +183,43 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {% if alignment_factors %}
                             {% for factor in alignment_factors %}
-                            <div class="bg-emerald-950/20 border border-emerald-500/20 hover:border-emerald-500/40 rounded-2xl p-4 transition-all flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">
+                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-start gap-3">
+                                <div class="w-5 h-5 rounded-full bg-white text-black flex items-center justify-center shrink-0 text-xs font-extrabold mt-0.5">
                                     ✓
                                 </div>
-                                <div class="space-y-0.5">
-                                    <h4 class="text-sm font-bold text-emerald-200 font-outfit">{{ factor }}</h4>
-                                    <p class="text-xs text-slate-400">Consistent rating between both profiles.</p>
+                                <div>
+                                    <h4 class="text-sm font-bold text-white font-outfit">{{ factor }}</h4>
+                                    <p class="text-xs text-zinc-400">High preference alignment.</p>
                                 </div>
                             </div>
                             {% endfor %}
                         {% else %}
-                            <div class="bg-emerald-950/20 border border-emerald-500/20 rounded-2xl p-4 flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">✓</div>
+                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-start gap-3">
+                                <div class="w-5 h-5 rounded-full bg-white text-black flex items-center justify-center shrink-0 text-xs font-extrabold mt-0.5">✓</div>
                                 <div>
-                                    <h4 class="text-sm font-bold text-emerald-200 font-outfit">Cleanliness Expectations</h4>
-                                    <p class="text-xs text-slate-400">You both rate tidy living spaces highly (4–5 score).</p>
+                                    <h4 class="text-sm font-bold text-white font-outfit">Cleanliness Expectations</h4>
+                                    <p class="text-xs text-zinc-400">Both occupants value neat, tidy shared spaces.</p>
                                 </div>
                             </div>
-                            <div class="bg-emerald-950/20 border border-emerald-500/20 rounded-2xl p-4 flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">✓</div>
+                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-start gap-3">
+                                <div class="w-5 h-5 rounded-full bg-white text-black flex items-center justify-center shrink-0 text-xs font-extrabold mt-0.5">✓</div>
                                 <div>
-                                    <h4 class="text-sm font-bold text-emerald-200 font-outfit">Study & Quiet Routines</h4>
-                                    <p class="text-xs text-slate-400">Shared preference for focused quiet hours during exams.</p>
+                                    <h4 class="text-sm font-bold text-white font-outfit">Quiet Study Routines</h4>
+                                    <p class="text-xs text-zinc-400">Aligned expectations for exam quiet hours.</p>
                                 </div>
                             </div>
-                            <div class="bg-emerald-950/20 border border-emerald-500/20 rounded-2xl p-4 flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">✓</div>
+                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-start gap-3">
+                                <div class="w-5 h-5 rounded-full bg-white text-black flex items-center justify-center shrink-0 text-xs font-extrabold mt-0.5">✓</div>
                                 <div>
-                                    <h4 class="text-sm font-bold text-emerald-200 font-outfit">Substance & Smoking Policy</h4>
-                                    <p class="text-xs text-slate-400">Strict non-smoking agreement aligned for both tenants.</p>
+                                    <h4 class="text-sm font-bold text-white font-outfit">Non-Smoking Policy</h4>
+                                    <p class="text-xs text-zinc-400">Strict non-smoking agreement for both occupants.</p>
                                 </div>
                             </div>
-                            <div class="bg-emerald-950/20 border border-emerald-500/20 rounded-2xl p-4 flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">✓</div>
+                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-start gap-3">
+                                <div class="w-5 h-5 rounded-full bg-white text-black flex items-center justify-center shrink-0 text-xs font-extrabold mt-0.5">✓</div>
                                 <div>
-                                    <h4 class="text-sm font-bold text-emerald-200 font-outfit">Sleep Schedule</h4>
-                                    <p class="text-xs text-slate-400">Compatible sleep windows minimize nighttime disruptions.</p>
+                                    <h4 class="text-sm font-bold text-white font-outfit">Sleep Schedule</h4>
+                                    <p class="text-xs text-zinc-400">Compatible sleep windows to prevent night disturbances.</p>
                                 </div>
                             </div>
                         {% endif %}
@@ -249,18 +227,18 @@
                 </div>
 
                 <!-- Potential Differences Card -->
-                <div class="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-3xl p-6 sm:p-8 space-y-6">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6">
+                    <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 font-bold">
+                            <div class="w-9 h-9 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-white font-bold text-sm">
                                 💡
                             </div>
                             <div>
-                                <h2 class="text-xl font-bold font-outfit text-white">Potential Differences & AI Tips</h2>
-                                <p class="text-xs text-slate-400">Minor differences identified by AI matching with recommended tips.</p>
+                                <h2 class="text-xl font-bold font-outfit text-white">Differences & Advice</h2>
+                                <p class="text-xs text-zinc-400">Minor differences identified by matching with recommendations.</p>
                             </div>
                         </div>
-                        <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                        <span class="text-xs font-bold text-zinc-300 bg-zinc-900 px-3 py-1 rounded-full border border-zinc-700">
                             {{ difference_factors|length|default:2 }} Items
                         </span>
                     </div>
@@ -268,48 +246,46 @@
                     <div class="space-y-4">
                         {% if difference_factors %}
                             {% for diff in difference_factors %}
-                            <div class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3">
+                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-3">
                                 <div class="flex items-center justify-between">
                                     <h4 class="text-sm font-bold text-white font-outfit">{{ diff.category }}</h4>
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-white/5 px-2.5 py-1 rounded-full">Comparison</span>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 bg-black px-2.5 py-1 rounded-full border border-zinc-800">Comparison</span>
                                 </div>
                                 <div class="grid grid-cols-2 gap-3 text-xs">
-                                    <div class="bg-slate-950/60 border border-white/5 rounded-xl p-3">
-                                        <span class="text-[10px] text-slate-400 uppercase tracking-widest block mb-1">Your Stance</span>
-                                        <span class="font-semibold text-emerald-300">{{ diff.your_pref }}</span>
+                                    <div class="bg-black border border-zinc-800 rounded-xl p-3">
+                                        <span class="text-[10px] text-zinc-400 uppercase tracking-widest block mb-1">Your Preference</span>
+                                        <span class="font-bold text-white">{{ diff.your_pref }}</span>
                                     </div>
-                                    <div class="bg-slate-950/60 border border-white/5 rounded-xl p-3">
-                                        <span class="text-[10px] text-slate-400 uppercase tracking-widest block mb-1">Roommate Stance</span>
-                                        <span class="font-semibold text-indigo-300">{{ diff.roommate_pref }}</span>
+                                    <div class="bg-black border border-zinc-800 rounded-xl p-3">
+                                        <span class="text-[10px] text-zinc-400 uppercase tracking-widest block mb-1">Roommate Preference</span>
+                                        <span class="font-bold text-zinc-300">{{ diff.roommate_pref }}</span>
                                     </div>
                                 </div>
                                 {% if diff.tip %}
-                                <div class="flex items-center gap-2 text-xs text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-xl p-3">
-                                    <svg class="w-4 h-4 shrink-0 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    <span><strong>Pro Tip:</strong> {{ diff.tip }}</span>
+                                <div class="text-xs text-zinc-300 bg-black border border-zinc-800 rounded-xl p-3 flex items-center gap-2">
+                                    <span class="font-bold text-white">Tip:</span> {{ diff.tip }}
                                 </div>
                                 {% endif %}
                             </div>
                             {% endfor %}
                         {% else %}
-                            <div class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3">
+                            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-3">
                                 <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-bold text-white font-outfit">Visitor Expectations</h4>
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-white/5 px-2.5 py-1 rounded-full">Comparison</span>
+                                    <h4 class="text-sm font-bold text-white font-outfit">Visitor Habits</h4>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 bg-black px-2.5 py-1 rounded-full border border-zinc-800">Comparison</span>
                                 </div>
                                 <div class="grid grid-cols-2 gap-3 text-xs">
-                                    <div class="bg-slate-950/60 border border-white/5 rounded-xl p-3">
-                                        <span class="text-[10px] text-slate-400 uppercase tracking-widest block mb-1">Your Preference</span>
-                                        <span class="font-semibold text-emerald-300">Rare day visitors</span>
+                                    <div class="bg-black border border-zinc-800 rounded-xl p-3">
+                                        <span class="text-[10px] text-zinc-400 uppercase tracking-widest block mb-1">Your Stance</span>
+                                        <span class="font-bold text-white">Rare daytime guests</span>
                                     </div>
-                                    <div class="bg-slate-950/60 border border-white/5 rounded-xl p-3">
-                                        <span class="text-[10px] text-slate-400 uppercase tracking-widest block mb-1">Roommate Preference</span>
-                                        <span class="font-semibold text-indigo-300">Occasional weekend guests</span>
+                                    <div class="bg-black border border-zinc-800 rounded-xl p-3">
+                                        <span class="text-[10px] text-zinc-400 uppercase tracking-widest block mb-1">Roommate Stance</span>
+                                        <span class="font-bold text-zinc-300">Occasional weekend guests</span>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-2 text-xs text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-xl p-3">
-                                    <svg class="w-4 h-4 shrink-0 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    <span><strong>Pro Tip:</strong> Agree on advance notice before inviting guests over.</span>
+                                <div class="text-xs text-zinc-300 bg-black border border-zinc-800 rounded-xl p-3 flex items-center gap-2">
+                                    <span class="font-bold text-white">Tip:</span> Agree on advance notice before inviting guests over.
                                 </div>
                             </div>
                         {% endif %}
@@ -317,79 +293,98 @@
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: SUMMARY & GUARANTEES (4 cols) -->
+            <!-- RIGHT COLUMN: ACCURATE BOOKING DETAILS & GUARANTEES (4 cols) -->
             <div class="lg:col-span-4 space-y-6">
                 
-                <!-- Guarantee & Security Card -->
-                <div class="bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-white/10 rounded-3xl p-6 space-y-5">
-                    <h3 class="text-base font-bold font-outfit text-white flex items-center gap-2">
-                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        Roomora Co-Living Guarantees
+                <!-- Accurate Booking Breakdown Card -->
+                <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 space-y-5">
+                    <h3 class="text-base font-bold font-outfit text-white border-b border-zinc-800 pb-3">
+                        Booking Specification
                     </h3>
                     
-                    <ul class="space-y-3.5 text-xs text-slate-300">
-                        <li class="flex items-start gap-3">
-                            <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">🔒</span>
-                            <div>
-                                <strong class="text-white block font-outfit">Room Temporarily Held</strong>
-                                <span>This specific room assignment is locked exclusively for you during this review window.</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">🤝</span>
-                            <div>
-                                <strong class="text-white block font-outfit">Mutual Compatibility Lock</strong>
-                                <span>Accepting locks in room details and proceeds directly to final confirmation.</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">🔄</span>
-                            <div>
-                                <strong class="text-white block font-outfit">Free Alternative Re-matching</strong>
-                                <span>If rejected, our matching algorithm instantly queues you for alternative roommate options.</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Booking Meta Summary Card -->
-                <div class="bg-slate-900/60 border border-white/10 rounded-3xl p-6 space-y-4">
-                    <h3 class="text-sm font-bold font-outfit uppercase tracking-wider text-slate-400">Booking Summary</h3>
-                    
-                    <div class="space-y-3 text-xs">
-                        <div class="flex justify-between py-2 border-b border-white/5">
-                            <span class="text-slate-400">Booking Reference</span>
+                    <div class="space-y-3.5 text-xs">
+                        <div class="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
+                            <span class="text-zinc-400">Booking ID</span>
                             <span class="font-mono font-bold text-white">#RM-{{ booking.id }}</span>
                         </div>
-                        <div class="flex justify-between py-2 border-b border-white/5">
-                            <span class="text-slate-400">Current Status</span>
-                            <span class="font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Awaiting Your Consent</span>
+                        
+                        <div class="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
+                            <span class="text-zinc-400">Pricing / Rent</span>
+                            <span class="font-extrabold text-white">
+                                {% if booking.total_price %}
+                                    {{ booking.currency|default:"GHS" }} {{ booking.total_price }}
+                                {% elif booking.price_per_unit %}
+                                    {{ booking.currency|default:"GHS" }} {{ booking.price_per_unit }}
+                                {% else %}
+                                    Standard Rate
+                                {% endif %}
+                            </span>
                         </div>
-                        <div class="flex justify-between py-2 border-b border-white/5">
-                            <span class="text-slate-400">Matching Engine Score</span>
-                            <span class="font-bold text-emerald-400">{{ match_score }}% Alignment</span>
+
+                        {% if booking.move_in_date %}
+                        <div class="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
+                            <span class="text-zinc-400">Move-In Date</span>
+                            <span class="font-bold text-white">{{ booking.move_in_date|date:"M d, Y" }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if booking.move_out_date %}
+                        <div class="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
+                            <span class="text-zinc-400">Move-Out Date</span>
+                            <span class="font-bold text-white">{{ booking.move_out_date|date:"M d, Y" }}</span>
+                        </div>
+                        {% endif %}
+
+                        <div class="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
+                            <span class="text-zinc-400">Billing Model</span>
+                            <span class="font-bold text-white">{{ booking.get_billing_model_display|default:booking.billing_model|default:"Semester / Standard" }}</span>
+                        </div>
+
+                        <div class="flex justify-between items-center py-1.5">
+                            <span class="text-zinc-400">Status</span>
+                            <span class="font-bold text-white bg-zinc-900 px-2.5 py-0.5 rounded border border-zinc-700">Awaiting Consent</span>
                         </div>
                     </div>
+                </div>
+
+                <!-- Guarantee Card -->
+                <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 space-y-4">
+                    <h3 class="text-sm font-bold font-outfit uppercase tracking-wider text-zinc-400">Co-Living Guarantees</h3>
+                    
+                    <ul class="space-y-3 text-xs text-zinc-300">
+                        <li class="flex items-start gap-3">
+                            <span class="font-bold text-white shrink-0">🔒</span>
+                            <span><strong>Room Held Exclusively:</strong> Slot is reserved exclusively while you decide.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="font-bold text-white shrink-0">🤝</span>
+                            <span><strong>Instant Lock:</strong> Accepting secures room allocation instantly.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="font-bold text-white shrink-0">🔄</span>
+                            <span><strong>Free Re-Matching:</strong> Declining opens instant search for alternative rooms.</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- STICKY ACTION BAR AT BOTTOM -->
-    <div class="fixed bottom-0 inset-x-0 z-40 bg-slate-950/90 backdrop-blur-xl border-t border-white/10 px-4 py-4 sm:py-5 shadow-2xl">
+    <!-- STICKY ACTION BAR AT BOTTOM (Black & White Theme) -->
+    <div class="fixed bottom-0 inset-x-0 z-40 bg-black/95 backdrop-blur-md border-t border-zinc-800 px-4 py-4 sm:py-5 shadow-2xl">
         <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="hidden sm:block">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block">Ready to decide?</span>
-                <span class="text-sm font-semibold text-white">Accepting reserves your room immediately.</span>
+                <span class="text-xs font-bold text-zinc-400 uppercase tracking-widest block">Ready to decide?</span>
+                <span class="text-sm font-semibold text-white">Accepting reserves your room assignment immediately.</span>
             </div>
 
             <div class="flex items-center gap-3 w-full sm:w-auto">
-                <button type="button" onclick="openModal('rejectModal')" class="w-1/2 sm:w-auto px-6 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 border border-white/15 text-slate-200 font-bold text-xs sm:text-sm transition-all text-center">
+                <button type="button" onclick="openModal('rejectModal')" class="w-1/2 sm:w-auto px-6 py-3.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs sm:text-sm transition-all text-center">
                     Decline Match
                 </button>
-                <button type="button" onclick="openModal('acceptModal')" class="w-1/2 sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-500/25 transition-all text-center flex items-center justify-center gap-2">
+                <button type="button" onclick="openModal('acceptModal')" class="w-1/2 sm:w-auto px-8 py-3.5 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-xs sm:text-sm shadow-xl transition-all text-center flex items-center justify-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    Accept Match & Lock Room
+                    Accept Match & Secure Room
                 </button>
             </div>
         </div>
@@ -399,40 +394,39 @@
 <!-- CONFIRMATION MODAL: ACCEPT -->
 <div id="acceptModal" class="modal-overlay">
     <div class="modal-card space-y-6">
-        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg font-bold">
+                <div class="w-9 h-9 rounded-full bg-white text-black font-extrabold flex items-center justify-center text-sm">
                     ✓
                 </div>
                 <div>
                     <h3 class="text-xl font-bold font-outfit text-white">Confirm Roommate Match</h3>
-                    <p class="text-xs text-slate-400">Lock in your room and compatibility pairing.</p>
+                    <p class="text-xs text-zinc-400">Lock in your room and compatibility pairing.</p>
                 </div>
             </div>
-            <button onclick="closeModal('acceptModal')" class="text-slate-400 hover:text-white p-1 text-lg">✕</button>
+            <button onclick="closeModal('acceptModal')" class="text-zinc-400 hover:text-white p-1 text-lg">✕</button>
         </div>
 
-        <div class="space-y-4 text-xs text-slate-300 leading-relaxed">
-            <p>You are about to accept the match for <strong class="text-white font-outfit">{{ booking.accommodation_property.title }} — Room {{ booking.assigned_room.room_number|default:'Assigned' }}</strong> with a <strong class="text-emerald-400 font-bold">{{ match_score }}% compatibility score</strong>.</p>
+        <div class="space-y-4 text-xs text-zinc-300 leading-relaxed">
+            <p>You are about to accept the match for <strong class="text-white font-outfit">{{ property.title }} — {% if room_number %}Room {{ room_number }}{% else %}Assigned Room{% endif %}</strong> with a <strong class="text-white font-bold">{{ match_score }}% compatibility score</strong>.</p>
             
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-2">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-2">
                 <div class="flex items-center gap-2 font-bold text-white text-xs">
-                    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                    Next steps upon accepting:
+                    ✓ Next steps upon accepting:
                 </div>
-                <ul class="space-y-1.5 text-slate-400 pl-6 list-disc">
+                <ul class="space-y-1.5 text-zinc-400 pl-6 list-disc">
                     <li>Your room assignment is officially confirmed</li>
-                    <li>Lifestyle agreements will be recorded</li>
-                    <li>You will be directed to the final confirmation page</li>
+                    <li>Lifestyle agreements are logged</li>
+                    <li>Redirected to booking confirmation</li>
                 </ul>
             </div>
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-2">
-            <button onclick="closeModal('acceptModal')" class="px-5 py-2.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs">
+            <button onclick="closeModal('acceptModal')" class="px-5 py-2.5 rounded-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-bold text-xs border border-zinc-700">
                 Review Details Again
             </button>
-            <button id="btnConfirmAccept" onclick="submitConsent('accept')" class="px-6 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-lg shadow-emerald-500/20 flex items-center gap-2">
+            <button id="btnConfirmAccept" onclick="submitConsent('accept')" class="px-6 py-2.5 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-xs shadow-md flex items-center gap-2">
                 <span>Confirm Acceptance</span>
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </button>
@@ -443,32 +437,32 @@
 <!-- CONFIRMATION MODAL: REJECT -->
 <div id="rejectModal" class="modal-overlay">
     <div class="modal-card space-y-6">
-        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-rose-400 text-lg font-bold">
+                <div class="w-9 h-9 rounded-full bg-zinc-800 border border-zinc-700 text-white font-bold flex items-center justify-center text-sm">
                     !
                 </div>
                 <div>
                     <h3 class="text-xl font-bold font-outfit text-white">Decline Roommate Match</h3>
-                    <p class="text-xs text-slate-400">Request an alternative roommate pairing.</p>
+                    <p class="text-xs text-zinc-400">Request an alternative roommate pairing.</p>
                 </div>
             </div>
-            <button onclick="closeModal('rejectModal')" class="text-slate-400 hover:text-white p-1 text-lg">✕</button>
+            <button onclick="closeModal('rejectModal')" class="text-zinc-400 hover:text-white p-1 text-lg">✕</button>
         </div>
 
-        <div class="space-y-4 text-xs text-slate-300 leading-relaxed">
-            <p>Declining this match will release your hold on <strong class="text-white font-outfit">Room {{ booking.assigned_room.room_number|default:'Assigned' }}</strong>. Our system will re-enter your booking into the compatibility engine to locate alternative occupants or room types.</p>
+        <div class="space-y-4 text-xs text-zinc-300 leading-relaxed">
+            <p>Declining this match will release your hold on <strong class="text-white font-outfit">{% if room_number %}Room {{ room_number }}{% else %}Assigned Room{% endif %}</strong>. Our system will re-enter your booking into the compatibility engine to find alternative roommate options.</p>
 
-            <div class="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-4 text-rose-200">
-                <strong>Note:</strong> Finding another roommate match may take a short time depending on property availability.
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-zinc-300">
+                <strong>Note:</strong> Finding another roommate match depends on current property availability.
             </div>
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-2">
-            <button onclick="closeModal('rejectModal')" class="px-5 py-2.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs">
+            <button onclick="closeModal('rejectModal')" class="px-5 py-2.5 rounded-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-bold text-xs border border-zinc-700">
                 Cancel
             </button>
-            <button id="btnConfirmReject" onclick="submitConsent('reject')" class="px-6 py-2.5 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/20 flex items-center gap-2">
+            <button id="btnConfirmReject" onclick="submitConsent('reject')" class="px-6 py-2.5 rounded-full bg-black hover:bg-zinc-900 text-white font-bold text-xs border border-zinc-700 shadow-md flex items-center gap-2">
                 <span>Confirm & Seek Alternatives</span>
             </button>
         </div>
@@ -489,7 +483,6 @@
 
         if (distance < 0) {
             timerText.innerText = 'EXPIRED';
-            timerText.classList.add('text-rose-400');
             return;
         }
 
@@ -557,6 +550,10 @@
             if (acceptBtn) acceptBtn.disabled = false;
             if (rejectBtn) rejectBtn.disabled = false;
         });
+    }
+</script>
+{% endblock %}
+ });
     }
 </script>
 {% endblock %}
