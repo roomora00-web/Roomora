@@ -808,6 +808,29 @@ body {
   margin-bottom: 32px;
 }
 
+/* Room gallery slider default (desktop) */
+.pd-room-gallery-slider {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+}
+.pd-room-slide-item {
+  position: relative;
+  flex-shrink: 0;
+  width: 140px;
+  height: 95px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: #f3f4f6;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+.pd-btn-text-full { display: inline; }
+.pd-btn-text-short { display: none; }
+
+
 .pd-section-title {
   font-size: 22px;
   font-weight: 700;
@@ -2021,6 +2044,31 @@ body {
     word-break: break-word !important;
   }
 
+  /* Room gallery full-width swipe slider on mobile */
+  .pd-room-gallery-slider {
+    display: flex !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    padding-bottom: 4px !important;
+    border-radius: 16px !important;
+  }
+  .pd-room-gallery-slider::-webkit-scrollbar { display: none !important; }
+  .pd-room-slide-item {
+    flex: 0 0 88% !important;
+    width: 88% !important;
+    height: 190px !important;
+    scroll-snap-align: center !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06) !important;
+  }
+
+  /* Responsive book button text toggle (prevents button clipping) */
+  .pd-btn-text-full { display: none !important; }
+  .pd-btn-text-short { display: inline !important; }
+
   /* Room gallery thumbnails — smaller on mobile */
   .pd-room-body-grid div[style*="overflow-x: auto"] > div {
     width: 110px !important;
@@ -2943,20 +2991,21 @@ body {
               <div class="pd-room-body-grid">
                 <!-- Left Column: Gallery & Room Details -->
                 <div style="display: flex; flex-direction: column; gap: 20px;">
-                  <!-- Room Gallery Thumbnails -->
+                  <!-- Room Gallery Slider -->
                   {% if room_type.rooms.first.images.exists %}
                   <div>
-                    <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #888888; margin-bottom: 10px;">
-                      Room Gallery ({% with img_count=room_type.rooms.first.images.count %}{{ img_count }} Photo{{ img_count|pluralize }}{% endwith %})
+                    <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #888888; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                      <span>Room Photos ({% with img_count=room_type.rooms.first.images.count %}{{ img_count }} Photo{{ img_count|pluralize }}{% endwith %})</span>
+                      <span style="font-size: 10px; color: #9CA3AF; font-weight: 600;">Swipe to view &rarr;</span>
                     </div>
-                    <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
+                    <div class="pd-room-gallery-slider">
                       {% for r_img in room_type.rooms.first.images.all %}
-                      <div style="position: relative; flex-shrink: 0; width: 140px; height: 95px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(0,0,0,0.1); background: #f3f4f6; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
-                        <img src="{{ r_img.image.url }}" alt="" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                      <div class="pd-room-slide-item">
+                        <img src="{{ r_img.image.url }}" alt="Room photo {{ forloop.counter }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <div style="display: none; width: 100%; height: 100%; background: #e5e7eb; align-items: center; justify-content: center; font-size: 11px; color: #6b7280; font-weight: 600;">
                           Photo {{ forloop.counter }}
                         </div>
-                        <span style="position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); color: #111111; font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
+                        <span style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); color: #ffffff; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
                           {{ r_img.get_image_type_display }}
                         </span>
                       </div>
@@ -3077,7 +3126,8 @@ body {
                          onclick="return handleBookClick(event, 'room', '{{ room_type.id }}', '{{ property.id }}')"
                          data-initiate-url="{% url 'bookings:initiate_booking' property.id %}?room_id={{ room_type.id }}"
                          style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px 16px; border-radius: 14px; background: #111111; color: #ffffff; font-weight: 800; font-size: 13px; text-decoration: none; text-transform: none; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(0,0,0,0.15);">
-                        <span style="text-transform: none; word-break: break-word; text-align: center;">Book {{ room_type.room_type_name }}</span>
+                        <span class="pd-btn-text-full">Book {{ room_type.room_type_name }}</span>
+                        <span class="pd-btn-text-short">Book Room</span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                       </a>
                     </div>
