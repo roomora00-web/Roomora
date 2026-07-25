@@ -128,7 +128,7 @@
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-full bg-white text-black font-extrabold text-base flex items-center justify-center shrink-0 uppercase shadow-md">
                                 {% if roommate %}
-                                    {{ roommate.first_name|default:roommate.username|slice:":2" }}
+                                    {{ roommate.first_name|default:roommate.email|slice:":2" }}
                                 {% else %}
                                     RM
                                 {% endif %}
@@ -137,7 +137,7 @@
                                 <div class="flex items-center gap-2">
                                     <h4 class="text-base font-bold text-white font-outfit">
                                         {% if roommate %}
-                                            {{ roommate.get_full_name|default:roommate.username }}
+                                            {{ roommate.get_full_name|default:roommate.email }}
                                         {% else %}
                                             Primary Room Occupant / Co-Tenant
                                         {% endif %}
