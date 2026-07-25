@@ -107,7 +107,7 @@
                 <span class="text-[10px] text-[#6B7280] font-normal">e.g. 024XXXXXXX or 050XXXXXXX</span>
               </label>
               <input type="tel" class="w-full rounded-xl border border-black/15 bg-white p-3.5 text-sm font-bold text-[#111111] outline-none transition focus:border-[#111111]" name="mobile_number" placeholder="024 000 0000" id="mobile-number-input" value="{{ request.user.phone_number|default:'' }}">
-              <p class="text-[11px] text-[#6B7280]">A approval pop-up prompt will be pushed directly to this phone number.</p>
+              <p class="text-[11px] text-[#6B7280]">A approval pop-up prompt will be pushed directly to this phone number. Check your phone and enter your PIN to authorize.</p>
             </div>
 
             <!-- Timer Box -->
@@ -264,6 +264,7 @@ updateCountdown();
 
 // Proceed to payment handler
 document.getElementById('proceed-payment-btn').addEventListener('click', async function() {
+    const btn = this;
     const form = document.getElementById('payment-form');
     const formData = new FormData(form);
     const paymentMethod = formData.get('payment_method');
@@ -284,6 +285,10 @@ document.getElementById('proceed-payment-btn').addEventListener('click', async f
         window.location.href = `/payments/${paymentId}/bank-transfer/`;
         return;
     }
+
+    // Show loading state
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="inline w-4 h-4 mr-2 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Initializing payment...';
     
     try {
         const response = await fetch(`/api/v1/payments/${paymentId}/initialize/`, {
@@ -302,16 +307,24 @@ document.getElementById('proceed-payment-btn').addEventListener('click', async f
         
         if (data.success) {
             if (data.authorization_url) {
+                // Card payment: redirect to Paystack checkout page
+                btn.innerHTML = 'Redirecting to Paystack...';
                 window.location.href = data.authorization_url;
             } else {
+                // Mobile money: no redirect, poll for status
+                btn.innerHTML = 'Waiting for phone approval...';
                 document.getElementById('paymentWaitingModal').classList.remove('hidden');
                 pollPaymentStatus(paymentId);
             }
         } else {
-            alert('Payment initialization failed: ' + (data.error || 'Unknown error'));
+            btn.disabled = false;
+            btn.innerHTML = '<span>Pay GH&#8373; {{ payment.amount_total|floatformat:2 }} Now &rarr;</span>';
+            alert('Payment initialization failed: ' + (data.error || 'Unknown error. Please try again.'));
         }
     } catch (error) {
-        alert('An error occurred: ' + error.message);
+        btn.disabled = false;
+        btn.innerHTML = '<span>Pay GH&#8373; {{ payment.amount_total|floatformat:2 }} Now &rarr;</span>';
+        alert('A network error occurred: ' + error.message);
     }
 });
 

@@ -913,14 +913,36 @@ def booking_route(request, booking_id):
         return redirect('bookings:booking_confirmation', booking_id=booking_id)
     
     # Route B/C: Shared room - check if first occupant
-    # Count existing bookings for this room type/property with same status
-    existing_bookings = Booking.objects.filter(
+    # Count ALL existing bookings that hold a slot: anything beyond INITIATED with an active soft lock
+    # This MUST include PAYMENT_REQUIRED and PAYMENT_COMPLETE — these are genuine occupants who
+    # simply haven't physically moved in yet. Missing them causes the 2nd booker to be treated
+    # as the first occupant, bypassing roommate matching entirely.
+    existing_statuses = [
+        'PAYMENT_REQUIRED', 'PAYMENT_PROCESSING', 'PAYMENT_PENDING_VERIFICATION',
+        'PAYMENT_COMPLETE', 'UNDER_REVIEW', 'ASSIGNED_AWAITING', 'LIFESTYLE_PENDING',
+        'LIFESTYLE_COMPLETE', 'AWAITING_COMPATIBILITY', 'AUTO_ASSIGNED',
+        'CONSENT_PENDING', 'CONSENT_ACCEPTED', 'ADMIN_PENDING',
+        'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ACTIVE', 'REINSTATED'
+    ]
+    existing_active = Booking.objects.filter(
         room_type=booking.room_type,
         accommodation_property=booking.accommodation_property,
-        status__in=['UNDER_REVIEW', 'ASSIGNED_AWAITING', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ACTIVE']
-    ).exclude(id=booking.id).count()
-    
-    if existing_bookings == 0:
+        status__in=existing_statuses
+    ).exclude(id=booking.id)
+
+    # Also count INITIATED bookings that still have an active soft lock (slot held)
+    soft_locked_count = 0
+    for eb in Booking.objects.filter(
+        room_type=booking.room_type,
+        accommodation_property=booking.accommodation_property,
+        status='INITIATED'
+    ).exclude(id=booking.id):
+        if eb.is_soft_lock_active():
+            soft_locked_count += 1
+
+    existing_bookings_count = existing_active.count() + soft_locked_count
+
+    if existing_bookings_count == 0:
         # Route B: First occupant - no matching needed, go to payment first
         booking.status = 'PAYMENT_REQUIRED'
         booking.is_first_occupant = True
@@ -967,11 +989,18 @@ def compatibility_engine(request, booking_id):
         messages.error(request, 'Lifestyle profile not found. Please complete the questionnaire.')
         return redirect('bookings:lifestyle_check', booking_id=booking_id)
     
-    # Find existing occupants in the same room type/property
+    # Find existing occupants in the same room type/property — include ALL statuses that hold a slot
+    _active_statuses = [
+        'PAYMENT_REQUIRED', 'PAYMENT_PROCESSING', 'PAYMENT_PENDING_VERIFICATION',
+        'PAYMENT_COMPLETE', 'UNDER_REVIEW', 'ASSIGNED_AWAITING', 'LIFESTYLE_PENDING',
+        'LIFESTYLE_COMPLETE', 'AWAITING_COMPATIBILITY', 'AUTO_ASSIGNED',
+        'CONSENT_PENDING', 'CONSENT_ACCEPTED', 'ADMIN_PENDING',
+        'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ACTIVE', 'REINSTATED'
+    ]
     existing_bookings = Booking.objects.filter(
         room_type=booking.room_type,
         accommodation_property=booking.accommodation_property,
-        status__in=['UNDER_REVIEW', 'ASSIGNED_AWAITING', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'ACTIVE']
+        status__in=_active_statuses
     ).exclude(id=booking.id)
     
     # Group bookings by assigned_room (using None for those not yet assigned a physical room)
