@@ -211,25 +211,33 @@
 
           <!-- Active Roommate Compatibility Banner -->
           {% if current_booking.roommate_info %}
-          <div class="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between gap-3 text-xs">
-            <div class="flex items-center gap-3">
-              {% if current_booking.roommate_info.user.profile_picture %}
-              <img src="{{ current_booking.roommate_info.user.profile_picture.url }}" alt="{{ current_booking.roommate_info.user.first_name }}" class="h-9 w-9 rounded-lg object-cover border border-zinc-300 shrink-0" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ current_booking.roommate_info.user.first_name|default:current_booking.roommate_info.user.email }}+{{ current_booking.roommate_info.user.last_name }}&background=111111&color=ffffff&bold=true';">
-              {% else %}
-              <div class="h-9 w-9 rounded-lg bg-[#111111] text-white font-bold text-xs flex items-center justify-center shrink-0 border border-zinc-800">
-                {{ current_booking.roommate_info.user.first_name|slice:":1" }}{{ current_booking.roommate_info.user.last_name|slice:":1" }}
+          <div class="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 space-y-2 text-xs">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                {% if current_booking.roommate_info.user.profile_picture %}
+                <img src="{{ current_booking.roommate_info.user.profile_picture.url }}" alt="{{ current_booking.roommate_info.user.first_name }}" class="h-9 w-9 rounded-lg object-cover border border-zinc-300 shrink-0" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ current_booking.roommate_info.user.first_name|default:current_booking.roommate_info.user.email }}+{{ current_booking.roommate_info.user.last_name }}&background=111111&color=ffffff&bold=true';">
+                {% else %}
+                <div class="h-9 w-9 rounded-lg bg-[#111111] text-white font-bold text-xs flex items-center justify-center shrink-0 border border-zinc-800">
+                  {{ current_booking.roommate_info.user.first_name|slice:":1" }}{{ current_booking.roommate_info.user.last_name|slice:":1" }}
+                </div>
+                {% endif %}
+                <div>
+                  <div class="font-bold text-[#111111]">Roommate: {{ current_booking.roommate_info.user.first_name }} {{ current_booking.roommate_info.user.last_name }}</div>
+                  <div class="text-[11px] text-zinc-500 font-mono">{{ current_booking.roommate_info.user.email }}</div>
+                </div>
               </div>
-              {% endif %}
-              <div>
-                <div class="font-bold text-[#111111]">Roommate: {{ current_booking.roommate_info.user.first_name }} {{ current_booking.roommate_info.user.last_name }}</div>
-                <div class="text-[11px] text-zinc-500 font-mono">{{ current_booking.roommate_info.user.email }}</div>
+              <div class="text-right shrink-0">
+                <span class="bg-black text-white font-mono font-bold text-[11px] px-2.5 py-1 rounded-lg">
+                  {{ current_booking.roommate_info.score }}% MATCH
+                </span>
               </div>
             </div>
-            <div class="text-right shrink-0">
-              <span class="bg-black text-white font-mono font-bold text-[11px] px-2.5 py-1 rounded-lg">
-                {{ current_booking.roommate_info.score }}% MATCH
-              </span>
+
+            {% if ai_roommate_insight %}
+            <div class="pt-2 border-t border-zinc-200 text-zinc-700 leading-relaxed font-medium">
+              <span class="font-bold text-[#111111]">NVIDIA AI Match Analysis:</span> {{ ai_roommate_insight }}
             </div>
+            {% endif %}
           </div>
           {% endif %}
 
@@ -275,6 +283,24 @@
         </div>
         {% endif %}
       </div>
+
+      <!-- NVIDIA AI Location & Proximity Insights Card -->
+      {% if ai_location_insights %}
+      <div class="p-4 sm:p-5 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-2.5">
+        <div class="flex items-center justify-between border-b border-zinc-200 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="bg-black text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+              NVIDIA AI Location Insights
+            </span>
+            <span class="text-xs font-bold text-[#111111]">Smart Accommodation Recommendation</span>
+          </div>
+          <span class="text-[10px] text-zinc-500 font-mono">Llama-3.1 70B</span>
+        </div>
+        <div class="text-xs text-zinc-700 leading-relaxed font-medium whitespace-pre-line">
+          {{ ai_location_insights }}
+        </div>
+      </div>
+      {% endif %}
 
       <!-- Recommended Properties Showcase Grid -->
       <div class="p-5 sm:p-6 space-y-4 rounded-2xl bg-white border border-black/10 shadow-xs w-full">

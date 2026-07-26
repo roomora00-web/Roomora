@@ -1039,29 +1039,19 @@ class RoomSetupDeclarationView(View):
         if not item_name or not category:
             return JsonResponse({'error': 'Item name and category are required.'}, status=400)
             
-        # Determine consumption level
-        consumption = 'NONE'
-        if category == 'ELECTRICAL':
-            item_lower = item_name.lower()
-            if any(x in item_lower for x in ['freezer', 'air conditioner', 'heater', 'air fryer', 'console', 'playstation', 'microwave', 'refrigerator', 'fridge']):
-                consumption = 'HIGH'
-            elif any(x in item_lower for x in ['tv', 'television', 'laptop', 'charger', 'fan', 'iron']):
-                consumption = 'MEDIUM'
-            else:
-                consumption = 'LOW'
-                
-        # Check against prohibited items (simple keyword check against property's prohibited items)
-        is_flagged = False
+        # Determine consumption level and safety hazard via NVIDIA AI Service
+        from bookings.services.ai_service import NvidiaAIService
+        ai_analysis = NvidiaAIService.analyze_declared_item_safety(item_name, category)
+        
+        consumption = ai_analysis.get('level', 'LOW')
+        is_flagged = ai_analysis.get('is_flagged', False)
+        
+        # Check against property prohibited rules as backup
         prohibited_rules = booking.accommodation_property.prohibited_items
         if prohibited_rules:
             prohibited_list = [x.strip().lower() for x in prohibited_rules.split(',')]
-            # Better check: check if any prohibited keyword is in the item name
             if any(p in item_name.lower() for p in prohibited_list):
                 is_flagged = True
-        
-        # Hardcoded check for "Mini Refrigerator" for Takoradi Hostel as per Chapter 17
-        if "mini refrigerator" in item_name.lower():
-            is_flagged = True
             
         declaration = RoomSetupDeclaration.objects.create(
             user=request.user,
@@ -1167,6 +1157,28 @@ class RoomDiscussionView(View):
             sender=request.user,
             content=content
         )
+        
+        # Trigger NVIDIA AI Concierge response if message is an inquiry/question
+        if any(q in content.lower() for q in ['?', 'how', 'what', 'where', 'when', 'wifi', 'key', 'check-in', 'help', 'rules', 'contact', 'admin', 'hello', 'hi']):
+            from bookings.services.ai_service import NvidiaAIService
+            prop_title = booking.accommodation_property.title
+            room_num = assignment.assigned_room_number or "101"
+            user_name = request.user.first_name or "Student"
+            
+            ai_reply = NvidiaAIService.generate_concierge_chat_reply(
+                property_name=prop_title,
+                room_number=room_num,
+                user_name=user_name,
+                message=content
+            )
+            
+            if ai_reply:
+                RoomMessage.objects.create(
+                    room_assignment=assignment,
+                    sender=None,
+                    is_system=True,
+                    content=f"🤖 [Roomora AI Concierge]: {ai_reply}"
+                )
         
         return JsonResponse({
             'success': True,

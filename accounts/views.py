@@ -981,6 +981,31 @@ def dashboard_view(request):
     # Get notifications/alerts
     notifications = get_user_notifications(request.user, profile, current_booking)
     
+    # Generate NVIDIA AI Property & Location Insights
+    from bookings.services.ai_service import NvidiaAIService
+    ai_location_insights = NvidiaAIService.get_location_and_property_insights(
+        user=request.user,
+        search_location=getattr(profile, 'institution', '') or "University Campus",
+        selected_city=getattr(profile, 'city', '') or "Accra"
+    )
+    
+    # If roommate match exists, generate AI Roommate Compatibility Summary
+    ai_roommate_insight = None
+    if roommate_match and hasattr(roommate_match, 'user'):
+        ai_roommate_insight = NvidiaAIService.generate_roommate_compatibility_insights(
+            user=request.user,
+            roommate_user=roommate_match.user,
+            match_score=getattr(roommate_match, 'score', 80)
+        )
+    elif current_booking and hasattr(current_booking, 'roommate_info') and current_booking.roommate_info:
+        rm_user = current_booking.roommate_info.get('user')
+        if rm_user:
+            ai_roommate_insight = NvidiaAIService.generate_roommate_compatibility_insights(
+                user=request.user,
+                roommate_user=rm_user,
+                match_score=current_booking.roommate_info.get('score', 80)
+            )
+
     context = {
         'user': request.user,
         'profile': profile,
@@ -998,6 +1023,8 @@ def dashboard_view(request):
         'roommate_match': roommate_match,
         'active_booking_count': active_booking_count,
         'notifications': notifications,
+        'ai_location_insights': ai_location_insights,
+        'ai_roommate_insight': ai_roommate_insight,
     }
     
     return render(request, 'accounts/dashboard.html', context)
