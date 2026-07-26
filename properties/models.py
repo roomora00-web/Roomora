@@ -398,10 +398,14 @@ class RoomType(models.Model):
         soft_locked_slots = 0
         initiated_bookings = Booking.objects.filter(
             room_type=self,
-            status='INITIATED'
+            status__in=['INITIATED', 'TEMPORARILY_CANCELLED']
         )
         for b in initiated_bookings:
-            if b.is_soft_lock_active():
+            if b.status == 'TEMPORARILY_CANCELLED':
+                exp = b.temp_cancel_expires_at or b.slot_hold_expires_at or b.consent_deadline
+                if exp and exp > timezone.now():
+                    soft_locked_slots += 1
+            elif b.is_soft_lock_active():
                 soft_locked_slots += 1
                 
         total_consumed = active_bookings_count + soft_locked_slots
@@ -808,10 +812,14 @@ class Room(models.Model):
         soft_locked_slots = 0
         initiated_bookings = Booking.objects.filter(
             assigned_room=self,
-            status='INITIATED'
+            status__in=['INITIATED', 'TEMPORARILY_CANCELLED']
         )
         for b in initiated_bookings:
-            if b.is_soft_lock_active():
+            if b.status == 'TEMPORARILY_CANCELLED':
+                exp = b.temp_cancel_expires_at or b.slot_hold_expires_at or b.consent_deadline
+                if exp and exp > timezone.now():
+                    soft_locked_slots += 1
+            elif b.is_soft_lock_active():
                 soft_locked_slots += 1
                 
         self.pending_slots += soft_locked_slots

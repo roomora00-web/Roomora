@@ -77,9 +77,19 @@ def initiate_booking(request, property_id):
     failed_prerequisite = PrerequisiteService.get_first_failed_prerequisite(user)
     if failed_prerequisite:
         if "active or pending booking" in failed_prerequisite.message:
-            initiated_booking = Booking.objects.filter(tenant=user, status='INITIATED').first()
-            if initiated_booking:
-                return redirect('bookings:booking_initiated', booking_id=initiated_booking.id)
+            active_booking = Booking.objects.filter(
+                tenant=user,
+                accommodation_property_id=property_id,
+                status__in=['INITIATED', 'TEMPORARILY_CANCELLED', 'WAITING_CONSENT', 'LIFESTYLE_PENDING', 'PAYMENT_REQUIRED', 'COMPATIBILITY_REVIEW']
+            ).first()
+            if active_booking:
+                if active_booking.status in ['WAITING_CONSENT', 'TEMPORARILY_CANCELLED', 'COMPATIBILITY_REVIEW']:
+                    return redirect('bookings:user-consent', booking_id=active_booking.id)
+                elif active_booking.status == 'LIFESTYLE_PENDING':
+                    return redirect('bookings:lifestyle_questionnaire', booking_id=active_booking.id, screen=1)
+                elif active_booking.status == 'PAYMENT_REQUIRED':
+                    return redirect('bookings:booking_confirmation', booking_id=active_booking.id)
+                return redirect('bookings:booking_initiated', booking_id=active_booking.id)
             return render(request, 'bookings/active_booking_error.html', {'property': property_obj})
         if failed_prerequisite.redirect_url:
             request.session['intended_booking'] = {
@@ -104,15 +114,11 @@ def initiate_booking(request, property_id):
             
     if room_type_id and not room_id:
         room_type = get_object_or_404(RoomType, id=room_type_id)
-        from django.db.models import F
-        # Priority 1: room with occupied_slots < total_slots
-        room = room_type.rooms.filter(occupied_slots__lt=F('total_slots')).first()
-        
-        # Priority 2: room not fully archived/maintenance
-        if not room:
-            room = room_type.rooms.exclude(status__in=['ARCHIVED', 'MAINTENANCE']).first()
+        # Select room with available_slots > 0
+        available_rooms = [r for r in room_type.rooms.all() if r.available_slots > 0]
+        room = available_rooms[0] if available_rooms else room_type.rooms.exclude(status__in=['ARCHIVED', 'MAINTENANCE']).first()
             
-        # Priority 3: auto-create room instance if RoomType has no room records yet
+        # Auto-create room instance if RoomType has no room records yet
         if not room:
             room = Room.objects.create(
                 accommodation_property=property_obj,
@@ -226,6 +232,13 @@ def initiate_booking(request, property_id):
         return redirect('landing:property_detail', pk=property_id)
     
     booking = soft_lock_result.booking
+    
+    if booking.status in ['WAITING_CONSENT', 'TEMPORARILY_CANCELLED', 'COMPATIBILITY_REVIEW']:
+        return redirect('bookings:user-consent', booking_id=booking.id)
+    elif booking.status == 'LIFESTYLE_PENDING':
+        return redirect('bookings:lifestyle_questionnaire', booking_id=booking.id, screen=1)
+    elif booking.status == 'PAYMENT_REQUIRED':
+        return redirect('bookings:booking_confirmation', booking_id=booking.id)
     
     # Step 4: Schedule Celery tasks (4h reminder and 6h expiry) safely
     try:

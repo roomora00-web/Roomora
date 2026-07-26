@@ -125,14 +125,16 @@ class SoftLockService:
         from properties.models import Property
         
         with transaction.atomic():
-            # Step 0: Check for existing unexpired INITIATED booking
+            # Step 0: Check for existing unexpired or pending booking for this user
+            active_statuses = [
+                'INITIATED', 'TEMPORARILY_CANCELLED', 'WAITING_CONSENT', 
+                'LIFESTYLE_PENDING', 'LIFESTYLE_COMPLETE', 'AWAITING_COMPATIBILITY', 
+                'COMPATIBILITY_REVIEW', 'PAYMENT_REQUIRED'
+            ]
             existing_booking = Booking.objects.filter(
                 tenant=user,
                 accommodation_property_id=property_id,
-                room_id=room_id,
-                unit_type_id=unit_type_id,
-                status='INITIATED',
-                soft_lock_expires_at__gt=timezone.now()
+                status__in=active_statuses
             ).first()
             
             if existing_booking:
