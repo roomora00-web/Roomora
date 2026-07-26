@@ -7,11 +7,11 @@
 <div class="space-y-6 sm:space-y-8 w-full animate-fade-in-up">
 
   <!-- Header & Page Summary -->
-  <div class="glass-card p-6 sm:p-8 bg-gradient-to-br from-white via-[#F8F8FA] to-emerald-50/40 border border-black/10 shadow-sm rounded-3xl w-full">
+  <div class="glass-card p-6 sm:p-8 bg-gradient-to-br from-white via-[#F8F8FA] to-zinc-100/50 border border-black/10 shadow-sm rounded-3xl w-full">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
       <div class="space-y-2">
-        <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-900">
-          <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <div class="inline-flex items-center gap-2 rounded-full border border-black/15 bg-black/5 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-[#111111]">
+          <span class="h-2 w-2 rounded-full bg-black animate-pulse"></span>
           Accommodation Management
         </div>
         <h1 class="font-outfit text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">
@@ -245,43 +245,52 @@
   <!-- Temporarily Cancelled / Declined Match Hold Section -->
   {% if temporarily_cancelled_bookings %}
   <div class="space-y-4 pt-2 w-full">
-    <div class="flex items-center gap-3 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-amber-800">
-      <span class="h-2.5 w-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-      <span>Match Declined — 30-Minute Room Hold Window</span>
-    </div>
-
     <div class="grid grid-cols-1 gap-6 w-full">
       {% for booking in temporarily_cancelled_bookings %}
-      <div class="glass-card p-6 sm:p-8 space-y-6 border-l-4 border-l-amber-500 rounded-3xl bg-amber-50/40 border border-amber-200/80 shadow-sm w-full">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-black/[0.06] pb-5">
-          <div class="space-y-1">
-            <span class="inline-flex items-center gap-2 bg-amber-100 text-amber-900 border border-amber-300 text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider">
-              ⏳ Match Declined · Hold Active
-            </span>
-            <h2 class="font-outfit text-2xl font-extrabold text-[#111111] mt-2">{{ booking.accommodation_property.title }}</h2>
-            <p class="text-xs sm:text-sm text-[#6B7280]">
-              You declined the roommate match. Your soft-locked room is held for 30 minutes if you wish to reconsider and resume your booking.
-            </p>
+      <div class="p-6 sm:p-8 space-y-6 rounded-3xl bg-white border border-black/10 shadow-sm w-full transition-all hover:shadow-md">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-black/[0.08] pb-6">
+          <div class="flex items-start gap-4">
+            {% if booking.accommodation_property.images.all %}
+            <img src="{{ booking.accommodation_property.images.first.image_url }}" class="h-20 w-20 rounded-2xl object-cover border border-black/10 shrink-0 shadow-xs" alt="{{ booking.accommodation_property.title }}">
+            {% else %}
+            <div class="h-20 w-20 rounded-2xl bg-[#F8F8FA] border border-black/10 flex items-center justify-center font-bold text-xs shrink-0 text-zinc-400">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            </div>
+            {% endif %}
+            
+            <div class="space-y-1">
+              <h2 class="font-outfit text-2xl font-bold text-[#111111] tracking-tight">{{ booking.accommodation_property.title }}</h2>
+              <p class="text-xs sm:text-sm text-zinc-500 leading-relaxed max-w-xl">
+                Match declined. Your room soft-lock is temporarily held in case you wish to reconsider and resume your reservation.
+              </p>
+            </div>
           </div>
 
-          <!-- Countdown Timer Box -->
-          <div class="bg-white border border-amber-300 px-4 py-3 rounded-2xl text-center shrink-0 shadow-xs">
-            <span class="text-[10px] font-extrabold text-amber-800 uppercase tracking-wider block">Hold Expires In</span>
-            <span id="tempCancelTimer-{{ booking.id }}" class="font-mono font-extrabold text-amber-950 text-lg">30:00</span>
+          <!-- Sleek Monochromatic Countdown Timer Box -->
+          <div class="bg-black text-white px-5 py-3.5 rounded-2xl flex items-center gap-4 shrink-0 shadow-sm border border-zinc-800">
+            <div class="h-8 w-8 rounded-xl bg-zinc-800 flex items-center justify-center text-white shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="space-y-0.5">
+              <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block">Room Hold Timer</span>
+              <span id="tempCancelTimer-{{ booking.id }}" class="font-mono font-bold text-white text-lg tracking-wider">30m 00s</span>
+            </div>
           </div>
         </div>
 
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1">
-          <div class="text-xs text-[#6B7280] space-y-1">
-            <div>Booking Ref: <strong class="text-[#111111] font-mono">#RM-{{ booking.id }}</strong></div>
-            <div>Assigned Space: <strong class="text-[#111111]">{% if booking.assigned_room %}Room {{ booking.assigned_room.room_number }}{% else %}Standard Unit{% endif %}</strong></div>
+          <div class="flex items-center gap-4 text-xs text-zinc-600">
+            <div class="bg-zinc-100 border border-zinc-200 px-3 py-1.5 rounded-lg font-mono font-bold text-zinc-900">
+              Ref: #RM-{{ booking.id }}
+            </div>
+            <div>Assigned Space: <strong class="text-[#111111] font-semibold">{% if booking.assigned_room %}Room {{ booking.assigned_room.room_number }}{% else %}Standard Unit{% endif %}</strong></div>
           </div>
 
           <div class="flex items-center gap-3 w-full sm:w-auto">
-            <a href="{% url 'bookings:cancel-booking' booking.id %}" class="w-1/2 sm:w-auto px-5 py-3 rounded-2xl bg-white border border-black/20 text-[#111111] hover:bg-gray-100 font-bold text-xs sm:text-sm transition-all text-center">
+            <a href="{% url 'bookings:cancel-booking' booking.id %}" class="w-1/2 sm:w-auto px-5 py-3 rounded-xl bg-white border border-black/20 text-[#111111] hover:bg-zinc-50 font-bold text-xs sm:text-sm transition-all text-center">
               Cancel Booking
             </a>
-            <a href="{% url 'bookings:user-consent' booking.id %}" class="w-1/2 sm:w-auto px-6 py-3 rounded-2xl bg-[#111111] hover:bg-black/80 text-white font-extrabold text-xs sm:text-sm shadow-md transition-all text-center flex items-center justify-center gap-2">
+            <a href="{% url 'bookings:user-consent' booking.id %}" class="w-1/2 sm:w-auto px-6 py-3 rounded-xl bg-[#111111] hover:bg-zinc-800 text-white font-bold text-xs sm:text-sm shadow-sm transition-all text-center flex items-center justify-center gap-2">
               <span>Resume Booking ➔</span>
             </a>
           </div>
