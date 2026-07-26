@@ -986,7 +986,9 @@ def dashboard_view(request):
     ai_location_insights = NvidiaAIService.get_location_and_property_insights(
         user=request.user,
         search_location=getattr(profile, 'institution', '') or "University Campus",
-        selected_city=getattr(profile, 'city', '') or "Accra"
+        selected_city=getattr(profile, 'city', '') or "Accra",
+        recommended_properties=recommended_properties,
+        current_booking=current_booking
     )
     
     # If roommate match exists, generate AI Roommate Compatibility Summary
