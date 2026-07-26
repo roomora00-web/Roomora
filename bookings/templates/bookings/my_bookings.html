@@ -80,50 +80,44 @@
 
   <!-- Active & Confirmed Bookings Section -->
   {% if confirmed_and_active %}
-  <div class="space-y-5 w-full">
-    <div class="flex items-center gap-3 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#888888]">
-      <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-      <span>Active & Confirmed Accommodations</span>
-    </div>
-
-    <div class="grid grid-cols-1 gap-6 w-full">
+  <div class="space-y-4 w-full">
+    <div class="grid grid-cols-1 gap-5 w-full">
       {% for booking in confirmed_and_active %}
-      <div class="glass-card p-6 sm:p-8 space-y-6 border-l-4 border-l-emerald-600 rounded-3xl bg-white shadow-sm border border-black/10 w-full hover:shadow-md transition-all">
+      <div class="p-5 sm:p-6 space-y-5 rounded-3xl bg-white border border-black/10 shadow-xs w-full hover:shadow-sm transition-all">
         
         <!-- Header Row -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-black/[0.06] pb-5">
-          <div class="flex items-center gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-black/[0.08] pb-4">
+          <div class="flex items-center gap-3.5">
             {% if booking.accommodation_property.images.all %}
-            <img src="{{ booking.accommodation_property.images.first.image_url }}" class="h-20 w-20 rounded-2xl object-cover border border-black/10 shrink-0 shadow-xs" alt="{{ booking.accommodation_property.title }}">
+            <img src="{{ booking.accommodation_property.images.first.image_url }}" class="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl object-cover border border-black/10 shrink-0 shadow-xs" alt="{{ booking.accommodation_property.title }}">
             {% else %}
-            <div class="h-20 w-20 rounded-2xl bg-[#F8F8FA] border border-black/10 flex items-center justify-center font-bold text-xs shrink-0 text-[#888888]">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-zinc-100 border border-black/10 flex items-center justify-center font-bold text-xs shrink-0 text-zinc-400">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
             </div>
             {% endif %}
 
-            <div class="space-y-1">
-              <h2 class="font-outfit text-2xl font-extrabold text-[#111111]">{{ booking.accommodation_property.title }}</h2>
-              <p class="text-xs sm:text-sm text-[#6B7280] flex items-center gap-1.5 font-medium">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-700 shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div class="space-y-0.5">
+              <h2 class="font-outfit text-xl sm:text-2xl font-bold text-[#111111] tracking-tight">{{ booking.accommodation_property.title }}</h2>
+              <p class="text-xs text-zinc-500 flex items-center gap-1 font-medium">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-600 shrink-0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 {{ booking.accommodation_property.address }}, {{ booking.accommodation_property.city }}
               </p>
             </div>
           </div>
 
-          <div class="flex sm:flex-col items-start sm:items-end justify-between sm:justify-center gap-2 shrink-0">
-            <span class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-xs">
-              <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              {{ booking.get_status_display|default:booking.status }}
+          <div class="flex sm:flex-col items-start sm:items-end justify-between sm:justify-center gap-1.5 shrink-0">
+            <span class="inline-flex items-center gap-1.5 bg-black text-white text-[11px] font-bold px-3 py-1 rounded-full tracking-wide">
+              Confirmed & Assigned
             </span>
-            <span class="font-mono text-sm font-extrabold text-[#111111]">Ref: {{ booking.reference_number }}</span>
+            <span class="font-mono text-xs text-zinc-500 font-semibold">Ref: {{ booking.reference_number }}</span>
           </div>
         </div>
 
         <!-- 4-Column Particulars Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-[#F8F8FA] border border-black/10 p-6 rounded-2xl text-sm">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-zinc-50 border border-zinc-200/80 p-4 rounded-2xl text-xs">
           <div>
-            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Assigned Space</div>
-            <div class="font-extrabold text-[#111111] mt-1 text-base">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Assigned Space</div>
+            <div class="font-bold text-[#111111] mt-0.5 text-sm">
               {% if booking.assigned_room %}
                 Room {{ booking.assigned_room.room_number }}
               {% elif booking.room_type %}
@@ -135,103 +129,98 @@
           </div>
 
           <div>
-            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Stay Duration</div>
-            <div class="font-extrabold text-[#111111] mt-1 text-base">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Stay Duration</div>
+            <div class="font-bold text-[#111111] mt-0.5 text-sm">
               {{ booking.calculated_duration_label|title|default:"1 Semester" }}
             </div>
           </div>
 
           <div>
-            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Move-In Date</div>
-            <div class="font-extrabold text-[#111111] mt-1 text-base">
-              {{ booking.move_in_date|date:"d M Y"|default:"Jul 23, 2026" }}
+            <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Move-In Date</div>
+            <div class="font-bold text-[#111111] mt-0.5 text-sm">
+              {{ booking.move_in_date|date:"d M Y"|default:"Jul 27, 2026" }}
             </div>
           </div>
 
           <div>
-            <div class="text-xs font-extrabold uppercase tracking-wider text-[#888888]">Total Amount Paid</div>
-            <div class="font-extrabold text-emerald-900 mt-1 text-base">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Total Amount Paid</div>
+            <div class="font-bold text-[#111111] mt-0.5 text-sm">
               GH₵ {% if booking.payment_records.first %}{{ booking.payment_records.first.amount_total|floatformat:2 }}{% else %}{{ booking.total_price|floatformat:2 }}{% endif %}
             </div>
           </div>
         </div>
 
         {% if booking.roommate_info %}
-        <!-- Roommate Match Banner -->
-        <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-emerald-50 via-white to-emerald-50/50 border border-emerald-300 space-y-4 shadow-xs">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
+        <!-- Roommate Match Card -->
+        <div class="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/80 space-y-3">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
               {% if booking.roommate_info.user.profile_picture %}
-              <img src="{{ booking.roommate_info.user.profile_picture.url }}" alt="{{ booking.roommate_info.user.first_name }}" class="h-14 w-14 rounded-2xl object-cover border-2 border-emerald-500 shrink-0 shadow-xs" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ booking.roommate_info.user.first_name|default:booking.roommate_info.user.email }}+{{ booking.roommate_info.user.last_name }}&background=111111&color=ffffff&bold=true';">
+              <img src="{{ booking.roommate_info.user.profile_picture.url }}" alt="{{ booking.roommate_info.user.first_name }}" class="h-11 w-11 rounded-xl object-cover border border-zinc-300 shrink-0 shadow-xs" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ booking.roommate_info.user.first_name|default:booking.roommate_info.user.email }}+{{ booking.roommate_info.user.last_name }}&background=111111&color=ffffff&bold=true';">
               {% else %}
-              <div class="h-14 w-14 rounded-2xl bg-[#111111] text-white font-extrabold text-lg flex items-center justify-center shrink-0 border-2 border-emerald-500">
+              <div class="h-11 w-11 rounded-xl bg-[#111111] text-white font-bold text-sm flex items-center justify-center shrink-0 border border-zinc-800">
                 {{ booking.roommate_info.user.first_name|slice:":1" }}{{ booking.roommate_info.user.last_name|slice:":1" }}
               </div>
               {% endif %}
+              
               <div class="space-y-0.5">
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-800">Matched Roommate</span>
-                  <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border border-emerald-300 bg-emerald-100 text-emerald-950">
-                    {{ booking.roommate_info.user.get_gender_display|default:booking.roommate_info.user.gender }}
-                  </span>
-                </div>
-                <div class="font-extrabold text-base text-[#111111]">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Matched Roommate</div>
+                <div class="font-bold text-sm text-[#111111]">
                   {{ booking.roommate_info.user.first_name }} {{ booking.roommate_info.user.last_name }}
                   {% if booking.roommate_info.user.preferred_name %}
-                  <span class="text-xs font-bold text-gray-500">("{{ booking.roommate_info.user.preferred_name }}")</span>
+                  <span class="text-xs font-normal text-zinc-500">("{{ booking.roommate_info.user.preferred_name }}")</span>
                   {% endif %}
                 </div>
-                <div class="text-xs text-[#6B7280] font-mono">{{ booking.roommate_info.user.email }} • {{ booking.roommate_info.user.phone_number }}</div>
+                <div class="text-xs text-zinc-500 font-mono">{{ booking.roommate_info.user.email }} • {{ booking.roommate_info.user.phone_number }}</div>
               </div>
             </div>
 
-            <div class="flex items-center gap-3 shrink-0">
-              <span class="bg-emerald-600 text-white font-extrabold text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-xs">{{ booking.roommate_info.score }}% MATCH</span>
-              <span class="text-xs font-extrabold text-emerald-900 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl">Position {{ booking.roommate_info.position }}</span>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="bg-black text-white font-mono font-bold text-xs px-3 py-1 rounded-lg">{{ booking.roommate_info.score }}% MATCH</span>
+              <span class="text-xs font-semibold text-zinc-700 bg-white border border-zinc-300 px-2.5 py-1 rounded-lg">Position {{ booking.roommate_info.position }}</span>
             </div>
           </div>
 
           <!-- Address & Student Info Snippet -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1 border-t border-emerald-200/60">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-2 border-t border-zinc-200">
             <div>
-              <span class="font-extrabold text-[#888888] uppercase text-[10px]">Location / Address:</span>
-              <div class="font-bold text-[#111111]">{{ booking.roommate_info.extended_profile.address|default:"Campus Area" }}, {{ booking.roommate_info.extended_profile.city|default:"Kumasi" }}</div>
+              <span class="font-bold text-zinc-500 uppercase text-[10px]">Location / Address:</span>
+              <div class="font-medium text-[#111111]">{{ booking.roommate_info.extended_profile.address|default:"Campus Area" }}, {{ booking.roommate_info.extended_profile.city|default:"Accra" }}</div>
             </div>
             {% if booking.roommate_info.user.user_type == 'STUDENT' or booking.roommate_info.extended_profile.institution %}
             <div>
-              <span class="font-extrabold text-emerald-800 uppercase text-[10px]">Student / Major:</span>
-              <div class="font-bold text-[#111111]">{{ booking.roommate_info.extended_profile.institution|default:"University" }} — {{ booking.roommate_info.extended_profile.field_of_study|default:"Student" }} (Level {{ booking.roommate_info.extended_profile.academic_level|default:"300" }})</div>
+              <span class="font-bold text-zinc-500 uppercase text-[10px]">Student / Major:</span>
+              <div class="font-medium text-[#111111]">{{ booking.roommate_info.extended_profile.institution|default:"University" }} — {{ booking.roommate_info.extended_profile.field_of_study|default:"Student" }} (Level {{ booking.roommate_info.extended_profile.academic_level|default:"300" }})</div>
             </div>
             {% endif %}
           </div>
         </div>
         {% endif %}
 
-        <!-- Action Buttons & Details Modal Trigger Strip -->
-        <div class="flex flex-wrap items-center justify-between gap-4 border-t border-black/[0.06] pt-5">
-          <div class="flex flex-wrap items-center gap-3">
+        <!-- Action Buttons Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-black/[0.08] pt-4">
+          <div class="flex flex-wrap items-center gap-2.5">
             {% if booking.assigned_room or booking.room_type or booking.status in 'PAYMENT_COMPLETE,CONFIRMED,ACTIVE,PAID,PAYMENT_VERIFIED,CONFIRMED_ASSIGNED' %}
-            <a href="{% url 'bookings:enter-room' booking.id %}" class="inline-flex items-center gap-2 bg-emerald-800 text-white px-6 py-3 rounded-2xl text-xs sm:text-sm font-extrabold hover:bg-emerald-900 transition-all shadow-md">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            <a href="{% url 'bookings:enter-room' booking.id %}" class="inline-flex items-center gap-2 bg-[#111111] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-zinc-800 transition-all shadow-xs">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
               <span>Enter Room Portal ➔</span>
             </a>
             {% endif %}
 
-            <!-- Interactive Modal Trigger for Full Property Rules & Amenities -->
-            <button type="button" onclick="openDetailsModal('modal-{{ booking.id }}')" class="inline-flex items-center gap-2 bg-[#F8F8FA] border border-black/15 px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold text-[#111111] hover:bg-black/5 transition-all shadow-xs">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-700"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <button type="button" onclick="openDetailsModal('modal-{{ booking.id }}')" class="inline-flex items-center gap-2 bg-white border border-zinc-300 px-4 py-2.5 rounded-xl text-xs font-bold text-[#111111] hover:bg-zinc-100 transition-all shadow-2xs">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               <span>Property Rules & Amenities</span>
             </button>
 
             {% if booking.payment_records.first %}
-            <a href="{% url 'payments:official_receipt' booking.payment_records.first.id %}" target="_blank" class="inline-flex items-center gap-2 bg-[#111111] text-white px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold hover:bg-black/80 transition-all shadow-xs">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <a href="{% url 'payments:official_receipt' booking.payment_records.first.id %}" target="_blank" class="inline-flex items-center gap-2 bg-zinc-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-black transition-all shadow-2xs">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               <span>Official Receipt (PDF)</span>
             </a>
             {% endif %}
           </div>
 
-          <a href="mailto:support@roomora.com" class="text-xs sm:text-sm font-extrabold text-[#6B7280] hover:text-[#111111] transition-colors">
+          <a href="mailto:support@roomora.com" class="text-xs font-bold text-zinc-500 hover:text-[#111111] transition-colors">
             Contact Support ➔
           </a>
         </div>
