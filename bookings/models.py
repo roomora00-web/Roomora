@@ -1663,6 +1663,8 @@ def recalculate_inventory_on_booking_change(sender, instance, **kwargs):
         instance.unit_type.recalculate_capacity()
     if instance.assigned_room:
         instance.assigned_room.recalculate_occupancy()
+    if hasattr(instance, 'room') and instance.room and instance.room != instance.assigned_room:
+        instance.room.recalculate_occupancy()
 
 class AdminBookingQueue(Booking):
     """

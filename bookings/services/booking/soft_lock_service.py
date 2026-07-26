@@ -48,10 +48,14 @@ class SoftLockService:
         """
         with transaction.atomic():
             if room_id:
-                # Lock the room type row
+                # Lock the room row and self-heal occupancy
                 room = Room.objects.select_for_update().filter(id=room_id).first()
                 if not room:
                     return False, "Room type not found"
+                
+                room.recalculate_occupancy()
+                if room.room_type:
+                    room.room_type.recalculate_capacity()
                 
                 if room.available_slots <= 0:
                     return False, "This room type is currently unavailable. Rooms at popular properties fill up quickly."

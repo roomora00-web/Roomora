@@ -789,15 +789,19 @@ class Room(models.Model):
         Dynamically recalculates occupied_slots and pending_slots based on actual Booking records.
         """
         from bookings.models import Booking
+        from django.db.models import Q
+        
+        room_filter = Q(assigned_room=self) | Q(room=self)
+        
         # Count active physical bookings
         self.occupied_slots = Booking.objects.filter(
-            assigned_room=self,
+            room_filter,
             status__in=['ACTIVE', 'COMPLETED', 'CONFIRMED', 'CONFIRMED_ASSIGNED']
         ).count()
         
         # Count pending physical bookings
         self.pending_slots = Booking.objects.filter(
-            assigned_room=self,
+            room_filter,
             status__in=[
                 'ASSIGNED_AWAITING', 'UNDER_REVIEW', 'LIFESTYLE_PENDING', 
                 'LIFESTYLE_COMPLETE', 'AWAITING_COMPATIBILITY', 'AUTO_ASSIGNED', 
@@ -811,7 +815,7 @@ class Room(models.Model):
         # Count soft-locked slots
         soft_locked_slots = 0
         initiated_bookings = Booking.objects.filter(
-            assigned_room=self,
+            room_filter,
             status__in=['INITIATED', 'TEMPORARILY_CANCELLED']
         )
         for b in initiated_bookings:
