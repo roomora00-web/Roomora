@@ -373,17 +373,17 @@
                 </div>
                 <div>
                     <h3 class="text-lg font-bold font-outfit text-[#111111]">Decline Roommate Match</h3>
-                    <p class="text-xs text-[#6B7280]">Request an alternative roommate pairing.</p>
+                    <p class="text-xs text-[#6B7280]">Pause room match & hold slot for 30 minutes.</p>
                 </div>
             </div>
             <button onclick="closeModal('rejectModal')" class="text-[#6B7280] hover:text-[#111111] p-1 text-lg font-bold">✕</button>
         </div>
 
         <div class="space-y-4 text-xs text-[#333333] leading-relaxed">
-            <p>Declining this match will release your hold on <strong class="text-[#111111] font-outfit">{% if room_number %}Room {{ room_number }}{% else %}Room 101{% endif %}</strong>. Our system will re-enter your booking into the compatibility engine to find alternative roommate options.</p>
+            <p>Declining this match will pause your reservation for <strong class="text-[#111111] font-outfit">{% if room_number %}Room {{ room_number }}{% else %}Room 101{% endif %}</strong>. Your room will remain temporarily reserved for <strong>30 minutes</strong> on your dashboard in case you wish to reconsider.</p>
 
             <div class="bg-[#F8F8FA] border border-black/10 rounded-xl p-4 text-[#6B7280]">
-                <strong class="text-[#111111]">Note:</strong> Finding another roommate match depends on current property availability.
+                <strong class="text-[#111111]">Note:</strong> If you do not resume your booking within 30 minutes, your room hold will expire so alternative room options or pairings can be sought based on availability.
             </div>
         </div>
 
