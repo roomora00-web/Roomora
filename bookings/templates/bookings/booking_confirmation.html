@@ -412,7 +412,7 @@
             </div>
           </div>
 
-          {% if booking.status == 'PAYMENT_REQUIRED' or booking.status == 'INITIATED' or booking.status == 'SOFT_LOCKED' %}
+          {% if not has_paid and booking.status != 'CONFIRMED' and booking.status != 'ACTIVE' and booking.status != 'COMPLETED' %}
           <form method="post" action="{% url 'bookings:submit_booking' booking.id %}" class="pt-2">
             {% csrf_token %}
             <button type="submit" class="ds-btn w-full py-4 text-base shadow-md">
@@ -421,12 +421,12 @@
           </form>
           <p class="text-center text-[11px] font-semibold text-[#6B7280]">Complete payment to finalize your room reservation.</p>
           {% else %}
-          <div class="bg-emerald-50 border border-emerald-200 text-emerald-950 p-4 rounded-2xl text-center space-y-1">
-            <div class="text-sm font-extrabold text-emerald-900 flex items-center justify-center gap-1.5">
+          <div class="bg-zinc-100 border border-zinc-200 text-zinc-900 p-4 rounded-2xl text-center space-y-1">
+            <div class="text-sm font-extrabold flex items-center justify-center gap-1.5">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               Payment Completed
             </div>
-            <div class="text-xs text-emerald-800">Your reservation is under admin review.</div>
+            <div class="text-xs text-zinc-600">Your reservation is confirmed and active.</div>
           </div>
           {% endif %}
 

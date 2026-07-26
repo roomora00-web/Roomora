@@ -1216,6 +1216,12 @@ def booking_confirmation(request, booking_id):
     if not gallery_images and accommodation_property:
         gallery_images = accommodation_property.all_gallery_images[:6]
     
+    from payments.models import PaymentRecord
+    has_paid = PaymentRecord.objects.filter(
+        booking=booking, 
+        payment_status__in=['completed', 'verified', 'SUCCESS', 'PAID', 'COMPLETED']
+    ).exists()
+    
     context = {
         'booking': booking,
         'property': accommodation_property,
@@ -1226,6 +1232,7 @@ def booking_confirmation(request, booking_id):
         'property_images': accommodation_property.images.all()[:6] if accommodation_property else [],
         'gallery_images': gallery_images,
         'lifestyle_profile': lifestyle_profile,
+        'has_paid': has_paid,
         'time_remaining': SoftLockService.get_time_remaining(booking),
         'soft_lock_expires_at': booking.soft_lock_expires_at.isoformat() if booking.soft_lock_expires_at else None,
     }

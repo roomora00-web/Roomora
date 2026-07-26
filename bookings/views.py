@@ -714,8 +714,8 @@ class UserConsentView(View):
                 consent_record.user_consent_ip = request.META.get('REMOTE_ADDR')
                 consent_record.save()
                 
-                # Update booking status
-                booking.status = 'CONFIRMED_ASSIGNED'
+                # Update booking status to PAYMENT_REQUIRED
+                booking.status = 'PAYMENT_REQUIRED'
                 booking.save()
                 
                 # Update room slots atomically
