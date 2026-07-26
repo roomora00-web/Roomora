@@ -32,10 +32,10 @@ body.loaded { opacity: 1; transition: opacity 0.2s ease-in; }
     align-items: center !important;
   }
   .prop-logo-img, .hero-logo-img {
-    height: 40px !important;
+    height: 120px !important;
     width: auto !important;
-    margin: 0 !important;
-    transform: none !important;
+    margin: -30px 0 -50px -20px !important;
+    transform: scale(1) !important;
     object-fit: contain !important;
   }
   .prop-center-nav { display: none !important; }
@@ -148,10 +148,14 @@ body {
 }
 .prop-navbar-brand a { display: block; }
 .prop-logo-img {
-  height: 40px;
-  width: auto;
-  display: block;
-  object-fit: contain;
+    height: 200px;
+    width: auto;
+    max-width: none;
+    display: block;
+    object-fit: contain;
+    margin: -50px 0 -80px -40px;
+    transform: scale(1.2);
+    transform-origin: left center;
 }
 .prop-center-nav {
   background: rgba(0, 0, 0, 0.05);
@@ -416,11 +420,11 @@ body {
   margin-top: 18px;
 }
 .pd-glance-card {
-  padding: 14px 16px;
+  padding: 16px 18px;
   border-radius: 16px;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 .pd-glance-label {
   font-size: 11px;
@@ -437,10 +441,11 @@ body {
 }
 .pd-story-card {
   margin-top: 20px;
-  padding: 18px 20px;
+  padding: 20px 24px;
   border-radius: 20px;
-  background: rgba(0, 0, 0, 0.03);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05);
 }
 .pd-story-title {
   font-size: 14px;
@@ -456,10 +461,10 @@ body {
 }
 .pd-section-shell {
   background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.09);
+  border: 1px solid rgba(0, 0, 0, 0.14);
   border-radius: 24px;
-  padding: 24px;
-  box-shadow: var(--shadow-sm);
+  padding: 28px;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.06);
 }
 .pd-section-intro {
   display: flex;
@@ -484,13 +489,13 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 12px;
+  padding: 7px 14px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #F4F4F5;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   color: #111111;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 10px;
 }
 .pd-summary-grid {
@@ -499,10 +504,11 @@ body {
   gap: 16px;
 }
 .pd-summary-card {
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 18px;
-  padding: 18px;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.05);
 }
 .pd-summary-card-title {
   font-size: 11px;
@@ -519,10 +525,11 @@ body {
   margin: 16px 0 18px;
 }
 .pd-book-step {
-  padding: 10px 8px;
+  padding: 12px 10px;
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
   text-align: center;
   font-size: 10px;
   font-weight: 700;
@@ -846,16 +853,18 @@ body {
 /* Key Facts */
 .pd-key-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
 .pd-fact-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.14);
   border-radius: var(--radius-md);
-  padding: 18px;
-  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+  padding: 20px;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05);
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 .pd-fact-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(0, 0, 0, 0.16);
-  background: rgba(0, 0, 0, 0.02);
+  border-color: #111111;
+  background: #FFFFFF;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.10);
 }
 .pd-section-subtitle {
   font-size: 16px;
@@ -872,10 +881,11 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 16px;
+  padding: 18px;
   border-radius: var(--radius-md);
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
 }
 .pd-detail-key {
   font-size: 13px;
@@ -902,11 +912,12 @@ body {
   align-items: center;
   padding: 8px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: #FFFFFF;
   color: #111111;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 .pd-highlights {
   display: grid;
@@ -918,8 +929,9 @@ body {
   align-items: flex-start;
   padding: 18px;
   border-radius: var(--radius-lg);
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.04);
 }
 .pd-highlight-icon {
   width: 42px;
@@ -928,7 +940,7 @@ body {
   display: grid;
   place-items: center;
   border-radius: 16px;
-  background: rgba(0, 0, 0, 0.08);
+  background: #F4F4F5;
 }
 .pd-highlight-item span {
   color: var(--charcoal);
@@ -1400,10 +1412,11 @@ body {
 
 /* Roommate Matching */
 .pd-roommate-banner {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.01) 100%);
-  border: 1px solid var(--border);
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.14);
   border-radius: var(--radius-lg);
   padding: 28px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
 }
 .pd-roommate-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
 .pd-roommate-icon {
@@ -1452,10 +1465,10 @@ body {
 /* Sticky Booking Card */
 .pd-booking-card {
   background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.14);
   border-radius: 24px;
   padding: 28px;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 24px;
 }
@@ -1471,7 +1484,7 @@ body {
 .pd-included-item .yes { color: #111111; }
 .pd-included-item .no { color: var(--muted); }
 
-.pd-cancellation-box { background: rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 16px; padding: 14px; margin-bottom: 20px; }
+.pd-cancellation-box { background: #F8F9FA; border: 1px solid rgba(0, 0, 0, 0.12); border-radius: 16px; padding: 14px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
 .pd-cancellation-title { font-size: 12.5px; font-weight: 700; color: #111111; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
 .pd-cancellation-box p { font-size: 12px; color: var(--muted); line-height: 1.5; }
 
