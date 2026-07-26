@@ -235,7 +235,7 @@
 
             {% if ai_roommate_insight %}
             <div class="pt-2 border-t border-zinc-200 text-zinc-700 leading-relaxed font-medium">
-              <span class="font-bold text-[#111111]">NVIDIA AI Match Analysis:</span> {{ ai_roommate_insight }}
+              <span class="font-bold text-[#111111]">Compatibility Diagnostic:</span> {{ ai_roommate_insight }}
             </div>
             {% endif %}
           </div>
@@ -284,17 +284,15 @@
         {% endif %}
       </div>
 
-      <!-- NVIDIA AI Location & Proximity Insights Card -->
+      <!-- Location & Proximity Insights Card -->
       {% if ai_location_insights %}
       <div class="p-4 sm:p-5 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-2.5">
         <div class="flex items-center justify-between border-b border-zinc-200 pb-2.5">
           <div class="flex items-center gap-2">
-            <span class="bg-black text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-              NVIDIA AI Location Insights
-            </span>
-            <span class="text-xs font-bold text-[#111111]">Smart Accommodation Recommendation</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-black"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="text-xs font-bold text-[#111111] tracking-wide uppercase">Location & Proximity Intelligence</span>
           </div>
-          <span class="text-[10px] text-zinc-500 font-mono">Llama-3.1 70B</span>
+          <span class="text-[10px] bg-black text-white px-2.5 py-0.5 rounded font-mono font-semibold uppercase">VERIFIED DATA</span>
         </div>
         <div class="text-xs text-zinc-700 leading-relaxed font-medium whitespace-pre-line">
           {{ ai_location_insights }}

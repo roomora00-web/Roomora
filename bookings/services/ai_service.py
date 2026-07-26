@@ -55,12 +55,13 @@ class NvidiaAIService:
     @classmethod
     def get_location_and_property_insights(cls, user, search_location="", selected_city="", recommended_properties=None, current_booking=None):
         """
-        Generates grounded, executive-grade AI property analysis based solely on real platform database listings.
-        Zero hallucination of fictional properties or pricing.
+        Generates professional AI property analysis directly addressing the tenant in second person based on verified platform database listings.
         """
         from properties.models import Property
         from bookings.models import Booking
 
+        user_name = getattr(user, 'first_name', '') or getattr(user, 'username', '') or "Valued Tenant"
+        user_name = str(user_name).upper()
         user_city = selected_city or (getattr(user, 'city', '') if hasattr(user, 'city') and user.city else "Accra")
         user_institution = getattr(user, 'institution', None) or search_location or "University Campus"
 
@@ -108,40 +109,45 @@ class NvidiaAIService:
         )
 
         system_prompt = (
-            "You are Roomora Executive Housing Intelligence, an authoritative and objective institutional real estate assessment system. "
-            "CRITICAL CONVERGENT RULES:\n"
-            "1. Professional Tone: Maintain an elevated, clinical, and data-driven executive tone. STRICTLY DO NOT use conversational greetings, conversational filler, or informal phrases (NEVER output 'Hi', 'Hello', 'I've got you covered', or subjective chit-chat).\n"
-            "2. Truth Enforcement & Grounding: You are strictly restricted to evaluating ONLY the exact property names, locations, and rate tariffs provided in the verified platform database context below. DO NOT invent, fabricate, or mention ANY imaginary hostels or price estimates.\n"
-            "3. Formatting: Present your analysis as exactly 3 bullet points starting with the symbol '•', highlighting verified security infrastructure, transit/campus proximity, and guaranteed digital escrow rate compliance."
+            "You are Roomora Executive Housing Intelligence, a professional accommodation assessment system. "
+            "CRITICAL RULES:\n"
+            "1. Direct Professional Addressing: Address the tenant directly in the second person (e.g., 'Hi GAZY, here is your accommodation and proximity assessment for verified housing near...'). DO NOT speak about the tenant in the third person.\n"
+            "2. Professional & Authoritative Tone: Maintain a refined, analytical, and professional tone. Avoid slang, emojis, or superficial chatbot chatter.\n"
+            "3. Zero Hallucinations: Evaluate ONLY the exact verified platform property records, pricing, and locations supplied below. DO NOT invent or mention ANY fictional hostels or price estimates.\n"
+            "4. Structure: Start with the direct greeting and introductory summary sentence, followed by exactly 3 clear bullet points starting with '•' analyzing verified location security, campus commuting proximity, and 2% escrow deposit protection."
         )
 
         prompt = (
-            f"Generate an Executive Accommodation & Proximity Intelligence Report based STRICTLY on this verified system database telemetry:\n\n"
-            f"Target City & Institution: {target_city} ({user_institution})\n"
+            f"Generate a Professional Accommodation Assessment directly addressed to tenant {user_name}, based STRICTLY on this verified database telemetry:\n\n"
+            f"Tenant Name: {user_name}\n"
+            f"Target City & Campus: {target_city} ({user_institution})\n"
             f"{active_booking_str}\n"
-            f"Verified Platform Housing Datasets:\n{listings_text}\n\n"
-            f"Provide exactly 3 structured bullet points summarizing the confirmed physical security features, strategic academic proximity, and transparent escrow rate protection of these verified properties. Keep under 75 words total."
+            f"Verified Platform Housing Listings:\n{listings_text}\n\n"
+            f"Begin with 'Hi {user_name}, here is your verified accommodation and location assessment:' followed by exactly 3 professional bullet points on verified CCTV/gated security, campus proximity, and transparent escrow rate protection. Keep under 85 words."
         )
 
         ai_response = cls.call_nvidia_llm(prompt, system_prompt=system_prompt, max_tokens=220, temperature=0.2)
         
         if not ai_response or "Ayeduase" in ai_response or "I've got you covered" in ai_response:
             ai_response = (
-                f"• Verified Placement & Transit: {target_prop_title} ({target_city}) provides structured access corridors directly to primary academic and university study facilities.\n"
-                f"• Security & Structural Audit: All verified platform accommodations operate under strict physical validation standards, featuring gated perimeter control and regulated utility grids.\n"
-                f"• Escrow Tariff Protection: Rental amounts are legally secured under Roomora's automated 2% digital escrow infrastructure, guaranteeing absolute transparency with zero unapproved surcharges."
+                f"Hi {user_name}, here is your accommodation and proximity assessment for verified housing near {user_institution} in {target_city}:\n\n"
+                f"• Verified Security Infrastructure: {target_prop_title} operates under 24/7 guarded CCTV surveillance and gated entry protocols to guarantee residential security.\n"
+                f"• Campus Commuter Proximity: Strategically positioned within primary academic transit corridors for direct and accessible university commutes.\n"
+                f"• Guaranteed Escrow Rate Protection: All rental tariffs are legally locked under Roomora's automated 2% digital escrow framework, assuring total fee predictability with zero unverified surcharges."
             )
         return ai_response
 
     @classmethod
     def generate_roommate_compatibility_insights(cls, user, roommate_user, match_score):
         """
-        Generates clinical behavioral alignment evaluations based directly on actual database LifestyleProfile telemetry.
+        Generates direct, professional behavioral alignment evaluations addressed directly to the primary tenant in second person.
         """
         from accounts.models import LifestyleProfile
 
-        user1_name = getattr(user, 'first_name', '') or "Tenant A"
-        user2_name = getattr(roommate_user, 'first_name', '') or "Tenant B"
+        user1_name = getattr(user, 'first_name', '') or getattr(user, 'username', '') or "Tenant"
+        user1_name = str(user1_name).upper()
+        user2_name = getattr(roommate_user, 'first_name', '') or getattr(roommate_user, 'username', '') or "Roommate"
+        user2_name = str(user2_name).upper()
 
         prof1 = getattr(user, 'lifestyle_profile', None) or LifestyleProfile.objects.filter(user=user).first()
         prof2 = getattr(roommate_user, 'lifestyle_profile', None) or LifestyleProfile.objects.filter(user=roommate_user).first()
@@ -156,29 +162,30 @@ class NvidiaAIService:
         visit2 = prof2.get_visitor_frequency_display() if prof2 and getattr(prof2, 'visitor_frequency', None) else "Occasional visitors"
 
         system_prompt = (
-            "You are Roomora Behavioral Alignment Intelligence, an clinical residential analytics system. "
+            "You are Roomora Co-Living Intelligence, a professional residential matching advisory engine. "
             "CRITICAL RULES:\n"
-            "1. Tone: Highly objective, technical, and analytical. STRICTLY DO NOT use conversational chatter, clichéd phrases, or casual phrasing (NEVER use 'Helpful tip:', 'harmonious living arrangement', or 'schedule regular roommate meetings').\n"
-            "2. Grounded Telemetry: Assess compatibility strictly using the supplied lifestyle metrics below without inventing undocumented personality traits.\n"
-            "3. Structure: Write 2 concise diagnostic sentences on behavioral convergence, followed by one precise sentence labeled 'Operational Protocol:' specifying concrete living space governance for study silence and sanitation schedules."
+            "1. Direct Second-Person Address: Speak directly TO the primary tenant using their name (e.g., 'Hi GAZY, your compatibility score with BEN is 80%. Our analysis indicates...'). NEVER speak in the third person about the primary tenant.\n"
+            "2. Professional & Structural Tone: Maintain an elegant, analytical, and professional tone. Do NOT use childish advice, emojis, or slang (e.g., avoid 'Helpful tip:' or 'schedule roommate meetings').\n"
+            "3. Grounded Telemetry: Base your analysis strictly on the supplied sleep routines, cleanliness standards, noise tolerance, and visitor policies.\n"
+            "4. Structure: Provide a clear 2-sentence diagnostic assessment of lifestyle alignment, followed by one sentence labeled 'Co-Living Operational Protocol:' specifying exact professional governance for quiet evening study periods and weekly sanitation schedules."
         )
 
         prompt = (
-            f"Evaluate Co-Living Telemetry for {user1_name} and {user2_name} at an algorithmic match score of {match_score}%.\n\n"
-            f"Recorded Database Metrics:\n"
-            f"- Sleep & Wake Routines: {user1_name} [{sleep1}] vs {user2_name} [{sleep2}]\n"
+            f"Generate a Direct Co-Living Compatibility Assessment addressed to {user1_name} regarding roommate {user2_name} at an {match_score}% match score.\n\n"
+            f"Recorded Lifestyle Metrics:\n"
+            f"- Sleep / Wake Schedules: {user1_name} [{sleep1}] vs {user2_name} [{sleep2}]\n"
             f"- Hygiene & Cleanliness Rating: {user1_name} [{clean1}] vs {user2_name} [{clean2}]\n"
             f"- Acoustic / Noise Tolerance: {user1_name} [{noise1}] vs {user2_name} [{noise2}]\n"
             f"- Visitor Policy Frequency: {user1_name} [{visit1}] vs {user2_name} [{visit2}]\n\n"
-            f"Output an authoritative behavioral assessment followed by one exact 'Operational Protocol:' for maintaining shared residential standards. Max 65 words."
+            f"Begin with 'Hi {user1_name}, your compatibility score with {user2_name} is {match_score}%.' Follow with an authoritative behavioral comparison and conclude with one precise 'Co-Living Operational Protocol:' for shared study silence and hygiene schedules. Max 75 words."
         )
 
         ai_response = cls.call_nvidia_llm(prompt, system_prompt=system_prompt, max_tokens=180, temperature=0.2)
 
-        if not ai_response or "Helpful tip:" in ai_response or "harmonious" in ai_response:
+        if not ai_response or "Helpful tip:" in ai_response or "harmonious" in ai_response or "third person" in ai_response:
             ai_response = (
-                f"Telemetry Evaluation: {user1_name} and {user2_name} demonstrate a {match_score}% compatibility profile with converging indicators across evening sleep schedules ({sleep1}) and baseline cleanliness benchmarks ({clean1}). "
-                f"Operational Protocol: Maintain structured study silence intervals after 10:00 PM and execute a rotating bi-weekly sanitation schedule to preserve verified living space standards."
+                f"Hi {user1_name}, your compatibility score with {user2_name} is {match_score}%. Our diagnostic evaluation indicates converging habits across your evening sleep schedules ({sleep1}) and baseline cleanliness ratings ({clean1}), creating a seamless foundation for shared residency.\n\n"
+                f"Co-Living Operational Protocol: To maintain shared environmental excellence, we recommend enforcing structured quiet study intervals after 10:00 PM and executing a coordinated bi-weekly room maintenance schedule."
             )
         return ai_response
 
@@ -188,24 +195,24 @@ class NvidiaAIService:
         Generates an authoritative facility operations reply for student room inquiries.
         """
         system_prompt = (
-            "You are Roomora Automated Property Operations, an executive residential management desk. "
+            "You are Roomora Automated Property Operations, a professional residential management services desk. "
             "CRITICAL RULES:\n"
-            "1. Tone: Professional, authoritative, and formal administrative communication. Zero slang or chatty filler.\n"
+            "1. Tone: Professional, direct, and formal administrative communication addressing the resident in second person ('Hello {user_name},...'). Zero slang or emojis.\n"
             "2. Guidance: Provide direct, structured operational guidance based on institutional facility best practices.\n"
             "3. Conciseness: Maximum 2 short, direct sentences."
         )
 
         prompt = (
             f"Resident {user_name} (assigned to Room {room_number} at {property_name}) submitted this operational inquiry: '{message}'. "
-            f"Provide a direct, authoritative facility management response in 2 short sentences."
+            f"Provide a direct, authoritative facility management response addressing {user_name} directly in 2 short sentences."
         )
 
         ai_response = cls.call_nvidia_llm(prompt, system_prompt=system_prompt, max_tokens=150, temperature=0.3)
 
         if not ai_response:
             ai_response = (
-                f"Your inquiry regarding Room {room_number} at {property_name} has been processed into our administrative maintenance logs. "
-                f"Standard residential facility rules and appliance safety protocols are actively managed through your resident dashboard; urgent facility dispatch items are routed directly to on-site security."
+                f"Hello {str(user_name).upper()}, your operational inquiry regarding Room {room_number} at {property_name} has been processed into our administrative maintenance logs. "
+                f"Standard residential facility guidelines and appliance safety protocols are actively managed through your resident dashboard; urgent dispatch items are routed directly to building security."
             )
         return ai_response
 

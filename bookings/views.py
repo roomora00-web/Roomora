@@ -1177,7 +1177,7 @@ class RoomDiscussionView(View):
                     room_assignment=assignment,
                     sender=None,
                     is_system=True,
-                    content=f"🤖 [Roomora AI Concierge]: {ai_reply}"
+                    content=f"[Property Operations]: {ai_reply}"
                 )
         
         return JsonResponse({
