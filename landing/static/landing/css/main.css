@@ -81,31 +81,6 @@ body {
     font-weight: 600 !important;
 }
 
-.hero-content-workspace {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-    padding: 0 48px;
-}
-
-.hero-main-headline {
-    font-size: clamp(3rem, 6vw, 5.5rem);
-    font-weight: 800;
-    color: #FFFFFF;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin: 0 0 24px 0;
-}
-
-.hero-tagline-copy {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: clamp(16px, 2vw, 20px);
-    line-height: 1.6;
-    font-weight: 500;
-    max-width: 700px;
-}
-
 @media (max-width: 1024px) {
     .anchored-search-widget-bar {
         grid-template-columns: repeat(2, 1fr) !important;
@@ -2913,6 +2888,10 @@ body {
         height: 120px;
     }
 
+    .copy-footer-container {
+        margin-top: 24px;
+    }
+
     .copy-footer-container h2 {
         font-size: 2rem;
     }
@@ -3691,7 +3670,7 @@ body {
 
 .hero-left-content {
     flex: 1;
-    max-width: 600px;
+    max-width: 760px;
 }
 
 .hero-cta-group {
@@ -3734,30 +3713,6 @@ body {
     transition: all 0.3s ease;
 }
 
-@media (max-width: 768px) {
-    .hero-bottom-container {
-        flex-direction: column;
-        align-items: flex-start;
-        bottom: 24px;
-    }
-    
-    .hero-cta-group {
-        flex-direction: column;
-        width: 100%;
-        gap: 16px;
-    }
-    
-    .hero-btn-primary {
-        width: 100%;
-        text-align: center;
-    }
-    
-    .hero-btn-secondary {
-        width: 100%;
-        justify-content: space-between;
-    }
-}
-
 /* Hamburger Menu Visibility Fixes */
 @media (min-width: 769px) {
     .hide-on-desktop {
@@ -3773,54 +3728,13 @@ body {
     }
 }
 
-/* Huge Background Text styling */
-.hero-bg-text-wrapper {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 15vh;
-    pointer-events: none;
-    overflow: hidden;
-    mix-blend-mode: overlay;
-}
-
-.hero-bg-text {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: clamp(4rem, 15vw, 20rem);
-    line-height: 1;
-    margin: 0;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    text-transform: uppercase;
-    color: #FFFFFF;
-    white-space: nowrap;
-    transform: scaleY(1.4);
-    opacity: 0.85;
-}
-
-@media (max-width: 768px) {
-    .hero-bg-text-wrapper {
-        padding-top: 8vh;
-    }
-    .hero-bg-text {
-        opacity: 0.15;
-    }
-    .hero-bottom-container {
-        padding-top: 24px !important;
-        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 30%, rgba(0,0,0,0.8) 100%);
-        margin: 0 -5% !important;
-        padding-left: 5% !important;
-        padding-right: 5% !important;
-    }
-}
-
 /* Hero Text Classes */
 .hero-bg-text-wrapper {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 320px; /* keeps clear space above the headline/CTA block below */
     z-index: 5;
     display: flex;
     align-items: flex-start;
@@ -3833,7 +3747,7 @@ body {
 
 .hero-bg-text-element {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: clamp(4rem, 15vw, 20rem);
+    font-size: clamp(4rem, 13vw, 15rem);
     line-height: 1;
     margin: 0;
     font-weight: 900;
@@ -3849,7 +3763,7 @@ body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: clamp(2.2rem, 4vw, 3.5rem);
     line-height: 1.1;
-    margin: 0 0 16px 0;
+    margin: 0 0 20px 0;
     font-weight: 700;
     letter-spacing: -0.02em;
     color: #FFFFFF;
@@ -3872,7 +3786,17 @@ body {
         padding-top: 0 !important;
         align-items: center !important;
         opacity: 0.45 !important;
-        margin-top: -20vh !important;
+        margin-top: 0 !important;
+        top: 60px;
+        bottom: 260px;
+    }
+
+    .hero-bottom-container {
+        padding-top: 24px !important;
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 30%, rgba(0,0,0,0.8) 100%);
+        margin: 0 -5% !important;
+        padding-left: 5% !important;
+        padding-right: 5% !important;
     }
 
     .hero-bg-text-element {

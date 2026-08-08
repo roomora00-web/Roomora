@@ -1,21 +1,6 @@
 {% extends 'landing/base.html' %}
 {% load static %}
-{% block title %}Roomora - Find Your Perfect Home
-<script>
-    // Featured Carousel Animation
-    document.addEventListener('DOMContentLoaded', () => {
-        const slides = document.querySelectorAll('#featuredCarousel .showcase-slide');
-        if(slides.length <= 1) return;
-        
-        let currentIndex = 0;
-        setInterval(() => {
-            slides[currentIndex].classList.remove('active');
-            currentIndex = (currentIndex + 1) % slides.length;
-            slides[currentIndex].classList.add('active');
-        }, 6000);
-    });
-</script>
-{% endblock %}
+{% block title %}Roomora - Find Your Perfect Home{% endblock %}
 
 
 {% block extra_css %}
@@ -36,13 +21,14 @@
         background-position: center;
         background-repeat: no-repeat;
         opacity: 0;
-        animation: kenBurnsCrossfade 21s linear infinite;
+        animation: kenBurnsCrossfade 28s linear infinite;
         will-change: transform, opacity;
     }
 
     .hero-bg-slide:nth-child(1) { animation-delay: 0s; }
     .hero-bg-slide:nth-child(2) { animation-delay: 7s; }
     .hero-bg-slide:nth-child(3) { animation-delay: 14s; }
+    .hero-bg-slide:nth-child(4) { animation-delay: 21s; }
 
     @keyframes kenBurnsCrossfade {
         0% { opacity: 0; transform: scale(1); }
@@ -273,9 +259,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     <!-- Animated Background Slider -->
     <div class="hero-bg-slider">
-        <div class="hero-bg-slide" style="background-image: url('/media/property_images/hstl_9.jpg')"></div>
-        <div class="hero-bg-slide" style="background-image: url('/media/property_images/apt_5.jpg')"></div>
-        <div class="hero-bg-slide" style="background-image: url('/media/property_images/apartment_9_0.jpg')"></div>
+        <div class="hero-bg-slide" style="background-image: url('/media/property_images/hero/hero_1.jpg')"></div>
+        <div class="hero-bg-slide" style="background-image: url('/media/property_images/hero/hero_2.jpg')"></div>
+        <div class="hero-bg-slide" style="background-image: url('/media/property_images/hero/hero_3.jpg')"></div>
+        <div class="hero-bg-slide" style="background-image: url('/media/property_images/hero/hero_4.jpg')"></div>
     </div>
 
     <!-- Stronger gradient overlay so text is always readable -->
@@ -490,21 +477,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     {% endfor %}
                 {% else %}
-                    <!-- Static Fallback if no properties exist -->
-                    <div class="showcase-slide active">
-                        <img src="/media/property_images/apartment_9_2.jpg" alt="Student Hostel" class="main-featured-image">
-                        <div class="floating-glass-details">
-                            <div class="floating-header">
-                                <span class="pulse-indicator"></span>
-                                <span class="status-text">Featured Property</span>
-                            </div>
-                            <h3 class="floating-title">Campus View Hostel</h3>
-                            <div class="floating-price">
-                                <span class="price-label">Starting from</span>
-                                <span class="price-value">GHC 2,500</span>
-                            </div>
-                            <a href="{% url 'landing:properties' %}" class="floating-btn">View Property <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg></a>
-                        </div>
+                    <!-- Honest empty state: no invented property/price when none exist yet -->
+                    <div class="showcase-slide active no-properties" style="display:flex; align-items:center; justify-content:center; min-height:400px; background:#F1F5F9; border-radius:16px;">
+                        <p style="color:#64748B; font-size:15px; text-align:center; padding:24px;">No featured properties available yet. Check back soon.</p>
                     </div>
                 {% endif %}
             </div>
@@ -917,7 +892,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="copy-footer-container">
         <span class="eyebrow-pill">Testimonials</span>
         <h2>Trusted by students & professionals across Ghana</h2>
-        <p>Learn why professionals choose StayMatch for their accommodation needs. Join thousands of satisfied users who
+        <p>Learn why professionals choose Roomora for their accommodation needs. Join thousands of satisfied users who
             have found their perfect home with us.</p>
         <a href="#" class="cta-black-pill">
             Read Success Stories
@@ -1119,7 +1094,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="contact-header-row">
                 <div class="email-info">
                     <span class="email-label">Email</span>
-                    <a href="mailto:hello@staymatch.com" class="email-link">hello@staymatch.com</a>
+                    <a href="mailto:roomora00@gmail.com" class="email-link">roomora00@gmail.com</a>
                 </div>
                 <button class="get-in-touch-btn">
                     Get in touch
@@ -1238,7 +1213,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="locations-carousel-track">
             
             <!-- Ashanti Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/apt_5.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/ashanti.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Kumasi</span>
@@ -1251,7 +1226,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Bono Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/hstl_1.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/bono.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Sunyani</span>
@@ -1264,7 +1239,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Bono East Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/hostel_2_0.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/bono_east.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Techiman</span>
@@ -1277,7 +1252,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Ahafo Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/apt_9.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/ahafo.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Goaso</span>
@@ -1290,7 +1265,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Central Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/hstl_2.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/central.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Cape Coast</span>
@@ -1303,7 +1278,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Eastern Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/oth_5.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/eastern.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Koforidua</span>
@@ -1316,7 +1291,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Greater Accra Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/hostel_2_1.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/greater_accra.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Accra</span>
@@ -1329,7 +1304,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- North East Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/hostel_5_2.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/north_east.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Nalerigu</span>
@@ -1342,7 +1317,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Northern Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/hostel_1_2.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/northern.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Tamale</span>
@@ -1355,7 +1330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Oti Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/apartment_10_1.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/oti.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Dambai</span>
@@ -1368,7 +1343,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Savannah Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/oth_6.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/savannah.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Damongo</span>
@@ -1381,7 +1356,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Upper East Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/campus_view_room.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/upper_east.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Bolgatanga</span>
@@ -1394,7 +1369,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Upper West Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/apt_5.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/upper_west.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Wa</span>
@@ -1407,7 +1382,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Volta Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/apartment_10_0.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/volta.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Ho</span>
@@ -1420,7 +1395,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Western Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/hstl_7.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/western.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Sekondi-Takoradi</span>
@@ -1433,7 +1408,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <!-- Western North Region -->
-            <div class="location-carousel-card" style="background-image: url('/media/property_images/hostel_3_2.jpg');">
+            <div class="location-carousel-card" style="background-image: url('/media/property_images/regions/western_north.jpg');">
                 <div class="card-gradient-overlay"></div>
                 <div class="card-content">
                     <span class="capital-tag">Capital: Wiawso</span>
@@ -1530,6 +1505,9 @@ document.addEventListener('DOMContentLoaded', function() {
             <a href="#" style="color: #A1A1AA; text-decoration: none; font-size: 13px; transition: color 0.2s;">Cookies
                 Policy</a>
         </div>
+    </div>
+    <div class="photo-credits-line" style="text-align: center; padding: 16px 24px 0; color: #71717A; font-size: 11px;">
+        Regional photography courtesy of Wikimedia Commons contributors, licensed under Creative Commons.
     </div>
 </div>
 </div>
@@ -1672,26 +1650,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // Leaflet Map Logic
     const mapPropertiesData = {{ map_properties_json|safe|default:"[]" }};
 
-    if (mapPropertiesData.length > 0) {
-        // Wait for Leaflet scripts to load dynamically so we don't block page load
-        const loadScript = (src) => {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
-        };
-
-        Promise.all([
-            loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"),
-        ]).then(() => {
-            return loadScript("https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js");
-        }).then(() => {
-            initHomeMap();
+    // Always load the base map so users see Ghana even when there are no
+    // listings yet — markers are added afterwards only if data exists.
+    const loadScript = (src) => {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
         });
-    }
+    };
+
+    Promise.all([
+        loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"),
+    ]).then(() => {
+        return loadScript("https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js");
+    }).then(() => {
+        initHomeMap();
+    }).catch(() => {
+        const mapElement = document.getElementById('homeMap');
+        if (mapElement) {
+            mapElement.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#64748B;font-size:14px;text-align:center;padding:24px;">Map failed to load. Please check your connection and refresh.</div>';
+        }
+    });
 
     let homeMapInstance = null;
     function initHomeMap() {
@@ -1757,6 +1739,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (hasMarkers) {
             map.fitBounds(bounds, { padding: [50, 50], maxZoom: 13 });
+        } else {
+            const notice = L.control({ position: 'topright' });
+            notice.onAdd = function () {
+                const div = L.DomUtil.create('div', 'map-empty-notice');
+                div.style.cssText = 'background:#fff;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;color:#0F172A;box-shadow:0 4px 10px rgba(0,0,0,0.15);';
+                div.innerText = 'No listings on the map yet';
+                return div;
+            };
+            notice.addTo(map);
         }
     }
 
