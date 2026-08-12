@@ -965,14 +965,12 @@ body {
   border: 1px solid var(--border);
 }
 
-/* Room Cards */
+/* Room Cards Container — Full Width Stacked Vertically */
 .pd-room-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-}
-@media (max-width: 1024px) {
-  .pd-room-cards { grid-template-columns: 1fr; }
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 28px !important;
+  width: 100% !important;
 }
 
 .pd-room-card {
@@ -1983,8 +1981,7 @@ body {
   .pd-glance-label { font-size: 10px; }
   .pd-glance-value { font-size: 13px; }
 
-  /* ============ HOSTEL ROOM CARDS — MOBILE OVERRIDES ============ */
-  .pd-room-cards { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .pd-room-cards { display: flex !important; flex-direction: column !important; gap: 20px !important; width: 100% !important; }
 
   .pd-room-card,
   .premium-room-card {
