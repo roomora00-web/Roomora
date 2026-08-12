@@ -108,26 +108,72 @@ body.properties-page .prop-navbar {
 /* Specific overrides for properties page */
 body.properties-page .app-workspace-wrapper {
     margin: 0 !important;
-    padding: 0 40px 48px !important;
+    padding: 0 0 48px !important;
     box-sizing: border-box !important;
 }
 
-@media (max-width: 767px) {
-    body.properties-page .app-workspace-wrapper {
-        padding: 0 16px 48px !important;
-    }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-    body.properties-page .app-workspace-wrapper {
-        padding: 0 28px 48px !important;
-    }
+/* Consistent page side gutters for properties page elements */
+body.properties-page .properties-hero-section {
+    margin-left: 40px !important;
+    margin-right: 40px !important;
+    width: calc(100% - 80px) !important;
 }
 
 body.properties-page .portal-body-layout {
+    padding: 0 40px !important;
     margin: 32px 0 0 !important;
-    padding: 0 !important;
     display: flex !important;
+    box-sizing: border-box !important;
+}
+
+body.properties-page .prop-navbar {
+    padding: 24px 40px !important;
+    justify-content: space-between !important;
+    margin: 0 !important;
+    display: flex !important;
+    box-sizing: border-box !important;
+}
+
+@media (max-width: 1023px) {
+    body.properties-page .properties-hero-section {
+        margin-left: 24px !important;
+        margin-right: 24px !important;
+        width: calc(100% - 48px) !important;
+    }
+    body.properties-page .portal-body-layout {
+        padding: 0 24px !important;
+    }
+    body.properties-page .prop-navbar {
+        padding: 20px 24px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    body.properties-page .properties-hero-section {
+        margin-left: 14px !important;
+        margin-right: 14px !important;
+        width: calc(100% - 28px) !important;
+    }
+    body.properties-page .portal-body-layout {
+        padding: 0 14px !important;
+    }
+    body.properties-page .prop-navbar {
+        padding: 16px 14px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body.properties-page .properties-hero-section {
+        margin-left: 10px !important;
+        margin-right: 10px !important;
+        width: calc(100% - 20px) !important;
+    }
+    body.properties-page .portal-body-layout {
+        padding: 0 10px !important;
+    }
+    body.properties-page .prop-navbar {
+        padding: 14px 10px !important;
+    }
 }
 
 body.properties-page .sticky-filter-sidebar {
