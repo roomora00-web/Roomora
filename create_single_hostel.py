@@ -13,7 +13,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 admin_user = User.objects.filter(is_superuser=True).first() or User.objects.first()
 
-print("Purging all existing properties to keep ONLY ONE single hostel...")
+print("Purging all existing properties to keep ONLY ONE property with ONLY ONE room (1 in a room)...")
 Property.objects.all().delete()
 
 def get_or_create_amenity(name, category):
@@ -118,16 +118,16 @@ PropertyImage.objects.create(
     order=5
 )
 
-# Room Types
+# SINGLE ROOM TYPE: 1 in a room ONLY
 rt_single = RoomType.objects.create(
     accommodation_property=hostel,
     room_type_name="Single Deluxe Room (1 in a Room)",
     billing_model="SEMESTER_BASED",
     occupancy_type="SINGLE",
-    total_rooms=10,
+    total_rooms=1,
     beds_per_room=1,
-    total_capacity=10,
-    available_slots=5,
+    total_capacity=1,
+    available_slots=1,
     air_conditioning=True,
     wifi_available=True,
     study_desk_available=True,
@@ -141,52 +141,7 @@ RoomTypePricing.objects.create(
     semester_price=3800.00
 )
 
-rt_double = RoomType.objects.create(
-    accommodation_property=hostel,
-    room_type_name="Double Standard Room (2 in a Room)",
-    billing_model="SEMESTER_BASED",
-    occupancy_type="DOUBLE",
-    total_rooms=15,
-    beds_per_room=2,
-    total_capacity=30,
-    available_slots=12,
-    fan=True,
-    wifi_available=True,
-    study_desk_available=True,
-    wardrobe_available=True,
-    private_bathroom=False,
-    shared_bathroom_ratio="1:2",
-    gender_restriction="ANY"
-)
-RoomTypePricing.objects.create(
-    room_type=rt_double,
-    payment_type="SEMESTER",
-    semester_price=2800.00
-)
-
-rt_quad = RoomType.objects.create(
-    accommodation_property=hostel,
-    room_type_name="Quad Standard Room (4 in a Room)",
-    billing_model="SEMESTER_BASED",
-    occupancy_type="QUAD",
-    total_rooms=20,
-    beds_per_room=4,
-    total_capacity=80,
-    available_slots=25,
-    fan=True,
-    wifi_available=True,
-    study_desk_available=True,
-    wardrobe_available=True,
-    bed_type="BUNK",
-    gender_restriction="ANY"
-)
-RoomTypePricing.objects.create(
-    room_type=rt_quad,
-    payment_type="SEMESTER",
-    semester_price=1950.00
-)
-
-# Physical Rooms & Room Images
+# SINGLE PHYSICAL ROOM ONLY (Room 101)
 r101 = Room.objects.create(
     accommodation_property=hostel,
     room_type=rt_single,
@@ -197,28 +152,6 @@ r101 = Room.objects.create(
     status="AVAILABLE"
 )
 RoomImage.objects.create(room=r101, image="property_images/hostel_room_1.jpeg", image_type="BEDROOM", is_primary=True)
-
-r102 = Room.objects.create(
-    accommodation_property=hostel,
-    room_type=rt_double,
-    room_number="102",
-    floor="1st Floor",
-    total_slots=2,
-    occupied_slots=1,
-    status="PARTIALLY_OCCUPIED"
-)
-RoomImage.objects.create(room=r102, image="property_images/hostel_room_2.jpeg", image_type="BEDROOM", is_primary=True)
-
-r103 = Room.objects.create(
-    accommodation_property=hostel,
-    room_type=rt_quad,
-    room_number="103",
-    floor="1st Floor",
-    total_slots=4,
-    occupied_slots=1,
-    status="PARTIALLY_OCCUPIED"
-)
-RoomImage.objects.create(room=r103, image="property_images/hostel_room_3.jpeg", image_type="BEDROOM", is_primary=True)
 
 # Proximity Destinations
 ProximityDestination.objects.create(
@@ -249,4 +182,4 @@ ProximityDestination.objects.create(
     order=3
 )
 
-print(f"SUCCESS! Purged all properties. Single hostel created: {hostel.title} (ID: {hostel.id})")
+print(f"SUCCESS! Created 1 single hostel with ONLY 1 room (1 in a room): {hostel.title}")
