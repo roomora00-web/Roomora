@@ -157,6 +157,44 @@ RoomImage.objects.create(room=r101, image="property_images/hostel_room_3.jpeg", 
 RoomImage.objects.create(room=r101, image="property_images/hostel_kit_1.jpg", image_type="KITCHEN", is_primary=False)
 RoomImage.objects.create(room=r101, image="property_images/hostel_bath_1.jpeg", image_type="WASHROOM", is_primary=False)
 
+# ROOM TYPE 2: 2 in a Room (Double Standard)
+rt_double = RoomType.objects.create(
+    accommodation_property=hostel,
+    room_type_name="Double Standard Room (2 in a Room)",
+    billing_model="SEMESTER_BASED",
+    occupancy_type="DOUBLE",
+    total_rooms=5,
+    beds_per_room=2,
+    total_capacity=10,
+    available_slots=6,
+    fan=True,
+    wifi_available=True,
+    study_desk_available=True,
+    wardrobe_available=True,
+    private_bathroom=False,
+    gender_restriction="ANY"
+)
+RoomTypePricing.objects.create(
+    room_type=rt_double,
+    payment_type="SEMESTER",
+    semester_price=2800.00
+)
+
+# PHYSICAL ROOM 102 (for 2 in a room)
+r102 = Room.objects.create(
+    accommodation_property=hostel,
+    room_type=rt_double,
+    room_number="102",
+    floor="1st Floor",
+    total_slots=2,
+    occupied_slots=0,
+    status="AVAILABLE"
+)
+RoomImage.objects.create(room=r102, image="property_images/hostel_room_2.jpeg", image_type="BEDROOM", is_primary=True)
+RoomImage.objects.create(room=r102, image="property_images/hostel_room_3.jpeg", image_type="BEDROOM", is_primary=False)
+RoomImage.objects.create(room=r102, image="property_images/hostel_kit_1.jpg", image_type="KITCHEN", is_primary=False)
+RoomImage.objects.create(room=r102, image="property_images/hostel_bath_1.jpeg", image_type="WASHROOM", is_primary=False)
+
 # Proximity Destinations
 ProximityDestination.objects.create(
     accommodation_property=hostel,
