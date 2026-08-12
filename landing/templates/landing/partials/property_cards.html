@@ -2,16 +2,14 @@
 <a class="property-overlay-card"
     href="{% url 'landing:property_detail' property.pk %}"
     {% with primary_image=property.images.all|first %}
-    {% if primary_image %}
-        {% with img_url=primary_image.image_url %}
-            {% if img_url %}
-            style="background-image: url('{{ img_url }}')"
-            {% else %}
-            style="background-image: url('/media/property_images/apt_1.jpg')"
-            {% endif %}
-        {% endwith %}
+    {% if primary_image and primary_image.image_url %}
+    style="background-image: url('{{ primary_image.image_url }}')"
     {% else %}
+        {% if property.property_type == 'HOSTEL' %}
+        style="background-image: url('/media/property_images/hostel_4_0.jpg')"
+        {% else %}
         style="background-image: url('/media/property_images/apt_1.jpg')"
+        {% endif %}
     {% endif %}
     {% endwith %}>
 
@@ -62,28 +60,17 @@
                 {% if property.has_available_rooms %}AVAILABLE NOW{% else %}FULLY BOOKED{% endif %}
             </div>
             <div class="card-price-block">
+                {% with room_pricing=property.room_types.first.pricing_models.first unit_pricing=property.unit_types.first.pricing_models.first %}
+                {% if room_pricing %}
                 <span class="card-price-label">from</span>
-                {% if property.property_type == 'HOSTEL' %}
-                    {% with pricing=property.room_types.all|first %}
-                    {% with pricing_model=pricing.pricing_models.all|first %}
-                    {% if pricing_model %}
-                    <span class="card-price-value">GHC {% if pricing_model.semester_price %}{{ pricing_model.semester_price }}{% elif pricing_model.monthly_price %}{{ pricing_model.monthly_price }}{% else %}—{% endif %}</span>
-                    {% else %}
-                    <span class="card-price-value">GHC —</span>
-                    {% endif %}
-                    {% endwith %}
-                    {% endwith %}
+                <span class="card-price-value">GHC {{ room_pricing.semester_price|default:room_pricing.monthly_price|default:room_pricing.yearly_price|default:"—" }}</span>
+                {% elif unit_pricing %}
+                <span class="card-price-label">from</span>
+                <span class="card-price-value">GHC {{ unit_pricing.monthly_price|default:unit_pricing.yearly_price|default:unit_pricing.semester_price|default:"—" }}</span>
                 {% else %}
-                    {% with pricing=property.unit_types.all|first %}
-                    {% with pricing_model=pricing.pricing_models.all|first %}
-                    {% if pricing_model %}
-                    <span class="card-price-value">GHC {% if pricing_model.monthly_price %}{{ pricing_model.monthly_price }}{% elif pricing_model.yearly_price %}{{ pricing_model.yearly_price }}{% elif pricing_model.semester_price %}{{ pricing_model.semester_price }}{% else %}—{% endif %}</span>
-                    {% else %}
-                    <span class="card-price-value">GHC —</span>
-                    {% endif %}
-                    {% endwith %}
-                    {% endwith %}
+                <span class="card-price-value" style="font-size: 13px; font-weight: 500; opacity: 0.9;">Price on Request</span>
                 {% endif %}
+                {% endwith %}
             </div>
         </div>
     </div>
