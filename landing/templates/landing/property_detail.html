@@ -822,9 +822,9 @@ body {
 .pd-room-slide-item {
   position: relative;
   flex-shrink: 0;
-  width: 140px;
-  height: 95px;
-  border-radius: 14px;
+  width: 220px;
+  height: 140px;
+  border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(0,0,0,0.1);
   background: #f3f4f6;
@@ -3050,27 +3050,40 @@ body {
                 <!-- Left Column: Gallery & Room Details -->
                 <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0;">
                   <!-- Room Gallery Slider -->
-                  {% if room_type.rooms.first.images.exists %}
                   <div>
                     <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #888888; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
-                      <span>Room Photos ({% with img_count=room_type.rooms.first.images.count %}{{ img_count }} Photo{{ img_count|pluralize }}{% endwith %})</span>
+                      <span>Room & Property Photos</span>
                       <span style="font-size: 10px; color: #9CA3AF; font-weight: 600;">Swipe to view &rarr;</span>
                     </div>
                     <div class="pd-room-gallery-slider">
-                      {% for r_img in room_type.rooms.first.images.all %}
-                      <div class="pd-room-slide-item">
-                        <img src="{{ r_img.image.url }}" alt="Room photo {{ forloop.counter }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div style="display: none; width: 100%; height: 100%; background: #e5e7eb; align-items: center; justify-content: center; font-size: 11px; color: #6b7280; font-weight: 600;">
-                          Photo {{ forloop.counter }}
+                      {% if room_type.rooms.first.images.exists %}
+                        {% for r_img in room_type.rooms.first.images.all %}
+                        <div class="pd-room-slide-item">
+                          <img src="{{ r_img.image_url }}" alt="Room photo {{ forloop.counter }}" style="width: 100%; height: 100%; object-fit: cover;">
+                          <span style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); color: #ffffff; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
+                            {{ r_img.get_image_type_display }}
+                          </span>
                         </div>
-                        <span style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); color: #ffffff; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
-                          {{ r_img.get_image_type_display }}
-                        </span>
-                      </div>
-                      {% endfor %}
+                        {% endfor %}
+                      {% elif property.images.exists %}
+                        {% for p_img in property.images.all %}
+                        <div class="pd-room-slide-item">
+                          <img src="{{ p_img.image_url }}" alt="Property photo {{ forloop.counter }}" style="width: 100%; height: 100%; object-fit: cover;">
+                          <span style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); color: #ffffff; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
+                            {{ p_img.get_image_type_display }}
+                          </span>
+                        </div>
+                        {% endfor %}
+                      {% else %}
+                        <div class="pd-room-slide-item">
+                          <img src="/media/property_images/hostel_room_1.jpeg" alt="Room photo" style="width: 100%; height: 100%; object-fit: cover;">
+                          <span style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); color: #ffffff; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
+                            Bedroom
+                          </span>
+                        </div>
+                      {% endif %}
                     </div>
                   </div>
-                  {% endif %}
 
                   <!-- Room Amenities & Features -->
                   <div>

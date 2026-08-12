@@ -429,15 +429,8 @@ class PropertyDetailView(DetailView):
                 context['user_already_reviewed'] = True
                 context['user_review'] = existing_review
 
-        # ── Smart Location & Proximity Intelligence ───────────────────────────
-        from bookings.services.ai_service import NvidiaAIService
-        user_to_use = self.request.user if self.request.user.is_authenticated else None
-        context['location_insights'] = NvidiaAIService.get_location_and_property_insights(
-            user=user_to_use,
-            search_location=getattr(property_obj, 'nearest_institution', '') or "University Campus",
-            selected_city=getattr(property_obj, 'city', '') or "Accra",
-            recommended_properties=[property_obj]
-        )
+        # AI location insights service call removed as requested
+        context['location_insights'] = None
 
         return context
 
