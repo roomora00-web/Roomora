@@ -154,6 +154,8 @@ r101 = Room.objects.create(
 RoomImage.objects.create(room=r101, image="property_images/hostel_room_1.jpeg", image_type="BEDROOM", is_primary=True)
 RoomImage.objects.create(room=r101, image="property_images/hostel_room_2.jpeg", image_type="BEDROOM", is_primary=False)
 RoomImage.objects.create(room=r101, image="property_images/hostel_room_3.jpeg", image_type="BEDROOM", is_primary=False)
+RoomImage.objects.create(room=r101, image="property_images/hostel_kit_1.jpg", image_type="KITCHEN", is_primary=False)
+RoomImage.objects.create(room=r101, image="property_images/hostel_bath_1.jpeg", image_type="WASHROOM", is_primary=False)
 
 # Proximity Destinations
 ProximityDestination.objects.create(
