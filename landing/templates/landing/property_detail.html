@@ -3049,10 +3049,10 @@ body {
               <div class="pd-room-body-grid">
                 <!-- Left Column: Gallery & Room Details -->
                 <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0;">
-                  <!-- Room Gallery Slider -->
+                  <!-- Room Gallery Slider (Room Images Only) -->
                   <div>
                     <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #888888; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
-                      <span>Room & Property Photos</span>
+                      <span>Room Photos</span>
                       <span style="font-size: 10px; color: #9CA3AF; font-weight: 600;">Swipe to view &rarr;</span>
                     </div>
                     <div class="pd-room-gallery-slider">
@@ -3062,15 +3062,6 @@ body {
                           <img src="{{ r_img.image_url }}" alt="Room photo {{ forloop.counter }}" style="width: 100%; height: 100%; object-fit: cover;">
                           <span style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); color: #ffffff; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
                             {{ r_img.get_image_type_display }}
-                          </span>
-                        </div>
-                        {% endfor %}
-                      {% elif property.images.exists %}
-                        {% for p_img in property.images.all %}
-                        <div class="pd-room-slide-item">
-                          <img src="{{ p_img.image_url }}" alt="Property photo {{ forloop.counter }}" style="width: 100%; height: 100%; object-fit: cover;">
-                          <span style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); color: #ffffff; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
-                            {{ p_img.get_image_type_display }}
                           </span>
                         </div>
                         {% endfor %}
