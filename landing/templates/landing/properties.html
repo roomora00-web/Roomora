@@ -228,10 +228,6 @@ body.properties-page .prop-navbar {
     <!-- Hero Section -->
     <section class="properties-hero-section">
         <div class="hero-content">
-            <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                <span>Trusted by 2,000+ students across Ghana</span>
-            </div>
             <h1>Find Your Perfect Space</h1>
             <p>Browse verified hostels &amp; apartments near your campus. Matched to your budget, lifestyle &amp; vibe.</p>
             
@@ -725,7 +721,7 @@ document.addEventListener('click', function(event) {
     border-radius: var(--radius-lg);
     padding: 80px 48px 64px;
     text-align: center;
-    margin-bottom: 40px;
+    margin: 0 40px 40px;
     overflow: hidden;
 }
 
@@ -1501,12 +1497,13 @@ document.addEventListener('click', function(event) {
     }
 
     .properties-hero-section {
-        padding: 56px 20px 48px;
+        margin: 0 16px 32px;
+        padding: 52px 24px 44px;
         border-radius: var(--radius-md);
     }
 
     .hero-content h1 {
-        font-size: 2rem;
+        font-size: 1.9rem;
         margin-bottom: 10px;
     }
 
@@ -1515,38 +1512,25 @@ document.addEventListener('click', function(event) {
         margin-bottom: 24px;
     }
 
-    .hero-badge {
-        font-size: 11px;
-        padding: 6px 14px;
-        margin-bottom: 20px;
-    }
-
     .hero-stats-row {
         gap: 8px;
-        margin-top: 24px;
+        margin-top: 20px;
     }
 
     .hero-stat-chip {
         font-size: 11px;
         padding: 6px 12px;
     }
-
-    /* Reduce animation complexity on mobile for performance */
-    .hero-gradient-bg {
-        animation-duration: 30s;
-    }
-    .hero-float-shape {
-        animation-play-state: paused;
-    }
 }
 
 @media (max-width: 480px) {
     .properties-hero-section {
-        padding: 44px 16px 36px;
+        margin: 0 12px 24px;
+        padding: 44px 20px 36px;
     }
 
     .hero-content h1 {
-        font-size: 1.65rem;
+        font-size: 1.6rem;
     }
 
     .hero-content p {
