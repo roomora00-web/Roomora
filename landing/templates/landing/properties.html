@@ -213,25 +213,57 @@ body.properties-page .prop-navbar {
         </div>
     </div>
 
-    <!-- Dark Premium Hero Section with Integrated Search -->
-    <section class="properties-hero-section glass-panel-base">
+    <!-- Premium Immersive Hero Section -->
+    <section class="properties-hero-section">
+        <!-- Animated gradient background -->
+        <div class="hero-gradient-bg"></div>
+        <!-- Floating geometric decorations -->
+        <div class="hero-float-shape shape-1"></div>
+        <div class="hero-float-shape shape-2"></div>
+        <div class="hero-float-shape shape-3"></div>
+        <div class="hero-float-shape shape-4"></div>
+        <div class="hero-float-shape shape-5"></div>
+        <!-- Grain texture overlay -->
+        <div class="hero-grain-overlay"></div>
+
         <div class="hero-content">
-            <h1>Discover Your Next Home</h1>
-            <p>Explore verified premium hostels and apartments tailored to your lifestyle.</p>
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                <span>Trusted by 2,000+ students across Ghana</span>
+            </div>
+            <h1>Find Your <span class="hero-gradient-text">Perfect Space</span></h1>
+            <p>Browse verified hostels &amp; apartments near your campus. Matched to your budget, lifestyle &amp; vibe.</p>
             
-            <!-- Integrated Search -->
+            <!-- Glassmorphic Search Bar -->
             <form method="GET" action="{% url 'landing:properties' %}" class="search-form-horizontal">
                 <div class="search-input-field">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                     </svg>
                     <input type="text" name="location" placeholder="Search by location, university, or property name..." value="{{ current_filters.location }}">
                 </div>
                 <button type="submit" class="search-submit-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                     Search
                 </button>
             </form>
+
+            <!-- Quick stats row -->
+            <div class="hero-stats-row">
+                <div class="hero-stat-chip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>16 Regions</span>
+                </div>
+                <div class="hero-stat-chip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span>Verified Listings</span>
+                </div>
+                <div class="hero-stat-chip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                    <span>Secure Booking</span>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -683,80 +715,211 @@ document.addEventListener('click', function(event) {
     border-color: rgba(0,0,0,0.15);
 }
 
-/* ── Hero Section ─────────────────────────────────────────────────── */
+/* ── Hero Section — Premium Animated Gradient ────────────────────── */
 .properties-hero-section {
     position: relative;
-    background: #0a0a0a;
-    border: 1px solid rgba(245, 245, 245, 0.05);
-    box-shadow: 0 24px 50px rgba(0,0,0,0.5);
     border-radius: var(--radius-lg);
-    padding: 100px 32px;
+    padding: 80px 32px 64px;
     text-align: center;
     margin-bottom: 40px;
     overflow: hidden;
+    isolation: isolate;
+    background: #0a0a14;
 }
 
-.properties-hero-section::before {
-    content: '';
+/* Animated gradient background */
+.hero-gradient-bg {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        from 0deg at 50% 50%,
+        #0a0a14 0deg,
+        #1a103a 60deg,
+        #0f2847 120deg,
+        #0a2a1f 180deg,
+        #1a103a 240deg,
+        #2d1226 300deg,
+        #0a0a14 360deg
+    );
+    animation: heroGradientRotate 20s linear infinite;
+    z-index: -3;
+}
+
+@keyframes heroGradientRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Grain texture overlay */
+.hero-grain-overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at top, rgba(245, 245, 245, 0.07) 0%, transparent 70%);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    z-index: -1;
     pointer-events: none;
+}
+
+/* Floating geometric shapes */
+.hero-float-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.12;
+    z-index: -2;
+    filter: blur(40px);
+    pointer-events: none;
+}
+
+.shape-1 {
+    width: 320px; height: 320px;
+    background: #6C63FF;
+    top: -80px; left: -60px;
+    animation: floatShape1 14s ease-in-out infinite;
+}
+.shape-2 {
+    width: 240px; height: 240px;
+    background: #00D4AA;
+    bottom: -60px; right: -40px;
+    animation: floatShape2 18s ease-in-out infinite;
+}
+.shape-3 {
+    width: 180px; height: 180px;
+    background: #FF6B9D;
+    top: 30%; right: 10%;
+    animation: floatShape3 12s ease-in-out infinite;
+}
+.shape-4 {
+    width: 120px; height: 120px;
+    background: #FFD93D;
+    bottom: 20%; left: 15%;
+    animation: floatShape1 16s ease-in-out infinite reverse;
+}
+.shape-5 {
+    width: 200px; height: 200px;
+    background: #6C63FF;
+    top: 10%; left: 50%;
+    animation: floatShape2 22s ease-in-out infinite reverse;
+}
+
+@keyframes floatShape1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(30px, -20px) scale(1.05); }
+    50% { transform: translate(-15px, 25px) scale(0.95); }
+    75% { transform: translate(20px, 15px) scale(1.02); }
+}
+@keyframes floatShape2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-25px, 20px) scale(1.08); }
+    66% { transform: translate(20px, -15px) scale(0.92); }
+}
+@keyframes floatShape3 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-20px, 30px); }
 }
 
 .hero-content {
     position: relative;
     z-index: 1;
-    max-width: 800px;
+    max-width: 720px;
     margin: 0 auto;
     text-align: center;
-    animation: fadeInUp 1s ease-out;
+}
+
+/* Hero badge */
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-pill);
+    padding: 8px 20px;
+    margin-bottom: 28px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    animation: fadeInUp 0.8s ease-out 0.1s both;
+}
+
+.hero-badge-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #00D4AA;
+    display: inline-block;
+    animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
 }
 
 .hero-content h1 {
-    font-size: 3rem;
+    font-size: 3.2rem;
     font-weight: 800;
     color: #f5f5f5;
     margin-bottom: 16px;
-    letter-spacing: -0.03em;
-    animation: fadeInUp 1s ease-out 0.2s both;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.hero-gradient-text {
+    background: linear-gradient(135deg, #6C63FF 0%, #00D4AA 50%, #FFD93D 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .hero-content p {
-    font-size: 1.15rem;
-    color: rgba(245, 245, 245, 0.7);
-    margin-bottom: 40px;
-    animation: fadeInUp 1s ease-out 0.4s both;
+    font-size: 1.1rem;
+    color: rgba(245, 245, 245, 0.6);
+    margin-bottom: 36px;
+    line-height: 1.6;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fadeInUp 0.8s ease-out 0.35s both;
 }
 
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
+    from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Search Form ──────────────────────────────────────────────────── */
+/* ── Search Form — Glassmorphic ──────────────────────────────────── */
 .search-form-horizontal {
-    background: rgba(245, 245, 245, 0.05);
-    border: 1px solid rgba(245, 245, 245, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-pill);
-    padding: 8px 12px;
+    padding: 8px 8px 8px 12px;
     display: flex;
     align-items: center;
-    max-width: 650px;
+    max-width: 600px;
     margin: 0 auto;
     gap: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    animation: fadeInUp 1s ease-out 0.6s both;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    animation: fadeInUp 0.8s ease-out 0.5s both;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-form-horizontal:focus-within {
+    border-color: rgba(108, 99, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 4px rgba(108, 99, 255, 0.1);
 }
 
 .search-input-field {
     flex: 1;
     display: flex;
     align-items: center;
-    padding: 0 16px;
-    gap: 12px;
+    padding: 0 12px;
+    gap: 10px;
     border-right: none !important;
 }
 
@@ -768,32 +931,65 @@ document.addEventListener('click', function(event) {
     color: #FFFFFF;
     outline: none;
     width: 100%;
-    padding: 8px 0;
+    padding: 10px 0;
     font-size: 15px;
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .search-input-field input::placeholder {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.4);
 }
 
 .search-submit-btn {
-    background: #FFFFFF !important;
-    color: #111111 !important;
+    background: linear-gradient(135deg, #6C63FF 0%, #5a52e0 100%) !important;
+    color: #FFFFFF !important;
     border: none;
     border-radius: var(--radius-pill);
-    padding: 12px 28px;
-    font-size: 15px;
+    padding: 12px 24px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.16s ease;
+    transition: all 0.2s ease;
     white-space: nowrap;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 16px rgba(108, 99, 255, 0.35);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .search-submit-btn:hover {
-    background: #F0F0F0 !important;
     transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(108, 99, 255, 0.5);
+}
+
+/* ── Hero Stats Row ──────────────────────────────────────────────── */
+.hero-stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.8s ease-out 0.65s both;
+}
+
+.hero-stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-pill);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.25s ease;
+}
+
+.hero-stat-chip:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
 }
 
 /* ── Portal Body Layout ───────────────────────────────────────────── */
@@ -1348,6 +1544,7 @@ document.addEventListener('click', function(event) {
 
     .search-submit-btn {
         width: 100%;
+        justify-content: center;
     }
 
     .listings-results-pane {
@@ -1375,32 +1572,61 @@ document.addEventListener('click', function(event) {
     }
 
     .properties-hero-section {
-        padding: 48px 20px;
+        padding: 56px 20px 48px;
         border-radius: var(--radius-md);
     }
 
     .hero-content h1 {
-        font-size: 1.8rem;
-        margin-bottom: 8px;
+        font-size: 2rem;
+        margin-bottom: 10px;
     }
 
     .hero-content p {
         font-size: 0.95rem;
         margin-bottom: 24px;
     }
+
+    .hero-badge {
+        font-size: 11px;
+        padding: 6px 14px;
+        margin-bottom: 20px;
+    }
+
+    .hero-stats-row {
+        gap: 8px;
+        margin-top: 24px;
+    }
+
+    .hero-stat-chip {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+
+    /* Reduce animation complexity on mobile for performance */
+    .hero-gradient-bg {
+        animation-duration: 30s;
+    }
+    .hero-float-shape {
+        animation-play-state: paused;
+    }
 }
 
 @media (max-width: 480px) {
     .properties-hero-section {
-        padding: 40px 16px;
+        padding: 44px 16px 36px;
     }
 
     .hero-content h1 {
-        font-size: 1.5rem;
+        font-size: 1.65rem;
     }
 
     .hero-content p {
         font-size: 0.85rem;
+    }
+
+    .hero-stats-row {
+        flex-direction: column;
+        align-items: center;
     }
 }
 
