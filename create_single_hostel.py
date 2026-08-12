@@ -152,7 +152,7 @@ r101 = Room.objects.create(
     status="AVAILABLE"
 )
 RoomImage.objects.create(room=r101, image="property_images/hostel_room_1.jpeg", image_type="BEDROOM", is_primary=True)
-RoomImage.objects.create(room=r101, image="property_images/hostel_room_4.jpeg", image_type="BEDROOM", is_primary=False)
+RoomImage.objects.create(room=r101, image="property_images/hostel_room_10.jpeg", image_type="BEDROOM", is_primary=False)
 RoomImage.objects.create(room=r101, image="property_images/hostel_kit_1.jpg", image_type="KITCHEN", is_primary=False)
 RoomImage.objects.create(room=r101, image="property_images/hostel_bath_1.jpeg", image_type="WASHROOM", is_primary=False)
 
@@ -189,10 +189,8 @@ r102 = Room.objects.create(
     occupied_slots=0,
     status="AVAILABLE"
 )
-RoomImage.objects.create(room=r102, image="property_images/hostel_room_2.jpeg", image_type="BEDROOM", is_primary=True)
-RoomImage.objects.create(room=r102, image="property_images/hostel_room_3.jpeg", image_type="BEDROOM", is_primary=False)
+RoomImage.objects.create(room=r102, image="property_images/hostel_room_4.jpeg", image_type="BEDROOM", is_primary=True)
 RoomImage.objects.create(room=r102, image="property_images/hostel_room_5.jpeg", image_type="BEDROOM", is_primary=False)
-RoomImage.objects.create(room=r102, image="property_images/hostel_room_7.jpeg", image_type="BEDROOM", is_primary=False)
 RoomImage.objects.create(room=r102, image="property_images/hostel_kit_2.webp", image_type="KITCHEN", is_primary=False)
 RoomImage.objects.create(room=r102, image="property_images/hostel_bath_2.jpeg", image_type="WASHROOM", is_primary=False)
 
