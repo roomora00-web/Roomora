@@ -152,8 +152,7 @@ r101 = Room.objects.create(
     status="AVAILABLE"
 )
 RoomImage.objects.create(room=r101, image="property_images/hostel_room_1.jpeg", image_type="BEDROOM", is_primary=True)
-RoomImage.objects.create(room=r101, image="property_images/hostel_room_2.jpeg", image_type="BEDROOM", is_primary=False)
-RoomImage.objects.create(room=r101, image="property_images/hostel_room_3.jpeg", image_type="BEDROOM", is_primary=False)
+RoomImage.objects.create(room=r101, image="property_images/hostel_room_4.jpeg", image_type="BEDROOM", is_primary=False)
 RoomImage.objects.create(room=r101, image="property_images/hostel_kit_1.jpg", image_type="KITCHEN", is_primary=False)
 RoomImage.objects.create(room=r101, image="property_images/hostel_bath_1.jpeg", image_type="WASHROOM", is_primary=False)
 
@@ -163,10 +162,10 @@ rt_double = RoomType.objects.create(
     room_type_name="Double Standard Room (2 in a Room)",
     billing_model="SEMESTER_BASED",
     occupancy_type="DOUBLE",
-    total_rooms=5,
+    total_rooms=1,
     beds_per_room=2,
-    total_capacity=10,
-    available_slots=6,
+    total_capacity=2,
+    available_slots=2,
     fan=True,
     wifi_available=True,
     study_desk_available=True,
@@ -192,8 +191,10 @@ r102 = Room.objects.create(
 )
 RoomImage.objects.create(room=r102, image="property_images/hostel_room_2.jpeg", image_type="BEDROOM", is_primary=True)
 RoomImage.objects.create(room=r102, image="property_images/hostel_room_3.jpeg", image_type="BEDROOM", is_primary=False)
-RoomImage.objects.create(room=r102, image="property_images/hostel_kit_1.jpg", image_type="KITCHEN", is_primary=False)
-RoomImage.objects.create(room=r102, image="property_images/hostel_bath_1.jpeg", image_type="WASHROOM", is_primary=False)
+RoomImage.objects.create(room=r102, image="property_images/hostel_room_5.jpeg", image_type="BEDROOM", is_primary=False)
+RoomImage.objects.create(room=r102, image="property_images/hostel_room_7.jpeg", image_type="BEDROOM", is_primary=False)
+RoomImage.objects.create(room=r102, image="property_images/hostel_kit_2.webp", image_type="KITCHEN", is_primary=False)
+RoomImage.objects.create(room=r102, image="property_images/hostel_bath_2.jpeg", image_type="WASHROOM", is_primary=False)
 
 # Proximity Destinations
 ProximityDestination.objects.create(
