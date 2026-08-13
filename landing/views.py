@@ -34,14 +34,14 @@ class HomeView(TemplateView):
             ).prefetch_related('images', 'unit_types__pricing_models', 'amenities')[:20]
 
             from django.db.models import Avg
-            # Fetch premium/featured listings (ordered by featured status & review rating)
+            # Fetch premium/featured listings (only properties with is_featured=True)
             premium_listings = Property.objects.filter(
-                status='APPROVED'
+                status='APPROVED', is_featured=True
             ).annotate(
                 avg_rating=Avg('reviews__rating')
-            ).order_by('-is_featured', '-avg_rating', '-id').prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models', 'amenities')
+            ).order_by('-avg_rating', '-id').prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models', 'amenities')
 
-            context['premium_listings'] = premium_listings[:20]
+            context['premium_listings'] = premium_listings
             context['featured_property'] = premium_listings.first()
         except Exception as e:
             import logging
