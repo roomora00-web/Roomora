@@ -3589,56 +3589,78 @@ body {
         {% endif %}
       </section>
 
-      <!-- ── SECTION 8: HOUSE RULES & POLICIES ─────────────────────── -->
+      <!-- ── SECTION 8: HOUSE RULES & PROHIBITIONS (CARD-BASED) ─────────────────────── -->
       <section id="policies">
         <h2 class="pd-section-title">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-          House Rules &amp; Property Policies
+          House Rules &amp; Strict Prohibitions
         </h2>
 
-        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 40px;">
+        <div style="background: #FFFFFF; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 28px; padding: 32px; margin-bottom: 40px; box-shadow: 0 14px 38px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.03);">
           
-          <div class="pd-policies-grid">
-            <!-- Rules -->
-            <div>
-              <h3 style="font-size: 15px; font-weight: 700; color: var(--charcoal); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                General Rules
-              </h3>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+            
+            <!-- 📜 General Conduct & House Rules Card -->
+            <div style="background: #F9FAFB; border: 1px solid rgba(0,0,0,0.06); border-radius: 20px; padding: 24px; transition: transform 0.25s ease, box-shadow 0.25s ease;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+                <div style="width: 36px; height: 36px; border-radius: 10px; background: #111111; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 800;">📜</div>
+                <h3 style="font-size: 16px; font-weight: 800; color: #111111; margin: 0;">General Conduct &amp; Rules</h3>
+              </div>
               {% if property.house_rules %}
-              <div style="font-size: 14px; color: var(--mid); line-height: 1.6; white-space: pre-wrap;">{{ property.house_rules }}</div>
+              <div style="font-size: 13.5px; color: #4B5563; line-height: 1.7; white-space: pre-wrap;">{{ property.house_rules }}</div>
               {% else %}
-              <div style="font-size: 14px; color: var(--muted); font-style: italic;">No specific house rules provided. Standard community guidelines apply.</div>
-              {% endif %}
-
-              {% if property.visitor_policy or property.curfew_time %}
-              <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-light);">
-                <h3 style="font-size: 15px; font-weight: 700; color: var(--charcoal); margin-bottom: 8px;">Visitor Policy &amp; Curfew</h3>
-                {% if property.visitor_policy %}<p style="font-size: 14px; color: var(--mid); margin-bottom: 8px; line-height: 1.5;">{{ property.visitor_policy }}</p>{% endif %}
-                {% if property.curfew_time %}<p style="font-size: 14px; color: var(--mid);"><strong>Curfew:</strong> {{ property.curfew_time|time:"g:i A" }}</p>{% endif %}
-              </div>
+              <div style="font-size: 13.5px; color: #6B7280; font-style: italic;">Quiet hours after 10 PM. Maintain room &amp; facility cleanliness.</div>
               {% endif %}
             </div>
 
-            <!-- Prohibited Items & Emergencies -->
-            <div>
-              <h3 style="font-size: 15px; font-weight: 700; color: var(--red); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-                Prohibited Appliances
-              </h3>
+            <!-- 🚫 Strict Prohibitions & Banned Items Card -->
+            <div style="background: #FEF2F2; border: 1px solid rgba(239,68,68,0.2); border-radius: 20px; padding: 24px; transition: transform 0.25s ease, box-shadow 0.25s ease;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+                <div style="width: 36px; height: 36px; border-radius: 10px; background: #DC2626; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 800;">🚫</div>
+                <h3 style="font-size: 16px; font-weight: 800; color: #991B1B; margin: 0;">Strict Prohibitions</h3>
+              </div>
               {% if property.prohibited_items %}
-              <div style="font-size: 14px; color: var(--mid); line-height: 1.6; white-space: pre-wrap;">{{ property.prohibited_items }}</div>
+              <div style="font-size: 13.5px; color: #7F1D1D; line-height: 1.7; white-space: pre-wrap;">{{ property.prohibited_items }}</div>
               {% else %}
-              <div style="font-size: 14px; color: var(--muted); font-style: italic;">No specific prohibited appliances listed.</div>
-              {% endif %}
-
-              {% if property.emergency_contacts %}
-              <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-light);">
-                <h3 style="font-size: 15px; font-weight: 700; color: var(--charcoal); margin-bottom: 8px;">Emergency Contacts</h3>
-                <p style="font-size: 14px; color: var(--mid); white-space: pre-wrap; line-height: 1.5;">{{ property.emergency_contacts }}</p>
-              </div>
+              <div style="font-size: 13.5px; color: #991B1B; font-style: italic;">No smoking, no pets, no open flames, no unapproved appliances (&gt;1500W).</div>
               {% endif %}
             </div>
+
+            <!-- 👥 Visitor Policy & Curfew Card -->
+            <div style="background: #F9FAFB; border: 1px solid rgba(0,0,0,0.06); border-radius: 20px; padding: 24px; transition: transform 0.25s ease, box-shadow 0.25s ease;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+                <div style="width: 36px; height: 36px; border-radius: 10px; background: #111111; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 800;">👥</div>
+                <h3 style="font-size: 16px; font-weight: 800; color: #111111; margin: 0;">Visitor Policy &amp; Curfew</h3>
+              </div>
+              {% if property.visitor_policy %}
+                <p style="font-size: 13.5px; color: #4B5563; line-height: 1.7; margin: 0 0 10px 0; white-space: pre-wrap;">{{ property.visitor_policy }}</p>
+              {% else %}
+                <p style="font-size: 13.5px; color: #4B5563; margin: 0 0 10px 0;">Visitors permitted ground floor lounge 8 AM – 8 PM. No overnight guests without approval.</p>
+              {% endif %}
+              {% if property.curfew_time %}
+                <div style="display: inline-flex; align-items: center; gap: 6px; background: #111111; color: #FFFFFF; padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 700;">
+                  ⏰ Main Gate Curfew: {{ property.curfew_time|time:"g:i A" }}
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- 🚨 Safety & Emergency Contacts Card -->
+            <div style="background: #F0FDF4; border: 1px solid rgba(16,185,129,0.2); border-radius: 20px; padding: 24px; transition: transform 0.25s ease, box-shadow 0.25s ease;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+                <div style="width: 36px; height: 36px; border-radius: 10px; background: #059669; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 800;">🚨</div>
+                <h3 style="font-size: 16px; font-weight: 800; color: #065F46; margin: 0;">Safety &amp; Emergency Contacts</h3>
+              </div>
+              {% if property.emergency_contacts %}
+                <div style="font-size: 13.5px; color: #047857; line-height: 1.7; white-space: pre-wrap;">{{ property.emergency_contacts }}</div>
+              {% else %}
+                <div style="font-size: 13.5px; color: #047857;">
+                  • 24/7 Hostel Security Desk: +233 24 412 3456<br>
+                  • Hostel Manager (Kwame Mensah): +233 24 412 3456<br>
+                  • Campus Security / Fire Service: 192 / 112
+                </div>
+              {% endif %}
+            </div>
+
           </div>
 
         </div>

@@ -66,7 +66,29 @@ def seed_single_hostel_data(apps, schema_editor):
         owner_phone="+233 24 412 3456",
         owner_photo="property_managers/manager_kwame.jpg",
         uploaded_by=admin_user,
-        house_rules="1. Silence in study areas after 10 PM. 2. Visitors permitted in designated lounges between 8 AM and 8 PM.",
+        house_rules=(
+            "• Quiet hours strictly observed after 10:00 PM in all rooms, corridors, and study lounges.\n"
+            "• Room cleanliness must be maintained; trash bagged and disposed of daily.\n"
+            "• Shared kitchenettes and washrooms must be cleaned immediately after use.\n"
+            "• Electrical appliances must be turned off when leaving rooms."
+        ),
+        visitor_policy=(
+            "• Visitors permitted in designated ground-floor lounges between 8:00 AM and 8:00 PM.\n"
+            "• No visitors allowed in private student rooms without roommate consent.\n"
+            "• Overnight visitors are strictly prohibited unless approved by management 48 hours in advance."
+        ),
+        prohibited_items=(
+            "• Strictly NO smoking, vaping, or alcohol consumption on hostel premises.\n"
+            "• Strictly NO pets of any kind.\n"
+            "• Strictly NO open flame cooking, gas cylinders, or hot plates in bedrooms.\n"
+            "• High-wattage electrical appliances (>1500W) like electric heaters or hot tubs are prohibited."
+        ),
+        emergency_contacts=(
+            "• Host Security Desk (24/7): +233 24 412 3456\n"
+            "• Hostel Manager (Kwame Mensah): +233 24 412 3456\n"
+            "• Campus Security Police: +233 32 206 0300\n"
+            "• National Fire Service: 192 / 112"
+        ),
         cancellation_policy="Full refund if cancelled 14 days prior to semester start.",
         cctv=True,
         security_personnel=True,
