@@ -26,12 +26,12 @@ class HomeView(TemplateView):
             # Fetch featured/popular hostels
             context['category_hostels'] = Property.objects.filter(
                 status='APPROVED', is_available=True, property_type='HOSTEL'
-            ).prefetch_related('images', 'room_types__pricing_models')[:6]
+            ).prefetch_related('images', 'room_types__pricing_models')[:20]
 
             # Fetch featured/popular apartments
             context['category_apartments'] = Property.objects.filter(
                 status='APPROVED', is_available=True, property_type='APARTMENT'
-            ).prefetch_related('images', 'unit_types__pricing_models', 'amenities')[:6]
+            ).prefetch_related('images', 'unit_types__pricing_models', 'amenities')[:20]
 
             from django.db.models import Avg
             # Fetch premium/featured listings (ordered by featured status & review rating)
@@ -41,7 +41,7 @@ class HomeView(TemplateView):
                 avg_rating=Avg('reviews__rating')
             ).order_by('-is_featured', '-avg_rating', '-id').prefetch_related('images', 'room_types__pricing_models', 'unit_types__pricing_models', 'amenities')
 
-            context['premium_listings'] = premium_listings[:6]
+            context['premium_listings'] = premium_listings[:20]
             context['featured_property'] = premium_listings.first()
         except Exception as e:
             import logging
