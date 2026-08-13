@@ -105,101 +105,136 @@ body.properties-page .prop-navbar {
   }
 }
 
-/* Specific overrides for properties page */
+/* ── Properties Page Layout ─────────────────────────────────────── */
 body.properties-page .app-workspace-wrapper {
     margin: 0 !important;
-    padding: 0 0 48px !important;
+    padding: 0 0 64px !important;
     box-sizing: border-box !important;
 }
 
-/* Consistent page side gutters for properties page elements */
+/* Navbar — full-width with side gutters, matching PD page */
+body.properties-page .prop-navbar {
+    padding: 20px 48px !important;
+    justify-content: space-between !important;
+    margin: 0 !important;
+    display: flex !important;
+    box-sizing: border-box !important;
+    border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+    background: #ffffff !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 900 !important;
+    backdrop-filter: blur(12px) !important;
+}
+
+/* Hero — left-aligned light style matching property detail page */
 body.properties-page .properties-hero-section {
-    margin-left: 40px !important;
-    margin-right: 40px !important;
-    width: calc(100% - 80px) !important;
-}
-
-body.properties-page .portal-body-layout {
-    padding: 0 40px !important;
-    margin: 32px 0 0 !important;
-    display: flex !important;
+    background: #ffffff !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 40px 48px 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
     box-sizing: border-box !important;
+    overflow: visible !important;
 }
 
-body.properties-page .prop-navbar {
-    padding: 24px 40px !important;
-    justify-content: space-between !important;
-    margin: 0 !important;
-    display: flex !important;
-    box-sizing: border-box !important;
-}
-
-@media (max-width: 1023px) {
-    body.properties-page .properties-hero-section {
-        margin-left: 24px !important;
-        margin-right: 24px !important;
-        width: calc(100% - 48px) !important;
-    }
-    body.properties-page .portal-body-layout {
-        padding: 0 24px !important;
-    }
-    body.properties-page .prop-navbar {
-        padding: 20px 24px !important;
-    }
-}
-
-@media (max-width: 767px) {
-    body.properties-page .properties-hero-section {
-        margin-left: 14px !important;
-        margin-right: 14px !important;
-        width: calc(100% - 28px) !important;
-    }
-    body.properties-page .portal-body-layout {
-        padding: 0 14px !important;
-    }
-    body.properties-page .prop-navbar {
-        padding: 16px 14px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    body.properties-page .properties-hero-section {
-        margin-left: 10px !important;
-        margin-right: 10px !important;
-        width: calc(100% - 20px) !important;
-    }
-    body.properties-page .portal-body-layout {
-        padding: 0 10px !important;
-    }
-    body.properties-page .prop-navbar {
-        padding: 14px 10px !important;
-    }
-}
-
-body.properties-page .sticky-filter-sidebar {
-    margin: 0 !important;
-}
-
-body.properties-page .listings-results-pane {
-    margin: 0 !important;
-}
-
-body.properties-page .listings-card-grid {
-    margin: 0 !important;
-    display: grid !important;
-}
-
+/* Hero content — left-aligned */
 body.properties-page .properties-hero-section .hero-content {
-    text-align: center !important;
-    align-items: center !important;
-    justify-content: center !important;
+    text-align: left !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    max-width: 100% !important;
+    margin: 0 !important;
 }
 
-body.properties-page .prop-navbar {
-    justify-content: space-between !important;
+body.properties-page .properties-hero-section .hero-content h1 {
+    font-size: 2.2rem !important;
+    color: #111111 !important;
+    text-align: left !important;
+    margin-bottom: 8px !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.04em !important;
+}
+
+body.properties-page .properties-hero-section .hero-content p {
+    color: #6B7280 !important;
+    text-align: left !important;
+    margin: 0 0 28px 0 !important;
+    font-size: 15px !important;
+    max-width: 560px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Portal layout */
+body.properties-page .portal-body-layout {
+    padding: 32px 48px !important;
     margin: 0 !important;
-    padding: 24px 0 !important;
     display: flex !important;
+    box-sizing: border-box !important;
+    gap: 32px !important;
+}
+
+/* Sidebar and results */
+body.properties-page .sticky-filter-sidebar { margin: 0 !important; }
+body.properties-page .listings-results-pane { margin: 0 !important; }
+body.properties-page .listings-card-grid { margin: 0 !important; display: grid !important; }
+
+/* Search bar — left-aligned light style */
+body.properties-page .search-form-horizontal {
+    background: #F9FAFB !important;
+    border: 1.5px solid rgba(0,0,0,0.12) !important;
+    border-radius: 999px !important;
+    max-width: 600px !important;
+    margin: 0 !important;
+}
+body.properties-page .search-input-field input {
+    color: #111111 !important;
+}
+body.properties-page .search-input-field input::placeholder {
+    color: #9CA3AF !important;
+}
+body.properties-page .search-submit-btn {
+    background: #111111 !important;
+    color: #ffffff !important;
+    border-radius: 999px !important;
+    padding: 12px 24px !important;
+}
+
+/* Hero stat chips — adapt to light mode */
+body.properties-page .hero-stat-chip {
+    background: #F3F4F6 !important;
+    color: #374151 !important;
+    border: 1px solid rgba(0,0,0,0.08) !important;
+    border-radius: 999px !important;
+}
+
+body.properties-page .hero-stats-row {
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+    margin-top: 20px !important;
+}
+
+/* Responsive tweaks */
+@media (max-width: 1023px) {
+    body.properties-page .prop-navbar { padding: 18px 24px !important; }
+    body.properties-page .properties-hero-section { padding: 32px 24px 0 !important; }
+    body.properties-page .portal-body-layout { padding: 24px !important; }
+}
+@media (max-width: 767px) {
+    body.properties-page .prop-navbar { padding: 14px 16px !important; }
+    body.properties-page .properties-hero-section { padding: 24px 16px 0 !important; }
+    body.properties-page .portal-body-layout { padding: 16px !important; }
+    body.properties-page .properties-hero-section .hero-content h1 { font-size: 1.6rem !important; }
+}
+@media (max-width: 480px) {
+    body.properties-page .prop-navbar { padding: 12px 14px !important; }
+    body.properties-page .properties-hero-section { padding: 20px 14px 0 !important; }
+    body.properties-page .portal-body-layout { padding: 14px !important; }
+    body.properties-page .properties-hero-section .hero-content h1 { font-size: 1.4rem !important; }
 }
 </style>
 {% endblock %}
@@ -271,16 +306,29 @@ body.properties-page .prop-navbar {
         </div>
     </div>
 
-    <!-- Hero Section -->
+    <!-- Hero Section — Left-aligned, matching Property Detail page style -->
     <section class="properties-hero-section">
+        <!-- Breadcrumb -->
+        <nav style="display:flex; align-items:center; gap:6px; font-size:13px; color:#9CA3AF; margin-bottom:20px; flex-wrap:wrap;">
+            <a href="{% url 'landing:home' %}" style="color:#9CA3AF; text-decoration:none; font-weight:500; transition:color 0.2s;" onmouseover="this.style.color='#111111'" onmouseout="this.style.color='#9CA3AF'">Home</a>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            <span style="color:#111111; font-weight:600;">All Properties</span>
+        </nav>
+
         <div class="hero-content">
+            <!-- Eyebrow label -->
+            <div style="display:inline-flex; align-items:center; gap:6px; background:#F3F4F6; border:1px solid rgba(0,0,0,0.08); border-radius:999px; padding:5px 14px; font-size:12px; font-weight:700; color:#374151; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:14px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Verified Listings
+            </div>
+
             <h1>Find Your Perfect Space</h1>
-            <p>Browse verified hostels &amp; apartments near your campus. Matched to your budget, lifestyle &amp; vibe.</p>
-            
-            <!-- Glassmorphic Search Bar -->
+            <p>Browse verified hostels &amp; apartments near your campus — matched to your budget, lifestyle &amp; vibe.</p>
+
+            <!-- Search Bar -->
             <form method="GET" action="{% url 'landing:properties' %}" class="search-form-horizontal">
                 <div class="search-input-field">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2">
                         <circle cx="11" cy="11" r="8"/>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                     </svg>
@@ -292,18 +340,18 @@ body.properties-page .prop-navbar {
                 </button>
             </form>
 
-            <!-- Quick stats row -->
+            <!-- Quick stat chips —light-mode style -->
             <div class="hero-stats-row">
                 <div class="hero-stat-chip">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
                     <span>16 Regions</span>
                 </div>
                 <div class="hero-stat-chip">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                     <span>Verified Listings</span>
                 </div>
                 <div class="hero-stat-chip">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>
                     <span>Secure Booking</span>
                 </div>
             </div>
