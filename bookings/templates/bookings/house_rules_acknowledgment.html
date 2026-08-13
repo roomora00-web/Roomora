@@ -340,19 +340,19 @@
           </div>
         </div>
 
-        <!-- Transparent Fee Breakdown Notice Card -->
-        <div class="glass-card p-6 space-y-4 border border-black/10">
-          <div class="flex items-center justify-between border-b border-black/[0.06] pb-3">
+        <!-- Transparent Fee Breakdown & Service Assurance Card -->
+        <div class="glass-card p-6 space-y-4 border border-black/10 shadow-sm">
+          <div class="flex items-center justify-between border-b border-black/[0.06] pb-3.5">
             <div class="flex items-center gap-2 font-outfit text-xs font-extrabold uppercase tracking-widest text-[#111111]">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-[#111111]"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              Fee Structure
+              Financial & Service Terms
             </div>
-            <span class="inline-flex items-center gap-1 bg-[#111111] text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold">10% Platform Fee</span>
+            <span class="inline-flex items-center gap-1 bg-[#111111] text-white px-2.5 py-0.5 rounded-full text-[10px] font-extrabold tracking-wider uppercase">10% Service Fee</span>
           </div>
 
-          <div class="space-y-2.5 text-xs">
-            <div class="flex justify-between py-1 text-[#555555]">
-              <span>Base Accommodation Rent</span>
+          <div class="space-y-3 text-xs">
+            <div class="flex justify-between items-center py-1.5 border-b border-black/[0.04] text-[#555555]">
+              <span class="font-medium">Base Accommodation Rent</span>
               <span class="font-bold text-[#111111]">
                 {% if room and room.room_type.pricing_models.first %}
                   GH₵ {{ room.room_type.pricing_models.first.semester_price|default:room.room_type.pricing_models.first.monthly_price|floatformat:0 }}
@@ -362,18 +362,22 @@
               </span>
             </div>
 
-            <div class="flex justify-between py-1 text-[#555555]">
-              <span class="flex items-center gap-1">
-                Roomora Platform Fee (10%)
-              </span>
-              <span class="font-bold text-emerald-700">Calculated at Checkout</span>
+            <div class="flex justify-between items-center py-1.5 border-b border-black/[0.04] text-[#555555]">
+              <span class="font-medium">Roomora Platform Fee (10%)</span>
+              <span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">Added at Final Checkout</span>
             </div>
           </div>
 
-          <div class="bg-[#F8F8FA] border border-black/10 p-3.5 rounded-2xl flex items-start gap-3">
-            <div class="h-6 w-6 rounded-xl bg-[#111111] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">ℹ</div>
-            <p class="text-[11px] text-[#555555] leading-relaxed font-medium">
-              <strong>Transparent Billing Guarantee:</strong> Your 10% platform fee supports verified property guarantees, student protection escrow, and 256-bit encrypted checkout.
+          <!-- Executive Institutional Policy Statement -->
+          <div class="bg-[#F8F8FA] border border-black/10 p-4 rounded-2xl space-y-2">
+            <div class="flex items-center gap-2">
+              <div class="h-6 w-6 rounded-lg bg-[#111111] text-white flex items-center justify-center shrink-0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <span class="text-xs font-extrabold text-[#111111] uppercase tracking-wider">Official Service Guarantee</span>
+            </div>
+            <p class="text-[11px] text-[#444444] leading-relaxed font-medium">
+              The <strong>10% Roomora Service Fee</strong> funds 5-point property authenticity verification, student financial escrow protection, 24/7 priority resolution support, and Paystack 256-bit SSL encrypted transactions. Property owners receive 100% of their listed base rate.
             </p>
           </div>
         </div>
