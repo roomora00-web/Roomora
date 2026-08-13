@@ -1,7 +1,7 @@
 """
-Seed Script: 5 Apartments Spread Across Ghana's Key Regions
+Seed Script: 5 Apartments Spread Across Ghana's Key Regions with Complete Room & Unit Images
 Adds 5 distinct Apartments in Greater Accra, Ashanti, Western, Central, and Bono.
-Populates 100% of property detail fields, UnitTypes, UnitTypePricing, and assigns unique, non-duplicating images (Exterior, Living Room, Bedrooms, Bathrooms, Kitchens).
+Populates 100% of property detail fields, UnitTypes, UnitTypePricing, and assigns 6 unique, non-duplicating images per apartment (Exterior 1, Exterior 2, Living Room, Master Bedroom, Bathroom, Kitchen).
 """
 import os
 import sys
@@ -35,7 +35,7 @@ def cp(rel_src_path, dst_filename, media_dir):
     return f"{folder}/{dst_filename}"
 
 print("="*70)
-print("CONNECTING TO NEON DATABASE FOR APARTMENTS SEED...")
+print("CONNECTING TO NEON DATABASE FOR APARTMENTS & ROOM IMAGES SEED...")
 print("="*70)
 conn = psycopg2.connect(DB_URL, connect_timeout=30)
 conn.autocommit = False
@@ -68,6 +68,7 @@ def del_property_by_code(code):
     rows = cur.fetchall()
     for r in rows:
         pid = r[0]
+        cur.execute("DELETE FROM reviews WHERE accommodation_property_id=%s;", (pid,))
         cur.execute("DELETE FROM unit_type_pricing WHERE unit_type_id IN (SELECT id FROM unit_types WHERE accommodation_property_id=%s);", (pid,))
         cur.execute("DELETE FROM unit_types WHERE accommodation_property_id=%s;", (pid,))
         cur.execute("DELETE FROM property_images WHERE accommodation_property_id=%s;", (pid,))
@@ -232,9 +233,13 @@ a1 = insert_property(
 )
 add_ams(a1, [W,SE,WA,AC,ST,GN,CC,FE,KI,PK,LA,BAL])
 
+# 6 Complete Unique Images for APT-ACC-ELH-001
 add_pi(a1, cp("APARTMENT/06a353b006d9fc-executive-fully-furnished-2-bedroom-studio-for-sale-east-legon-hills-east-legon-greater-accra.jpg", "APT-ACC-ELH-001_ext_main.jpeg", MEDIA_P), "EXTERIOR", "Executive Exterior View", True, 1)
 add_pi(a1, cp("APARTMENT/066e1246c0026a-6-unit-apartment-block-for-sale-adenta-adenta-municipal-greater-accra.jpeg", "APT-ACC-ELH-001_ext_2.jpeg", MEDIA_P), "EXTERIOR", "Building Frontage & Parking", False, 2)
-add_pi(a1, cp("APARTMENT/images (6).jpeg", "APT-ACC-ELH-001_int_living.jpeg", MEDIA_P), "LIVING_ROOM", "Furnished Living Room", False, 3)
+add_pi(a1, cp("APARTMENT/images (6).jpeg", "APT-ACC-ELH-001_int_living.jpeg", MEDIA_P), "LIVING_ROOM", "Furnished Living Lounge", False, 3)
+add_pi(a1, cp("APARTMENT/images (7).jpeg", "APT-ACC-ELH-001_rm_bed.jpeg", MEDIA_P), "BEDROOM", "Master Bedroom Suite", False, 4)
+add_pi(a1, cp("bathrooms/images (4).jpeg", "APT-ACC-ELH-001_rm_bath.jpeg", MEDIA_P), "BATHROOM", "Ensuite Modern Bathroom", False, 5)
+add_pi(a1, cp("kitchen/images (1).jpeg", "APT-ACC-ELH-001_rm_kit.jpeg", MEDIA_P), "KITCHEN", "Fully Fitted Granite Kitchen", False, 6)
 
 add_unit_type(a1, "2 Bedroom Luxury Furnished Suite", "MONTHLY_BASED", bedrooms=2, bathrooms=2, kitchen=1, furnished="FURNISHED", monthly_price=4500.00, semester_price=18000.00, dep=2000.00)
 add_unit_type(a1, "1 Bedroom Studio Apartment", "MONTHLY_BASED", bedrooms=1, bathrooms=1, kitchen=1, furnished="FURNISHED", monthly_price=2800.00, semester_price=11200.00, dep=1500.00)
@@ -242,7 +247,7 @@ add_unit_type(a1, "1 Bedroom Studio Apartment", "MONTHLY_BASED", bedrooms=1, bat
 add_prox(a1, "A&C Mall", "SHOPPING", 0.5, 5, "WALK", 1)
 add_prox(a1, "Accra Mall", "SHOPPING", 2.2, 7, "DRIVE", 2)
 conn.commit()
-print("  [OK] East Legon Executive Heights Apartments committed.")
+print("  [OK] East Legon Executive Heights Apartments committed with 6 full images.")
 
 
 # =========================================================================
@@ -272,9 +277,13 @@ a2 = insert_property(
 )
 add_ams(a2, [W,SE,WA,AC,ST,GN,CC,FE,KI,PK,BAL])
 
+# 6 Complete Unique Images for APT-KMS-AHD-002
 add_pi(a2, cp("APARTMENT/images (8).jpeg", "APT-KMS-AHD-002_ext_main.jpeg", MEDIA_P), "EXTERIOR", "Hilltop View Exterior", True, 1)
 add_pi(a2, cp("APARTMENT/images (9).jpeg", "APT-KMS-AHD-002_ext_2.jpeg", MEDIA_P), "EXTERIOR", "Compound & Balconies", False, 2)
 add_pi(a2, cp("APARTMENT/images (10).jpeg", "APT-KMS-AHD-002_int_living.jpeg", MEDIA_P), "LIVING_ROOM", "Spacious Living Hall", False, 3)
+add_pi(a2, cp("APARTMENT/images (11).jpeg", "APT-KMS-AHD-002_rm_bed.jpeg", MEDIA_P), "BEDROOM", "Deluxe Bedroom", False, 4)
+add_pi(a2, cp("bathrooms/images (5).jpeg", "APT-KMS-AHD-002_rm_bath.jpeg", MEDIA_P), "BATHROOM", "Tiled Modern Washroom", False, 5)
+add_pi(a2, cp("kitchen/images (2).jpeg", "APT-KMS-AHD-002_rm_kit.jpeg", MEDIA_P), "KITCHEN", "Modern Fitted Kitchen", False, 6)
 
 add_unit_type(a2, "2 Bedroom Deluxe Family Unit", "MONTHLY_BASED", bedrooms=2, bathrooms=2, kitchen=1, furnished="SEMI_FURNISHED", monthly_price=3200.00, dep=1500.00)
 add_unit_type(a2, "3 Bedroom Master Penthouse", "MONTHLY_BASED", bedrooms=3, bathrooms=3, kitchen=1, furnished="FURNISHED", monthly_price=5500.00, dep=2500.00)
@@ -282,7 +291,7 @@ add_unit_type(a2, "3 Bedroom Master Penthouse", "MONTHLY_BASED", bedrooms=3, bat
 add_prox(a2, "Nhyiaeso Commercial Center", "SHOPPING", 0.6, 6, "WALK", 1)
 add_prox(a2, "Golden Tulip Hotel", "RESTAURANT", 0.4, 4, "WALK", 2)
 conn.commit()
-print("  [OK] Ahodwo Hilltop Luxury Apartments committed.")
+print("  [OK] Ahodwo Hilltop Luxury Apartments committed with 6 full images.")
 
 
 # =========================================================================
@@ -307,14 +316,18 @@ a3 = insert_property(
     cctv=True, security_personnel=True, gated_community=True,
     water_avail="Borehole & Municipal Water System (24/7)", electricity_stab="High (Generator Backup)",
     internet_avail="Fibre Wi-Fi Internet", utility_billing="SEPARATE_METER",
-    fire_safety=True, safety_score=9, smoking=False, pets=False, guests=True, max_guests=4,
-    stu=True, wkr=True, fam=True, coup=True, ns_=True, sp=True, is_featured=True,
+    fire_safety=True, safety_score=8, smoking=False, pets=False, guests=True, max_guests=4,
+    stu=True, wkr=True, fam=True, coup=True, ns_=True, sp=True, is_featured=False,
 )
 add_ams(a3, [W,SE,WA,AC,GN,CC,FE,KI,PK,BAL])
 
+# 6 Complete Unique Images for APT-WST-ARG-003
 add_pi(a3, cp("APARTMENT/06a29041b317ed-semi-detached-2-bedroom-house-at-spintex-manet-for-rent-spintex-greater-accra.jpg", "APT-WST-ARG-003_ext_main.jpeg", MEDIA_P), "EXTERIOR", "Palms Residency Front", True, 1)
-add_pi(a3, cp("APARTMENT/483535565.jpg", "APT-WST-ARG-003_ext_2.jpeg", MEDIA_P), "EXTERIOR", "Gated Yard", False, 2)
+add_pi(a3, cp("APARTMENT/483535565.jpg", "APT-WST-ARG-003_ext_2.jpeg", MEDIA_P), "EXTERIOR", "Gated Yard & Parking", False, 2)
 add_pi(a3, cp("APARTMENT/images (12).jpeg", "APT-WST-ARG-003_int_living.jpeg", MEDIA_P), "LIVING_ROOM", "Modern Hall & Dining Area", False, 3)
+add_pi(a3, cp("APARTMENT/images (13).jpeg", "APT-WST-ARG-003_rm_bed.jpeg", MEDIA_P), "BEDROOM", "Executive Bedroom", False, 4)
+add_pi(a3, cp("bathrooms/images.jpeg", "APT-WST-ARG-003_rm_bath.jpeg", MEDIA_P), "BATHROOM", "Sparkling Clean Washroom", False, 5)
+add_pi(a3, cp("kitchen/images (3).jpeg", "APT-WST-ARG-003_rm_kit.jpeg", MEDIA_P), "KITCHEN", "Modern Open Kitchen", False, 6)
 
 add_unit_type(a3, "2 Bedroom Executive Beachfront Unit", "MONTHLY_BASED", bedrooms=2, bathrooms=2, kitchen=1, furnished="FURNISHED", monthly_price=3800.00, dep=1800.00)
 add_unit_type(a3, "1 Bedroom Professional Apartment", "MONTHLY_BASED", bedrooms=1, bathrooms=1, kitchen=1, furnished="SEMI_FURNISHED", monthly_price=2400.00, dep=1200.00)
@@ -322,7 +335,7 @@ add_unit_type(a3, "1 Bedroom Professional Apartment", "MONTHLY_BASED", bedrooms=
 add_prox(a3, "Takoradi Airport", "TRANSPORT", 1.0, 3, "DRIVE", 1)
 add_prox(a3, "Market Circle", "MARKET", 2.0, 6, "TROTRO", 2)
 conn.commit()
-print("  [OK] Airport Ridge Palms Residency committed.")
+print("  [OK] Airport Ridge Palms Residency committed with 6 full images.")
 
 
 # =========================================================================
@@ -346,14 +359,18 @@ a4 = insert_property(
     cctv=True, security_personnel=True, gated_community=True,
     water_avail="Borehole & Storage System (24/7)", electricity_stab="High (Generator Available)",
     internet_avail="Wi-Fi Broadband", utility_billing="SEPARATE_METER",
-    fire_safety=True, safety_score=9, smoking=False, pets=False, guests=True, max_guests=5,
-    stu=True, wkr=True, fam=True, coup=True, ns_=True, sp=True, is_featured=True,
+    fire_safety=True, safety_score=7, smoking=False, pets=False, guests=True, max_guests=5,
+    stu=True, wkr=True, fam=True, coup=True, ns_=True, sp=True, is_featured=False,
 )
 add_ams(a4, [W,SE,WA,AC,GN,CC,FE,KI,PK,BAL])
 
+# 6 Complete Unique Images for APT-CTR-CRP-004
 add_pi(a4, cp("APARTMENT/15-units-of-2-bedrooms-apartment-1-unit-of-3-bedrooms-apartment-tse-addo-zpFRE2wCgxO27i4tYjSf.jpg", "APT-CTR-CRP-004_ext_main.jpeg", MEDIA_P), "EXTERIOR", "Royal Palms Front", True, 1)
 add_pi(a4, cp("APARTMENT/imaes.jpeg", "APT-CTR-CRP-004_ext_2.jpeg", MEDIA_P), "EXTERIOR", "Apartment Block Side", False, 2)
 add_pi(a4, cp("APARTMENT/images.jpeg", "APT-CTR-CRP-004_int_living.jpeg", MEDIA_P), "LIVING_ROOM", "Living Room Hall", False, 3)
+add_pi(a4, cp("APARTMENT/images (1).jpeg", "APT-CTR-CRP-004_rm_bed.jpeg", MEDIA_P), "BEDROOM", "Coastal View Bedroom", False, 4)
+add_pi(a4, cp("bathrooms/0e2d1f770d15710e0ae27b77d61175014c2acb4d.jpeg", "APT-CTR-CRP-004_rm_bath.jpeg", MEDIA_P), "BATHROOM", "Ensuite Glass Bathroom", False, 5)
+add_pi(a4, cp("kitchen/images (4).jpeg", "APT-CTR-CRP-004_rm_kit.jpeg", MEDIA_P), "KITCHEN", "Modern Kitchen Space", False, 6)
 
 add_unit_type(a4, "2 Bedroom Coastal View Suite", "MONTHLY_BASED", bedrooms=2, bathrooms=2, kitchen=1, furnished="SEMI_FURNISHED", monthly_price=2900.00, dep=1400.00)
 add_unit_type(a4, "3 Bedroom Family Residence", "MONTHLY_BASED", bedrooms=3, bathrooms=2, kitchen=1, furnished="UNFURNISHED", monthly_price=3600.00, dep=1800.00)
@@ -361,7 +378,7 @@ add_unit_type(a4, "3 Bedroom Family Residence", "MONTHLY_BASED", bedrooms=3, bat
 add_prox(a4, "Pedu Junction Market", "MARKET", 0.4, 4, "WALK", 1)
 add_prox(a4, "UCC Campus Gate", "INSTITUTION", 2.2, 7, "TROTRO", 2)
 conn.commit()
-print("  [OK] Cape Coast Royal Palms Apartments committed.")
+print("  [OK] Cape Coast Royal Palms Apartments committed with 6 full images.")
 
 
 # =========================================================================
@@ -385,14 +402,18 @@ a5 = insert_property(
     cctv=True, security_personnel=True, gated_community=True,
     water_avail="Borehole System with Storage (24/7)", electricity_stab="High (Generator Backup)",
     internet_avail="Fibre Wi-Fi Broadband", utility_billing="SEPARATE_METER",
-    fire_safety=True, safety_score=9, smoking=False, pets=False, guests=True, max_guests=4,
-    stu=True, wkr=True, fam=True, coup=True, ns_=True, sp=True, is_featured=True,
+    fire_safety=True, safety_score=8, smoking=False, pets=False, guests=True, max_guests=4,
+    stu=True, wkr=True, fam=True, coup=True, ns_=True, sp=True, is_featured=False,
 )
 add_ams(a5, [W,SE,WA,AC,GN,CC,FE,KI,PK,BAL])
 
+# 6 Complete Unique Images for APT-BNO-SRG-005
 add_pi(a5, cp("APARTMENT/images (2).jpeg", "APT-BNO-SRG-005_ext_main.jpeg", MEDIA_P), "EXTERIOR", "Green Apartments Exterior", True, 1)
 add_pi(a5, cp("APARTMENT/images (3).jpeg", "APT-BNO-SRG-005_ext_2.jpeg", MEDIA_P), "EXTERIOR", "Solar-Lighted Compound", False, 2)
 add_pi(a5, cp("APARTMENT/images (4).jpeg", "APT-BNO-SRG-005_int_living.jpeg", MEDIA_P), "LIVING_ROOM", "Furnished Lounge", False, 3)
+add_pi(a5, cp("APARTMENT/images (5).jpeg", "APT-BNO-SRG-005_rm_bed.jpeg", MEDIA_P), "BEDROOM", "Cozy Bedroom Suite", False, 4)
+add_pi(a5, cp("bathrooms/images (1).jpeg", "APT-BNO-SRG-005_rm_bath.jpeg", MEDIA_P), "BATHROOM", "Clean Private Washroom", False, 5)
+add_pi(a5, cp("kitchen/images (6).jpeg", "APT-BNO-SRG-005_rm_kit.jpeg", MEDIA_P), "KITCHEN", "Kitchen Kitchenette", False, 6)
 
 add_unit_type(a5, "2 Bedroom Modern Apartment", "MONTHLY_BASED", bedrooms=2, bathrooms=2, kitchen=1, furnished="FURNISHED", monthly_price=2500.00, dep=1200.00)
 add_unit_type(a5, "1 Bedroom Cozy Studio", "MONTHLY_BASED", bedrooms=1, bathrooms=1, kitchen=1, furnished="SEMI_FURNISHED", monthly_price=1800.00, dep=900.00)
@@ -400,27 +421,27 @@ add_unit_type(a5, "1 Bedroom Cozy Studio", "MONTHLY_BASED", bedrooms=1, bathroom
 add_prox(a5, "UENR Main Campus Gate", "INSTITUTION", 1.2, 14, "WALK", 1)
 add_prox(a5, "Sunyani Regional Hospital", "HOSPITAL", 0.8, 8, "WALK", 2)
 conn.commit()
-print("  [OK] Sunyani Residency Green Apartments committed.")
+print("  [OK] Sunyani Residency Green Apartments committed with 6 full images.")
 
 
 # ─── VERIFICATION AUDIT ────────────────────────────────────────────────
 print("\n" + "="*70)
-print("5 APARTMENTS AUDIT SUMMARY")
+print("5 APARTMENTS IMAGE AUDIT SUMMARY")
 print("="*70)
 
 cur.execute("""
-    SELECT p.property_code, p.title, p.city, p.region, COUNT(ut.id)
+    SELECT p.property_code, p.title, COUNT(pi.id)
     FROM properties p
-    JOIN unit_types ut ON ut.accommodation_property_id=p.id
+    JOIN property_images pi ON pi.accommodation_property_id=p.id
     WHERE p.property_type='APARTMENT'
-    GROUP BY p.property_code, p.title, p.city, p.region
+    GROUP BY p.property_code, p.title
     ORDER BY p.property_code;
 """)
 apts = cur.fetchall()
 
 print(f"\nTotal Apartments Seeded in DB: {len(apts)}")
 for a in apts:
-    print(f"[{a[0]}] {a[1]} ({a[2]}, {a[3]}) — Unit Types: {a[4]}")
+    print(f"[{a[0]}] {a[1]} — Total Images: {a[2]} (Exterior, Living Room, Bedroom, Bathroom, Kitchen)")
 
 conn.close()
-print("\n✅ ALL 5 APARTMENTS SUCCESSFULLY SEEDED WITH 100% POPULATED DETAILS & UNIQUE PHOTOS!\n")
+print("\n✅ ALL 5 APARTMENTS SUCCESSFULLY SEEDED WITH 6 UNIQUE ROOM & INTERIOR IMAGES EACH!\n")
