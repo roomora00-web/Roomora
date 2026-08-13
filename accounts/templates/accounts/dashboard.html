@@ -63,7 +63,7 @@
           {{ active_booking_count|default:0 }} Active
         </div>
         <div class="text-xs text-zinc-500 font-medium truncate mt-0.5">
-          {% if current_booking %}{{ current_booking.accommodation_property.title|truncatechars:20 }}{% else %}No active stay{% endif %}
+          {% if current_booking %}{{ current_booking.accommodation_property.title }}{% else %}No active stay{% endif %}
         </div>
       </div>
     </a>
@@ -105,7 +105,7 @@
         </div>
       </div>
       <div>
-        <div class="font-outfit text-xl sm:text-2xl font-bold text-[#111111]">2% Fee</div>
+        <div class="font-outfit text-xl sm:text-2xl font-bold text-[#111111]">10% Fee</div>
         <div class="text-xs text-zinc-600 font-semibold mt-0.5">Safeguarded Deposit</div>
       </div>
     </div>
@@ -194,7 +194,7 @@
             <div>
               <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Stay Duration</div>
               <div class="font-bold text-[#111111] mt-0.5 text-xs sm:text-sm">
-                {{ current_booking.duration_months|default:"4" }} Mo ({{ current_booking.duration_days|default:"119" }} Days)
+                {% if current_booking.duration_days %}{{ current_booking.calculated_duration_label|title }} ({{ current_booking.duration_days }} Days){% else %}{{ current_booking.calculated_duration_label|title }}{% endif %}
               </div>
             </div>
             <div>

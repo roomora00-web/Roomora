@@ -1054,7 +1054,7 @@ def get_status_message(user_state, user, last_search=None, saved_count=0, curren
     """Get contextual status message and details based on user state"""
     if user_state == 'approved_pre_movein':
         prop_title = current_booking.accommodation_property.title if current_booking else "your accommodation"
-        message = f"Your reservation and payment at {prop_title} are confirmed. Your room soft-lock is active."
+        message = f"Your reservation and payment at {prop_title} are confirmed. Your room is confirmed and secured for move-in."
         details = {
             'subtitle': "Physical key issuance is handled by hostel management 24-48 hours before move-in day.",
             'actions': [{'text': 'View Confirmation & Receipt', 'url': f'/api/v1/payments/{current_booking.payment_record.id}/confirmation/' if current_booking and hasattr(current_booking, 'payment_record') else '/bookings/my-bookings/'}]
