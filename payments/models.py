@@ -42,7 +42,7 @@ class PaymentRecord(models.Model):
     
     # Amount breakdown
     amount_accommodation = models.DecimalField(max_digits=10, decimal_places=2, help_text='Amount going to landlord')
-    amount_platform_fee = models.DecimalField(max_digits=10, decimal_places=2, help_text='StayMatch commission (5%)')
+    amount_platform_fee = models.DecimalField(max_digits=10, decimal_places=2, help_text='Roomora platform fee (10%)')
     amount_total = models.DecimalField(max_digits=10, decimal_places=2, help_text='Total charged to user')
     currency = models.CharField(max_length=3, default='GHS')
     

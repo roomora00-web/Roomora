@@ -274,7 +274,7 @@ PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY', 'pk_test_e18fdc11b8f
 PAYSTACK_CALLBACK_URL = f"{os.environ.get('SITE_URL', 'http://127.0.0.1:8000')}/api/v1/payments/webhook/paystack/"
 PAYSTACK_ESCROW_SUBACCOUNT = os.environ.get('PAYSTACK_ESCROW_SUBACCOUNT', '')  # Subaccount code for landlord disbursements
 PAYMENT_WINDOW_HOURS = 2  # Payment window in hours
-PLATFORM_FEE_PERCENTAGE = 0.02  # 2% platform fee
+PLATFORM_FEE_PERCENTAGE = 0.10  # 10% platform fee
 
 # Security and CSRF settings
 csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://roomora-production.up.railway.app,http://127.0.0.1:8000,http://localhost:8000').split(',')
