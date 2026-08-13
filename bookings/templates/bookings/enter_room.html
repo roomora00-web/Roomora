@@ -47,7 +47,7 @@
       <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">{% if is_apartment %}Assigned Unit{% else %}Assigned Space{% endif %}</div>
       <div class="font-outfit text-lg sm:text-xl font-bold text-[#111111]">
         {% if booking.unit_type %}
-          {{ booking.unit_type.name }}
+          {{ booking.unit_type.unit_name }}
         {% elif booking.assigned_room %}
           {% if is_apartment %}Unit {{ booking.assigned_room.room_number }}{% else %}Room {{ booking.assigned_room.room_number }}{% endif %}
         {% elif booking.room_type %}

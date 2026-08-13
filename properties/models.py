@@ -557,6 +557,14 @@ class UnitType(models.Model):
     def __str__(self):
         return f"{self.accommodation_property.title} - {self.unit_name}"
 
+    @property
+    def name(self):
+        return self.unit_name
+
+    @property
+    def unit_type_name(self):
+        return self.unit_name
+
     def recalculate_capacity(self):
         """
         Dynamically recalculates available_units based on actual Booking records.
