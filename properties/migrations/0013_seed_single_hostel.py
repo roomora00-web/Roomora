@@ -139,7 +139,8 @@ def seed_single_hostel_data(apps, schema_editor):
     RoomTypePricing.objects.create(
         room_type=rt_single,
         payment_type="SEMESTER",
-        semester_price=3800.00
+        semester_price=3800.00,
+        monthly_price=950.00
     )
 
     r101 = Room.objects.create(
@@ -175,7 +176,8 @@ def seed_single_hostel_data(apps, schema_editor):
     RoomTypePricing.objects.create(
         room_type=rt_double,
         payment_type="SEMESTER",
-        semester_price=2800.00
+        semester_price=2800.00,
+        monthly_price=700.00
     )
 
     r102 = Room.objects.create(

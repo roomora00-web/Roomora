@@ -3314,7 +3314,7 @@ body {
               <tr>
                 <th>Room Type</th>
                 <th>Occupancy</th>
-                <th>Available</th>
+                <th>Availability</th>
                 <th>Semester Price</th>
                 <th>Monthly Price</th>
               </tr>
@@ -3322,11 +3322,33 @@ body {
             <tbody>
               {% for room in property.room_types.all %}
               <tr>
-                <td><strong>Room {{ room.room_number }} - {{ room.room_type.room_type_name }}</strong></td>
-                <td>{{ room.room_type.get_occupancy_type_display }}</td>
-                <td>{% if room.available_slots > 0 %}<span style="color:var(--green);font-weight:700;">{{ room.available_slots }} slots</span>{% else %}<span style="color:var(--red);">Full</span>{% endif %}</td>
-                <td>{% with price=room.pricing_models.filter|first %}{% if room.pricing_models.all %}{% for p in room.pricing_models.all %}{% if p.semester_price %}GH₵ {{ p.semester_price|floatformat:0 }}{% endif %}{% endfor %}{% else %}—{% endif %}{% endwith %}</td>
-                <td>{% for p in room.pricing_models.all %}{% if p.monthly_price %}GH₵ {{ p.monthly_price|floatformat:0 }}{% endif %}{% empty %}—{% endfor %}</td>
+                <td><strong style="color:#111111;">{{ room.room_type_name }}</strong></td>
+                <td>{{ room.get_occupancy_type_display }}</td>
+                <td>
+                  {% if room.available_slots > 0 %}
+                    <span style="color:#059669; font-weight:700;">{{ room.available_slots }} slot{% if room.available_slots > 1 %}s{% endif %} left</span>
+                  {% else %}
+                    <span style="color:#DC2626; font-weight:700;">Fully Booked</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% for p in room.pricing_models.all %}
+                    {% if p.semester_price %}<strong style="color:#111111;">GH₵ {{ p.semester_price|floatformat:0 }}</strong>{% endif %}
+                  {% empty %}
+                    —
+                  {% endfor %}
+                </td>
+                <td>
+                  {% for p in room.pricing_models.all %}
+                    {% if p.monthly_price %}
+                      <span style="color:#4B5563;">GH₵ {{ p.monthly_price|floatformat:0 }}/mo</span>
+                    {% else %}
+                      —
+                    {% endif %}
+                  {% empty %}
+                    —
+                  {% endfor %}
+                </td>
               </tr>
               {% endfor %}
             </tbody>

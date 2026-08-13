@@ -142,7 +142,8 @@ rt_single = RoomType.objects.create(
 RoomTypePricing.objects.create(
     room_type=rt_single,
     payment_type="SEMESTER",
-    semester_price=3800.00
+    semester_price=3800.00,
+    monthly_price=950.00
 )
 
 # SINGLE PHYSICAL ROOM ONLY (Room 101)
@@ -180,7 +181,8 @@ rt_double = RoomType.objects.create(
 RoomTypePricing.objects.create(
     room_type=rt_double,
     payment_type="SEMESTER",
-    semester_price=2800.00
+    semester_price=2800.00,
+    monthly_price=700.00
 )
 
 # PHYSICAL ROOM 102 (for 2 in a room)
