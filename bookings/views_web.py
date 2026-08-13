@@ -553,11 +553,15 @@ def enter_room_view(request, booking_id):
 
     # Determine single occupancy status (1 person stay)
     is_single_occupancy = False
+    if booking.room_type:
+        occ = (booking.room_type.occupancy_type or '').upper()
+        name = (booking.room_type.room_type_name or '').lower()
+        if occ in ['SINGLE', '1_IN_A_ROOM', 'ONE_PERSON', '1_PERSON'] or 'single' in name or '1 in a room' in name or '1-in-a-room' in name or booking.room_type.total_capacity == 1 or booking.room_type.beds_per_room == 1:
+            is_single_occupancy = True
+
     if booking.unit_type or (prop and prop.property_type in ['APARTMENT', 'STUDIO', 'FLAT', 'TOWNHOUSE', 'VILLA', 'DUPLEX']):
         is_single_occupancy = True
-    elif booking.room_type and (booking.room_type.occupancy_type == 'SINGLE' or booking.room_type.total_capacity == 1 or booking.room_type.beds_per_room == 1):
-        is_single_occupancy = True
-    elif booking.assigned_room and booking.assigned_room.total_slots == 1:
+    elif booking.assigned_room and (booking.assigned_room.total_slots == 1 or getattr(booking.assigned_room, 'capacity', 1) == 1):
         is_single_occupancy = True
     elif not booking.requires_roommate_matching:
         is_single_occupancy = True
