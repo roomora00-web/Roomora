@@ -1983,11 +1983,35 @@ body {
   }
   .pd-section-title svg { width: 18px !important; height: 18px !important; }
 
-  /* Trust Banner */
-  .pd-trust-banner { grid-template-columns: 1fr 1fr; gap: 1px; }
+  /* Trust Banner Mobile Grid */
+  .pd-trust-banner {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    margin: 16px 0 28px !important;
+  }
+  .pd-trust-item {
+    padding: 14px 16px !important;
+    gap: 10px !important;
+    border-radius: 16px !important;
+  }
+  .pd-trust-icon {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    border-radius: 12px !important;
+  }
+
+  /* House Rules & Prohibitions Sub-Cards Mobile Grid */
+  .pd-rules-subcards-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
 
   /* Key Facts / Grids — 2-column metrics grid on mobile */
   .pd-key-facts { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .pd-details-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
   .pd-at-glance { grid-template-columns: 1fr 1fr; gap: 8px; }
   .pd-glance-card { padding: 12px; }
   .pd-glance-label { font-size: 10px; }
@@ -3613,7 +3637,7 @@ body {
 
         <div style="background: #FFFFFF; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 28px; padding: 32px; margin-bottom: 40px; box-shadow: 0 14px 38px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.03);">
           
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+          <div class="pd-rules-subcards-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
             
             <!-- 📜 General Conduct & House Rules Card -->
             <div style="background: #F9FAFB; border: 1px solid rgba(0,0,0,0.06); border-radius: 20px; padding: 24px; transition: transform 0.25s ease, box-shadow 0.25s ease;">
