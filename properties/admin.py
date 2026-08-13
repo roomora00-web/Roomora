@@ -66,12 +66,13 @@ class RentalDurationInline(admin.TabularInline):
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    list_display = ['property_code', 'title', 'property_type', 'city', 'is_available', 'is_verified', 'status', 'uploaded_by', 'created_at']
+    list_display = ['property_code', 'title', 'property_type', 'owner_name', 'city', 'is_available', 'is_verified', 'status', 'created_at']
     list_filter = ['property_type', 'property_category', 'is_available', 'is_verified', 'status', 'city', 'created_at']
-    search_fields = ['property_code', 'title', 'address', 'city', 'uploaded_by__email']
+    search_fields = ['property_code', 'title', 'owner_name', 'owner_phone', 'owner_email', 'address', 'city', 'uploaded_by__email']
     ordering = ['-created_at']
     
     fieldsets = (
+        ('Property Owner / Manager Information', {'fields': ('owner_name', 'owner_phone', 'owner_email', 'owner_photo')}),
         ('Basic Information', {'fields': ('uploaded_by', 'property_code', 'property_type', 'property_category', 'title', 'description')}),
         ('Location Information', {'fields': ('address', 'city', 'region', 'country', 'postal_code', 'digital_address', 'latitude', 'longitude')}),
         ('Nearest Institution', {'fields': ('nearest_institution', 'distance_to_campus', 'walking_time_estimate', 'nearby_landmarks')}),

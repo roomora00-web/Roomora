@@ -78,6 +78,12 @@ class Property(models.Model):
     # Admin uploads all properties
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='uploaded_properties', null=True, blank=True)
     
+    # Property Owner / Manager Contact Information (Managed by Admin)
+    owner_name = models.CharField(max_length=200, blank=True, help_text="Full Name of Property Manager / Owner")
+    owner_email = models.EmailField(blank=True, help_text="Direct Contact Email of Owner")
+    owner_phone = models.CharField(max_length=50, blank=True, help_text="Direct Phone / WhatsApp Number of Owner")
+    owner_photo = models.ImageField(upload_to='property_managers/', blank=True, null=True, help_text="Profile Photo of Property Manager / Owner")
+
     # Basic Information
     property_code = models.CharField(max_length=50, unique=True, blank=True, null=True)
     property_type = models.CharField(max_length=30, choices=PROPERTY_TYPE_CHOICES)

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking & Payment Confirmation - Roomora</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f5f7; color: #111111;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f4f5f7; padding: 30px 10px;">
+    <tr>
+      <td align="center">
+        <table width="100%" max-width="600" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.08);">
+          
+          <!-- HEADER -->
+          <tr>
+            <td style="background-color: #0B0F19; padding: 32px 30px; text-align: left;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">ROOMORA</h1>
+              <p style="color: #10B981; margin: 6px 0 0 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Official Booking & Payment Receipt</p>
+            </td>
+          </tr>
+
+          <!-- HERO BANNER -->
+          <tr>
+            <td style="padding: 28px 30px 20px 30px; border-bottom: 1px solid #f0f0f0;">
+              <h2 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 700; color: #111111;">Congratulations, {{ student_name }}! 🎉</h2>
+              <p style="margin: 0; font-size: 14px; color: #4B5563; line-height: 1.6;">
+                Your booking and payment for <strong>{{ property_title }}</strong> have been successfully processed. Below is your official receipt and manager contact details.
+              </p>
+            </td>
+          </tr>
+
+          <!-- BOOKING & PAYMENT SUMMARY -->
+          <tr>
+            <td style="padding: 24px 30px; border-bottom: 1px solid #f0f0f0;">
+              <h3 style="margin: 0 0 16px 0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #6B7280;">Payment Details</h3>
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #F9FAFB; border-radius: 12px; padding: 16px;">
+                <tr>
+                  <td style="padding: 6px 0; font-size: 13px; color: #6B7280;">Booking Reference:</td>
+                  <td align="right" style="padding: 6px 0; font-size: 13px; font-weight: 800; color: #111111; font-family: monospace;">{{ booking_reference }}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0; font-size: 13px; color: #6B7280;">Payment Reference:</td>
+                  <td align="right" style="padding: 6px 0; font-size: 13px; font-weight: 700; color: #111111; font-family: monospace;">{{ payment_reference }}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0; font-size: 13px; color: #6B7280;">Payment Status:</td>
+                  <td align="right" style="padding: 6px 0; font-size: 12px; font-weight: 800; color: #059669; text-transform: uppercase;">PAID & CONFIRMED</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0; font-size: 13px; color: #6B7280;">Amount Paid:</td>
+                  <td align="right" style="padding: 6px 0; font-size: 18px; font-weight: 800; color: #111111;">GH₵ {{ amount_paid }}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- PROPERTY & ROOM SPECS -->
+          <tr>
+            <td style="padding: 24px 30px; border-bottom: 1px solid #f0f0f0;">
+              <h3 style="margin: 0 0 16px 0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #6B7280;">Accommodation Reserved</h3>
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td style="padding: 4px 0; font-size: 14px; font-weight: 700; color: #111111;">{{ property_title }}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 2px 0; font-size: 13px; color: #4B5563;">{{ room_type_name }}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 2px 0; font-size: 13px; color: #4B5563;">Room Number: <strong>{{ room_number }}</strong> (Floor: {{ room_floor }})</td>
+                </tr>
+                <tr>
+                  <td style="padding: 2px 0; font-size: 13px; color: #4B5563;">Location: {{ property_address }}, {{ property_city }}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- PROPERTY OWNER / MANAGER CONTACT -->
+          <tr>
+            <td style="padding: 24px 30px; background-color: #F8FAFC; border-bottom: 1px solid #f0f0f0;">
+              <h3 style="margin: 0 0 16px 0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #0F172A;">Direct Manager & Move-In Contact</h3>
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #0F172A;">{{ owner_name }}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-size: 13px; color: #334155;">📞 Phone / WhatsApp: <a href="tel:{{ owner_phone }}" style="color: #0284C7; font-weight: 700; text-decoration: none;">{{ owner_phone }}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-size: 13px; color: #334155;">✉️ Email: <a href="mailto:{{ owner_email }}" style="color: #0284C7; font-weight: 600; text-decoration: none;">{{ owner_email }}</a></td>
+                </tr>
+                {% if digital_address %}
+                <tr>
+                  <td style="padding: 4px 0; font-size: 13px; color: #334155;">📍 Digital Address: <strong>{{ digital_address }}</strong></td>
+                </tr>
+                {% endif %}
+              </table>
+              <div style="margin-top: 16px;">
+                <a href="{{ whatsapp_url }}" target="_blank" style="display: inline-block; background-color: #25D366; color: #ffffff; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 700;">
+                  💬 Contact Manager on WhatsApp
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="padding: 24px 30px; text-align: center; background-color: #ffffff;">
+              <p style="margin: 0; font-size: 12px; color: #9CA3AF;">Need assistance? Reply directly to this email or contact support at support@roomora.com</p>
+              <p style="margin: 8px 0 0 0; font-size: 11px; color: #D1D5DB;">© 2026 Roomora Housing Systems. All rights reserved.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

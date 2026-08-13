@@ -404,13 +404,41 @@ class PaymentService:
         if notification_type == 'booking_confirmed':
             booking = kwargs.get('booking')
             payment = kwargs.get('payment')
+            prop = booking.accommodation_property
+            owner_phone = prop.owner_phone or "+233244123456"
+            owner_name = prop.owner_name or (prop.uploaded_by.get_full_name() if prop.uploaded_by else "Property Manager")
+            owner_email = prop.owner_email or (prop.uploaded_by.email if prop.uploaded_by else "admin@roomora.com")
+            
+            clean_phone = owner_phone.replace('+', '').replace(' ', '').replace('-', '')
+            whatsapp_url = f"https://wa.me/{clean_phone}?text=Hello%20{owner_name},%20I%20have%20completed%20booking%20{booking.reference_number}%20for%20{prop.title}."
+
+            receipt_context = {
+                'student_name': user.get_full_name() or user.username or user.email,
+                'student_email': user.email,
+                'booking_reference': booking.reference_number,
+                'payment_reference': payment.payment_reference,
+                'amount_paid': payment.amount_total or getattr(payment, 'amount_paid', booking.total_price),
+                'property_title': prop.title,
+                'property_address': prop.address,
+                'property_city': prop.city,
+                'room_type_name': booking.room_type.room_type_name if booking.room_type else "Standard Room",
+                'room_number': booking.assigned_room.room_number if booking.assigned_room else "Assigned upon check-in",
+                'room_floor': booking.assigned_room.floor if booking.assigned_room else "Ground Floor",
+                'owner_name': owner_name,
+                'owner_email': owner_email,
+                'owner_phone': owner_phone,
+                'digital_address': prop.digital_address or "",
+                'whatsapp_url': whatsapp_url,
+            }
+
             CoreNotificationService.send_notification(
                 user=user,
-                title='PAYMENT SUCCESSFUL',
-                message=f"We have received your payment of GH₵ {payment.amount_paid}.\n\nYour booking ({booking.reference_number}) is confirmed.",
+                title='BOOKING & PAYMENT CONFIRMED',
+                message=f"We have received your payment for {prop.title}. Booking Ref: {booking.reference_number}. Manager Contact: {owner_name} ({owner_phone}).",
                 notification_type='PAYMENT',
                 send_email=True,
-                email_template='accounts/emails/payment_success.html'
+                email_template='accounts/emails/booking_receipt_full.html',
+                email_context=receipt_context
             )
         elif notification_type == 'roommate_confirmed':
             booking = kwargs.get('booking')
