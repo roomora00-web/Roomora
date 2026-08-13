@@ -3814,23 +3814,21 @@ body {
           {% endif %}
         </div>
 
-        {% if property.cancellation_policy %}
-        <div class="pd-cancellation-box">
-          <div class="pd-cancellation-title">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Cancellation Policy
+        <div class="pd-cancellation-box" style="background: #F8F8FA; border: 1px solid rgba(0,0,0,0.1); border-radius: 20px; padding: 20px; margin-top: 24px;">
+          <div class="pd-cancellation-title" style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px; color: #111111; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:#e11d48;"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              Standard Cancellation & Refund Policy
+            </span>
+            <span style="background: #111111; color: #ffffff; font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 999px; text-transform: uppercase;">Protected Policy</span>
           </div>
-          <p>{{ property.cancellation_policy }}</p>
-        </div>
-        {% else %}
-        <div class="pd-cancellation-box">
-          <div class="pd-cancellation-title">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Cancellation Policy
+          <div style="font-size: 13px; color: #444444; line-height: 1.6;">
+            <p style="margin: 0 0 6px 0;"><strong>🟢 100% Full Refund:</strong> Cancel 14 days or more prior to move-in date.</p>
+            <p style="margin: 0 0 6px 0;"><strong>🟡 50% Partial Refund:</strong> Cancel between 7 to 13 days prior to move-in date.</p>
+            <p style="margin: 0 0 6px 0;"><strong>🔴 Non-Refundable:</strong> Cancellations under 7 days before move-in date or post key handover.</p>
+            <p style="margin: 8px 0 0 0; font-size: 12px; color: #6B7280; font-style: italic;">🎓 Academic Guarantee: 100% refund with official university deferral letter up to 48 hours prior to check-in.</p>
           </div>
-          <p>Full refund before 7 days · 50% refund 7–30 days · No refund under 7 days</p>
         </div>
-        {% endif %}
 
         <div class="pd-secondary-actions">
           <button class="pd-secondary-btn {% if is_saved %}save-active{% endif %}" onclick="toggleSave(document.getElementById('save-btn'))">
