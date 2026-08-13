@@ -381,6 +381,27 @@ class RoomType(models.Model):
     def __str__(self):
         return f"{self.accommodation_property.title} - {self.room_type_name}"
 
+    @property
+    def available_rooms_count(self):
+        """Calculates available rooms count based on beds per room and available slots."""
+        if self.beds_per_room <= 1:
+            return self.available_slots
+        if self.available_slots <= 0:
+            return 0
+        import math
+        return math.ceil(self.available_slots / self.beds_per_room)
+
+    @property
+    def available_display_text(self):
+        """Returns clear room availability string preventing single-room slot multiplication confusion."""
+        if self.available_slots <= 0:
+            return "Fully Booked"
+        if self.beds_per_room == 1:
+            return f"{self.available_slots} room(s) left"
+        else:
+            rms = self.available_rooms_count
+            return f"{rms} room(s) left ({self.available_slots} beds total)"
+
     def recalculate_capacity(self):
         """
         Dynamically recalculates available_slots based on actual Booking records.

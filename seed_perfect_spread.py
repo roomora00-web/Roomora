@@ -294,6 +294,8 @@ add_rt_and_rooms(p1, "Double Room (2 in a Room)", "SEMESTER_BASED", "DOUBLE", 4,
 
 add_prox(p1, "University of Ghana Main Gate", "INSTITUTION", 0.3, 3, "WALK", 1)
 add_prox(p1, "Legon Market",                  "MARKET",      0.8, 8, "WALK", 2)
+conn.commit()
+print("  [OK] Millennium Light Hostel committed.")
 
 
 # =========================================================================
@@ -343,6 +345,8 @@ add_rt_and_rooms(p2, "Double Room — Girls Only", "SEMESTER_BASED", "DOUBLE", 4
 
 add_prox(p2, "Madina Market",         "MARKET",      0.3, 4,  "WALK",   1)
 add_prox(p2, "University of Ghana",   "INSTITUTION", 4.5, 15, "TROTRO", 2)
+conn.commit()
+print("  [OK] Pink Rose Hostel committed.")
 
 
 # =========================================================================
@@ -391,6 +395,8 @@ add_rt_and_rooms(p3, "Triple Room (3 in a Room)", "SEMESTER_BASED", "TRIPLE", 3,
                  img2=cp("images (9).jpeg", "HST-KMS-AMH-003_rm_T_2.jpeg", MEDIA_R))
 
 add_prox(p3, "KNUST Main Gate", "INSTITUTION", 0.7, 8, "WALK", 1)
+conn.commit()
+print("  [OK] Ayeduase Modern Hostel committed.")
 
 
 # =========================================================================
@@ -441,6 +447,8 @@ add_rt_and_rooms(p4, "Standard Double Room", "SEMESTER_BASED", "DOUBLE", 4, 2, "
 
 add_prox(p4, "TTU Main Gate",      "INSTITUTION", 0.5, 6, "WALK", 1)
 add_prox(p4, "Takoradi Market Circle", "MARKET",  1.5, 6, "TROTRO", 2)
+conn.commit()
+print("  [OK] Atlantic Ocean View Hostel committed.")
 
 
 # =========================================================================
@@ -490,6 +498,8 @@ add_rt_and_rooms(p5, "Double Room (2 in a Room)", "SEMESTER_BASED", "DOUBLE", 4,
                  img2=cp("images (15).jpeg", "HST-CTR-CCH-005_rm_D_2.jpeg", MEDIA_R))
 
 add_prox(p5, "UCC Science Gate", "INSTITUTION", 0.6, 7, "WALK", 1)
+conn.commit()
+print("  [OK] Oguaa Premier Hostel committed.")
 
 
 # =========================================================================
@@ -539,6 +549,8 @@ add_rt_and_rooms(p6, "Triple Room (3 in a Room)", "SEMESTER_BASED", "TRIPLE", 3,
                  img2=cp("images (4).jpeg", "HST-NTH-UDH-006_rm_T_2.jpeg", MEDIA_R))
 
 add_prox(p6, "UDS Tamale Campus Gate", "INSTITUTION", 0.8, 10, "WALK", 1)
+conn.commit()
+print("  [OK] Savannah Oasis Hostel committed.")
 
 
 # =========================================================================
@@ -588,6 +600,8 @@ add_rt_and_rooms(p7, "Double Room (2 in a Room)", "SEMESTER_BASED", "DOUBLE", 4,
                  img2=cp("images (17).jpeg", "HST-VLT-HOH-007_rm_D_2.jpeg", MEDIA_R))
 
 add_prox(p7, "UHAS Main Campus", "INSTITUTION", 0.7, 9, "WALK", 1)
+conn.commit()
+print("  [OK] Volta Heights Residence committed.")
 
 conn.commit()
 
