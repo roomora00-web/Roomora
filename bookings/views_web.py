@@ -551,36 +551,65 @@ def enter_room_view(request, booking_id):
             booking.assigned_room = room
             booking.save(update_fields=['assigned_room'])
 
-    # Build image gallery combining room images and property images
+    # Determine single occupancy status (1 person stay)
+    is_single_occupancy = False
+    if booking.unit_type or (prop and prop.property_type in ['APARTMENT', 'STUDIO', 'FLAT', 'TOWNHOUSE', 'VILLA', 'DUPLEX']):
+        is_single_occupancy = True
+    elif booking.room_type and (booking.room_type.occupancy_type == 'SINGLE' or booking.room_type.total_capacity == 1 or booking.room_type.beds_per_room == 1):
+        is_single_occupancy = True
+    elif booking.assigned_room and booking.assigned_room.total_slots == 1:
+        is_single_occupancy = True
+    elif not booking.requires_roommate_matching:
+        is_single_occupancy = True
+
+    # Property Owner / Management details
+    import urllib.parse
+    owner_name = prop.owner_name or (prop.uploaded_by.get_full_name() if prop.uploaded_by else "Property Manager")
+    owner_email = prop.owner_email or (prop.uploaded_by.email if prop.uploaded_by else "support@roomora.com")
+    owner_phone = prop.owner_phone or (getattr(prop.uploaded_by, 'phone_number', '') if prop.uploaded_by else "+233 20 554 1122")
+    owner_photo = prop.owner_photo.url if getattr(prop, 'owner_photo', None) else None
+    
+    clean_phone = owner_phone.replace('+', '').replace(' ', '').replace('-', '')
+    wa_text = f"Hello {owner_name}, I am a tenant at {prop.title} (Booking Ref: {booking.reference_number})."
+    whatsapp_owner_url = f"https://wa.me/{clean_phone}?text={urllib.parse.quote(wa_text)}"
+
+    # Build image gallery prioritizing actual room photos
     all_showcase_images = []
     
-    # 1. Assigned room images
+    # 1. Assigned physical room photos
     if booking.assigned_room and hasattr(booking.assigned_room, 'images'):
         for rimg in booking.assigned_room.images.all():
-            all_showcase_images.append({
-                'url': rimg.image_url,
-                'label': f"Room {booking.assigned_room.room_number} Photo",
-                'badge': rimg.get_image_type_display() if hasattr(rimg, 'get_image_type_display') else 'Room Photo'
-            })
-            
-    # 2. Other rooms in property if room images are scarce
-    if len(all_showcase_images) < 3 and prop:
-        for rm in prop.rooms.exclude(id=booking.assigned_room.id if booking.assigned_room else None):
-            for rimg in rm.images.all():
+            if rimg.image_url:
                 all_showcase_images.append({
                     'url': rimg.image_url,
-                    'label': 'Room Interior',
-                    'badge': 'Shared Facility'
+                    'label': f"Room {booking.assigned_room.room_number} Photo",
+                    'badge': rimg.get_image_type_display() if hasattr(rimg, 'get_image_type_display') else 'Room Photo'
+                })
+            
+    # 2. Property images (prioritize room/bedroom/bathroom/kitchen/living room over exterior)
+    if prop and prop.images.exists():
+        sorted_prop_imgs = sorted(
+            prop.images.all(),
+            key=lambda img: 0 if img.image_type in ['ROOM', 'BEDROOM', 'BATHROOM', 'KITCHEN', 'LIVING_ROOM'] else 1
+        )
+        for pimg in sorted_prop_imgs:
+            if pimg.image_url:
+                all_showcase_images.append({
+                    'url': pimg.image_url,
+                    'label': pimg.caption or f"{prop.title} Interior",
+                    'badge': pimg.get_image_type_display() if hasattr(pimg, 'get_image_type_display') else 'Property Photo'
                 })
 
-    # 3. Property exterior & interior images
-    if prop and prop.images.exists():
-        for pimg in prop.images.all():
-            all_showcase_images.append({
-                'url': pimg.image_url,
-                'label': prop.title,
-                'badge': 'Property Showcase'
-            })
+    # 3. Other rooms in property if room images are scarce
+    if len(all_showcase_images) < 4 and prop and prop.rooms.exists():
+        for rm in prop.rooms.exclude(id=booking.assigned_room.id if booking.assigned_room else None):
+            for rimg in rm.images.all():
+                if rimg.image_url:
+                    all_showcase_images.append({
+                        'url': rimg.image_url,
+                        'label': f"Room {rm.room_number} Interior",
+                        'badge': 'Room Photo'
+                    })
 
     # Room assignment & discussion messages
     room_assignment = getattr(booking, 'room_assignment', None)
@@ -630,6 +659,12 @@ def enter_room_view(request, booking_id):
     context = {
         'booking': booking,
         'property': prop,
+        'is_single_occupancy': is_single_occupancy,
+        'owner_name': owner_name,
+        'owner_email': owner_email,
+        'owner_phone': owner_phone,
+        'owner_photo': owner_photo,
+        'whatsapp_owner_url': whatsapp_owner_url,
         'all_showcase_images': all_showcase_images,
         'room_assignment': room_assignment,
         'room_messages': room_messages,
