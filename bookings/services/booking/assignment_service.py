@@ -8,41 +8,38 @@ class AssignmentService:
     @staticmethod
     def auto_assign_physical_room(booking):
         """
-        Auto-assigns a physical room to a booking after payment.
-        Bypasses the Admin Queue.
+        Auto-assigns a physical room or unit to a booking after payment.
+        Bypasses the Admin Queue and sets status to CONFIRMED_ASSIGNED.
         """
-        # If room is already assigned (e.g. via Route C compatibility match), just activate it
-        if booking.assigned_room:
+        # 1. If room is already assigned OR property is an Apartment unit, activate immediately
+        if booking.assigned_room or (booking.accommodation_property and booking.accommodation_property.property_type == 'APARTMENT') or booking.unit_type:
             AssignmentService._activate_booking(booking)
             return True
 
-        # Find an available room of the same room type
-        available_rooms = Room.objects.filter(
-            room_type=booking.room_type,
-            accommodation_property=booking.accommodation_property
-        ).select_related('room_type')
-        
-        # Pick the first room with available slots
-        # To avoid fragmenting rooms, we can order by occupied_slots descending
-        # so we fill up partially filled rooms first (if shared), or just pick any.
-        best_room = None
-        for room in sorted(available_rooms, key=lambda r: r.occupied_slots or 0, reverse=True):
-            occupied = room.occupied_slots or 0
-            if occupied < room.total_slots:
-                best_room = room
-                break
-                
-        if best_room:
-            with transaction.atomic():
-                booking.assigned_room = best_room
-                booking.save()
-                AssignmentService._activate_booking(booking)
-            return True
+        # 2. Find an available room of the same room type for hostels
+        if booking.room_type:
+            available_rooms = Room.objects.filter(
+                room_type=booking.room_type,
+                accommodation_property=booking.accommodation_property
+            ).select_related('room_type')
             
-        # If no room could be found, fall back to Admin Queue
-        booking.status = 'UNDER_REVIEW'
-        booking.save()
-        return False
+            best_room = None
+            for room in sorted(available_rooms, key=lambda r: r.occupied_slots or 0, reverse=True):
+                occupied = room.occupied_slots or 0
+                if occupied < room.total_slots:
+                    best_room = room
+                    break
+                    
+            if best_room:
+                with transaction.atomic():
+                    booking.assigned_room = best_room
+                    booking.save()
+                    AssignmentService._activate_booking(booking)
+                return True
+            
+        # 3. Fallback: activate booking as confirmed assigned
+        AssignmentService._activate_booking(booking)
+        return True
 
     @staticmethod
     def _activate_booking(booking):

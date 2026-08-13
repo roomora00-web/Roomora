@@ -29,8 +29,13 @@ def my_bookings_view(request):
     
     # Filter by status if requested
     status_filter = request.GET.get('status')
-    if status_filter:
-        bookings = bookings.filter(status=status_filter)
+    if status_filter and status_filter != 'ALL':
+        if status_filter in ['PAYMENT_COMPLETE', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'PAID']:
+            bookings = bookings.filter(status__in=['BOTH_ACCEPTED', 'CONFIRMED', 'CONFIRMED_ASSIGNED', 'APPROVED', 'PAYMENT_COMPLETE', 'PAID', 'PAYMENT_VERIFIED', 'ACTIVE'])
+        elif status_filter in ['INITIATED', 'PENDING', 'UNDER_REVIEW']:
+            bookings = bookings.filter(status__in=['INITIATED', 'SUBMITTED', 'UNDER_REVIEW', 'COMPATIBILITY_REVIEW', 'PAYMENT_REQUIRED', 'LIFESTYLE_PENDING'])
+        else:
+            bookings = bookings.filter(status=status_filter)
     
     # Sort options
     sort_by = request.GET.get('sort', 'most_recent')

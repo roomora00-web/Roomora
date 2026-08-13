@@ -35,16 +35,16 @@
       <a href="{% url 'bookings:my-bookings' %}" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all {% if not status_filter or status_filter == 'ALL' %}bg-[#111111] text-white shadow-xs{% else %}bg-[#F8F8FA] text-[#6B7280] hover:text-[#111111]{% endif %}">
         All Reservations ({{ total_user_bookings|default:0 }})
       </a>
-      <a href="{% url 'bookings:my-bookings' %}?status=PAYMENT_COMPLETE" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all {% if status_filter == 'PAYMENT_COMPLETE' %}bg-[#111111] text-white shadow-xs{% else %}bg-[#F8F8FA] text-[#6B7280] hover:text-[#111111]{% endif %}">
+      <a href="{% url 'bookings:my-bookings' %}?status=CONFIRMED" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all {% if status_filter == 'CONFIRMED' or status_filter == 'PAYMENT_COMPLETE' %}bg-[#111111] text-white shadow-xs{% else %}bg-[#F8F8FA] text-[#6B7280] hover:text-[#111111]{% endif %}">
         Confirmed & Paid
       </a>
-      <a href="{% url 'bookings:my-bookings' %}?status=INITIATED" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all {% if status_filter == 'INITIATED' %}bg-[#111111] text-white shadow-xs{% else %}bg-[#F8F8FA] text-[#6B7280] hover:text-[#111111]{% endif %}">
+      <a href="{% url 'bookings:my-bookings' %}?status=PENDING" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all {% if status_filter == 'PENDING' or status_filter == 'INITIATED' or status_filter == 'UNDER_REVIEW' %}bg-[#111111] text-white shadow-xs{% else %}bg-[#F8F8FA] text-[#6B7280] hover:text-[#111111]{% endif %}">
         Pending Review
       </a>
     </div>
 
     <div class="text-xs sm:text-sm text-[#888888] font-bold hidden md:block">
-      Total Records: {{ total_bookings|default:0 }}
+      Total Records: {{ total_user_bookings|default:0 }}
     </div>
   </div>
 
