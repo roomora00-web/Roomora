@@ -114,103 +114,120 @@ body.properties-page .app-workspace-wrapper {
 /* Navbar — inherits wrapper side padding, no extra side padding */
 body.properties-page .prop-navbar {
     padding: 24px 0 !important;
-    justify-content: space-between !important;
-    margin: 0 !important;
-    display: flex !important;
-}
-
-/* Hero — left-aligned light style matching property detail page */
+    justify-content: s/* Hero — Black and White Theme */
 body.properties-page .properties-hero-section {
-    background: #ffffff !important;
+    background: #0a0a0a !important;
     border: none !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    padding: 36px 0 0 !important;
-    margin: 0 !important;
+    border-radius: 24px !important;
+    padding: 64px 48px !important;
+    margin: 24px 0 32px 0 !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    overflow: visible !important;
+    position: relative;
+    overflow: hidden;
 }
-/* Hide dark-mode pseudo-elements on now-white hero */
+/* Re-enable pseudo-elements but make them subtle black/white gradients if needed, or just keep it solid. Solid is cleaner. */
 body.properties-page .properties-hero-section::before,
 body.properties-page .properties-hero-section::after {
     display: none !important;
 }
 
-/* Hero content — left-aligned */
 body.properties-page .properties-hero-section .hero-content {
     text-align: left !important;
     align-items: flex-start !important;
     justify-content: flex-start !important;
     max-width: 100% !important;
     margin: 0 !important;
+    position: relative;
+    z-index: 2;
 }
 
 body.properties-page .properties-hero-section .hero-content h1 {
-    font-size: 2.2rem !important;
-    color: #111111 !important;
+    font-size: 3.5rem !important;
+    color: #ffffff !important;
     text-align: left !important;
-    margin-bottom: 8px !important;
-    font-weight: 900 !important;
-    letter-spacing: -0.04em !important;
+    margin-bottom: 16px !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1.1 !important;
 }
 
 body.properties-page .properties-hero-section .hero-content p {
-    color: #6B7280 !important;
+    color: #A1A1AA !important;
     text-align: left !important;
-    margin: 0 0 28px 0 !important;
-    font-size: 15px !important;
-    max-width: 560px !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    margin: 0 0 40px 0 !important;
+    font-size: 1.15rem !important;
+    max-width: 600px !important;
+    line-height: 1.6 !important;
 }
 
-/* Portal layout */
-body.properties-page .portal-body-layout {
-    padding: 32px 0 !important;
-    margin: 0 !important;
-    display: flex !important;
-    box-sizing: border-box !important;
-    gap: 28px !important;
-}
-
-/* Sidebar and results */
-body.properties-page .sticky-filter-sidebar { margin: 0 !important; }
-body.properties-page .listings-results-pane { margin: 0 !important; }
-body.properties-page .listings-card-grid { margin: 0 !important; display: grid !important; }
-
-/* Search bar — left-aligned light style */
+/* Search bar — High Contrast B&W */
 body.properties-page .search-form-horizontal {
-    background: #F9FAFB !important;
-    border: 1.5px solid rgba(0,0,0,0.12) !important;
-    border-radius: 999px !important;
+    background: #ffffff !important;
+    border-radius: 99px !important;
     max-width: 600px !important;
     margin: 0 !important;
+    padding: 6px 6px 6px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+body.properties-page .search-input-field {
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
 }
 body.properties-page .search-input-field input {
     color: #111111 !important;
+    background: transparent !important;
+    border: none !important;
+    width: 100% !important;
+    outline: none !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
 }
 body.properties-page .search-input-field input::placeholder {
-    color: #9CA3AF !important;
+    color: #71717A !important;
 }
 body.properties-page .search-submit-btn {
     background: #111111 !important;
     color: #ffffff !important;
-    border-radius: 999px !important;
-    padding: 12px 24px !important;
+    border-radius: 99px !important;
+    padding: 14px 32px !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: transform 0.2s ease !important;
+}
+body.properties-page .search-submit-btn:hover {
+    transform: scale(1.02) !important;
 }
 
-/* Hero stat chips — adapt to light mode */
+/* Hero stat chips — stark outline style */
 body.properties-page .hero-stat-chip {
-    background: #F3F4F6 !important;
-    color: #374151 !important;
-    border: 1px solid rgba(0,0,0,0.08) !important;
-    border-radius: 999px !important;
+    background: rgba(255,255,255,0.03) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 99px !important;
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
 }
 
 body.properties-page .hero-stats-row {
     justify-content: flex-start !important;
-    gap: 10px !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+    margin-top: 32px !important;
+    display: flex !important;
+}    gap: 10px !important;
     flex-wrap: wrap !important;
     margin-top: 20px !important;
 }
@@ -300,17 +317,17 @@ body.properties-page .hero-stats-row {
     <!-- Hero Section — Left-aligned, matching Property Detail page style -->
     <section class="properties-hero-section">
         <!-- Breadcrumb -->
-        <nav style="display:flex; align-items:center; gap:6px; font-size:13px; color:#9CA3AF; margin-bottom:20px; flex-wrap:wrap;">
-            <a href="{% url 'landing:home' %}" style="color:#9CA3AF; text-decoration:none; font-weight:500; transition:color 0.2s;" onmouseover="this.style.color='#111111'" onmouseout="this.style.color='#9CA3AF'">Home</a>
+        <nav style="display:flex; align-items:center; gap:8px; font-size:14px; color:#A1A1AA; margin-bottom:24px; flex-wrap:wrap;">
+            <a href="{% url 'landing:home' %}" style="color:#A1A1AA; text-decoration:none; font-weight:500; transition:color 0.2s;" onmouseover="this.style.color='#FFFFFF'" onmouseout="this.style.color='#A1A1AA'">Home</a>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-            <span style="color:#111111; font-weight:600;">All Properties</span>
+            <span style="color:#FFFFFF; font-weight:600;">Properties</span>
         </nav>
 
         <div class="hero-content">
             <!-- Eyebrow label -->
-            <div style="display:inline-flex; align-items:center; gap:6px; background:#F3F4F6; border:1px solid rgba(0,0,0,0.08); border-radius:999px; padding:5px 14px; font-size:12px; font-weight:700; color:#374151; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:14px;">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                Verified Listings
+            <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:999px; padding:6px 16px; font-size:12px; font-weight:700; color:#FFFFFF; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:20px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Premium Living
             </div>
 
             <h1>Find Your Perfect Space</h1>
@@ -319,7 +336,7 @@ body.properties-page .hero-stats-row {
             <!-- Search Bar -->
             <form method="GET" action="{% url 'landing:properties' %}" class="search-form-horizontal">
                 <div class="search-input-field">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="2">
                         <circle cx="11" cy="11" r="8"/>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                     </svg>
@@ -331,19 +348,19 @@ body.properties-page .hero-stats-row {
                 </button>
             </form>
 
-            <!-- Quick stat chips —light-mode style -->
+            <!-- Quick stat chips — stark outline style -->
             <div class="hero-stats-row">
                 <div class="hero-stat-chip">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
                     <span>16 Regions</span>
                 </div>
                 <div class="hero-stat-chip">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                    <span>Verified Listings</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                    <span>Secure Booking</span>
                 </div>
                 <div class="hero-stat-chip">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>
-                    <span>Secure Booking</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    <span>Flexible Contracts</span>
                 </div>
             </div>
         </div>
