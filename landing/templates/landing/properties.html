@@ -107,24 +107,17 @@ body.properties-page .prop-navbar {
 
 /* ── Properties Page Layout ─────────────────────────────────────── */
 body.properties-page .app-workspace-wrapper {
-    margin: 0 !important;
-    padding: 0 0 64px !important;
+    margin: 0 auto !important;
+    padding: 0 56px 48px !important;
     box-sizing: border-box !important;
 }
 
-/* Navbar — full-width with side gutters, matching PD page */
+/* Navbar — inherits wrapper side padding, no extra side padding */
 body.properties-page .prop-navbar {
-    padding: 20px 32px !important;
+    padding: 24px 0 !important;
     justify-content: space-between !important;
     margin: 0 !important;
     display: flex !important;
-    box-sizing: border-box !important;
-    border-bottom: 1px solid rgba(0,0,0,0.06) !important;
-    background: #ffffff !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 900 !important;
-    backdrop-filter: blur(12px) !important;
 }
 
 /* Hero — left-aligned light style matching property detail page */
@@ -133,7 +126,7 @@ body.properties-page .properties-hero-section {
     border: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
-    padding: 36px 32px 0 !important;
+    padding: 36px 0 0 !important;
     margin: 0 !important;
     width: 100% !important;
     box-sizing: border-box !important;
@@ -170,7 +163,7 @@ body.properties-page .properties-hero-section .hero-content p {
 
 /* Portal layout */
 body.properties-page .portal-body-layout {
-    padding: 28px 32px !important;
+    padding: 32px 0 !important;
     margin: 0 !important;
     display: flex !important;
     box-sizing: border-box !important;
@@ -218,22 +211,16 @@ body.properties-page .hero-stats-row {
     margin-top: 20px !important;
 }
 
-/* Responsive tweaks */
+/* Responsive — wrapper side padding scales down */
 @media (max-width: 1023px) {
-    body.properties-page .prop-navbar { padding: 16px 20px !important; }
-    body.properties-page .properties-hero-section { padding: 28px 20px 0 !important; }
-    body.properties-page .portal-body-layout { padding: 20px !important; }
+    body.properties-page .app-workspace-wrapper { padding: 0 32px 48px !important; }
 }
 @media (max-width: 767px) {
-    body.properties-page .prop-navbar { padding: 14px 16px !important; }
-    body.properties-page .properties-hero-section { padding: 24px 16px 0 !important; }
-    body.properties-page .portal-body-layout { padding: 16px !important; }
+    body.properties-page .app-workspace-wrapper { padding: 0 16px 48px !important; }
     body.properties-page .properties-hero-section .hero-content h1 { font-size: 1.6rem !important; }
 }
 @media (max-width: 480px) {
-    body.properties-page .prop-navbar { padding: 12px 14px !important; }
-    body.properties-page .properties-hero-section { padding: 18px 14px 0 !important; }
-    body.properties-page .portal-body-layout { padding: 12px 14px !important; }
+    body.properties-page .app-workspace-wrapper { padding: 0 14px 48px !important; }
     body.properties-page .properties-hero-section .hero-content h1 { font-size: 1.35rem !important; }
 }
 </style>
