@@ -356,7 +356,12 @@ def cancel_booking_view(request, booking_id):
 
 
 def submit_visit_request(request):
-    """AJAX endpoint to receive and store a VisitRequest"""
+    """AJAX endpoint to receive and store a VisitRequest with full notifications"""
+    from django.conf import settings
+    from django.core.mail import send_mail
+    from accounts.services import NotificationService
+    import urllib.parse
+
     if request.method != 'POST':
         return JsonResponse({'success': False, 'message': 'Invalid method'}, status=405)
     
@@ -377,10 +382,69 @@ def submit_visit_request(request):
             contact_method=data.get('contact_method', 'Email'),
             notes=data.get('notes', '')
         )
+
+        owner_name = property_obj.owner_name or (property_obj.uploaded_by.get_full_name() if property_obj.uploaded_by else "Property Manager")
+        owner_email = property_obj.owner_email or (property_obj.uploaded_by.email if property_obj.uploaded_by else "admin@roomora.com")
+        owner_phone = property_obj.owner_phone or "+233244123456"
+
+        # 1. Send Email Notification to Property Manager
+        if owner_email:
+            send_mail(
+                subject=f"📅 New Visit Request: {property_obj.title}",
+                message=(
+                    f"Hello {owner_name},\n\n"
+                    f"A new property visit request has been submitted on Roomora for {property_obj.title}.\n\n"
+                    f"--- Visit Details ---\n"
+                    f"• Student Name: {visit.name}\n"
+                    f"• Student Email: {visit.email}\n"
+                    f"• Student Phone: {visit.phone}\n"
+                    f"• Requested Date: {visit.visit_date}\n"
+                    f"• Requested Time: {visit.visit_time}\n"
+                    f"• Party Size: {visit.party_size}\n"
+                    f"• Preferred Contact Method: {visit.contact_method}\n"
+                    f"• Notes: {visit.notes or 'None'}\n\n"
+                    f"Please contact the student to confirm the appointment."
+                ),
+                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'roomora00@gmail.com'),
+                recipient_list=[owner_email],
+                fail_silently=True
+            )
+
+        # 2. Send Dashboard Notification & Confirmation Email to Student (if logged in or email provided)
+        if request.user.is_authenticated:
+            NotificationService.send_notification(
+                user=request.user,
+                title="📅 VISIT REQUEST SUBMITTED",
+                message=f"Your visit request for {property_obj.title} on {visit.visit_date} at {visit.visit_time} has been sent to manager {owner_name} ({owner_phone}).",
+                notification_type="INFO",
+                send_email=True
+            )
+        elif visit.email:
+            send_mail(
+                subject=f"Visit Request Confirmation - {property_obj.title}",
+                message=(
+                    f"Hello {visit.name},\n\n"
+                    f"Your visit request for {property_obj.title} on {visit.visit_date} at {visit.visit_time} has been received.\n\n"
+                    f"Manager Contact:\n"
+                    f"• Name: {owner_name}\n"
+                    f"• Phone: {owner_phone}\n"
+                    f"• Email: {owner_email}\n\n"
+                    f"Thank you for choosing Roomora!"
+                ),
+                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'roomora00@gmail.com'),
+                recipient_list=[visit.email],
+                fail_silently=True
+            )
+
+        # 3. Construct direct WhatsApp URL for instant manager chat
+        clean_phone = owner_phone.replace('+', '').replace(' ', '').replace('-', '')
+        wa_text = urllib.parse.quote(f"Hello {owner_name}, I just submitted a visit request for {property_obj.title} on {visit.visit_date} at {visit.visit_time}.")
+        whatsapp_url = f"https://wa.me/{clean_phone}?text={wa_text}"
         
         return JsonResponse({
             'success': True,
-            'message': 'Visit request submitted successfully'
+            'message': 'Visit request submitted successfully',
+            'whatsapp_url': whatsapp_url
         })
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=400)

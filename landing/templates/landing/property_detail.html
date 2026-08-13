@@ -4424,7 +4424,14 @@ function submitVisit() {
   .then(data => {
     if (data.success) {
       closeVisitModal();
-      showToast("✅ Visit request submitted! We'll confirm within 24 hours.");
+      showToast("✅ Visit request submitted! Check your email & dashboard for updates.");
+      if (data.whatsapp_url) {
+        setTimeout(() => {
+          if (confirm("Would you like to open WhatsApp to message the property manager directly about your scheduled visit?")) {
+            window.open(data.whatsapp_url, '_blank');
+          }
+        }, 800);
+      }
     } else {
       showToast("❌ Error: " + data.message);
     }
