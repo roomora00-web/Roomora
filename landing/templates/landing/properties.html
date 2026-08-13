@@ -21,8 +21,7 @@ body.properties-page .app-workspace-wrapper,
 body.properties-page .portal-body-layout,
 body.properties-page .sticky-filter-sidebar,
 body.properties-page .listings-results-pane,
-body.properties-page .listings-card-grid,
-body.properties-page .prop-navbar {
+body.properties-page .listings-card-grid {
     text-align: left !important;
     align-items: flex-start !important;
     justify-content: flex-start !important;
@@ -131,6 +130,11 @@ body.properties-page .properties-hero-section {
     width: 100% !important;
     box-sizing: border-box !important;
     overflow: visible !important;
+}
+/* Hide dark-mode pseudo-elements on now-white hero */
+body.properties-page .properties-hero-section::before,
+body.properties-page .properties-hero-section::after {
+    display: none !important;
 }
 
 /* Hero content — left-aligned */
