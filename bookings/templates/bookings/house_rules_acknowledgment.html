@@ -302,8 +302,9 @@
             </div>
 
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <a href="{% url 'landing:property_detail' property.id %}" class="text-xs font-bold text-[#6B7280] hover:text-[#111111] transition-colors">
-                Cancel Booking
+              <a href="{% url 'landing:property_detail' property.id %}" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl border border-black/10 bg-[#F8F8FA] hover:bg-rose-50 hover:border-rose-200 hover:text-rose-700 text-xs font-extrabold text-[#555555] transition-all w-full sm:w-auto shadow-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <span>Cancel Booking</span>
               </a>
               
               <button type="submit" id="ackSubmitBtn" disabled class="ds-btn w-full sm:w-auto px-10 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none">
