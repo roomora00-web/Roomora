@@ -509,7 +509,7 @@ def user_only_view(view_func):
 
 @login_required
 def vacation_reserve_update_view(request, booking_id):
-    """Phase 5.3: Update Semester 2 Date"""
+    """Update Semester 2 Date for Hostels OR Lease Extension for Apartments"""
     from .models import Booking
     booking = get_object_or_404(Booking, id=booking_id)
     
@@ -518,11 +518,58 @@ def vacation_reserve_update_view(request, booking_id):
         messages.error(request, 'You do not have access to this booking.')
         return redirect('bookings:my-bookings')
         
-    # Minimum date is today or S1 end date + 1, whichever is later
-    from datetime import date, timedelta
+    prop = booking.accommodation_property
+    is_apartment = False
+    if booking.unit_type or (prop and prop.property_type in ['APARTMENT', 'STUDIO', 'FLAT', 'TOWNHOUSE', 'VILLA', 'DUPLEX', 'STUDENT_APARTMENT', 'COMPOUND_HOUSE']):
+        is_apartment = True
+
+    if request.method == 'POST':
+        import json
+        from datetime import datetime
+        
+        new_date_str = None
+        if request.content_type == 'application/json':
+            try:
+                data = json.loads(request.body)
+                new_date_str = data.get('new_move_out_date') or data.get('vacation_gap_end') or data.get('new_semester2_start')
+            except Exception:
+                pass
+        else:
+            new_date_str = request.POST.get('new_move_out_date') or request.POST.get('vacation_gap_end') or request.POST.get('new_semester2_start')
+
+        if new_date_str:
+            try:
+                parsed_date = datetime.strptime(new_date_str, '%Y-%m-%d').date()
+                if is_apartment:
+                    booking.move_out_date = parsed_date
+                    if booking.move_in_date:
+                        delta_days = (booking.move_out_date - booking.move_in_date).days
+                        booking.duration_days = max(1, delta_days)
+                        booking.duration_months = max(1, round(delta_days / 30.0))
+                    booking.save()
+                    msg = f'Apartment lease successfully extended to {booking.move_out_date.strftime("%b %d, %Y")}.'
+                else:
+                    booking.vacation_gap_end = parsed_date
+                    booking.semester_2_start_date = parsed_date
+                    booking.save()
+                    msg = f'Semester 2 start date updated to {parsed_date.strftime("%b %d, %Y")}.'
+
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json':
+                    return JsonResponse({'success': True, 'message': msg})
+
+                messages.success(request, msg)
+                return redirect('bookings:enter-room', booking_id=booking.id)
+            except ValueError:
+                if request.content_type == 'application/json':
+                    return JsonResponse({'success': False, 'error': 'Invalid date format'}, status=400)
+                messages.error(request, 'Invalid date selected.')
+
+    from datetime import date
     min_date = date.today()
     context = {
         'booking': booking,
+        'property': prop,
+        'is_apartment': is_apartment,
         'min_date': min_date
     }
     return render(request, 'bookings/vacation_reserve_update.html', context)
