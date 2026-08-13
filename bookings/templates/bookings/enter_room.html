@@ -44,14 +44,16 @@
   <!-- Key Room Highlights Bar -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 w-full">
     <div class="p-4 space-y-1 border border-black/10 rounded-xl bg-white shadow-2xs">
-      <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Assigned Space</div>
+      <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">{% if is_apartment %}Assigned Unit{% else %}Assigned Space{% endif %}</div>
       <div class="font-outfit text-lg sm:text-xl font-bold text-[#111111]">
-        {% if booking.assigned_room %}
-          Room {{ booking.assigned_room.room_number }}
+        {% if booking.unit_type %}
+          {{ booking.unit_type.name }}
+        {% elif booking.assigned_room %}
+          {% if is_apartment %}Unit {{ booking.assigned_room.room_number }}{% else %}Room {{ booking.assigned_room.room_number }}{% endif %}
         {% elif booking.room_type %}
           {{ booking.room_type.room_type_name }}
         {% else %}
-          Standard Unit
+          {% if is_apartment %}Entire Apartment Unit{% else %}Standard Room{% endif %}
         {% endif %}
       </div>
     </div>
@@ -59,7 +61,9 @@
     <div class="p-4 space-y-1 border border-black/10 rounded-xl bg-white shadow-2xs">
       <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Occupancy Type</div>
       <div class="font-outfit text-lg sm:text-xl font-bold text-[#111111]">
-        {% if is_single_occupancy %}
+        {% if is_apartment %}
+          Entire Apartment (Private Unit)
+        {% elif is_single_occupancy %}
           Single Occupancy (1 in a Room)
         {% elif booking.room_type %}
           {{ booking.room_type.get_occupancy_type_display|default:booking.room_type.room_type_name }}
@@ -70,7 +74,7 @@
     </div>
 
     <div class="p-4 space-y-1 border border-black/10 rounded-xl bg-white shadow-2xs">
-      <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Stay Duration</div>
+      <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">{% if is_apartment %}Lease Term{% else %}Stay Duration{% endif %}</div>
       <div class="font-outfit text-lg sm:text-xl font-bold text-[#111111]">
         {{ booking.calculated_duration_label|title|default:"1 Semester" }}
       </div>
@@ -275,17 +279,27 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             </div>
             <div>
-              <h2 class="font-outfit text-xl font-bold text-[#111111]">Private Single-Occupant Residence</h2>
-              <p class="text-xs text-zinc-500">Sole occupancy stay — 100% private accommodation for 1 tenant.</p>
+              <h2 class="font-outfit text-xl font-bold text-[#111111]">
+                {% if is_apartment %}Private Entire Apartment{% else %}Private Single-Occupant Residence{% endif %}
+              </h2>
+              <p class="text-xs text-zinc-500">
+                {% if is_apartment %}Sole residential unit — 100% private apartment for your exclusive stay.{% else %}Sole occupancy stay — 100% private accommodation for 1 tenant.{% endif %}
+              </p>
             </div>
           </div>
           <span class="text-xs font-bold text-black bg-zinc-100 border border-zinc-300 px-3 py-1 rounded-lg">
-            Single Occupant Stay
+            {% if is_apartment %}Entire Apartment Stay{% else %}Single Occupant Stay{% endif %}
           </span>
         </div>
         <div class="p-4 rounded-xl bg-zinc-50 border border-zinc-200 text-xs text-zinc-700 leading-relaxed flex items-center gap-3">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-900 shrink-0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>This unit is reserved exclusively as a private space. No roommate matching or shared room assignments apply to this reservation.</span>
+          <span>
+            {% if is_apartment %}
+              This entire apartment is reserved exclusively as a private residential unit. No roommate matching or shared room assignments apply to this property.
+            {% else %}
+              This unit is reserved exclusively as a private space. No roommate matching or shared room assignments apply to this reservation.
+            {% endif %}
+          </span>
         </div>
       </div>
       {% endif %}
@@ -552,12 +566,12 @@
 
       </div>
 
-      <!-- Stay Duration & Vacation Protocol Plan -->
+      <!-- Stay Duration & Rental Protocol Plan -->
       <div class="p-5 sm:p-6 space-y-4 rounded-2xl border border-black/10 bg-white shadow-xs w-full">
         <div class="flex items-center justify-between">
           <h2 class="font-outfit text-lg font-bold text-[#111111] flex items-center gap-2">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span>Stay Duration & Protocol</span>
+            <span>{% if is_apartment %}Lease Duration & Rental Protocol{% else %}Stay Duration & Protocol{% endif %}</span>
           </h2>
           <span class="text-[10px] font-bold text-white bg-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
             Verified Lease
@@ -579,28 +593,32 @@
             </div>
           </div>
           <div>
-            <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Academic Stay</div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">{% if is_apartment %}Lease Term{% else %}Academic Stay{% endif %}</div>
             <div class="font-bold text-[#111111] mt-0.5 text-xs sm:text-sm">
               {{ booking.calculated_duration_label|title|default:"1 Semester" }}
             </div>
           </div>
         </div>
 
-        <!-- Vacation & Semester Break Card -->
+        <!-- Vacation / Lease Continuity Card -->
         <div class="p-5 rounded-xl bg-black text-white space-y-3 shadow-xs">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-300">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <span>Semester Vacation & Storage Declaration</span>
+              <span>{% if is_apartment %}Lease Continuity & Rental Protocol{% else %}Semester Vacation & Storage Declaration{% endif %}</span>
             </div>
             <span class="text-[10px] bg-zinc-800 text-white px-2.5 py-0.5 rounded-full font-bold">Active Protocol</span>
           </div>
           <p class="text-xs text-zinc-300 leading-relaxed">
+            {% if is_apartment %}
+            Your apartment lease remains continuously active for your entire stay. You can request lease renewals, extend your rental period, or coordinate move-in schedules with property management at any time.
+            {% else %}
             During official university vacation breaks, your room and belongings are soft-locked and fully secured. You can update your vacation departure dates or declare luggage storage options at any time.
+            {% endif %}
           </p>
           <div class="pt-1">
             <a href="{% url 'bookings:vacation-reserve-update' booking.id %}" class="inline-flex items-center gap-2 bg-white text-black px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-zinc-200 transition-colors shadow-2xs">
-              <span>Update Vacation & Return Dates ➔</span>
+              <span>{% if is_apartment %}Manage Lease Extension ➔{% else %}Update Vacation & Return Dates ➔{% endif %}</span>
             </a>
           </div>
         </div>
