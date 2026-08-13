@@ -142,21 +142,22 @@ class PropertiesView(TemplateView):
             from django.template.loader import render_to_string
             from django.http import JsonResponse
             html = render_to_string('landing/partials/property_cards.html', context, request=request)
-            return JsonResponse({'html': html, 'count': context['total_count']})
+            map_data = json.loads(context.get('map_properties_json', '[]'))
+            return JsonResponse({'html': html, 'count': context['total_count'], 'map_properties': map_data})
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
         # Get query parameters
-        location = self.request.GET.get('location', '')
-        property_type = self.request.GET.get('property_type', '')
-        min_price = self.request.GET.get('min_price', '')
-        max_price = self.request.GET.get('max_price', '')
-        min_bedrooms = self.request.GET.get('min_bedrooms', '')
+        location = self.request.GET.get('location', '').strip()
+        property_type = self.request.GET.get('property_type', '').strip()
+        min_price = self.request.GET.get('min_price', '').strip()
+        max_price = self.request.GET.get('max_price', '').strip()
+        min_bedrooms = self.request.GET.get('min_bedrooms', '').strip()
         amenities = self.request.GET.getlist('amenities', [])
-        superhost = self.request.GET.get('superhost', '')
-        sort_by = self.request.GET.get('sort_by', 'recommended')
+        superhost = self.request.GET.get('superhost', '').strip()
+        sort_by = self.request.GET.get('sort_by', 'recommended').strip()
         
         # Base queryset
         properties = Property.objects.filter(
@@ -169,45 +170,67 @@ class PropertiesView(TemplateView):
             'unit_types__pricing_models'
         )
         
-        # Apply filters
+        # Apply location filter
         if location:
             properties = properties.filter(
                 Q(city__icontains=location) | 
                 Q(region__icontains=location) | 
                 Q(title__icontains=location) |
+                Q(address__icontains=location) |
+                Q(nearest_institution__icontains=location) |
                 Q(country__icontains=location)
-            )
+            ).distinct()
         
+        # Apply property type filter
         if property_type:
             properties = properties.filter(property_type=property_type)
         
-        # Price filtering
-        if min_price or max_price:
-            price_filter = Q()
-            if min_price:
-                price_filter |= Q(room_types__pricing_models__monthly_price__gte=min_price)
-                price_filter |= Q(room_types__pricing_models__semester_price__gte=min_price)
-                price_filter |= Q(room_types__pricing_models__yearly_price__gte=min_price)
-                price_filter |= Q(unit_types__pricing_models__monthly_price__gte=min_price)
-                price_filter |= Q(unit_types__pricing_models__semester_price__gte=min_price)
-                price_filter |= Q(unit_types__pricing_models__yearly_price__gte=min_price)
-            if max_price:
-                price_filter |= Q(room_types__pricing_models__monthly_price__lte=max_price)
-                price_filter |= Q(room_types__pricing_models__semester_price__lte=max_price)
-                price_filter |= Q(room_types__pricing_models__yearly_price__lte=max_price)
-                price_filter |= Q(unit_types__pricing_models__monthly_price__lte=max_price)
-                price_filter |= Q(unit_types__pricing_models__semester_price__lte=max_price)
-                price_filter |= Q(unit_types__pricing_models__yearly_price__lte=max_price)
-            properties = properties.filter(price_filter).distinct()
+        # Min Price filtering
+        if min_price:
+            try:
+                min_p = float(min_price)
+                properties = properties.filter(
+                    Q(room_types__pricing_models__monthly_price__gte=min_p) |
+                    Q(room_types__pricing_models__semester_price__gte=min_p) |
+                    Q(room_types__pricing_models__yearly_price__gte=min_p) |
+                    Q(unit_types__pricing_models__monthly_price__gte=min_p) |
+                    Q(unit_types__pricing_models__semester_price__gte=min_p) |
+                    Q(unit_types__pricing_models__yearly_price__gte=min_p)
+                ).distinct()
+            except ValueError:
+                pass
             
-        # Bedroom filtering (Only applies to apartments with unit types)
+        # Max Price filtering
+        if max_price:
+            try:
+                max_p = float(max_price)
+                properties = properties.filter(
+                    Q(room_types__pricing_models__monthly_price__lte=max_p) |
+                    Q(room_types__pricing_models__semester_price__lte=max_p) |
+                    Q(room_types__pricing_models__yearly_price__lte=max_p) |
+                    Q(unit_types__pricing_models__monthly_price__lte=max_p) |
+                    Q(unit_types__pricing_models__semester_price__lte=max_p) |
+                    Q(unit_types__pricing_models__yearly_price__lte=max_p)
+                ).distinct()
+            except ValueError:
+                pass
+
+        # Bedroom filtering
         if min_bedrooms and min_bedrooms != '0':
-            properties = properties.filter(unit_types__bedrooms__gte=int(min_bedrooms))
+            try:
+                beds_val = int(min_bedrooms)
+                properties = properties.filter(
+                    Q(unit_types__bedrooms__gte=beds_val) |
+                    Q(room_types__beds_per_room__gte=beds_val)
+                ).distinct()
+            except ValueError:
+                pass
         
         # Amenities filtering
         if amenities:
             for amenity_id in amenities:
                 properties = properties.filter(amenities__id=amenity_id)
+            properties = properties.distinct()
         
         # Superhost filter
         if superhost == 'true':
@@ -216,7 +239,7 @@ class PropertiesView(TemplateView):
         # Sorting
         if sort_by == 'price_low':
             properties = properties.annotate(
-                min_price=Coalesce(
+                min_p=Coalesce(
                     Min('room_types__pricing_models__monthly_price'),
                     Min('room_types__pricing_models__semester_price'),
                     Min('room_types__pricing_models__yearly_price'),
@@ -224,10 +247,10 @@ class PropertiesView(TemplateView):
                     Min('unit_types__pricing_models__semester_price'),
                     Min('unit_types__pricing_models__yearly_price')
                 )
-            ).order_by('min_price')
+            ).order_by('min_p')
         elif sort_by == 'price_high':
             properties = properties.annotate(
-                max_price=Coalesce(
+                max_p=Coalesce(
                     Max('room_types__pricing_models__monthly_price'),
                     Max('room_types__pricing_models__semester_price'),
                     Max('room_types__pricing_models__yearly_price'),
@@ -235,7 +258,7 @@ class PropertiesView(TemplateView):
                     Max('unit_types__pricing_models__semester_price'),
                     Max('unit_types__pricing_models__yearly_price')
                 )
-            ).order_by('-max_price')
+            ).order_by('-max_p')
         elif sort_by == 'rating':
             properties = properties.order_by('-safety_score')
         elif sort_by == 'newest':

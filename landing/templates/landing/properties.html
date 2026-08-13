@@ -403,6 +403,12 @@ body.properties-page .hero-stats-row {
                 <div class="filter-category-section">
                     <h4 class="filter-category-title">Property Type</h4>
                     <div class="filter-options-list">
+                        <label class="filter-checkbox-label">
+                            <input type="radio" name="property_type" value="" 
+                                   {% if not current_filters.property_type %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">All Property Types</span>
+                        </label>
                         {% for type_choice in property_types %}
                         <label class="filter-checkbox-label">
                             <input type="radio" name="property_type" value="{{ type_choice.0 }}" 
