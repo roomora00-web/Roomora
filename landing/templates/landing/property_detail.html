@@ -1,5 +1,5 @@
 {% extends 'landing/base.html' %}
-{% block title %}{{ property.title }} — StayMatch
+{% block title %}{{ property.title }} — Roomora
 {% endblock %}
 
 {% block extra_css %}
@@ -854,17 +854,17 @@ body {
 .pd-key-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
 .pd-fact-card {
   background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  border-radius: var(--radius-md);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
   padding: 20px;
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05);
-  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .pd-fact-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   border-color: #111111;
   background: #FFFFFF;
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.09);
 }
 .pd-section-subtitle {
   font-size: 16px;
@@ -976,16 +976,16 @@ body {
 .pd-room-card {
   background: #FFFFFF !important;
   background-image: none !important;
-  border: 1px solid rgba(0, 0, 0, 0.10);
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 .pd-room-card:hover {
-  transform: translateY(-1px);
-  border-color: rgba(0, 0, 0, 0.18);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px) !important;
+  border-color: rgba(0, 0, 0, 0.20) !important;
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.12), 0 4px 14px rgba(0, 0, 0, 0.05) !important;
 }
 .pd-room-card-header {
   display: flex;
@@ -1463,12 +1463,16 @@ body {
 /* Sticky Booking Card */
 .pd-booking-card {
   background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 24px;
   padding: 28px;
-  box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07), 0 2px 8px rgba(0, 0, 0, 0.03);
   position: sticky;
   top: 24px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.pd-booking-card:hover {
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.11), 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 .pd-booking-property-name { font-size: 18px; font-weight: 700; color: #111111; margin-bottom: 6px; }
 .pd-booking-location { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 4px; margin-bottom: 18px; }
@@ -1530,11 +1534,15 @@ body {
 /* Contact Section */
 .pd-contact-section {
   background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: var(--radius-xl);
-  padding: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 28px;
+  padding: 36px;
   margin-top: 48px;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.pd-contact-section:hover {
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.10);
 }
 .pd-contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
 .pd-contact-info-block h3 { font-size: 18px; font-weight: 700; color: #111111; margin-bottom: 6px; }
