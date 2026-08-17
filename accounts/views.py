@@ -353,21 +353,12 @@ def verify_email_view(request):
         try:
             user = User.objects.get(email=email)
             if user.email_verified:
-                # Set status to incomplete if profile is missing or incomplete
-                if not hasattr(user, 'profile') or user.profile.profile_completion_percentage < 100:
-                    user.account_status = 'PROFILE_INCOMPLETE'
-                    user.is_active = True
-                    user.save()
-                    login(request, user)
-                    messages.success(request, 'Your email is already verified! Please complete your profile.')
-                    return redirect('accounts:profile-enrichment')
-                else:
-                    user.account_status = 'ACTIVE'
-                    user.is_active = True
-                    user.save()
-                    login(request, user)
-                    messages.success(request, 'Your email is already verified! Welcome back.')
-                    return redirect('accounts:dashboard')
+                user.account_status = 'COMPLETE'
+                user.is_active = True
+                user.save()
+                login(request, user)
+                messages.success(request, 'Your email is verified! Welcome back.')
+                return redirect('accounts:dashboard')
 
             if not otp:
                 return render(request, 'accounts/verify_email.html', {
@@ -387,8 +378,7 @@ def verify_email_view(request):
                 
                 # Mark email as verified and active
                 user.email_verified = True
-                # Set status to incomplete so they are forced to complete profile
-                user.account_status = 'PROFILE_INCOMPLETE' if not hasattr(user, 'profile') or user.profile.profile_completion_percentage < 100 else 'COMPLETE'
+                user.account_status = 'COMPLETE'
                 user.is_active = True
                 user.save()
                 
@@ -397,7 +387,7 @@ def verify_email_view(request):
                 NotificationService.send_notification(
                     user=user,
                     title='Welcome to Roomora!',
-                    message='Please complete your profile to get the best matching experience.',
+                    message='Welcome to Roomora! Browse verified properties and find your perfect stay.',
                     notification_type='SYSTEM',
                     send_email=True,
                     email_template='accounts/emails/welcome.html'
@@ -405,7 +395,7 @@ def verify_email_view(request):
                 
                 # Log user in and redirect to profile enrichment
                 login(request, user)
-                messages.success(request, 'Email verified! Please complete your profile to continue.')
+                messages.success(request, 'Email verified! Complete your profile or skip to dashboard.')
                 return redirect('accounts:profile-enrichment')
             elif verification.used:
                 return render(request, 'accounts/verify_email.html', {
@@ -454,17 +444,12 @@ def verify_email_view(request):
         try:
             u = User.objects.get(email=email)
             if u.email_verified:
-                is_complete = hasattr(u, 'profile') and u.profile.profile_completion_percentage >= 100
-                u.account_status = 'COMPLETE' if is_complete else 'PROFILE_INCOMPLETE'
+                u.account_status = 'COMPLETE'
                 u.is_active = True
                 u.save()
                 login(request, u)
-                if is_complete:
-                    messages.success(request, 'Your email is verified! Welcome back.')
-                    return redirect('accounts:dashboard')
-                else:
-                    messages.success(request, 'Your email is verified! Please complete your profile to continue.')
-                    return redirect('accounts:profile-enrichment')
+                messages.success(request, 'Your email is verified! Welcome back.')
+                return redirect('accounts:dashboard')
         except User.DoesNotExist:
             pass
     return redirect('accounts:check-email', email=email)
@@ -665,8 +650,6 @@ def login_view(request):
             # Redirect based on account status
             if user.account_status == 'EMAIL_UNVERIFIED':
                 return redirect('accounts:check-email', email=user.email)
-            elif user.account_status == 'PROFILE_INCOMPLETE':
-                return redirect('accounts:profile-enrichment')
             else:
                 return redirect('accounts:dashboard')
     else:
@@ -720,6 +703,13 @@ def profile_enrichment_view(request):
     """Profile enrichment view - Phase 3 of authentication"""
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     
+    # Handle explicit skip or direct navigation to dashboard
+    if request.GET.get('skip') == 'true' or request.POST.get('action') == 'skip':
+        request.user.account_status = 'COMPLETE'
+        request.user.save(update_fields=['account_status'])
+        messages.info(request, 'You can complete your profile at any time from your account settings.')
+        return redirect('accounts:dashboard')
+
     if request.method == 'POST':
         form = ProfileEnrichmentForm(request.POST, instance=profile, user_type=request.user.user_type)
         if form.is_valid():
@@ -737,26 +727,26 @@ def profile_enrichment_view(request):
             p.save()
             profile.calculate_completion()
             
-            was_complete = request.user.account_status == 'COMPLETE'
-            
-            # Update account status
-            if profile.profile_completion_percentage >= 100:
-                request.user.account_status = 'COMPLETE'
-                if not was_complete:
-                    from accounts.services import NotificationService
-                    NotificationService.send_notification(
-                        user=request.user,
-                        title='Profile Complete!',
-                        message='Your profile is now 100% complete. We can start matching you!',
-                        notification_type='SYSTEM',
-                        send_email=True,
-                        email_template='accounts/emails/profile_complete.html'
-                    )
-            else:
-                request.user.account_status = 'PROFILE_INCOMPLETE'
-            request.user.save()
+            # Always mark account as complete so user is never trapped
+            request.user.account_status = 'COMPLETE'
+            request.user.save(update_fields=['account_status'])
             
             messages.success(request, 'Profile updated successfully.')
+            return redirect('accounts:dashboard')
+        else:
+            # Save whatever valid data was posted directly on the profile model
+            if request.POST.get('institution'):
+                profile.institution = request.POST.get('institution')
+            if request.POST.get('academic_level'):
+                profile.academic_level = request.POST.get('academic_level')
+            if request.POST.get('bio'):
+                profile.bio = request.POST.get('bio')
+            profile.save()
+            profile.calculate_completion()
+            
+            request.user.account_status = 'COMPLETE'
+            request.user.save(update_fields=['account_status'])
+            messages.success(request, 'Profile saved. Welcome to your dashboard!')
             return redirect('accounts:dashboard')
     else:
         form = ProfileEnrichmentForm(instance=profile, user_type=request.user.user_type)
