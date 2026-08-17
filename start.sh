@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-# Force cache invalidation
-echo "Starting deployment setup..."
+# Force cache invalidation and clean start
+echo "Starting deployment setup for Roomora..."
 
 # Run database migrations
 python manage.py migrate --noinput
