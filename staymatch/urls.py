@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
@@ -51,9 +51,16 @@ def debug_home(request):
             'traceback': traceback.format_exc()
         }, status=500)
 
+from landing.views import manifest_view, serviceworker_view, offline_view
+
 urlpatterns = [
+    re_path(r'^health/?$', healthcheck),
     path('health/', healthcheck),
+    path('health', healthcheck),
     path('debug-home/', debug_home),
+    path('manifest.json', manifest_view, name='pwa_manifest'),
+    path('serviceworker.js', serviceworker_view, name='pwa_serviceworker'),
+    path('offline/', offline_view, name='pwa_offline'),
     path('admin/', admin.site.urls),
     path('', include('landing.urls')),
     path('accounts/', include('accounts.urls')),

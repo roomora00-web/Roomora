@@ -30,7 +30,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure--y=jgs5(cant7di!y-y1&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+raw_hosts = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = [h.strip().replace('http://', '').replace('https://', '') for h in raw_hosts if h.strip()]
+if not ALLOWED_HOSTS or '*' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.extend(['*', '127.0.0.1', 'localhost', '.railway.app'])
 
 
 # Application definition
@@ -127,7 +130,7 @@ DATABASES = {
 if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
     DATABASES['default']['OPTIONS'] = DATABASES['default'].get('OPTIONS', {})
     DATABASES['default']['OPTIONS'].update({
-        'connect_timeout': 15,
+        'connect_timeout': 45,
         'keepalives': 1,
         'keepalives_idle': 30,
         'keepalives_interval': 10,
@@ -277,6 +280,15 @@ PAYMENT_WINDOW_HOURS = 2  # Payment window in hours
 PLATFORM_FEE_PERCENTAGE = 0.10  # 10% platform fee
 
 # Security and CSRF settings
-csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://roomora-production.up.railway.app,http://127.0.0.1:8000,http://localhost:8000').split(',')
-CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in csrf_origins if origin.strip()]
+raw_csrf = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://roomora-production-cab4.up.railway.app,https://roomora-production.up.railway.app,https://*.railway.app,http://127.0.0.1:8000,http://localhost:8000').split(',')
+CSRF_TRUSTED_ORIGINS = []
+for orig in raw_csrf:
+    orig = orig.strip()
+    if orig:
+        if not orig.startswith('http://') and not orig.startswith('https://'):
+            orig = f"https://{orig}"
+        CSRF_TRUSTED_ORIGINS.append(orig)
+if 'https://*.railway.app' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://*.railway.app')
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
