@@ -1,0 +1,166 @@
+<!-- Mobile Bottom Navigation Bar (Visible only on mobile devices <= 768px) -->
+<nav id="roomora-mobile-bottom-nav" class="roomora-mobile-nav" aria-label="Mobile Navigation">
+    <a href="{% url 'landing:home' %}" class="mobile-nav-item {% if request.path == '/' or request.resolver_match.url_name == 'home' %}active{% endif %}">
+        <div class="nav-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+        </div>
+        <span class="nav-label">Explore</span>
+    </a>
+
+    <a href="{% url 'landing:properties' %}" class="mobile-nav-item {% if '/properties' in request.path and not '/saved' in request.path %}active{% endif %}">
+        <div class="nav-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.3-4.3"/>
+            </svg>
+        </div>
+        <span class="nav-label">Search</span>
+    </a>
+
+    <a href="{% if user.is_authenticated %}{% url 'properties:saved-properties' %}{% else %}{% url 'accounts:login' %}?next={% url 'properties:saved-properties' %}{% endif %}" 
+       class="mobile-nav-item {% if '/saved' in request.path %}active{% endif %}">
+        <div class="nav-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+            </svg>
+        </div>
+        <span class="nav-label">Saved</span>
+    </a>
+
+    <a href="{% if user.is_authenticated %}{% url 'accounts:dashboard' %}{% else %}{% url 'accounts:login' %}?next={% url 'accounts:dashboard' %}{% endif %}" 
+       class="mobile-nav-item {% if '/bookings' in request.path or '/checkout' in request.path %}active{% endif %}">
+        <div class="nav-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                <line x1="16" x2="16" y1="2" y2="6"/>
+                <line x1="8" x2="8" y1="2" y2="6"/>
+                <line x1="3" x2="21" y1="10" y2="10"/>
+                <path d="m9 16 2 2 4-4"/>
+            </svg>
+        </div>
+        <span class="nav-label">Bookings</span>
+    </a>
+
+    <a href="{% if user.is_authenticated %}{% url 'accounts:dashboard' %}{% else %}{% url 'accounts:login' %}{% endif %}" 
+       class="mobile-nav-item {% if '/accounts/' in request.path and not '/saved' in request.path %}active{% endif %}">
+        <div class="nav-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+        </div>
+        <span class="nav-label">{% if user.is_authenticated %}Account{% else %}Sign In{% endif %}</span>
+    </a>
+</nav>
+
+<style>
+    /* Mobile Bottom Navigation Styles */
+    .roomora-mobile-nav {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .roomora-mobile-nav {
+            display: flex;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: calc(64px + env(safe-area-inset-bottom, 0px));
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            background: rgba(12, 14, 20, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 9990;
+            justify-content: space-around;
+            align-items: center;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Prevent page content from being clipped by the mobile bottom nav */
+        body {
+            padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            height: 100%;
+            text-decoration: none;
+            color: #64748B;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            padding: 6px 0 4px;
+        }
+
+        .mobile-nav-item .nav-icon-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 28px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-nav-item svg {
+            width: 22px;
+            height: 22px;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .mobile-nav-item .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+            margin-top: 2px;
+            letter-spacing: -0.01em;
+            transition: color 0.2s ease, font-weight 0.2s ease;
+        }
+
+        /* Active Navigation Tab */
+        .mobile-nav-item.active {
+            color: #60A5FA;
+        }
+
+        .mobile-nav-item.active .nav-icon-wrapper {
+            background: rgba(59, 130, 246, 0.12);
+        }
+
+        .mobile-nav-item.active svg {
+            transform: scale(1.12);
+            stroke: #60A5FA;
+            stroke-width: 2.2;
+        }
+
+        .mobile-nav-item.active .nav-label {
+            font-weight: 700;
+            color: #93C5FD;
+        }
+
+        /* Active Top Pill Indicator */
+        .mobile-nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 20px;
+            height: 2.5px;
+            background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.6);
+        }
+
+        .mobile-nav-item:active svg {
+            transform: scale(0.92);
+        }
+    }
+</style>

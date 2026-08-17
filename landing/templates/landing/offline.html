@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Offline Mode | Roomora</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#080808">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #080808;
+            color: #F8FAFC;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 30px 16px 80px;
+        }
+        .offline-container {
+            max-width: 480px;
+            width: 100%;
+        }
+        .offline-card {
+            background: rgba(18, 20, 29, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 28px 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+            margin-bottom: 20px;
+        }
+        .icon-wrapper {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-wrapper svg {
+            width: 28px;
+            height: 28px;
+            color: #60A5FA;
+        }
+        h1 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #94A3B8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p.subtitle {
+            color: #94A3B8;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .btn-retry {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: #FFFFFF;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Tabs */
+        .vault-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 16px;
+            gap: 4px;
+        }
+        .vault-tab {
+            flex: 1;
+            padding: 8px;
+            border-radius: 10px;
+            background: transparent;
+            border: none;
+            color: #94A3B8;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .vault-tab.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60A5FA;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* Offline Vault Section */
+        .vault-section {
+            background: rgba(18, 20, 29, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 18px;
+        }
+
+        .vault-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .vault-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .vault-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .vault-img {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .vault-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .vault-item-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #F8FAFC;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .vault-item-sub {
+            font-size: 11px;
+            color: #60A5FA;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .vault-empty {
+            text-align: center;
+            color: #64748B;
+            font-size: 13px;
+            padding: 24px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <!-- Main Status Card -->
+        <div class="offline-card">
+            <div class="icon-wrapper">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 4.243a9 9 0 01-2.828-6.364m2.828 6.364L3 21m0-18l18 18M9.879 9.879a3 3 0 004.242 4.242M6.343 6.343a8.966 8.966 0 00-1.979 3.021"></path>
+                </svg>
+            </div>
+            <h1>Offline Pass & Saved Vault</h1>
+            <p class="subtitle">You have no internet connection right now, but your cached check-in passes and saved properties are ready below.</p>
+            <button class="btn-retry" onclick="checkConnection()">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Retry Connection
+            </button>
+        </div>
+
+        <!-- Offline Vault -->
+        <div class="vault-section">
+            <div class="vault-tabs">
+                <button class="vault-tab active" onclick="switchVaultTab('passes')">🎟️ Digital Passes</button>
+                <button class="vault-tab" onclick="switchVaultTab('properties')">🏠 Saved Properties</button>
+            </div>
+
+            <div id="vault-items-container" class="vault-grid">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Pass Modal -->
+    {% load static %}
+    {% include 'bookings/components/digital_checkin_pass.html' %}
+
+    <script>
+        let currentTab = 'passes';
+
+        function switchVaultTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.vault-tab').forEach((btn, idx) => {
+                btn.classList.toggle('active', (idx === 0 && tab === 'passes') || (idx === 1 && tab === 'properties'));
+            });
+            renderVaultItems();
+        }
+
+        function renderVaultItems() {
+            try {
+                const vault = JSON.parse(localStorage.getItem('roomora_offline_vault_v1')) || { savedProperties: [], bookingPasses: [] };
+                const container = document.getElementById('vault-items-container');
+
+                if (currentTab === 'passes') {
+                    if (vault.bookingPasses && vault.bookingPasses.length > 0) {
+                        container.innerHTML = vault.bookingPasses.map(b => `
+                            <div class="vault-item" onclick="openRoomoraPass(${JSON.stringify(b).replace(/"/g, '&quot;')})">
+                                <div style="width:46px;height:46px;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#60A5FA;font-size:20px;">🎟️</div>
+                                <div class="vault-info">
+                                    <div class="vault-item-title">${b.propertyTitle || 'Roomora Stay'}</div>
+                                    <div class="vault-item-sub">Ref: ${b.ref} • ${b.roomSlot || 'Confirmed'}</div>
+                                </div>
+                                <span style="font-size:11px;font-weight:700;color:#34D399;background:rgba(16,185,129,0.1);padding:4px 8px;border-radius:8px;">SHOW QR</span>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<div class="vault-empty">No active check-in passes saved yet. Complete a booking or open a receipt to save it for offline check-in.</div>';
+                    }
+                } else {
+                    if (vault.savedProperties && vault.savedProperties.length > 0) {
+                        container.innerHTML = vault.savedProperties.map(p => `
+                            <div class="vault-item">
+                                <img src="${p.image}" class="vault-img" alt="${p.title}" onerror="this.src='/static/pwa/icons/icon-192.png'">
+                                <div class="vault-info">
+                                    <div class="vault-item-title">${p.title}</div>
+                                    <div class="vault-item-sub">${p.price}</div>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<div class="vault-empty">No saved properties found in vault. Browse properties while connected to store them offline.</div>';
+                    }
+                }
+            } catch (e) {
+                console.error('Error rendering vault:', e);
+            }
+        }
+
+        function checkConnection() {
+            const btn = document.querySelector('.btn-retry');
+            btn.innerHTML = 'Reconnecting...';
+            if (navigator.onLine) {
+                window.location.reload();
+            } else {
+                fetch('/', { method: 'HEAD', cache: 'no-store' })
+                    .then(() => window.location.reload())
+                    .catch(() => {
+                        btn.innerHTML = 'Still Offline — Tap to Retry';
+                    });
+            }
+        }
+
+        window.addEventListener('online', () => window.location.reload());
+        document.addEventListener('DOMContentLoaded', renderVaultItems);
+    </script>
+</body>
+</html>

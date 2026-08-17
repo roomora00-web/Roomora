@@ -576,3 +576,41 @@ class PropertyMapView(TemplateView):
         ).values_list('city', flat=True).order_by('city').distinct()
         
         return context
+
+
+def manifest_view(request):
+    """Serve PWA manifest.json from static directory"""
+    import os
+    from django.http import HttpResponse
+    manifest_path = os.path.join(settings.BASE_DIR, 'static', 'pwa', 'manifest.json')
+    try:
+        with open(manifest_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        response = HttpResponse(content, content_type='application/manifest+json; charset=utf-8')
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Cache-Control'] = 'no-cache'
+        return response
+    except Exception as e:
+        return HttpResponse('{"name": "Roomora"}', content_type='application/manifest+json; charset=utf-8')
+
+
+def serviceworker_view(request):
+    """Serve PWA service worker with root scope permissions"""
+    import os
+    from django.http import HttpResponse
+    sw_path = os.path.join(settings.BASE_DIR, 'static', 'pwa', 'serviceworker.js')
+    try:
+        with open(sw_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        response = HttpResponse(content, content_type='application/javascript')
+        response['Service-Worker-Allowed'] = '/'
+        response['Cache-Control'] = 'no-cache'
+        return response
+    except Exception as e:
+        return HttpResponse('// SW Not Found', content_type='application/javascript')
+
+
+def offline_view(request):
+    """Render dedicated offline fallback page"""
+    return render(request, 'landing/offline.html')
+

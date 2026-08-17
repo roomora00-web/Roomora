@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="50%" stop-color="#080808"/>
+      <stop offset="100%" stop-color="#030712"/>
+    </linearGradient>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EC4899"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded squircle -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  <rect width="508" height="508" x="2" y="2" rx="110" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3"/>
+
+  <!-- Subtle ambient glow circle behind logo -->
+  <circle cx="256" cy="256" r="140" fill="#3B82F6" opacity="0.18" filter="url(#glow)"/>
+
+  <!-- Geometric "R" & Modern Roof Architectural Mark -->
+  <g transform="translate(116, 100)">
+    <!-- Roof Peak -->
+    <path d="M 140 20 L 250 110 L 220 110 L 140 45 L 60 110 L 30 110 Z" fill="url(#primaryGrad)" filter="url(#glow)"/>
+    
+    <!-- Main Stylized 'R' Structure -->
+    <!-- Left Pillar -->
+    <rect x="50" y="100" width="36" height="190" rx="18" fill="url(#primaryGrad)"/>
+    
+    <!-- Top Loop of 'R' -->
+    <path d="M 70 100 H 180 C 230 100 245 135 245 170 C 245 205 225 235 180 235 H 70" 
+          fill="none" stroke="url(#primaryGrad)" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+          
+    <!-- Dynamic Diagonal Leg of 'R' -->
+    <path d="M 160 215 L 235 285" 
+          fill="none" stroke="url(#accentGrad)" stroke-width="36" stroke-linecap="round"/>
+          
+    <!-- Small Smart Accent Dot (Signifying Connectivity / Location) -->
+    <circle cx="145" cy="168" r="14" fill="#60A5FA"/>
+  </g>
+</svg>

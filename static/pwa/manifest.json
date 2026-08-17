@@ -1,0 +1,81 @@
+{
+  "id": "/",
+  "name": "Roomora - Smart Accommodation & Roommate Matching",
+  "short_name": "Roomora",
+  "description": "Find your ideal accommodation, book rooms, and match with verified roommates effortlessly.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "categories": [
+    "lifestyle",
+    "travel",
+    "housing",
+    "utilities"
+  ],
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/static/pwa/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/pwa/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/pwa/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/pwa/screenshots/desktop-preview.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Roomora Desktop Experience"
+    },
+    {
+      "src": "/static/pwa/screenshots/mobile-preview.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Roomora Mobile Experience"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Explore Properties",
+      "short_name": "Explore",
+      "description": "Browse available rooms and apartments",
+      "url": "/properties/",
+      "icons": [
+        {
+          "src": "/static/pwa/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "My Bookings",
+      "short_name": "Bookings",
+      "description": "View active and upcoming reservations",
+      "url": "/accounts/dashboard/",
+      "icons": [
+        {
+          "src": "/static/pwa/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

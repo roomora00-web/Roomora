@@ -1,0 +1,380 @@
+{% load static %}
+<!-- Roomora Digital Mobile Check-In Pass Modal -->
+<div id="roomora-pass-modal" class="pass-modal-backdrop" style="display: none;">
+    <div class="pass-card-wrapper">
+        <!-- Close Button -->
+        <button class="pass-close-btn" onclick="closeRoomoraPass()">✕</button>
+
+        <!-- Boarding Pass Container -->
+        <div class="digital-pass-card" id="digital-pass-card">
+            <!-- Top Section: Header & Branding -->
+            <div class="pass-top">
+                <div class="pass-header-row">
+                    <div class="pass-brand">
+                        <img src="/static/pwa/icons/icon-192.png" alt="Roomora" class="pass-logo">
+                        <span class="pass-brand-name">ROOMORA PASS</span>
+                    </div>
+                    <div class="pass-status-pill">
+                        <span class="pass-status-dot"></span>
+                        <span id="pass-status-text">CONFIRMED</span>
+                    </div>
+                </div>
+
+                <h3 id="pass-property-title" class="pass-property-name">Executive Suite Hostel</h3>
+                <p id="pass-property-address" class="pass-property-sub">East Legon, Accra, Ghana</p>
+            </div>
+
+            <!-- Middle Section: Booking & Tenant Grid -->
+            <div class="pass-grid">
+                <div class="pass-grid-item">
+                    <span class="pass-label">GUEST / TENANT</span>
+                    <span id="pass-tenant-name" class="pass-val">Kwame Mensah</span>
+                </div>
+                <div class="pass-grid-item">
+                    <span class="pass-label">BOOKING REF</span>
+                    <span id="pass-ref-number" class="pass-val font-mono">RM-849204</span>
+                </div>
+                <div class="pass-grid-item">
+                    <span class="pass-label">ROOM & BED SLOT</span>
+                    <span id="pass-room-slot" class="pass-val text-blue">Room 204 • Slot A</span>
+                </div>
+                <div class="pass-grid-item">
+                    <span class="pass-label">CHECK-IN DATE</span>
+                    <span id="pass-checkin-date" class="pass-val">15 Sep 2026</span>
+                </div>
+            </div>
+
+            <!-- Perforation Cutout Divider -->
+            <div class="pass-divider">
+                <div class="notch notch-left"></div>
+                <div class="perforation-line"></div>
+                <div class="notch notch-right"></div>
+            </div>
+
+            <!-- Bottom Section: QR Code & Verification -->
+            <div class="pass-bottom">
+                <div class="qr-container" id="pass-qr-code"></div>
+                <div class="pass-qr-instructions">
+                    <div class="pass-qr-title">Scan at Front Desk / Gate</div>
+                    <div class="pass-qr-desc">Present this QR code upon arrival to verify entry & receive room keys.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="pass-actions">
+            <button id="save-to-vault-btn" class="pass-btn-primary" onclick="saveActivePassToVault()">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                <span>Save to Offline Pass Vault</span>
+            </button>
+            <button class="pass-btn-secondary" onclick="window.print()">Print Pass</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pass-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(4, 5, 8, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        animation: passFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .pass-card-wrapper {
+        position: relative;
+        max-width: 380px;
+        width: 100%;
+    }
+
+    .pass-close-btn {
+        position: absolute;
+        top: -46px;
+        right: 0;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 0.2s ease;
+    }
+    .pass-close-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.08);
+    }
+
+    .digital-pass-card {
+        background: linear-gradient(180deg, #161922 0%, #0F1219 100%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 28px;
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(59, 130, 246, 0.15);
+        overflow: hidden;
+        color: #F8FAFC;
+    }
+
+    .pass-top {
+        padding: 24px 24px 16px;
+    }
+
+    .pass-header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+
+    .pass-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .pass-logo {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+    }
+    .pass-brand-name {
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        color: #94A3B8;
+    }
+
+    .pass-status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #34D399;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 4px 10px;
+        border-radius: 20px;
+        letter-spacing: 0.05em;
+    }
+    .pass-status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #10B981;
+        box-shadow: 0 0 8px #10B981;
+    }
+
+    .pass-property-name {
+        font-size: 18px;
+        font-weight: 800;
+        margin: 0;
+        color: #FFFFFF;
+        line-height: 1.3;
+    }
+    .pass-property-sub {
+        font-size: 12px;
+        color: #94A3B8;
+        margin: 4px 0 0;
+    }
+
+    .pass-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px 12px;
+        padding: 16px 24px 20px;
+    }
+    .pass-grid-item {
+        display: flex;
+        flex-direction: column;
+    }
+    .pass-label {
+        font-size: 9px;
+        font-weight: 800;
+        color: #64748B;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+    }
+    .pass-val {
+        font-size: 13px;
+        font-weight: 700;
+        color: #F8FAFC;
+    }
+    .pass-val.text-blue {
+        color: #60A5FA;
+    }
+
+    /* Perforation with circular side cutouts */
+    .pass-divider {
+        position: relative;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        margin: 0;
+    }
+    .notch {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #080808;
+        top: 0;
+        z-index: 2;
+    }
+    .notch-left {
+        left: -12px;
+        border-right: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .notch-right {
+        right: -12px;
+        border-left: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .perforation-line {
+        width: 100%;
+        margin: 0 16px;
+        border-bottom: 2px dashed rgba(255, 255, 255, 0.15);
+    }
+
+    .pass-bottom {
+        padding: 20px 24px 28px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        background: rgba(8, 10, 15, 0.4);
+    }
+
+    .qr-container {
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .pass-qr-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #F8FAFC;
+    }
+    .pass-qr-desc {
+        font-size: 11px;
+        color: #64748B;
+        margin-top: 4px;
+        line-height: 1.4;
+        max-width: 240px;
+    }
+
+    .pass-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 16px;
+    }
+    .pass-btn-primary {
+        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 14px;
+        padding: 14px 20px;
+        border-radius: 14px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+        transition: all 0.2s ease;
+    }
+    .pass-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    }
+    .pass-btn-secondary {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #E2E8F0;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 10px;
+        border-radius: 12px;
+        cursor: pointer;
+    }
+
+    @keyframes passFadeIn {
+        from { opacity: 0; transform: scale(0.96); }
+        to { opacity: 1; transform: scale(1); }
+    }
+</style>
+
+<script src="{% static 'pwa/js/qr-generator.js' %}"></script>
+<script>
+    let activePassData = null;
+
+    window.openRoomoraPass = function(passData) {
+        activePassData = passData;
+        
+        document.getElementById('pass-property-title').textContent = passData.propertyTitle || 'Roomora Property';
+        document.getElementById('pass-property-address').textContent = passData.address || 'Ghana';
+        document.getElementById('pass-tenant-name').textContent = passData.tenantName || 'Verified Tenant';
+        document.getElementById('pass-ref-number').textContent = passData.bookingRef || 'RM-' + Math.floor(100000 + Math.random()*900000);
+        document.getElementById('pass-room-slot').textContent = passData.roomSlot || 'Assigned Room';
+        document.getElementById('pass-checkin-date').textContent = passData.checkinDate || 'Upcoming';
+        document.getElementById('pass-status-text').textContent = passData.status || 'CONFIRMED';
+
+        // Generate dynamic scannable verification QR code
+        const qrPayload = JSON.stringify({
+            app: "Roomora",
+            ref: passData.bookingRef,
+            tenant: passData.tenantName,
+            prop: passData.propertyTitle,
+            room: passData.roomSlot,
+            verified: true
+        });
+
+        window.renderRoomoraQR('pass-qr-code', qrPayload, 170);
+
+        // Auto-save pass to vault whenever viewed
+        if (window.RoomoraVault) {
+            window.RoomoraVault.saveBookingPass({
+                id: passData.bookingRef,
+                ref: passData.bookingRef,
+                propertyTitle: passData.propertyTitle,
+                address: passData.address,
+                tenantName: passData.tenantName,
+                roomSlot: passData.roomSlot,
+                checkinDate: passData.checkinDate,
+                qrPayload: qrPayload
+            });
+        }
+
+        document.getElementById('roomora-pass-modal').style.display = 'flex';
+    };
+
+    window.closeRoomoraPass = function() {
+        document.getElementById('roomora-pass-modal').style.display = 'none';
+    };
+
+    window.saveActivePassToVault = function() {
+        if (!activePassData) return;
+        const btn = document.getElementById('save-to-vault-btn');
+        btn.innerHTML = '✓ Saved to Offline Vault!';
+        btn.style.background = '#10B981';
+        setTimeout(() => {
+            btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg><span>Save to Offline Pass Vault</span>';
+            btn.style.background = '';
+        }, 2500);
+    };
+</script>

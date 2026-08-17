@@ -1,0 +1,215 @@
+<!-- PWA Smart Install Banner -->
+<div id="pwa-install-banner" class="pwa-install-container" style="display: none;">
+    <div class="pwa-install-card">
+        <div class="pwa-banner-left">
+            <img src="/static/pwa/icons/icon-192.png" alt="Roomora App" class="pwa-banner-icon">
+            <div class="pwa-banner-text">
+                <h4>Install Roomora</h4>
+                <p>Add to your home screen for quick bookings & offline passes</p>
+            </div>
+        </div>
+        <div class="pwa-banner-actions">
+            <button id="pwa-install-btn" class="pwa-btn-install">Install</button>
+            <button id="pwa-dismiss-btn" class="pwa-btn-dismiss" aria-label="Dismiss">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pwa-install-container {
+        position: fixed;
+        bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+        left: 16px;
+        right: 16px;
+        z-index: 9989;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+        animation: pwaSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @media (min-width: 769px) {
+        .pwa-install-container {
+            bottom: 24px;
+            right: 24px;
+            left: auto;
+            max-width: 400px;
+        }
+    }
+
+    .pwa-install-card {
+        pointer-events: auto;
+        background: rgba(18, 20, 29, 0.95);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(59, 130, 246, 0.15);
+        border-radius: 18px;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        width: 100%;
+    }
+
+    .pwa-banner-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+    }
+
+    .pwa-banner-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 11px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .pwa-banner-text {
+        min-width: 0;
+    }
+
+    .pwa-banner-text h4 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 700;
+        color: #F8FAFC;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .pwa-banner-text p {
+        margin: 2px 0 0;
+        font-size: 12px;
+        color: #94A3B8;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .pwa-banner-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    .pwa-btn-install {
+        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+        color: #FFFFFF;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 8px 16px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    }
+
+    .pwa-btn-install:hover {
+        transform: scale(1.04);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+    }
+
+    .pwa-btn-install:active {
+        transform: scale(0.96);
+    }
+
+    .pwa-btn-dismiss {
+        background: rgba(255, 255, 255, 0.06);
+        border: none;
+        color: #94A3B8;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .pwa-btn-dismiss:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: #FFFFFF;
+    }
+
+    @keyframes pwaSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<script>
+    (function() {
+        let deferredPrompt = null;
+        const banner = document.getElementById('pwa-install-banner');
+        const installBtn = document.getElementById('pwa-install-btn');
+        const dismissBtn = document.getElementById('pwa-dismiss-btn');
+
+        // Check if already in standalone mode (already installed)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        if (isStandalone) {
+            return;
+        }
+
+        // Check if user dismissed banner recently (within 7 days)
+        const dismissedUntil = localStorage.getItem('roomora_pwa_dismissed_until');
+        if (dismissedUntil && Date.now() < parseInt(dismissedUntil, 10)) {
+            return;
+        }
+
+        // Capture Android/Chrome beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (banner) {
+                banner.style.display = 'flex';
+            }
+        });
+
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        console.log('[Roomora PWA] User accepted installation');
+                    }
+                    deferredPrompt = null;
+                    if (banner) banner.style.display = 'none';
+                } else {
+                    // Fallback for iOS / Safari
+                    alert('To install Roomora on your device:\n1. Tap the Share button (square with arrow up)\n2. Select "Add to Home Screen"');
+                }
+            });
+        }
+
+        if (dismissBtn) {
+            dismissBtn.addEventListener('click', () => {
+                if (banner) banner.style.display = 'none';
+                // Dismiss for 7 days
+                localStorage.setItem('roomora_pwa_dismissed_until', Date.now() + 7 * 24 * 60 * 60 * 1000);
+            });
+        }
+    })();
+</script>
