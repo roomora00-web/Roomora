@@ -1,2 +1,2 @@
-web: ./start.sh
+web: bash start.sh
 worker: celery -A staymatch worker --loglevel=info --concurrency=2
