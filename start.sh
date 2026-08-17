@@ -11,4 +11,4 @@ python manage.py migrate --noinput
 python manage.py collectstatic --noinput
 
 # Start the application
-exec gunicorn staymatch.wsgi:application --workers 4 --threads 8 --worker-class sync --timeout 120 --bind 0.0.0.0:$PORT
+exec gunicorn staymatch.wsgi:application --workers 2 --threads 4 --worker-class gthread --timeout 120 --bind 0.0.0.0:${PORT:-8080}
