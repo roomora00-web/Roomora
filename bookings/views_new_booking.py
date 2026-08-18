@@ -1295,17 +1295,29 @@ def submit_booking(request, booking_id):
     platform_fee = accommodation_amount * Decimal(str(payment_service.platform_fee_percentage))
     total_charged = accommodation_amount + platform_fee
     
-    # Create payment record
-    payment = PaymentRecord.objects.create(
+    # Find existing active initiated payment record or create a new one
+    payment = PaymentRecord.objects.filter(
         booking=booking,
         user=request.user,
-        amount_accommodation=accommodation_amount,
-        amount_platform_fee=platform_fee,
-        amount_total=total_charged,
-        payment_status='initiated',
-        payment_window_opens_at=timezone.now(),
-        payment_window_closes_at=timezone.now() + timezone.timedelta(hours=payment_service.payment_window_hours)
-    )
+        payment_status__in=['initiated', 'processing']
+    ).first()
+    
+    if payment and not payment.is_expired:
+        payment.amount_accommodation = accommodation_amount
+        payment.amount_platform_fee = platform_fee
+        payment.amount_total = total_charged
+        payment.save(update_fields=['amount_accommodation', 'amount_platform_fee', 'amount_total', 'updated_at'])
+    else:
+        payment = PaymentRecord.objects.create(
+            booking=booking,
+            user=request.user,
+            amount_accommodation=accommodation_amount,
+            amount_platform_fee=platform_fee,
+            amount_total=total_charged,
+            payment_status='initiated',
+            payment_window_opens_at=timezone.now(),
+            payment_window_closes_at=timezone.now() + timezone.timedelta(hours=payment_service.payment_window_hours)
+        )
     
     # Update booking status to require payment
     booking.status = 'PAYMENT_REQUIRED'
