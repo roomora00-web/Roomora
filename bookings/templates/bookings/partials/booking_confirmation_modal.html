@@ -63,7 +63,7 @@
           </div>
           <div style="display:flex; justify-content:space-between; padding:12px 0; font-size:14px;">
             <span style="color: #71717A;">Duration</span>
-            <span style="font-weight:600; color: #18181B;">~{{ duration_months|floatformat:1 }} months</span>
+            <span style="font-weight:600; color: #18181B;">{{ booking.calculated_duration_label|title|default:"Standard Stay" }}</span>
           </div>
         </section>
         

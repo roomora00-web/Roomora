@@ -177,7 +177,7 @@
                         </div>
                         <div class="col-md-6">
                             <p class="mb-1"><strong>Move-in:</strong> {{ booking.move_in_date|date:"M d, Y" }}</p>
-                            <p class="mb-1"><strong>Duration:</strong> {{ booking.duration_months }} months</p>
+                            <p class="mb-1"><strong>Duration:</strong> {{ booking.calculated_duration_label|title }}</p>
                         </div>
                     </div>
                 </div>

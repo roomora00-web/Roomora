@@ -126,7 +126,10 @@ class DurationService:
         total_weeks = num_semesters * DurationService.SEMESTER_WEEKS
         total_price = num_semesters * price_per_semester
         
-        semester_end = move_in_date + timedelta(days=DurationService.SEMESTER_DAYS)
+        # Final semester end = move_in + (num_semesters × 17 weeks)
+        semester_end = move_in_date + timedelta(days=DurationService.SEMESTER_DAYS * num_semesters)
+        # Grace period applies after the last semester ends
+        grace_period_start = semester_end + timedelta(days=1)
         grace_period_end = semester_end + timedelta(days=DurationService.GRACE_PERIOD_DAYS)
         room_opens_to_others = grace_period_end + timedelta(days=1)
         
@@ -134,14 +137,16 @@ class DurationService:
             success=True,
             data={
                 'move_in_date': move_in_date,
+                # move_out_date is the canonical key used in submit_duration
+                'move_out_date': semester_end,
                 'semester_end_date': semester_end,
-                'grace_period_start': semester_end + timedelta(days=1),
+                'grace_period_start': grace_period_start,
                 'grace_period_end': grace_period_end,
                 'room_opens_to_others': room_opens_to_others,
                 'num_semesters': num_semesters,
                 'total_days': total_days,
                 'total_weeks': total_weeks,
-                'total_months': round(total_days / 30.44, 2),
+                'total_months': round(total_days / 30, 1),
                 'price_per_semester': price_per_semester,
                 'total_price': total_price,
                 'billing_model': 'SEMESTER',
@@ -164,10 +169,11 @@ class DurationService:
         
         total_price = num_months * price_per_month
         
-        # Calculate move-out date (approximately 30.44 days per month)
-        total_days = int(num_months * 30.44)
+        # Use exactly 30 days per month — consistent with DAYS_PER_MONTH constant
+        total_days = num_months * 30
         move_out_date = move_in_date + timedelta(days=total_days)
         
+        grace_period_start = move_out_date + timedelta(days=1)
         grace_period_end = move_out_date + timedelta(days=DurationService.GRACE_PERIOD_DAYS)
         room_opens_to_others = grace_period_end + timedelta(days=1)
         
@@ -176,7 +182,7 @@ class DurationService:
             data={
                 'move_in_date': move_in_date,
                 'move_out_date': move_out_date,
-                'grace_period_start': move_out_date + timedelta(days=1),
+                'grace_period_start': grace_period_start,
                 'grace_period_end': grace_period_end,
                 'room_opens_to_others': room_opens_to_others,
                 'num_months': num_months,
@@ -253,6 +259,7 @@ class DurationService:
         semester2_start = semester1_end + timedelta(days=1)  # Default continuous
         semester2_end = semester2_start + timedelta(days=DurationService.SEMESTER_DAYS)
         
+        grace_period_start = semester2_end + timedelta(days=1)
         grace_period_end = semester2_end + timedelta(days=DurationService.GRACE_PERIOD_DAYS)
         room_opens_to_others = grace_period_end + timedelta(days=1)
         
@@ -260,12 +267,15 @@ class DurationService:
             success=True,
             data={
                 'move_in_date': move_in_date,
+                # move_out_date is the canonical final date used for booking storage
+                'move_out_date': semester2_end,
                 'semester1_end_date': semester1_end,
                 'semester2_start_date': semester2_start,
                 'semester2_end_date': semester2_end,
-                'grace_period_start': semester2_end + timedelta(days=1),
+                'grace_period_start': grace_period_start,
                 'grace_period_end': grace_period_end,
                 'room_opens_to_others': room_opens_to_others,
+                'num_semesters': total_semesters,
                 'total_semesters': total_semesters,
                 'total_days': total_days,
                 'total_weeks': total_weeks,
@@ -292,6 +302,8 @@ class DurationService:
         vacation_reserve_end = semester2_start_date - timedelta(days=1)
         
         semester2_end = semester2_start_date + timedelta(days=DurationService.SEMESTER_DAYS)
+        total_days = DurationService.SEMESTER_DAYS * 2  # Billed days (no vacation)
+        grace_period_start = semester2_end + timedelta(days=1)
         grace_period_end = semester2_end + timedelta(days=DurationService.GRACE_PERIOD_DAYS)
         room_opens_to_others = grace_period_end + timedelta(days=1)
         
@@ -301,17 +313,23 @@ class DurationService:
             success=True,
             data={
                 'move_in_date': move_in_date,
+                # move_out_date is the canonical final calendar date
+                'move_out_date': semester2_end,
                 'semester1_end_date': semester1_end,
                 'practical_checkout_start': semester1_end + timedelta(days=1),
                 'practical_checkout_end': practical_checkout,
+                'vacation_start_date': vacation_reserve_start,
+                'vacation_end_date': vacation_reserve_end,
                 'vacation_reserve_start': vacation_reserve_start,
                 'vacation_reserve_end': vacation_reserve_end,
                 'semester2_start_date': semester2_start_date,
                 'semester2_end_date': semester2_end,
-                'grace_period_start': semester2_end + timedelta(days=1),
+                'grace_period_start': grace_period_start,
                 'grace_period_end': grace_period_end,
                 'room_opens_to_others': room_opens_to_others,
+                'num_semesters': 2,
                 'total_semesters': 2,
+                'total_days': total_days,
                 'total_price': total_price,
                 'vacation_charge': 0,
                 'billing_model': 'ACADEMIC_YEAR',

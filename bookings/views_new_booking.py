@@ -469,8 +469,17 @@ def submit_duration(request, booking_id):
     
     # Update booking with calculated data
     booking.move_in_date = result.data['move_in_date']
-    booking.move_out_date = result.data.get('move_out_date') or result.data.get('semester2_end_date') or result.data.get('semester_end_date')
-    booking.monthly_rent = result.data.get('price_per_month') or result.data.get('price_per_semester') or result.data.get('price_per_year')
+    # move_out_date is now always set by the service; fallbacks kept for safety
+    booking.move_out_date = (
+        result.data.get('move_out_date')
+        or result.data.get('semester2_end_date')
+        or result.data.get('semester_end_date')
+    )
+    booking.monthly_rent = (
+        result.data.get('price_per_month')
+        or result.data.get('price_per_semester')
+        or result.data.get('price_per_year')
+    )
     booking.price_per_unit = booking.monthly_rent
     booking.total_amount = result.data['total_price']
     booking.total_price = result.data['total_price']
@@ -479,6 +488,20 @@ def submit_duration(request, booking_id):
     booking.years_selected = result.data.get('num_years')
     booking.semesters_selected = result.data.get('num_semesters')
     booking.rental_period = billing_model['type'].lower() if billing_model else None
+    # Derive duration_months for legacy display consistency
+    num_months = result.data.get('num_months')
+    total_days = result.data.get('total_days')
+    if num_months:
+        booking.duration_months = num_months
+    elif total_days:
+        booking.duration_months = max(1, round(total_days / 30))
+    # Save semester 2 dates if available (split or academic year)
+    s2_start = result.data.get('semester2_start_date')
+    s2_end = result.data.get('semester2_end_date')
+    if s2_start:
+        booking.semester_2_start_date = s2_start if not isinstance(s2_start, str) else __import__('datetime').date.fromisoformat(s2_start)
+    if s2_end:
+        booking.semester_2_end_date = s2_end if not isinstance(s2_end, str) else __import__('datetime').date.fromisoformat(s2_end)
     
     # Convert dates to strings and decimals to floats for JSON serialization in session
     serializable_data = {}
@@ -495,7 +518,7 @@ def submit_duration(request, booking_id):
     booking.save(update_fields=[
         'move_in_date', 'move_out_date', 'monthly_rent', 'price_per_unit', 'total_amount',
         'total_price', 'duration_days', 'months_selected', 'years_selected', 'semesters_selected',
-        'rental_period'
+        'duration_months', 'rental_period', 'semester_2_start_date', 'semester_2_end_date',
     ])
     
     # If semester billing or academic year → show structure selection (Continuous vs Split/Vacation)
@@ -652,6 +675,13 @@ def confirm_duration(request, booking_id):
         booking.semesters_selected = duration_data.get('num_semesters') or booking.semesters_selected
         booking.months_selected = duration_data.get('num_months') or booking.months_selected
         booking.years_selected = duration_data.get('num_years') or booking.years_selected
+        # Also update duration_months for legacy display
+        num_months = duration_data.get('num_months')
+        total_days = duration_data.get('total_days')
+        if num_months:
+            booking.duration_months = num_months
+        elif total_days:
+            booking.duration_months = max(1, round(total_days / 30))
         
         billing_model = duration_data.get('billing_model', '')
         booking.rental_period = billing_model.lower() if billing_model else None
@@ -670,17 +700,20 @@ def confirm_duration(request, booking_id):
         booking.monthly_rent = booking.price_per_unit or booking.monthly_rent
         
         booking.stay_structure = duration_data.get('structure') or booking.stay_structure
-        booking.semester_2_start_date = parse_date(duration_data.get('semester_2_start_date')) or booking.semester_2_start_date
-        booking.semester_2_end_date = parse_date(duration_data.get('semester_2_end_date')) or booking.semester_2_end_date
+        # Handle both key formats (semester2_start_date from service, semester_2_start_date from older code)
+        s2_start = parse_date(duration_data.get('semester2_start_date') or duration_data.get('semester_2_start_date'))
+        s2_end = parse_date(duration_data.get('semester2_end_date') or duration_data.get('semester_2_end_date'))
+        booking.semester_2_start_date = s2_start or booking.semester_2_start_date
+        booking.semester_2_end_date = s2_end or booking.semester_2_end_date
         
-        booking.vacation_reserve_start = parse_date(duration_data.get('vacation_start_date')) or booking.vacation_reserve_start
-        booking.vacation_reserve_end = parse_date(duration_data.get('vacation_end_date')) or booking.vacation_reserve_end
+        booking.vacation_reserve_start = parse_date(duration_data.get('vacation_start_date') or duration_data.get('vacation_reserve_start')) or booking.vacation_reserve_start
+        booking.vacation_reserve_end = parse_date(duration_data.get('vacation_end_date') or duration_data.get('vacation_reserve_end')) or booking.vacation_reserve_end
         
         booking.save(update_fields=[
             'move_in_date', 'move_out_date', 'grace_period_start', 'grace_period_end',
             'duration_days', 'semesters_selected', 'months_selected', 'years_selected',
-            'rental_period', 'price_per_unit', 'total_price', 'total_amount', 'monthly_rent',
-            'stay_structure', 'semester_2_start_date', 'semester_2_end_date',
+            'duration_months', 'rental_period', 'price_per_unit', 'total_price', 'total_amount',
+            'monthly_rent', 'stay_structure', 'semester_2_start_date', 'semester_2_end_date',
             'vacation_reserve_start', 'vacation_reserve_end'
         ])
     

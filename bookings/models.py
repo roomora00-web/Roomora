@@ -323,50 +323,51 @@ class Booking(models.Model):
     def calculated_duration_label(self):
         """
         Generate a human-readable duration label based on booking dates.
-        Falls back to months_selected, years_selected, or duration_months if dates aren't available.
+        Prefers stored selection fields (semesters_selected, months_selected, years_selected)
+        for accuracy, then falls back to date arithmetic.
         """
-        # If billing/rental period indicates semesters, prefer semester label
-        if self.rental_period and 'semester' in str(self.rental_period).lower():
-            if self.semesters_selected:
-                return f"{self.semesters_selected} semester{'s' if self.semesters_selected > 1 else ''}"
-            # try to infer from duration_days (17 weeks = 119 days per semester)
-            if self.move_in_date and self.move_out_date:
-                days = (self.move_out_date - self.move_in_date).days
-                semesters = round(days / 119)
-                if semesters >= 1:
-                    return f"{semesters} semester{'s' if semesters > 1 else ''}"
+        # 1. Prefer stored billing selection fields — these are set during booking flow
+        rental = str(self.rental_period or '').lower()
 
-        # General inference: if dates span roughly whole semesters, prefer semester label
+        if self.semesters_selected and ('semester' in rental or 'academic' in rental or not rental):
+            n = self.semesters_selected
+            return f"{n} semester{'s' if n > 1 else ''}"
+
+        if self.months_selected:
+            n = self.months_selected
+            return f"{n} month{'s' if n > 1 else ''}"
+
+        if self.years_selected:
+            n = self.years_selected
+            return f"{n} year{'s' if n > 1 else ''}"
+
+        if self.duration_months:
+            n = self.duration_months
+            return f"{n} month{'s' if n > 1 else ''}"
+
+        # 2. Derive from move-in / move-out dates if available
         if self.move_in_date and self.move_out_date:
             days = (self.move_out_date - self.move_in_date).days
-            # infer semesters if close to multiples of 119 days
+
+            # Semester inference: check closeness to multiples of 119 days (17 weeks)
             if days >= 112:
                 inferred_semesters = int(round(days / 119))
-                if inferred_semesters >= 1:
-                    # check closeness (within 7 days) to avoid false positives
-                    if abs(days - (inferred_semesters * 119)) <= 7:
-                        return f"{inferred_semesters} semester{'s' if inferred_semesters > 1 else ''}"
+                if inferred_semesters >= 1 and abs(days - (inferred_semesters * 119)) <= 7:
+                    return f"{inferred_semesters} semester{'s' if inferred_semesters > 1 else ''}"
 
-        if self.move_in_date and self.move_out_date:
-            days = (self.move_out_date - self.move_in_date).days
-            months = round(days / 30.44)  # Average days per month
-            years = days // 365
-
+            # Annual: use 364 days (52 × 7) consistent with DAYS_PER_YEAR constant
+            years = days // 364
             if years > 0:
                 return f"{years} year{'s' if years > 1 else ''}"
-            elif months > 0:
+
+            # Monthly: use 30 days consistent with DAYS_PER_MONTH constant
+            months = round(days / 30)
+            if months > 0:
                 return f"{months} month{'s' if months > 1 else ''}"
-            elif days > 0:
+
+            if days > 0:
                 return f"{days} day{'s' if days > 1 else ''}"
-        
-        # Fallback to stored selection fields
-        if self.months_selected:
-            return f"{self.months_selected} month{'s' if self.months_selected > 1 else ''}"
-        elif self.years_selected:
-            return f"{self.years_selected} year{'s' if self.years_selected > 1 else ''}"
-        elif self.duration_months:
-            return f"{self.duration_months} month{'s' if self.duration_months > 1 else ''}"
-        
+
         return "—"
     
     @property
