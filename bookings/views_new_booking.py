@@ -959,7 +959,6 @@ def booking_route(request, booking_id):
     if occupancy_type == 'SINGLE':
         # Single occupancy - skip all matching, go to payment first
         booking.status = 'PAYMENT_REQUIRED'
-        booking.soft_lock_expires_at = None
         booking.save()
         
         # Create booking history
@@ -1016,7 +1015,6 @@ def booking_route(request, booking_id):
         booking.status = 'PAYMENT_REQUIRED'
         booking.is_first_occupant = True
         booking.occupancy_position = 1
-        booking.soft_lock_expires_at = None
         booking.save()
         
         # Create booking history
@@ -1118,7 +1116,6 @@ def compatibility_engine(request, booking_id):
         max_pos = max([b.occupancy_position for b in best_room_bookings if b.occupancy_position] + [0])
         booking.occupancy_position = max_pos + 1
         booking.is_first_occupant = False
-        booking.soft_lock_expires_at = None
         
         if best_room_score >= CompatibilityService.ROUTING_THRESHOLD:
             # AUTO-ASSIGN
@@ -1192,7 +1189,6 @@ def accept_match(request, booking_id, match_booking_id):
         booking.status = 'ASSIGNED_AWAITING'
         booking.occupancy_position = match_booking.occupancy_position + 1
         booking.is_first_occupant = False
-        booking.soft_lock_expires_at = None
         booking.assigned_room = match_booking.assigned_room
         
         # Calculate compatibility and save
@@ -1295,6 +1291,13 @@ def submit_booking(request, booking_id):
     platform_fee = accommodation_amount * Decimal(str(payment_service.platform_fee_percentage))
     total_charged = accommodation_amount + platform_fee
     
+    # Calculate continuous payment window deadline matching the booking's soft-lock expiration
+    payment_window_opens = booking.created_at or timezone.now()
+    if booking.soft_lock_expires_at and booking.soft_lock_expires_at > timezone.now():
+        payment_window_closes = booking.soft_lock_expires_at
+    else:
+        payment_window_closes = timezone.now() + timezone.timedelta(hours=payment_service.payment_window_hours)
+    
     # Find existing active initiated payment record or create a new one
     payment = PaymentRecord.objects.filter(
         booking=booking,
@@ -1306,7 +1309,8 @@ def submit_booking(request, booking_id):
         payment.amount_accommodation = accommodation_amount
         payment.amount_platform_fee = platform_fee
         payment.amount_total = total_charged
-        payment.save(update_fields=['amount_accommodation', 'amount_platform_fee', 'amount_total', 'updated_at'])
+        payment.payment_window_closes_at = payment_window_closes
+        payment.save(update_fields=['amount_accommodation', 'amount_platform_fee', 'amount_total', 'payment_window_closes_at', 'updated_at'])
     else:
         payment = PaymentRecord.objects.create(
             booking=booking,
@@ -1315,8 +1319,8 @@ def submit_booking(request, booking_id):
             amount_platform_fee=platform_fee,
             amount_total=total_charged,
             payment_status='initiated',
-            payment_window_opens_at=timezone.now(),
-            payment_window_closes_at=timezone.now() + timezone.timedelta(hours=payment_service.payment_window_hours)
+            payment_window_opens_at=payment_window_opens,
+            payment_window_closes_at=payment_window_closes
         )
     
     # Update booking status to require payment

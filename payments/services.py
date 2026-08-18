@@ -37,9 +37,15 @@ class PaymentService:
         from bookings.models import Booking
         
         # Calculate amounts
-        accommodation_amount = booking.total_price
+        accommodation_amount = booking.total_price or booking.total_amount or Decimal('0.00')
         platform_fee = accommodation_amount * Decimal(str(self.platform_fee_percentage))
         total_charged = accommodation_amount + platform_fee
+        
+        payment_window_opens = booking.created_at or timezone.now()
+        if booking.soft_lock_expires_at and booking.soft_lock_expires_at > timezone.now():
+            payment_window_closes = booking.soft_lock_expires_at
+        else:
+            payment_window_closes = timezone.now() + timezone.timedelta(hours=self.payment_window_hours)
         
         # Create payment record
         payment = PaymentRecord.objects.create(
@@ -49,8 +55,8 @@ class PaymentService:
             amount_platform_fee=platform_fee,
             amount_total=total_charged,
             payment_status='initiated',
-            payment_window_opens_at=timezone.now(),
-            payment_window_closes_at=timezone.now() + timezone.timedelta(hours=self.payment_window_hours)
+            payment_window_opens_at=payment_window_opens,
+            payment_window_closes_at=payment_window_closes
         )
         
         # Update booking status
