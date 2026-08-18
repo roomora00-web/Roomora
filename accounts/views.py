@@ -533,7 +533,7 @@ def forgot_password_view(request):
             
             # Send password reset email
             try:
-                reset_url = f"http://{request.get_host()}/accounts/reset-password/{reset_token}/"
+                reset_url = request.build_absolute_uri(f"/accounts/reset-password/{reset_token}/")
                 send_html_email(
                     'Reset your Roomora password',
                     'accounts/emails/reset_password.html',
@@ -560,10 +560,14 @@ def reset_password_view(request, token=None):
     if request.method == 'POST':
         new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm_password')
-        token = request.POST.get('token')
+        token = request.POST.get('token') or token
+        
+        if not token:
+            messages.error(request, 'Invalid or missing reset token. Please request a new password reset link.')
+            return redirect('accounts:forgot-password')
         
         # Password strength validation
-        if len(new_password) < 8:
+        if not new_password or len(new_password) < 8:
             messages.error(request, 'Password must be at least 8 characters and contain uppercase, number, and special character, or be 12+ characters long.')
             return render(request, 'accounts/reset_password.html', {'token': token})
         
@@ -584,7 +588,8 @@ def reset_password_view(request, token=None):
         
         # Find the verification record with this token
         try:
-            verification = EmailVerification.objects.filter(otp=token[:6], used=False).latest('created_at')
+            token_prefix = token[:6] if len(token) >= 6 else token
+            verification = EmailVerification.objects.filter(otp=token_prefix, used=False).latest('created_at')
             
             if timezone.now() > verification.expires_at:
                 messages.error(request, 'This reset link has expired. Please request a new one.')
@@ -1482,10 +1487,13 @@ def account_settings_view(request):
             else:
                 messages.error(request, 'Current password is incorrect.')
         
-        elif action == 'notification_preferences':
-            profile.email_notifications = request.POST.get('email_notifications') == 'on'
-            profile.sms_notifications = request.POST.get('sms_notifications') == 'on'
-            profile.push_notifications = request.POST.get('push_notifications') == 'on'
+        elif action in ['notification_preferences', 'update_notifications']:
+            email_val = request.POST.get('notif_email') or request.POST.get('email_notifications')
+            sms_val = request.POST.get('notif_sms') or request.POST.get('sms_notifications')
+            push_val = request.POST.get('notif_marketing') or request.POST.get('push_notifications')
+            profile.email_notifications = email_val in ['on', 'true', '1', True]
+            profile.sms_notifications = sms_val in ['on', 'true', '1', True]
+            profile.push_notifications = push_val in ['on', 'true', '1', True]
             profile.save()
             messages.success(request, 'Notification preferences updated.')
         

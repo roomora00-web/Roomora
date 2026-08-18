@@ -28,7 +28,7 @@ def payment_screen_view(request, payment_id):
     booking = payment.booking
     
     # Calculate duration display
-    duration_display = f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)"
+    duration_display = booking.calculated_duration_label if booking.calculated_duration_label != '—' else (f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)")
     
     context = {
         'payment': payment,
@@ -62,7 +62,7 @@ def payment_confirmation_view(request, payment_id):
     # The payment webhook (services.py) securely handles the state transition.
     # We do not modify the booking status here in the UI anymore to prevent race conditions.
     
-    duration_display = f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)"
+    duration_display = booking.calculated_duration_label if booking.calculated_duration_label != '—' else (f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)")
     accommodation_property = booking.accommodation_property
     room = booking.assigned_room or booking.room
     room_type = booking.room_type or (room.room_type if room else None)
@@ -145,7 +145,7 @@ def payment_failed_view(request, payment_id):
     booking = payment.booking
     
     # Calculate duration display
-    duration_display = f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)"
+    duration_display = booking.calculated_duration_label if booking.calculated_duration_label != '—' else (f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)")
     
     context = {
         'payment': payment,
@@ -169,7 +169,7 @@ def official_receipt_view(request, payment_id):
         return redirect('accounts:dashboard')
     
     booking = payment.booking
-    duration_display = f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)"
+    duration_display = booking.calculated_duration_label if booking.calculated_duration_label != '—' else (f"{booking.duration_months} month(s)" if booking.duration_months else f"{booking.duration_days} day(s)")
     accommodation_property = booking.accommodation_property
     room = booking.assigned_room or booking.room
     room_type = booking.room_type or (room.room_type if room else None)
