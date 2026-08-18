@@ -446,29 +446,27 @@ def generate_master_document():
     # =========================================================================
     # CHAPTER 6: THE 8-DIMENSION ALGORITHMIC ROOMMATE COMPATIBILITY ENGINE
     # =========================================================================
-    add_heading_styled(doc, "6. The 8-Dimension AlgorithMIC Roommate Compatibility Engine", 1)
+    add_heading_styled(doc, "6. The 8-Dimension Algorithmic Roommate Compatibility Engine", 1)
     
     doc.add_paragraph(
         "In communal student accommodation, toxic or incompatible roommate pairings are the single leading cause of lease terminations, "
-        "mental distress, and academic disruption. Roomora replaces arbitrary roommate allocation with a proprietary, weighted 8-dimension matching algorithm."
+        "mental distress, and academic disruption. Roomora replaces arbitrary roommate allocation with a proprietary, weighted multi-factor matching algorithm."
     )
 
-    add_heading_styled(doc, "6.1 The 8 Weighted Profiling Dimensions", 2)
+    add_heading_styled(doc, "6.1 Weighted Multi-Tier Priority Model", 2)
+    doc.add_paragraph(
+        "The `CompatibilityService` evaluates lifestyle profiles across three distinct mathematical priority tiers (totaling 100%):"
+    )
     
-    dim_table = doc.add_table(rows=9, cols=3)
-    dim_headers = ["Dimension", "Weight", "Evaluated Questionnaire Attributes"]
+    dim_table = doc.add_table(rows=4, cols=3)
+    dim_headers = ["Priority Tier", "Composite Weight", "Evaluated Questionnaire Attributes"]
     for col_idx, text in enumerate(dim_headers):
         dim_table.rows[0].cells[col_idx].paragraphs[0].text = text
 
     dim_data = [
-        ("1. Sleep & Circadian Schedule", "18%", "Sleep time (Very Early to Very Late), Wake-up time, Alarm reliance, Nighttime light and device activity."),
-        ("2. Cleanliness & Domestic Habits", "16%", "Cleanliness scale (1–5), chore division preferences, cleaning frequency (Daily, Weekly, Monthly), room tidiness expectations."),
-        ("3. Noise Tolerance & Social Rhythms", "15%", "Preferred study acoustics (Absolute silence vs. Ambient music), volume tolerance, introversion vs. extraversion."),
-        ("4. Guest & Visitor Protocols", "14%", "Daytime guest frequency, overnight guest policies, advance notice requirements for bringing visitors."),
-        ("5. Study Dynamics & Quiet Hours", "13%", "Study location (In-room desk vs. Library), study hours, adherence to mandatory quiet-hour windows."),
-        ("6. Kitchen & Food Sharing Ethics", "10%", "Cooking frequency, kitchen sharing comfort, food labeling vs. open-pantry sharing boundaries."),
-        ("7. Substance, Alcohol & Smoking", "8%", "Smoking tolerance (Strict Non-Smoking vs. Outdoor Only), alcohol consumption tolerance, party environment comfort."),
-        ("8. Thermal Comfort & Room Climate", "6%", "Air conditioning vs. Fan preference, sleeping temperature preferences, window ventilation habits.")
+        ("High-Priority Tier", "70% of Score", "Sleep Schedule (Very Early to Very Late), Wake-Up Time, Cleanliness Level (1–5 scale), Noise Tolerance (Low to Very High), Visitor Frequency (Rarely to Very Frequently), Smoking Tolerance, and Privacy Importance."),
+        ("Medium-Priority Tier", "20% of Score", "Study Location (Mainly In-Room vs. Outside Library), Cooking Frequency (Never, Weekly, Daily), and Room Thermal Climate (Very Cold to Very Warm)."),
+        ("Low-Priority Tier", "10% of Score", "Social Dynamics (Introvert vs. Extravert), Food Sharing Boundaries (Own Items vs. Share Freely), and Borrowing Items (Ask First vs. Never).")
     ]
     for row_idx, data in enumerate(dim_data, start=1):
         for col_idx, text in enumerate(data):
@@ -477,9 +475,9 @@ def generate_master_document():
 
     add_heading_styled(doc, "6.2 Compatibility Scoring Formula & Decision Triaging", 2)
     doc.add_paragraph(
-        "The `CompatibilityService` computes a normalized Compatibility Score (S, 0–100%) between applicant profile A and existing room occupant B:\n"
-        "S = 100 - SUM( w_i * |A_i - B_i| / max_diff_i ) * 100\n"
-        "Where w_i represents the dimension weight and |A_i - B_i| measures the Euclidean/Manhattan distance across normalized categorical answers."
+        "The `CompatibilityService` computes weighted factor distances between applicant profile A and existing room occupant B:\n"
+        "Final Score = (High Priority Avg x 0.70) + (Medium Priority Avg x 0.20) + (Low Priority Avg x 0.10)\n"
+        "For multi-occupancy rooms (triples, quads), the system calculates all pairwise tenant scores and computes the room composite average."
     )
 
     doc.add_paragraph(
@@ -487,7 +485,7 @@ def generate_master_document():
     )
     
     decision_points = [
-        ("Tier 1: Auto-Assignment (Score >= 85%)", "High compatibility match. The applicant is automatically paired into the room, their profile is temporarily locked, and the booking transitions directly to `PAYMENT_REQUIRED`."),
+        ("Tier 1: Auto-Assignment (Score >= 85%)", "High compatibility match (ROUTING_THRESHOLD = 85). The applicant is automatically paired into the room, their profile is temporarily locked, and the booking transitions directly to `PAYMENT_REQUIRED`."),
         ("Tier 2: Manual Consent Flow (50% <= Score < 85%)", "Moderate compatibility match. The applicant is presented with an anonymized Roommate Profile Card showing alignment metrics and common habits. The student has a 2-hour/24-hour decision window to Accept or Reject."),
         ("Tier 3: Fallback & Admin Review (Score < 50%)", "Low compatibility. The system evaluates alternative rooms in the property. If no compatible room exists, the booking is flagged for Admin manual mediation or routing to single occupancy.")
     ]
@@ -525,8 +523,8 @@ def generate_master_document():
         ("11. CONFIRMED", "Room officially secured. Awaiting move-in date.", "Payment verified; digital receipt and key code generated."),
         ("12. ACTIVE", "Tenant physically residing in property.", "Move-in date arrives; tenant checks in via Room Portal."),
         ("13. VACATION_RESERVE", "Split-stay holiday pause. Room locked, zero rent.", "Semester 1 ends in Option B; student vacates for break."),
-        ("14. GRACE_PERIOD", "5-day penalty-free move-out window.", "Lease/semester ends; student given 5 days to pack."),
-        ("15. OVERSTAY", "Tenant failed to vacate post-grace period.", "Grace period expires without departure confirmation; daily penalty accrues."),
+        ("14. GRACE_PERIOD", "7-day penalty-free move-out window (default).", "Lease/semester ends; student given 7 days to pack."),
+        ("15. OVERSTAY", "Tenant failed to vacate post-grace period.", "Grace period expires without departure confirmation; 1.5x daily penalty accrues."),
         ("16. TEMPORARILY_CANCELLED", "Soft-lock expired or payment failed.", "2-hour window collapses; user given 24h lifeline to reinstate."),
         ("17. PERMANENTLY_CANCELLED", "Finalized irreversible cancellation.", "Reinstatement window expires or Admin authorizes full refund.")
     ]
@@ -550,7 +548,7 @@ def generate_master_document():
     )
     cost_items = [
         ("Base Accommodation Rent", "The net rental charge allocated directly to the property owner/landlord."),
-        ("Platform Service Fee (e.g. 2%–10%)", "Explicitly separated fee funding physical property inspections, verification infrastructure, 24/7 emergency support, and escrow management."),
+        ("Platform Service Fee (10%)", "Explicitly separated 10% fee (settings.PLATFORM_FEE_PERCENTAGE) funding physical property inspections, verification infrastructure, 24/7 emergency support, and escrow management."),
         ("Refundable Security Deposit", "Held in secure escrow to cover potential damages, fully refundable upon verified check-out.")
     ]
     for label, desc in cost_items:
@@ -611,9 +609,9 @@ def generate_master_document():
         "Roomora eliminates chaotic check-outs through automated, mathematically enforced exit protocols."
     )
 
-    add_heading_styled(doc, "10.1 The 5-Day Penalty-Free Grace Period", 2)
+    add_heading_styled(doc, "10.1 The 7-Day Penalty-Free Grace Period", 2)
     doc.add_paragraph(
-        "When the scheduled Move-Out Date arrives, the booking transitions to `GRACE_PERIOD`. The student is granted a 5-day penalty-free window "
+        "When the scheduled Move-Out Date arrives, the booking transitions to `GRACE_PERIOD`. The student is granted a default 7-day penalty-free window (configurable between 3 to 14 days) "
         "to finalize packing, complete room cleaning, and execute a digital 'Confirm Departure' action on their portal (surrendering keys digitally)."
     )
 
@@ -621,8 +619,8 @@ def generate_master_document():
     doc.add_paragraph(
         "If a tenant fails to confirm departure by the conclusion of the Grace Period, the state machine shifts to `OVERSTAY`. "
         "The system initiates automated daily financial penalty accrual:\n"
-        "Daily Overstay Penalty = (Standard Daily Rate) x 1.5\n"
-        "Penalties are automatically debited against the tenant's ledger and security deposit. Landlords and Admins receive high-priority alerts, "
+        "Daily Overstay Penalty = (Standard Daily Accommodation Rate) x 1.5\n"
+        "Penalties are automatically debited against the tenant's ledger and security deposit. Exceeding 15 days in Overstay triggers immediate Administrative Escalation (`OVERSTAY_ESCALATION_DAYS = 15`), "
         "and the tenant's platform rebooking eligibility is suspended until full reconciliation."
     )
 
